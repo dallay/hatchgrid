@@ -1,8 +1,8 @@
 {
-  "id": "lyra",
-  "realm": "lyra",
-  "displayName": "Lyra",
-  "displayNameHtml": "Lyra",
+  "id": "hatchgrid",
+  "realm": "hatchgrid",
+  "displayName": "Hatchgrid",
+  "displayNameHtml": "Hatchgrid",
   "notBefore": 0,
   "defaultSignatureAlgorithm": "RS256",
   "revokeRefreshToken": false,
@@ -50,10 +50,10 @@
       {
         "id": "8e986fb5-dafb-43bf-a7c2-7e57572d3d80",
         "name": "ROLE_ADMIN",
-        "description": "Lyra administrator role",
+        "description": "Hatchgrid administrator role",
         "composite": false,
         "clientRole": false,
-        "containerId": "lyra",
+        "containerId": "hatchgrid",
         "attributes": {}
       },
       {
@@ -62,21 +62,21 @@
         "description": "${role_offline-access}",
         "composite": false,
         "clientRole": false,
-        "containerId": "lyra",
+        "containerId": "hatchgrid",
         "attributes": {}
       },
       {
         "id": "ec5705e1-fc1d-4d21-8364-abd3bd4efcd0",
         "name": "ROLE_USER",
-        "description": "Lyra user role",
+        "description": "Hatchgrid user role",
         "composite": false,
         "clientRole": false,
-        "containerId": "lyra",
+        "containerId": "hatchgrid",
         "attributes": {}
       },
       {
         "id": "d2b73e7b-a2d7-40e9-8ebc-2af00454e8aa",
-        "name": "default-roles-lyra",
+        "name": "default-roles-hatchgrid",
         "description": "${role_default-roles}",
         "composite": true,
         "composites": {
@@ -92,7 +92,7 @@
           }
         },
         "clientRole": false,
-        "containerId": "lyra",
+        "containerId": "hatchgrid",
         "attributes": {}
       },
       {
@@ -101,12 +101,12 @@
         "description": "${role_uma_authorization}",
         "composite": false,
         "clientRole": false,
-        "containerId": "lyra",
+        "containerId": "hatchgrid",
         "attributes": {}
       }
     ],
     "client": {
-      "lyra-control-center": [],
+      "hatchgrid-control-center": [],
       "internal": [],
       "realm-management": [
         {
@@ -442,11 +442,11 @@
   ],
   "defaultRole": {
     "id": "d2b73e7b-a2d7-40e9-8ebc-2af00454e8aa",
-    "name": "default-roles-lyra",
+    "name": "default-roles-hatchgrid",
     "description": "${role_default-roles}",
     "composite": true,
     "clientRole": false,
-    "containerId": "lyra"
+    "containerId": "hatchgrid"
   },
   "requiredCredentials": [
     "password"
@@ -499,7 +499,7 @@
       "disableableCredentialTypes": [],
       "requiredActions": [],
       "realmRoles": [
-        "default-roles-lyra"
+        "default-roles-hatchgrid"
       ],
       "notBefore": 0,
       "groups": []
@@ -587,7 +587,7 @@
           "emailVerified": true,
           "firstName": "John",
           "lastName": "Doe",
-          "email": "john.doe@lyra.com",
+          "email": "john.doe@hatchgrid.com",
           "credentials": [
               {
                   "id": "dbfb1777-f99c-423c-bff8-23d08d489267",
@@ -639,14 +639,14 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/lyra/account/",
+      "baseUrl": "/realms/hatchgrid/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "/realms/lyra/account/*"
+        "/realms/hatchgrid/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -683,14 +683,14 @@
       "clientId": "account-console",
       "name": "${client_account-console}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/lyra/account/",
+      "baseUrl": "/realms/hatchgrid/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "/realms/lyra/account/*"
+        "/realms/hatchgrid/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -914,7 +914,7 @@
     },
     {
       "id": "1acf7ad0-68cb-46a6-a3e4-8b2f2abecb85",
-      "clientId": "lyra-control-center",
+      "clientId": "hatchgrid-control-center",
       "rootUrl": "http://localhost:7419",
       "adminUrl": "http://localhost:7419",
       "surrogateAuthRequired": false,
@@ -965,7 +965,7 @@
       "defaultClientScopes": [
         "web-origins",
         "roles",
-        "lyra",
+        "hatchgrid",
         "profile",
         "email"
       ],
@@ -1021,14 +1021,14 @@
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "rootUrl": "${authAdminUrl}",
-      "baseUrl": "/admin/lyra/console/",
+      "baseUrl": "/admin/hatchgrid/console/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "/admin/lyra/console/*"
+        "/admin/hatchgrid/console/*"
       ],
       "webOrigins": [
         "+"
@@ -1138,7 +1138,7 @@
       "defaultClientScopes": [
         "web-origins",
         "roles",
-        "lyra",
+        "hatchgrid",
         "profile",
         "email"
       ],
@@ -1362,8 +1362,8 @@
     },
     {
       "id": "9816de82-24b7-42fe-a85a-1264868ec293",
-      "name": "lyra",
-      "description": "Lyra specific claims",
+      "name": "hatchgrid",
+      "description": "Hatchgrid specific claims",
       "protocol": "openid-connect",
       "attributes": {
         "include.in.token.scope": "false",
@@ -1724,10 +1724,10 @@
     "ssl": "false",
     "password": "**********",
     "port": "3025",
-    "replyTo": "admin@lyra.com",
+    "replyTo": "admin@hatchgrid.com",
     "host": "greenmail",
-    "from": "not_reply@lyra.com",
-    "fromDisplayName": "Lyra",
+    "from": "not_reply@hatchgrid.com",
+    "fromDisplayName": "Hatchgrid",
     "user": "developer"
   },
   "eventsEnabled": false,

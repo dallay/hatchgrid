@@ -7,12 +7,12 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 
 @AutoConfiguration
-open class LyraAutoConfiguration {
+open class HatchgridAutoConfiguration {
     @Bean
-    open fun lyraSpringBeanProvider(applicationContext: ApplicationContext): LyraSpringBeanProvider =
-        LyraSpringBeanProvider(applicationContext)
+    open fun hatchgridSpringBeanProvider(applicationContext: ApplicationContext): HatchgridSpringBeanProvider =
+        HatchgridSpringBeanProvider(applicationContext)
 
     @Bean
-    open fun mediator(lyraSpringBeanProvider: LyraSpringBeanProvider): Mediator =
-        MediatorBuilder(lyraSpringBeanProvider).build()
+    open fun mediator(hatchgridSpringBeanProvider: HatchgridSpringBeanProvider): Mediator =
+        MediatorBuilder(hatchgridSpringBeanProvider).build()
 }

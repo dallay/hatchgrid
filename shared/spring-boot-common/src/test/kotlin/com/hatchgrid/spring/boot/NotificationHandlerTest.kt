@@ -15,7 +15,7 @@ var asyncNotificationTestCounter = 0
 
 @SpringBootTest(
     classes = [
-        LyraAutoConfiguration::class,
+        HatchgridAutoConfiguration::class,
         MyFirstNotificationHandler::class,
     ],
 )

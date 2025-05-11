@@ -78,13 +78,13 @@
 -- create policy subscriber_policy on subscribers for
 --   select
 --   to public using (
---   organization_id = current_setting('lyra.current_organization')::uuid
+--   organization_id = current_setting('hatchgrid.current_organization')::uuid
 --   );
 --
 -- create policy form_policy on forms for
 --   select
 --   to public using (
---   organization_id = current_setting('lyra.current_organization')::uuid
+--   organization_id = current_setting('hatchgrid.current_organization')::uuid
 --   );
 --
 -- create

@@ -5,7 +5,7 @@ package com.hatchgrid.spring.boot
 import com.hatchgrid.common.domain.bus.DependencyProvider
 import org.springframework.context.ApplicationContext
 
-class LyraSpringBeanProvider(
+class HatchgridSpringBeanProvider(
     private val applicationContext: ApplicationContext,
 ) : DependencyProvider {
     override fun <T> getSingleInstanceOf(clazz: Class<T>): T = applicationContext.getBean(clazz)

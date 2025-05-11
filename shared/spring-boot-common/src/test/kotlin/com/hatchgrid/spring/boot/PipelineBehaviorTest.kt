@@ -20,7 +20,7 @@ var loggingPipelineBehaviorHandleAfterNextCounter = 0
 
 @SpringBootTest(
     classes = [
-        LyraAutoConfiguration::class, MyCommandHandler::class,
+        HatchgridAutoConfiguration::class, MyCommandHandler::class,
         ExceptionPipelineBehavior::class, LoggingPipelineBehavior::class,
     ],
 )

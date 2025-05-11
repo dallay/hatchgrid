@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget as KtJvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion as KtVersion
 
 object AppConfiguration {
-    const val appName = "Lyra"
+    const val appName = "Hatchgrid"
     const val packageName = "com.hatchgrid"
 
     val useJavaVersion = JavaVersion.VERSION_21

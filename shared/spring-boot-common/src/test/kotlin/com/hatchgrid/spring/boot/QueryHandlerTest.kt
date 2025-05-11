@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest(classes = [LyraAutoConfiguration::class, TestQueryHandler::class])
+@SpringBootTest(classes = [HatchgridAutoConfiguration::class, TestQueryHandler::class])
 class QueryHandlerTest {
 
     @Autowired

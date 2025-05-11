@@ -26,8 +26,8 @@ class SpringBootConventionPlugin : ConventionPlugin {
             registerCopyEnvFileTask(
                 listOf(
                     "apps/frontend",
-                    "apps/frontend/apps/lyra-app",
-                    "apps/frontend/apps/lyra-landing-page",
+                    "apps/frontend/apps/hatchgrid-app",
+                    "apps/frontend/apps/hatchgrid-landing-page",
                 ),
             )
         }

@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest
 private var springTestCounter = 0
 private var springAsyncTestCounter = 0
 
-@SpringBootTest(classes = [LyraAutoConfiguration::class, MyAsyncCommandRHandler::class])
+@SpringBootTest(classes = [HatchgridAutoConfiguration::class, MyAsyncCommandRHandler::class])
 class CommandWithResultHandlerTest {
 
     init {
