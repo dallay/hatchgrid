@@ -122,7 +122,3 @@ The application includes Spring Boot Actuator endpoints for monitoring:
 - Health check: `/actuator/health`
 - Metrics: `/actuator/metrics`
 - Prometheus metrics: `/actuator/prometheus`
-
-## Additional Resources
-
-For more detailed information about the technologies used in this project, refer to the [HELP.md](HELP.md) file.
