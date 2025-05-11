@@ -1,5 +1,7 @@
 # Hatchgrid
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/dallay/hatchgrid)
+
 A Spring Boot application built with Kotlin and Gradle, providing a robust backend infrastructure.
 
 ## Prerequisites
