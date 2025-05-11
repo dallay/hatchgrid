@@ -49,10 +49,10 @@ The project includes a `compose.yaml` file that sets up a PostgreSQL database:
 
 ```bash
 # Start the database
-docker-compose up -d
+docker compose -f compose.yaml up -d
 
 # Stop the database
-docker-compose down
+docker compose -f compose.yaml down
 ```
 
 Alternatively, Spring Boot's Docker Compose support will automatically start the required containers when you run the application.
