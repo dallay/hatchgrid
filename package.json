@@ -1,0 +1,44 @@
+{
+  "name": "hatchgrid",
+  "version": "1.0.0",
+  "description": "Hatchgrid Monorepo",
+  "private": true,
+  "scripts": {
+    "prepare": "husky install || echo 'Skipping husky install'",
+    "dev": "pnpm --recursive --parallel run dev",
+    "dev:landing": "pnpm --filter @hatchgrid/landing-page dev",
+    "build": "pnpm --recursive run build",
+    "build:landing": "pnpm --filter @hatchgrid/landing-page build",
+    "preview:landing": "pnpm --filter @hatchgrid/landing-page preview",
+    "test": "pnpm --recursive run test",
+    "lint": "pnpm --recursive run lint",
+    "clean": "pnpm --recursive run clean",
+    "backend:build": "./gradlew build",
+    "backend:run": "./gradlew bootRun",
+    "backend:test": "./gradlew test",
+    "backend:clean": "./gradlew clean",
+    "start": "concurrently \"pnpm backend:run\" \"pnpm dev\"",
+    "check-updates": "pnpm --recursive exec -- pnpm outdated",
+    "test:all": "pnpm backend:test && pnpm test"
+  },
+  "workspaces": {
+    "packages": [
+      "apps/*"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@10.10.0",
+  "devDependencies": {
+    "husky": "^8.0.0",
+    "concurrently": "^9.1.2"
+  },
+  "keywords": [
+    "hatchgrid",
+    "monorepo"
+  ],
+  "author": "Hatchgrid Team",
+  "license": "Hatchgrid Custom License"
+}
