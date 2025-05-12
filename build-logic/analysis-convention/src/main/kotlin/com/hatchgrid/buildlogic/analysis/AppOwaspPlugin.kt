@@ -57,7 +57,7 @@ internal class AppOwaspPlugin : ConventionPlugin {
                     ReportGenerator.Format.XML.toString(),
                     ReportGenerator.Format.SARIF.toString(),
                 )
-                suppressionFile = "${rootProject.rootDir}/config/owasp/owasp-supression.xml"
+                suppressionFile = "${rootProject.rootDir}/config/owasp/owasp-suppression.xml"
 
                 setEnvironmentVariables()
 
