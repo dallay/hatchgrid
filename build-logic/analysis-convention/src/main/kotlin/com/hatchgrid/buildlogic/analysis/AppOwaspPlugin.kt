@@ -8,10 +8,9 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.register
 import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 import org.owasp.dependencycheck.reporting.ReportGenerator
-import java.io.File
 
 // see https://owasp.org/www-project-dependency-check/#what-is-a-cvss-score
-private const val FAIL_BUILS_ON_CVSS: Float = 11F // SET THIS TO A REASONABLE VALUE FOR YOUR PROJECT
+private const val FAIL_BUILDS_ON_CVSS: Float = 11F // SET THIS TO A REASONABLE VALUE FOR YOUR PROJECT
 private const val AUTO_UPDATE: Boolean = true // Enable auto-update of the NVD database
 private const val PURGE_DATABASE: Boolean = true // Enable purging of the database to fix corruption issues
 
@@ -50,7 +49,7 @@ internal class AppOwaspPlugin : ConventionPlugin {
 
         with(extensions) {
             configure<DependencyCheckExtension> {
-                FAIL_BUILS_ON_CVSS.also { failBuildOnCVSS = it }
+                FAIL_BUILDS_ON_CVSS.also { failBuildOnCVSS = it }
                 formats = listOf(
                     ReportGenerator.Format.HTML.toString(),
                     ReportGenerator.Format.JUNIT.toString(),
