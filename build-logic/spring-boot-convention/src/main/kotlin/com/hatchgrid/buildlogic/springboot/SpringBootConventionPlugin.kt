@@ -5,7 +5,6 @@ import com.hatchgrid.buildlogic.common.extensions.catalogBundle
 import com.hatchgrid.buildlogic.common.extensions.catalogPlugin
 import com.hatchgrid.buildlogic.common.extensions.commonExtensions
 import com.hatchgrid.buildlogic.common.extensions.commonTasks
-import com.hatchgrid.buildlogic.common.extensions.registerCopyEnvFileTask
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.dependencies
@@ -23,13 +22,6 @@ class SpringBootConventionPlugin : ConventionPlugin {
 
         with(extensions) {
             commonExtensions()
-            registerCopyEnvFileTask(
-                listOf(
-                    "apps/frontend",
-                    "apps/frontend/apps/hatchgrid-app",
-                    "apps/frontend/apps/hatchgrid-landing-page",
-                ),
-            )
         }
 
         tasks.commonTasks()
