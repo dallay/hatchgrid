@@ -1,0 +1,5 @@
+# pnpm-workspace.yaml
+packages:
+  # Includes all packages within 'apps'
+  - 'apps/*'
+  # You can add more directories if you have other packages (e.g., 'packages/*')
