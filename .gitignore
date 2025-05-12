@@ -45,10 +45,10 @@ node_modules/
 pnpm-debug.log
 
 ### Frontend build artifacts ###
-apps/*/dist/
-apps/*/.output/
-apps/*/.next/
-apps/*/.astro/
-apps/*/.svelte-kit/
-apps/*/.cache/
-apps/*/.parcel-cache/
+client/*/dist/
+client/*/.output/
+client/*/.next/
+client/*/.astro/
+client/*/.svelte-kit/
+client/*/.cache/
+client/*/.parcel-cache/
