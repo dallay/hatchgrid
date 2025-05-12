@@ -6,7 +6,9 @@
     ":dependencyDashboard",
     "schedule:monthly"
   ],
-  "reviewers": ["yacosta738"],
+  "reviewers": [
+    "yacosta738"
+  ],
   "schedule": [
     "after 10pm every weekday",
     "before 5am every weekday",
@@ -17,26 +19,38 @@
   ],
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "matchCurrentVersion": "!/^0/",
       "automerge": true
     },
     {
-      "extends": "monorepo:kotlin",
+      "extends": [
+        "monorepo:kotlin"
+      ],
       "groupName": "kotlin monorepo",
-      "matchUpdateTypes": ["digest", "patch", "minor", "major"]
+      "matchUpdateTypes": [
+        "digest",
+        "patch",
+        "minor",
+        "major"
+      ]
     },
     {
       "groupName": "spring backend",
       "matchDepNames": [
         "org.springframework"
       ],
-      "matchPackagePrefixes": [
-        "org.springframework:"
+      "matchPackageNames": [
+        "org.springframework:{/,}**"
       ]
     },
     {
-      "extends": "monorepo:github-workflows-kt",
+      "extends": [
+        "monorepo:github-workflows-kt"
+      ],
       "groupName": "github-workflows-kt monorepo",
       "matchUpdateTypes": [
         "digest",
