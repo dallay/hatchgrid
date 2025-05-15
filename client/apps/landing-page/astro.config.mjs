@@ -1,0 +1,50 @@
+import mdx from "@astrojs/mdx";
+import sitemap from "@astrojs/sitemap";
+import { defineConfig } from "astro/config";
+import { BASE_URL } from "./src/consts.ts";
+import { DEFAULT_LOCALE_SETTING, LOCALES_SETTING } from "./src/i18n/locales";
+import icon from 'astro-icon';
+
+import tailwindcss from "@tailwindcss/vite";
+
+// https://astro.build/config
+export default defineConfig({
+  // Set your site's URL
+  site: "https://astro-cms-dpv.pages.dev",
+
+  i18n: {
+      defaultLocale: DEFAULT_LOCALE_SETTING,
+      locales: Object.keys(LOCALES_SETTING),
+      routing: {
+          prefixDefaultLocale: true,
+          redirectToDefaultLocale: false,
+      },
+	},
+
+  integrations: [
+      mdx(),
+      sitemap({
+          filter: (page) => page !== `${BASE_URL}/admin/`,
+          i18n: {
+              defaultLocale: DEFAULT_LOCALE_SETTING,
+              locales: Object.fromEntries(
+                  Object.entries(LOCALES_SETTING).map(([key, value]) => [
+                      key,
+                      value.lang ?? key,
+                  ]),
+              ),
+          },
+      }),
+  icon({
+    iconDir: 'src/assets/icons',
+    include: {
+      tabler: ["*"],
+      openmoji: ["*"],
+    },
+  }),
+	],
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
+});
