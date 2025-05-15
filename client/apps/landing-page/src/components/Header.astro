@@ -75,33 +75,42 @@ import LocaleSelect from "./i18n/LocaleSelect.astro";
     const header = document.getElementById('main-header');
     const nav = header?.querySelector('nav');
     let lastScrollY = window.scrollY;
+    let ticking = false;
 
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollingDown = currentScrollY > lastScrollY;
+      // Using requestAnimationFrame for better performance
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const scrollingDown = currentScrollY > lastScrollY;
 
-      // Add/remove blur effect based on scroll position
-      if (currentScrollY > 10) {
-        nav?.classList.add('bg-white/90', 'dark:bg-gray-800/90', 'backdrop-blur-md', 'shadow-md');
-        nav?.classList.remove('bg-white', 'dark:bg-gray-800');
-      } else {
-        nav?.classList.remove('bg-white/90', 'dark:bg-gray-800/90', 'backdrop-blur-md', 'shadow-md');
-        nav?.classList.add('bg-white', 'dark:bg-gray-800');
+          // Add/remove blur effect based on scroll position
+          if (currentScrollY > 10) {
+            nav?.classList.add('bg-white/90', 'dark:bg-gray-800/90', 'backdrop-blur-md', 'shadow-md');
+            nav?.classList.remove('bg-white', 'dark:bg-gray-800');
+          } else {
+            nav?.classList.remove('bg-white/90', 'dark:bg-gray-800/90', 'backdrop-blur-md', 'shadow-md');
+            nav?.classList.add('bg-white', 'dark:bg-gray-800');
+          }
+
+          // Show/hide header based on scroll direction
+          if (scrollingDown && currentScrollY > 60) {
+            header?.classList.add('-translate-y-full');
+          } else {
+            header?.classList.remove('-translate-y-full');
+          }
+
+          lastScrollY = currentScrollY;
+          ticking = false;
+        });
+
+        ticking = true;
       }
-
-      // Show/hide header based on scroll direction
-      if (scrollingDown && currentScrollY > 60) {
-        // Hide when scrolling down and not at the top
-        header?.classList.add('-translate-y-full');
-      } else {
-        // Show when scrolling up or at the top
-        header?.classList.remove('-translate-y-full');
-      }
-
-      lastScrollY = currentScrollY;
     };
 
-    window.addEventListener('scroll', handleScroll);
+    // Use passive event listener for better performance
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
     // Initialize on page load
     handleScroll();
   });
