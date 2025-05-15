@@ -1,0 +1,9 @@
+{
+	"name": "@hatchgrid/tsconfig",
+	"version": "0.0.1",
+	"type": "module",
+	"license": "Hatchgrid Custom License",
+	"publishConfig": {
+		"access": "public"
+	}
+}
