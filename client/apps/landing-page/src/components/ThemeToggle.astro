@@ -18,8 +18,8 @@ const { id = "theme-toggle", class: className, ...attrs } = Astro.props;
     title={t("theme.toggle.tooltip")}
     {...attrs}
   >
-    <Icon name="tabler:sun" class="size-5 block dark:hidden text-main-light dark:text-main-dark cursor-pointer" />
-    <Icon name="tabler:moon" class="size-5 hidden dark:block text-main-light dark:text-main-dark cursor-pointer" />
+    <Icon name="tabler:sun" class="size-5 block dark:hidden text-gray-800 dark:text-white cursor-pointer" />
+    <Icon name="tabler:moon" class="size-5 hidden dark:block text-gray-800 dark:text-white cursor-pointer" />
   </IconButton>
 </theme-toggle>
 

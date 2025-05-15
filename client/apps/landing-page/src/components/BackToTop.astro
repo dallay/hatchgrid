@@ -13,19 +13,19 @@ const t = useTranslations(currentLocale);
 <button
   id="back-to-top"
   aria-label={t("back.to.top")}
-	type="button"
+  type="button"
   class={
-	cn(
-		"fixed bottom-6 right-6 rounded-full p-3 shadow-lg opacity-0 translate-y-8 transition-all duration-300 z-50",
-		"bg-main-button-bg-light hover:bg-main-button-bg-hover-light",
-    "dark:bg-main-button-bg-dark dark:hover:bg-main-button-bg-hover-dark",
-    "text-main-button-light dark:text-main-button-dark",
-	attrs.class)
-	}
-	{...attrs}
+    cn(
+      "fixed bottom-6 right-6 rounded-full p-3 shadow-lg opacity-0 translate-y-8 transition-all duration-300 z-50",
+      "bg-blue-600 hover:bg-blue-700",
+      "dark:bg-blue-500 dark:hover:bg-blue-600",
+      "text-white dark:text-white",
+      attrs.class)
+  }
+  {...attrs}
 >
   <Icon name="tabler:chevron-up" class="size-5 cursor-pointer" />
-	<span class="sr-only">{t("back.to.top")}</span>
+  <span class="sr-only">{t("back.to.top")}</span>
 </button>
 
 <script>
