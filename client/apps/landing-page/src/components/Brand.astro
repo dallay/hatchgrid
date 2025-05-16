@@ -1,0 +1,27 @@
+---
+import { SITE_TITLE } from "@/consts";
+import { type Lang, useTranslatedPath, useTranslations } from "@/i18n";
+import { cn } from "@/lib/utils";
+import type { HTMLAttributes } from "astro/types";
+interface Props extends HTMLAttributes<"a"> {}
+const { class: className, ...attrs } = Astro.props as Props;
+const lang = Astro.currentLocale as Lang;
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+import Logo from '../assets/hatchgrid.svg';
+---
+
+<a
+	href={translatePath("/")}
+	id="site-title"
+	class={cn(
+      "flex items-center gap-2",
+		"text-xl font-medium text-gray-800 dark:text-white transition-colors",
+		className
+	)}
+	{...attrs}
+	aria-label={t("logo.description")}
+>
+  <Logo width={32} height={32} fill="currentColor" />
+	{SITE_TITLE}
+</a>
