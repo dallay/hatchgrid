@@ -1,56 +1,60 @@
-
 import { hasArticles } from "../article";
 import type { MenuItem } from "./menu.type";
 
 const hasArticle = await hasArticles();
 
 // Define menu items with translation keys and conditions
-export const mainMenuItems: MenuItem[] = [
-	{ href: "/articles", translationKey: "nav.articles", condition: hasArticle },
+export const headerMenuItems: MenuItem[] = [
+	{ type: 'link', href: "/", translationKey: "header.nav.home", condition: true },
+	{ type: 'link', href: "/blog", translationKey: "header.nav.blog", condition: hasArticle },
+	{ type: 'link', href: "/products", translationKey: "header.nav.products", condition: true },
+	{ type: 'link', href: "/blog", translationKey: "header.nav.blog", condition: hasArticle },
+	{ type: 'link', href: "/price", translationKey: "header.nav.price", condition: true },
+	{ type: 'dropdown',children:[
+    { type: 'link', href: "/resources/docs", translationKey: "header.nav.resources.docs", condition: true },
+    { type: 'link', href: "/faq", translationKey: "header.nav.resources.faq", condition: true },
+  ], translationKey: "header.nav.resource", condition: true },
 ];
 
-export const dropdownMenuItems: MenuItem[] = [
-	{
-		href: "/alternatives",
-		translationKey: "nav.alternatives",
-		condition: false,
-	}, // Coming soon
-	{ href: "/resources", translationKey: "nav.resources", condition: false }, // Coming soon
-	{ href: "/surveys", translationKey: "nav.surveys", condition: false }, // Coming soon
-];
 // Navigation links array with translation keys and conditions
-export const navLinks: MenuItem[] = [
+export const footerNavLinks: MenuItem[] = [
 	{
+		type: 'link',
 		href: "/about/",
 		translationKey: "footer.about",
 		ariaLabelKey: "footer.aria.about",
 		condition: true,
 	},
 	{
+		type: 'link',
 		href: "/contact/",
 		translationKey: "footer.contact",
 		ariaLabelKey: "footer.aria.contact",
 		condition: true,
 	},
 	{
+		type: 'link',
 		href: "/sponsor/",
 		translationKey: "footer.sponsors",
 		ariaLabelKey: "footer.aria.sponsors",
 		condition: false,
 	},
 	{
+		type: 'link',
 		href: "/support/",
 		translationKey: "footer.donate",
 		ariaLabelKey: "footer.aria.donate",
 		condition: true,
 	},
 	{
+		type: 'link',
 		href: "#/portal",
 		translationKey: "footer.subscribe",
 		ariaLabelKey: "footer.aria.subscribe",
 		condition: false, // Could be dynamically set based on user login status
 	},
 	{
+		type: 'link',
 		href: "/rss.xml",
 		translationKey: "footer.rss",
 		ariaLabelKey: "footer.aria.rss",
@@ -58,12 +62,14 @@ export const navLinks: MenuItem[] = [
 		condition: true,
 	},
 	{
+		type: 'link',
 		href: "/privacy-policy/",
 		translationKey: "footer.privacyPolicy",
 		ariaLabelKey: "footer.aria.privacyPolicy",
 		condition: true,
 	},
 	{
+		type: 'link',
 		href: "/terms-of-use/",
 		translationKey: "footer.termsOfUse",
 		ariaLabelKey: "footer.aria.termsOfUse",
