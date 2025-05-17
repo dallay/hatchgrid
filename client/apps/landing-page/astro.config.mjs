@@ -7,6 +7,8 @@ import icon from 'astro-icon';
 
 import tailwindcss from "@tailwindcss/vite";
 
+import vue from "@astrojs/vue";
+
 // https://astro.build/config
 export default defineConfig({
   // Set your site's URL
@@ -19,30 +21,26 @@ export default defineConfig({
           prefixDefaultLocale: true,
           redirectToDefaultLocale: false,
       },
-	},
+    },
 
-  integrations: [
-      mdx(),
-      sitemap({
-          filter: (page) => page !== `${BASE_URL}/admin/`,
-          i18n: {
-              defaultLocale: DEFAULT_LOCALE_SETTING,
-              locales: Object.fromEntries(
-                  Object.entries(LOCALES_SETTING).map(([key, value]) => [
-                      key,
-                      value.lang ?? key,
-                  ]),
-              ),
-          },
-      }),
-  icon({
+  integrations: [mdx(), sitemap({
+      filter: (page) => page !== `${BASE_URL}/admin/`,
+      i18n: {
+          defaultLocale: DEFAULT_LOCALE_SETTING,
+          locales: Object.fromEntries(
+              Object.entries(LOCALES_SETTING).map(([key, value]) => [
+                  key,
+                  value.lang ?? key,
+              ]),
+          ),
+      },
+  }), icon({
     iconDir: 'src/assets/icons',
     include: {
       tabler: ["*"],
       openmoji: ["*"],
     },
-  }),
-	],
+  }), vue()],
 
   vite: {
     plugins: [tailwindcss()],

@@ -6,7 +6,7 @@ export const header: {
 } = {
 	en: {
 		"header.cta": "Get Started",
-    "header.cta.description": "Start your free trial today.",
+		"header.cta.description": "Start your free trial today.",
 		"header.menu": "Menu",
 		"header.close": "Close Menu",
 		// Navigation menu items
@@ -16,11 +16,11 @@ export const header: {
 		"header.nav.price": "Pricing",
 		"header.nav.resource": "Resources",
 		"header.nav.resources.docs": "Documentation",
-		"header.nav.resources.faq": "FAQ"
+		"header.nav.resources.faq": "FAQ",
 	},
 	es: {
 		"header.cta": "Comenzar",
-    "header.cta.description": "Comienza tu prueba gratuita hoy.",
+		"header.cta.description": "Comienza tu prueba gratuita hoy.",
 		"header.menu": "Menú",
 		"header.close": "Cerrar Menú",
 		// Navigation menu items
@@ -30,6 +30,6 @@ export const header: {
 		"header.nav.price": "Precios",
 		"header.nav.resource": "Recursos",
 		"header.nav.resources.docs": "Documentación",
-		"header.nav.resources.faq": "Preguntas Frecuentes"
+		"header.nav.resources.faq": "Preguntas Frecuentes",
 	},
 };

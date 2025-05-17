@@ -8,11 +8,10 @@ export const headerMenuItems: MenuItem[] = [
 	{ type: 'link', href: "/", translationKey: "header.nav.home", condition: true },
 	{ type: 'link', href: "/blog", translationKey: "header.nav.blog", condition: hasArticle },
 	{ type: 'link', href: "/products", translationKey: "header.nav.products", condition: true },
-	{ type: 'link', href: "/blog", translationKey: "header.nav.blog", condition: hasArticle },
-	{ type: 'link', href: "/price", translationKey: "header.nav.price", condition: true },
+	{ type: 'link', href: "#price", translationKey: "header.nav.price", condition: true },
 	{ type: 'dropdown',children:[
     { type: 'link', href: "/resources/docs", translationKey: "header.nav.resources.docs", condition: true },
-    { type: 'link', href: "/faq", translationKey: "header.nav.resources.faq", condition: true },
+    { type: 'link', href: "#faq", translationKey: "header.nav.resources.faq", condition: true },
   ], translationKey: "header.nav.resource", condition: true },
 ];
 

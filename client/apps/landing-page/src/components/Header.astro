@@ -1,13 +1,14 @@
 ---
 import Brand from '@/components/Brand.astro'
+import NavMenus from '@/components/NavMenus.vue'
 import ThemeToggle from "./ThemeToggle.astro";
 import LocaleSelect from "./i18n/LocaleSelect.astro";
 import { type Lang, useTranslations, useTranslatedPath } from '@/i18n';
 import { headerMenuItems } from '@/models/menu/menu.constants';
 
 const lang = Astro.currentLocale as Lang;
-const t = useTranslations(lang);
-const translatePath = useTranslatedPath(lang);
+const t = useTranslations(lang); // Still needed for {t("header.cta")}
+const translatePath = useTranslatedPath(lang); // Retain for consistency or other uses in Header.astro
 const currentPath = Astro.url.pathname;
 ---
 
@@ -19,7 +20,9 @@ const currentPath = Astro.url.pathname;
       <div class="flex items-center lg:order-2">
         <ThemeToggle/>
         <LocaleSelect />
-        <a href="#"
+        <a href="https://codary.tech"
+        target="_blank"
+        rel="noopener noreferrer"
         type="button"
         class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
           {t("header.cta")}
@@ -44,76 +47,12 @@ const currentPath = Astro.url.pathname;
       </div>
       <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1"
            id="mobile-menu-2">
-        <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
-          {headerMenuItems.map(item => {
-            if (!item.condition) return null;
-
-            if (item.type === 'link') {
-              const isActive = currentPath === translatePath(item.href);
-              const activeClass = isActive
-                ? "text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white"
-                : "text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700";
-
-              return (
-                <li>
-                  <a href={translatePath(item.href)}
-                     class={`block py-2 pr-4 pl-3 ${activeClass}`}
-                     aria-current={isActive ? "page" : undefined}>
-                    {t(item.translationKey)}
-                  </a>
-                </li>
-              );
-            }
-
-            if (item.type === 'dropdown') {
-              return (
-                <li class="relative group">
-                  <button class="flex items-center py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
-                    {t(item.translationKey)}
-                    <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                  </button>
-                  <div class="absolute hidden group-hover:block lg:pt-2 z-10 w-44 bg-white rounded-lg shadow-lg dark:bg-gray-700">
-                    <ul class="py-1">
-                      {item.children?.map(child => {
-                        if (!child.condition) return null;
-
-                        // Make sure we only access href on link type children
-                        if (child.type === 'link') {
-                          return (
-                            <li>
-                              <a href={translatePath(child.href)}
-                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
-                                {t(child.translationKey)}
-                              </a>
-                            </li>
-                          );
-                        }
-
-                        // Handle nested dropdown if needed (optional)
-                        // This handles the case where a dropdown might have another dropdown as a child
-                        if (child.type === 'dropdown') {
-                          return (
-                            <li>
-                              <span class="block px-4 py-2 text-sm font-medium text-gray-900 dark:text-white">
-                                {t(child.translationKey)}
-                              </span>
-                            </li>
-                          );
-                        }
-
-                        return null;
-                      })}
-                    </ul>
-                  </div>
-                </li>
-              );
-            }
-
-            return null;
-          })}
-        </ul>
+        <NavMenus
+          client:only="vue"
+          menuItems={headerMenuItems}
+          lang={lang}
+          currentPath={currentPath}
+        />
       </div>
     </div>
   </nav>
@@ -163,7 +102,36 @@ const currentPath = Astro.url.pathname;
     // Use passive event listener for better performance
     window.addEventListener('scroll', handleScroll, { passive: true });
 
+    // Clean up on navigation/hmr
+    window.addEventListener('astro:before-swap', () => {
+      window.removeEventListener('scroll', handleScroll);
+    });
+
     // Initialize on page load
     handleScroll();
+
+    // Mobile menu toggle functionality
+    const mobileMenuToggle = document.querySelector('[data-collapse-toggle="mobile-menu-2"]');
+    const mobileMenu = document.getElementById('mobile-menu-2');
+
+    if (mobileMenuToggle && mobileMenu) {
+      mobileMenuToggle.addEventListener('click', () => {
+        // Toggle the 'hidden' class on the mobile menu
+        mobileMenu.classList.toggle('hidden');
+
+        // Toggle the aria-expanded attribute
+        const isExpanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true';
+        mobileMenuToggle.setAttribute('aria-expanded', (!isExpanded).toString());
+
+        // Toggle the visibility of the menu icons
+        const openIcon = mobileMenuToggle.querySelector('svg:not(.hidden)');
+        const closeIcon = mobileMenuToggle.querySelector('svg.hidden');
+
+        if (openIcon && closeIcon) {
+          openIcon.classList.toggle('hidden');
+          closeIcon.classList.toggle('hidden');
+        }
+      });
+    }
   });
 </script>
