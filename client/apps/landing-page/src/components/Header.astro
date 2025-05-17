@@ -110,28 +110,6 @@ const currentPath = Astro.url.pathname;
     // Initialize on page load
     handleScroll();
 
-    // Mobile menu toggle functionality
-    const mobileMenuToggle = document.querySelector('[data-collapse-toggle="mobile-menu-2"]');
-    const mobileMenu = document.getElementById('mobile-menu-2');
-
-    if (mobileMenuToggle && mobileMenu) {
-      mobileMenuToggle.addEventListener('click', () => {
-        // Toggle the 'hidden' class on the mobile menu
-        mobileMenu.classList.toggle('hidden');
-
-        // Toggle the aria-expanded attribute
-        const isExpanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true';
-        mobileMenuToggle.setAttribute('aria-expanded', (!isExpanded).toString());
-
-        // Toggle the visibility of the menu icons
-        const openIcon = mobileMenuToggle.querySelector('svg:not(.hidden)');
-        const closeIcon = mobileMenuToggle.querySelector('svg.hidden');
-
-        if (openIcon && closeIcon) {
-          openIcon.classList.toggle('hidden');
-          closeIcon.classList.toggle('hidden');
-        }
-      });
-    }
+    // Mobile menu functionality is now handled by the Vue <Sheet> component.
   });
 </script>
