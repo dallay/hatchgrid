@@ -1,0 +1,9 @@
+${AnsiColor.MAGENTA} ██╗  ██╗ █████╗ ████████╗ ██████╗██╗  ██╗${AnsiColor.YELLOW} ██████╗ ██████╗ ██╗██████╗
+${AnsiColor.MAGENTA} ██║  ██║██╔══██╗╚══██╔══╝██╔════╝██║  ██║${AnsiColor.YELLOW}██╔════╝ ██╔══██╗██║██╔══██╗
+${AnsiColor.MAGENTA} ███████║███████║   ██║   ██║     ███████║${AnsiColor.YELLOW}██║  ███╗██████╔╝██║██║  ██║
+${AnsiColor.MAGENTA} ██╔══██║██╔══██║   ██║   ██║     ██╔══██║${AnsiColor.YELLOW}██║   ██║██╔══██╗██║██║  ██║
+${AnsiColor.MAGENTA} ██║  ██║██║  ██║   ██║   ╚██████╗██║  ██║${AnsiColor.YELLOW}╚██████╔╝██║  ██║██║██████╔╝
+${AnsiColor.MAGENTA} ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝${AnsiColor.YELLOW} ╚═════╝ ╚═╝  ╚═╝╚═╝╚═════╝
+
+${AnsiColor.BRIGHT_BLUE}:: Hatchgrid 🚀  :: Running Spring Boot ${spring-boot.version} ::
+:: https://www.hatchgrid.com ::${AnsiColor.DEFAULT}

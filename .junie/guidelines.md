@@ -58,10 +58,9 @@ src/main/resources/db/changelog/db.changelog-master.yaml
 ## Testing Information
 
 ### Testing Framework
-The project uses JUnit 5 for testing, along with:
+The project uses JUnit 5 and Mockk for testing, along with:
 - Spring Boot Test for integration testing
 - Testcontainers for database testing
-- Spring Cloud Contract for contract testing
 - Spring REST Docs for API documentation
 
 ### Running Tests

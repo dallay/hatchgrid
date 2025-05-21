@@ -1,5 +1,6 @@
-package com.hatchgrid.thryve
+package com.hatchgrid
 
+import com.hatchgrid.thryve.TestcontainersConfiguration
 import org.springframework.boot.fromApplication
 import org.springframework.boot.with
 
