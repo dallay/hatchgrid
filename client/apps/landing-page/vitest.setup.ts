@@ -8,7 +8,7 @@ vi.stubGlobal("import.meta", {
 		PROD: false,
 		SSR: true,
 	},
-	glob: vi.fn((pattern, options) => {
+	glob: vi.fn((_pattern, _options) => {
 		// Mock implementation for import.meta.glob
 		// This is used in ui.ts to load translation files
 		return {};

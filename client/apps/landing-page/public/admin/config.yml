@@ -131,7 +131,7 @@ collections:
   - name: 'authors'
     label: 'Authors'
     label_singular: 'Author'
-    folder: src/data/authors
+    folder: apps/website/src/data/authors
     slug: '{{name}}'
     create: true
     extension: json
@@ -152,4 +152,51 @@ collections:
       - name: 'bio'
         widget: 'markdown'
         label: 'Bio'
+        i18n: true
+      - name: location
+        widget: string
+        label: Location
+        i18n: true
+      - name: socials
+        widget: list
+        label: Social Media
+        i18n: 'duplicate'
+        required: false
+        summary: '{{fields.name}}'
+        fields:
+          - name: name
+            widget: string
+            label: Platform Name
+            i18n: true
+          - name: url
+            widget: string
+            label: Profile URL
+            i18n: 'duplicate'
+          - name: icon
+            widget: string
+            label: Icon (e.g., tabler:brand-github)
+            i18n: 'duplicate'
+
+  - name: 'page'
+    label: 'Pages'
+    folder: apps/website/src/pages
+    create: true
+    slug: '{{slug}}'
+    extension: mdx
+    i18n: true
+    fields:
+      - name: 'layout'
+        widget: 'hidden'
+        default: '@/layouts/Page.astro'
+      - name: 'title'
+        widget: 'string'
+        label: 'Title'
+        i18n: true
+      - name: 'description'
+        widget: 'string'
+        label: 'Description'
+        i18n: true
+      - name: 'body'
+        widget: 'markdown'
+        label: 'Body'
         i18n: true
