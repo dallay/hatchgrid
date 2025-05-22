@@ -35,7 +35,7 @@ export const getAuthors = async (
 		// Filter by location if provided
 		if (
 			location &&
-			!data.location.toLowerCase().includes(location.toLowerCase())
+			!data.location?.toLowerCase().includes(location.toLowerCase())
 		) {
 			return false;
 		}
