@@ -1,0 +1,87 @@
+name: Monorepo CI
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/backend-ci.yml'
+      - '.github/workflows/frontend-ci.yml'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/backend-ci.yml'
+      - '.github/workflows/frontend-ci.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run tests against'
+        type: choice
+        options:
+          - development
+          - staging
+        default: 'development'
+        required: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  backend:
+    name: Backend
+    uses: ./.github/workflows/backend-ci.yml
+
+  frontend:
+    name: Frontend
+    uses: ./.github/workflows/frontend-ci.yml
+
+  integration:
+    name: Integration
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: ./.github/actions/setup-java
+
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node
+
+      - name: Download backend artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-artifacts
+          path: backend-artifacts
+
+      - name: Download frontend artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-artifacts
+          path: frontend-artifacts
+
+      - name: Run integration tests
+        run: |
+          echo "Running integration tests for the entire monorepo"
+          # Add integration test commands here
+          # For example: ./gradlew integrationTest
+
+      - name: Generate integration report
+        run: |
+          echo "Generating integration report"
+          # Add report generation commands here
+
+      - name: Upload integration report
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-report
+          path: integration-report/
+          retention-days: 7
