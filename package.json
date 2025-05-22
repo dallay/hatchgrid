@@ -13,6 +13,7 @@
     "build:landing": "pnpm --filter @hatchgrid/landing-page build",
     "preview:landing": "pnpm --filter @hatchgrid/landing-page preview",
     "test": "pnpm --recursive run test",
+    "lint": "pnpm --recursive run check",
     "check": "pnpm --recursive run check",
     "clean": "pnpm --recursive run clean",
     "backend:build": "./gradlew build",
