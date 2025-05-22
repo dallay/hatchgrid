@@ -3,12 +3,11 @@ import Brand from '@/components/Brand.astro'
 import NavMenus from '@/components/NavMenus.vue'
 import ThemeToggle from "./ThemeToggle.astro";
 import LocaleSelect from "./i18n/LocaleSelect.astro";
-import { type Lang, useTranslations, useTranslatedPath } from '@/i18n';
+import { type Lang, useTranslations } from '@/i18n';
 import { headerMenuItems } from '@/models/menu/menu.constants';
 
 const lang = Astro.currentLocale as Lang;
 const t = useTranslations(lang); // Still needed for {t("header.cta")}
-const translatePath = useTranslatedPath(lang); // Retain for consistency or other uses in Header.astro
 const currentPath = Astro.url.pathname;
 ---
 

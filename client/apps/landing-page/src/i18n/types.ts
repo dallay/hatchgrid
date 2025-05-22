@@ -19,6 +19,8 @@ type LocaleConfig = {
  */
 export const SHOW_DEFAULT_LANG_IN_URL = true;
 
+export type Translations = Record<string, Record<string, string>>;
+
 /**
  * Type for the language code
  * @example
