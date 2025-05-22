@@ -19,7 +19,7 @@ importers:
         version: 5.4.19(@types/node@22.15.17)(lightningcss@1.29.2)(terser@5.39.0)
       vitest:
         specifier: ^2.1.9
-        version: 2.1.9(@types/node@22.15.17)(lightningcss@1.29.2)(terser@5.39.0)
+        version: 2.1.9(@types/node@22.15.17)(happy-dom@17.4.7)(lightningcss@1.29.2)(terser@5.39.0)
 
   client/apps/landing-page:
     dependencies:
@@ -81,6 +81,12 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
+      '@tailwindcss/typography':
+        specifier: ^0.5.16
+        version: 0.5.16(tailwindcss@4.1.6)
+      happy-dom:
+        specifier: ^17.4.7
+        version: 17.4.7
       sharp:
         specifier: ^0.34.1
         version: 0.34.1
@@ -92,7 +98,7 @@ importers:
         version: 5.8.3
       vitest:
         specifier: ^3.1.3
-        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.17)(lightningcss@1.29.2)(terser@5.39.0)
+        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.17)(happy-dom@17.4.7)(lightningcss@1.29.2)(terser@5.39.0)
 
   client/config:
     devDependencies:
@@ -125,7 +131,7 @@ importers:
         version: 5.1.4(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.17)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))
       vitest:
         specifier: ^3.1.3
-        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.17)(lightningcss@1.29.2)(terser@5.39.0)
+        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.17)(happy-dom@17.4.7)(lightningcss@1.29.2)(terser@5.39.0)
 
   client/packages/tsconfig: {}
 
@@ -152,7 +158,7 @@ importers:
         version: 4.5.3(@types/node@22.15.17)(rollup@4.40.2)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.17)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))
       vitest:
         specifier: ^3.1.3
-        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.17)(lightningcss@1.29.2)(terser@5.39.0)
+        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.17)(happy-dom@17.4.7)(lightningcss@1.29.2)(terser@5.39.0)
 
 packages:
 
@@ -2442,6 +2448,10 @@ packages:
   h3@1.15.3:
     resolution: {integrity: sha512-z6GknHqyX0h9aQaTx22VZDf6QyZn+0Nh+Ym8O/u0SGSkyF5cuTJYKlc8MkzW3Nzf9LE1ivcpmYC3FUGpywhuUQ==}
 
+  happy-dom@17.4.7:
+    resolution: {integrity: sha512-NZypxadhCiV5NT4A+Y86aQVVKQ05KDmueja3sz008uJfDRwz028wd0aTiJPwo4RQlvlz0fznkEEBBCHVNWc08g==}
+    engines: {node: '>=18.0.0'}
+
   has-flag@4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
@@ -4276,12 +4286,20 @@ packages:
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
+  webidl-conversions@7.0.0:
+    resolution: {integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==}
+    engines: {node: '>=12'}
+
   webpack-virtual-modules@0.6.2:
     resolution: {integrity: sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==}
 
   whatwg-encoding@3.1.1:
     resolution: {integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==}
     engines: {node: '>=18'}
+
+  whatwg-mimetype@3.0.0:
+    resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
+    engines: {node: '>=12'}
 
   whatwg-mimetype@4.0.0:
     resolution: {integrity: sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg==}
@@ -6937,6 +6955,11 @@ snapshots:
       ufo: 1.6.1
       uncrypto: 0.1.3
 
+  happy-dom@17.4.7:
+    dependencies:
+      webidl-conversions: 7.0.0
+      whatwg-mimetype: 3.0.0
+
   has-flag@4.0.0: {}
 
   has-symbols@1.1.0: {}
@@ -8963,7 +8986,7 @@ snapshots:
     optionalDependencies:
       vite: 6.3.5(@types/node@22.15.17)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1)
 
-  vitest@2.1.9(@types/node@22.15.17)(lightningcss@1.29.2)(terser@5.39.0):
+  vitest@2.1.9(@types/node@22.15.17)(happy-dom@17.4.7)(lightningcss@1.29.2)(terser@5.39.0):
     dependencies:
       '@vitest/expect': 2.1.9
       '@vitest/mocker': 2.1.9(vite@5.4.19(@types/node@22.15.17)(lightningcss@1.29.2)(terser@5.39.0))
@@ -8987,6 +9010,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.15.17
+      happy-dom: 17.4.7
     transitivePeerDependencies:
       - less
       - lightningcss
@@ -8998,7 +9022,7 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.17)(lightningcss@1.29.2)(terser@5.39.0):
+  vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.17)(happy-dom@17.4.7)(lightningcss@1.29.2)(terser@5.39.0):
     dependencies:
       '@vitest/expect': 3.1.3
       '@vitest/mocker': 3.1.3(vite@5.4.19(@types/node@22.15.17)(lightningcss@1.29.2)(terser@5.39.0))
@@ -9024,6 +9048,7 @@ snapshots:
     optionalDependencies:
       '@types/debug': 4.1.12
       '@types/node': 22.15.17
+      happy-dom: 17.4.7
     transitivePeerDependencies:
       - less
       - lightningcss
@@ -9162,11 +9187,15 @@ snapshots:
 
   webidl-conversions@3.0.1: {}
 
+  webidl-conversions@7.0.0: {}
+
   webpack-virtual-modules@0.6.2: {}
 
   whatwg-encoding@3.1.1:
     dependencies:
       iconv-lite: 0.6.3
+
+  whatwg-mimetype@3.0.0: {}
 
   whatwg-mimetype@4.0.0: {}
 

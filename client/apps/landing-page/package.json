@@ -43,6 +43,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
+		"@tailwindcss/typography": "^0.5.16",
+		"happy-dom": "^17.4.7",
 		"sharp": "^0.34.1",
 		"tailwind-merge": "^3.3.0",
 		"typescript": "^5.8.3",

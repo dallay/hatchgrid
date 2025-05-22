@@ -48,6 +48,14 @@ const authors = defineCollection({
 		email: z.string(),
 		avatar: z.string(),
 		bio: z.string(),
+		location: z.string(),
+		socials: z.array(
+			z.object({
+				name: z.string(),
+				url: z.string(),
+				icon: z.string(),
+			}),
+		),
 	}),
 });
 

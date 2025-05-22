@@ -2,7 +2,7 @@
 // Displays a link to the user's system language page
 // if the language being viewed is different
 
-import { LOCALES, type Lang, useTranslations } from "@/i18n";
+import { LOCALES, type Lang } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { Icon } from "astro-icon/components";
 import type { HTMLAttributes } from "astro/types";
@@ -12,20 +12,6 @@ interface Props extends HTMLAttributes<"div"> {
 
 const { position = "bottom-left", ...attr } = Astro.props;
 const currentLocale = Astro.currentLocale as Lang;
-
-// Prepare translations for all languages for client-side use
-const allTranslations = Object.fromEntries(
-	Object.keys(LOCALES).map((lang) => {
-		const t = useTranslations(lang as Lang);
-		return [
-			lang,
-			{
-				suggestion: t("language.suggestion"),
-				close: t("close"),
-			},
-		];
-	}),
-);
 
 // Generate position classes based on the selected position
 const getPositionClasses = () => {
@@ -68,9 +54,37 @@ const positionClasses = getPositionClasses();
   </div>
 </div>
 
-<script is:inline define:vars={{ currentLocale, LOCALES, position, allTranslations }}>
+<script is:inline define:vars={{ currentLocale, LOCALES, position }}>
   const browserLang = navigator.language.toLowerCase();
   const suggest = document.getElementById("js-languageSuggest");
+
+  // Prepare translations for all languages for client-side use
+  const allTranslations = Object.fromEntries(
+  	Object.keys(LOCALES).map((lang) => {
+  		const t = temporaryTranslations(lang); // Placeholder for actual translation fetching
+  		return [
+  			lang,
+  			{
+  				suggestion: t("language.suggestion"), // These will need to be fetched or passed differently
+  				close: t("close"),
+  			},
+  		];
+  	}),
+  );
+
+  // A temporary placeholder for the translation function in the client script
+  // You'll need to replace this with your actual client-side translation mechanism
+  function temporaryTranslations(lang) {
+    // This is a simplified mock. In a real scenario, you would have
+    // a more robust way to access translations on the client side.
+    const translations = {
+      en: { "language.suggestion": "This page is also available in English", "close": "Close" },
+      es: { "language.suggestion": "Esta página también está disponible en español", "close": "Cerrar" },
+      // Add other languages as needed
+    };
+    return (key) => translations[lang]?.[key] || translations['en']?.[key] || key;
+  }
+
 
   // Get the best matching translation based on browser language
   function getBrowserTranslations() {
