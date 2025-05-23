@@ -2,6 +2,9 @@
 
 This document provides essential information for developers working on the Hatchgrid project.
 
+## Project Overview
+Hatchgrid is a Spring Boot application built with Kotlin and Gradle, providing a reactive backend infrastructure. The project uses modern Spring technologies including WebFlux, R2DBC, OAuth2, and follows a modular architecture approach with Spring Modulith.
+
 ## Build/Configuration Instructions
 
 ### Prerequisites
@@ -43,10 +46,10 @@ Spring Boot's Docker Compose support will automatically start the required conta
 #### Manual Docker Compose Commands
 ```bash
 # Start the database
-docker-compose up -d
+docker compose -f compose.yaml up -d
 
 # Stop the database
-docker-compose down
+docker compose -f compose.yaml down
 ```
 
 ### Database Migrations
@@ -105,6 +108,13 @@ You can add debug logging to your tests:
 println("[DEBUG_LOG] Your debug message here")
 ```
 
+### Testing Guidelines
+- Write unit tests for all business logic
+- Use Testcontainers for integration tests with real PostgreSQL instances
+- Prefer reactive testing utilities (StepVerifier, WebTestClient)
+- Follow BDD-style naming for test methods (should_doSomething_when_condition)
+- Maintain test coverage for critical components
+
 ### Known Issues
 There is a warning about Mockito's self-attaching mechanism that will need to be addressed in future JDK releases:
 ```
@@ -135,12 +145,13 @@ The project follows a hexagonal architecture pattern:
 - Docker Compose support
 - Testcontainers for integration testing
 
-### Code Style
-- Follow Kotlin coding conventions
-- Use functional programming patterns where appropriate
-- Use coroutines for asynchronous programming
-- Use extension functions to extend existing classes
-- Use data classes for simple data containers
+### Coding Conventions
+- Follow Kotlin coding conventions with 4-space indentation
+- Use functional and extension-based approaches where appropriate
+- Utilize Kotlin coroutines for asynchronous operations
+- Prefer immutability with `val` over `var`
+- Implement reactive patterns using Spring WebFlux and R2DBC
+- Document public APIs and complex functions with KDoc
 - Follow domain-driven design principles
 - Use value objects for domain concepts
 - Use CQRS pattern with commands and responses
@@ -159,3 +170,19 @@ The application includes Spring Boot Actuator endpoints for monitoring:
 - Health check: `/actuator/health`
 - Metrics: `/actuator/metrics`
 - Prometheus metrics: `/actuator/prometheus`
+
+## Common Development Tasks
+- Database schema changes should be added as Liquibase migrations
+- Security configurations should follow the principle of least privilege
+- REST endpoints should follow RESTful conventions
+- New modules should integrate with the Spring Modulith architecture
+
+## Best Practices
+- Include validation for all input data
+- Implement proper error handling with meaningful error messages
+- Configure appropriate logging at different levels
+- Use Spring's reactive patterns consistently
+- Follow the Single Responsibility Principle in class design
+- Utilize Spring Boot's auto-configuration capabilities when possible
+- Ensure proper security controls for all endpoints
+- Include monitoring endpoints via Spring Boot Actuator
