@@ -13,7 +13,8 @@
     "build:landing": "pnpm --filter @hatchgrid/landing-page build",
     "preview:landing": "pnpm --filter @hatchgrid/landing-page preview",
     "test": "pnpm --recursive run test",
-    "lint": "pnpm --recursive run lint",
+    "lint": "pnpm --recursive run check",
+    "check": "pnpm --recursive run check",
     "clean": "pnpm --recursive run clean",
     "backend:build": "./gradlew build",
     "backend:run": "./gradlew bootRun",
@@ -31,8 +32,8 @@
     ]
   },
   "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
+    "node": ">=22.0.0",
+    "pnpm": ">=10.0.0"
   },
   "packageManager": "pnpm@10.10.0",
   "devDependencies": {

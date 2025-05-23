@@ -5,8 +5,8 @@ import Layout from "@/layouts/Base.astro";
 const t = useTranslations(Astro.currentLocale as Lang);
 
 const title = t({
-  en: "Page Not Found",
-  es: "Página No Encontrada",
+	en: "Page Not Found",
+	es: "Página No Encontrada",
 });
 
 export const getStaticPaths = () => localeParams;
