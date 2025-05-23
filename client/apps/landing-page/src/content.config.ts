@@ -7,23 +7,23 @@ import {
 import { glob } from "astro/loaders";
 
 const articles = defineCollection({
-  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/data/articles" }),
-  schema: ({ image }: SchemaContext) =>
-      z.object({
-        title: z.string(),
-        description: z.string(),
-        date: z.coerce.date(),
-        lastModified: z.coerce
-        .date()
-        .optional()
-        .default(() => new Date()),
-        cover: image().optional(),
-        author: reference("authors"),
-        tags: z.array(reference("tags")),
-        category: reference("categories"),
-        draft: z.boolean().optional().default(false),
-        featured: z.boolean().optional().default(false),
-      }),
+	loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/data/articles" }),
+	schema: ({ image }: SchemaContext) =>
+		z.object({
+			title: z.string(),
+			description: z.string(),
+			date: z.coerce.date(),
+			lastModified: z.coerce
+				.date()
+				.optional()
+				.default(() => new Date()),
+			cover: image().optional(),
+			author: reference("authors"),
+			tags: z.array(reference("tags")),
+			category: reference("categories"),
+			draft: z.boolean().optional().default(false),
+			featured: z.boolean().optional().default(false),
+		}),
 });
 
 const tags = defineCollection({
@@ -49,13 +49,16 @@ const authors = defineCollection({
 		avatar: z.string(),
 		bio: z.string(),
 		location: z.string().optional(),
-		socials: z.array(
-			z.object({
-				name: z.string(),
-				url: z.string(),
-				icon: z.string(),
-			}),
-		).optional().default([]),
+		socials: z
+			.array(
+				z.object({
+					name: z.string(),
+					url: z.string(),
+					icon: z.string(),
+				}),
+			)
+			.optional()
+			.default([]),
 	}),
 });
 
