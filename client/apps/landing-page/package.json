@@ -1,54 +1,70 @@
 {
-	"name": "astro-i18n-cms-starter",
-	"description": "A starter for Astro with i18n support",
-	"version": "3.0.0",
-	"private": false,
-	"license": "Hatchgrid Custom License",
-	"homepage": "https://astro-cms-dpv.pages.dev/",
-	"engines": {
-		"node": ">=20"
-	},
-	"scripts": {
-		"update": "pnpm update",
-		"update-interactive": "pnpm update --interactive",
-		"dev": "astro dev",
-		"start": "astro dev --open",
-		"build": "astro check && astro build",
-		"preview": "astro preview",
-		"check": "astro check && biome check --write .",
-		"astro": "astro",
-		"test": "vitest run",
-		"test:watch": "vitest",
-		"structure": "npx --yes tree-extended -max=5 -max-show-not-empty -gitignore > docs/structure.md && echo '```' >> docs/structure.md && cat docs/structure.md | sed -i '' -e '1i\\\n```plaintext' docs/structure.md && echo '# Project Structure\n' | cat - docs/structure.md > temp && mv temp docs/structure.md"
-	},
-	"dependencies": {
-		"@astrojs/check": "^0.9.4",
-		"@astrojs/mdx": "^4.2.6",
-		"@astrojs/rss": "^4.0.11",
-		"@astrojs/sitemap": "^3.4.0",
-		"@astrojs/vue": "^5.0.13",
-		"@iconify-json/openmoji": "^1.2.9",
-		"@iconify-json/tabler": "^1.2.17",
-		"@tailwindcss/vite": "^4.1.6",
-		"@vueuse/core": "^13.2.0",
-		"astro": "^5.7.12",
-		"astro-icon": "^1.1.5",
-		"class-variance-authority": "^0.7.1",
-		"clsx": "^2.1.1",
-		"lucide-vue-next": "^0.511.0",
-		"reka-ui": "^2.2.1",
-		"tailwindcss": "^4.1.6",
-		"tw-animate-css": "^1.3.0",
-		"vue": "^3.5.14"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"@tailwindcss/typography": "^0.5.16",
-		"happy-dom": "^17.4.7",
-		"sharp": "^0.34.1",
-		"tailwind-merge": "^3.3.0",
-		"typescript": "^5.8.3",
-		"vitest": "^3.1.4"
-	},
-	"packageManager": "pnpm@10.11.0"
+  "name": "@hatchgrid/landing-page",
+  "description": "Hatchgrid landing page built with Astro and i18n support",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Hatchgrid Custom License",
+  "homepage": "https://hatchgrid.tech",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "packageManager": "pnpm@10.10.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dallay/hatchgrid.git",
+    "directory": "client/apps/landing-page",
+    "branch": "main"
+  },
+  "bugs": {
+    "url": "https://github.com/dallay/hatchgrid/issues"
+  },
+  "keywords": [
+    "hatchgrid",
+    "landing-page",
+    "astro"
+  ],
+  "author": "Hatchgrid Team",
+  "scripts": {
+    "update": "pnpm update",
+    "update-interactive": "pnpm update --interactive",
+    "dev": "astro dev",
+    "start": "astro dev --open",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "check": "astro check && biome check --write .",
+    "astro": "astro",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "structure": "npx --yes tree-extended -max=5 -max-show-not-empty -gitignore > docs/structure.md && echo '```' >> docs/structure.md && cat docs/structure.md | sed -i '' -e '1i\\\n```plaintext' docs/structure.md && echo '# Project Structure\n' | cat - docs/structure.md > temp && mv temp docs/structure.md"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/mdx": "^4.2.6",
+    "@astrojs/rss": "^4.0.11",
+    "@astrojs/sitemap": "^3.4.0",
+    "@astrojs/vue": "^5.0.13",
+    "@iconify-json/openmoji": "^1.2.9",
+    "@iconify-json/tabler": "^1.2.17",
+    "@tailwindcss/vite": "^4.1.6",
+    "@vueuse/core": "^13.2.0",
+    "astro": "^5.7.12",
+    "astro-icon": "^1.1.5",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^0.511.0",
+    "reka-ui": "^2.2.1",
+    "tailwindcss": "^4.1.6",
+    "tw-animate-css": "^1.3.0",
+    "vue": "^3.5.14"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@tailwindcss/typography": "^0.5.16",
+    "happy-dom": "^17.4.7",
+    "sharp": "^0.34.1",
+    "tailwind-merge": "^3.3.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
+  }
 }
