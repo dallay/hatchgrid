@@ -9,6 +9,7 @@
 		"ignoreUnknown": false,
 		"ignore": [
 			"node_modules",
+			"coverage",
 			".astro",
 			".cache",
 			".git",
@@ -17,7 +18,9 @@
 			"dist",
 			"out",
 			"public",
-			".vscode"
+			".vscode",
+			"src/styles/global.css",
+			"worker-configuration.d.ts"
 		]
 	},
 	"formatter": {

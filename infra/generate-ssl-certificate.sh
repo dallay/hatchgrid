@@ -1,37 +1,87 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Script: generate-ssl-certs.sh
+# Description: Interactive script to generate SSL certificates for development using mkcert,
+#              producing PEM and PKCS#12 keystore files.
+# Usage: Run without arguments and follow prompts.
 
-# Variables
-BASE_FOLDER="${1:-$(pwd)}"  # Use the first argument or the current directory if not provided
-SSL_FOLDER="$BASE_FOLDER/ssl"
+set -euo pipefail
 
-# Prompt for password if not set
-if [ -z "$SSL_KEYSTORE_PASSWORD" ]; then
-  read -sp "Enter keystore password (default 'changeme'): " PASSWORD_INPUT
-  echo
-  PASSWORD="${PASSWORD_INPUT:-changeme}"
-else
-  PASSWORD="$SSL_KEYSTORE_PASSWORD"
+# Default values
+default_domain="localhost"
+default_output_dir="./ssl"
+default_password="changeit"
+
+# Prompt helper
+prompt() {
+  local var_name="$1"
+  local prompt_text="$2"
+  local default_value="$3"
+  local is_password="$4"
+  local input=""
+
+  if [[ "$is_password" == "true" ]]; then
+    read -s -p "$prompt_text [$default_value]: " input
+    echo
+  else
+    read -p "$prompt_text [$default_value]: " input
+  fi
+
+  if [[ -z "$input" ]]; then
+    printf -v "$var_name" "%s" "$default_value"
+  else
+    printf -v "$var_name" "%s" "$input"
+  fi
+}
+
+# Interactive prompts
+echo "⚙️  SSL Certificate Generation Interactive Setup"
+prompt DOMAIN "Enter the domain for the cert" "$default_domain" false
+prompt OUTPUT_DIR "Enter output directory for certificates" "$default_output_dir" false
+prompt PASSWORD "Enter PKCS12 keystore password" "$default_password" true
+
+# Prepare output directory
+mkdir -p "$OUTPUT_DIR"
+
+# Check mkcert
+if ! command -v mkcert &> /dev/null; then
+  echo "💥 Error: mkcert is not installed. Install mkcert first: https://github.com/FiloSottile/mkcert" >&2
+  exit 1
 fi
 
-echo "🔐 Generating SSL certificate and key for the application"
-
-# Create the SSL directory if it does not exist
-mkdir -p "$SSL_FOLDER"
-
-# Install mkcert and generate the key and certificate files
+# Install local CA if needed
+echo "🔐 Installing or verifying local CA..."
 mkcert -install
-mkcert -key-file "$SSL_FOLDER/key.pem" -cert-file "$SSL_FOLDER/cert.pem" example.com "*.example.com" example.test localhost 127.0.0.1 ::1
 
-# Generate the PKCS12 file (keystore.p12) for the Java application
-openssl pkcs12 -export -in "$SSL_FOLDER/cert.pem" -inkey "$SSL_FOLDER/key.pem" -out "$SSL_FOLDER/keystore.p12" -name "server" -password pass:"$PASSWORD"
+# Generate PEM certificate and key
+echo "🛠 Generating PEM certificate and key for '$DOMAIN'..."
+mkcert -cert-file "$OUTPUT_DIR/$DOMAIN.pem" -key-file "$OUTPUT_DIR/$DOMAIN-key.pem" "$DOMAIN"
 
-# (Optional) Convert PKCS12 to JKS if needed for the Java application
-keytool -importkeystore \
-  -deststorepass "$PASSWORD" -destkeypass "$PASSWORD" -destkeystore "$SSL_FOLDER/keystore.jks" \
-  -srckeystore "$SSL_FOLDER/keystore.p12" -srcstoretype PKCS12 -srcstorepass "$PASSWORD" \
-  -alias "server" -noprompt
+# Create PKCS#12 keystore with custom password
+echo "🔑 Creating PKCS#12 keystore with provided password..."
+openssl pkcs12 -export \
+  -in "$OUTPUT_DIR/$DOMAIN.pem" \
+  -inkey "$OUTPUT_DIR/$DOMAIN-key.pem" \
+  -out "$OUTPUT_DIR/$DOMAIN.p12" \
+  -name "server" \
+  -password pass:"$PASSWORD"
 
-echo "🟢 PKCS12 file created and moved to $SSL_FOLDER"
-echo "🟢 JKS file created and moved to $SSL_FOLDER (if needed)"
-echo "🟢 Certificate and key saved as $SSL_FOLDER/cert.pem and $SSL_FOLDER/key.pem"
-echo "🔑 Keystore password: $PASSWORD"
+# Summary
+echo -e "\n✅ SSL certificate generation complete!\n"
+echo "Files in $OUTPUT_DIR:"
+echo "  - $DOMAIN.pem       (Certificate)"
+echo "  - $DOMAIN-key.pem   (Private Key)"
+echo "  - $DOMAIN.p12       (PKCS#12 Keystore)"
+
+echo -e "\nNext steps:\n"
+echo "• Use the files in the output directory for your Spring Boot and Keycloak configurations."
+echo "• Example Spring Boot application.properties snippet (adjust classpath or filepath as needed):"
+echo "    server.port=8443"
+echo "    server.ssl.key-store=classpath:ssl/$DOMAIN.p12  # or file:/path/to/ssl/$DOMAIN.p12"  \
+     "server.ssl.key-store-password=$PASSWORD  server.ssl.key-store-type=PKCS12"
+
+echo -e "\n• Example Keycloak Docker run (mount the same directory):"
+echo "    docker run -p 8443:8443 \\" \
+     "-v \\$(pwd)/ssl/$DOMAIN.pem:/etc/x509/https/tls.crt \\" \
+     "-v \\$(pwd)/ssl/$DOMAIN-key.pem:/etc/x509/https/tls.key \\" \
+     "-e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin \\" \
+     "quay.io/keycloak/keycloak:latest start --https-port=8443"

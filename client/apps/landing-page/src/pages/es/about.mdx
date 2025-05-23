@@ -1,0 +1,40 @@
+---
+layout: "@/layouts/Page.astro"
+title: "Acerca de Hatchgrid"
+description: "Descubre qué es Hatchgrid, tu plataforma de servicios de infraestructura backend (MVP)."
+---
+import PageHeadline from "@/components/PageHeadline.astro";
+import Waitlist from "@/components/Waitlist.astro";
+import { SITE_TITLE } from "@/consts";
+
+<PageHeadline title={frontmatter.title} />
+
+## ¿Qué es Hatchgrid?
+
+Hatchgrid es una plataforma actualmente en desarrollo, enfocada en proveer servicios de infraestructura backend. Como Producto Mínimo Viable (MVP), nuestro objetivo principal es entregar funcionalidades esenciales y recoger feedback para futuras mejoras.
+
+Estamos construyendo Hatchgrid para simplificar el desarrollo backend y empoderar a los desarrolladores para construir y escalar aplicaciones de manera más eficiente.
+
+## Nuestro Enfoque (MVP)
+
+Para nuestro MVP, nos estamos concentrando en:
+
+- Proveer servicios backend esenciales.
+- Asegurar una base de plataforma estable y confiable.
+- Recoger el feedback de los usuarios para guiar nuestro roadmap de desarrollo.
+
+Estamos emocionados de compartir nuestro progreso y evolucionar Hatchgrid basándonos en las necesidades de nuestros primeros usuarios.
+
+## Mantente Actualizado
+
+Mientras estamos en las etapas iniciales, te animamos a unirte a nuestra lista de espera para recibir actualizaciones sobre nuestro desarrollo, próximas funcionalidades y cuándo podrás empezar a usar Hatchgrid.
+
+Tu interés temprano y feedback son invaluables para nosotros mientras construimos una plataforma adaptada a las necesidades de los desarrolladores.
+
+<div class="not-prose border-t border-t-main-light dark:border-t-main-dark">
+	<Waitlist
+									formId="about-cta-lista-espera-form"
+									title="Únete a nuestra Lista de Espera"
+									description="Sé el primero en conocer el progreso de Hatchgrid, lanzamientos de funcionalidades y cuándo podrás acceder a la plataforma."
+									/>
+</div>

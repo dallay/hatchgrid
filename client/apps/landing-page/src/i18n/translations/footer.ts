@@ -21,7 +21,7 @@ export const footer: {
 		"footer.privacyPolicy": "Privacy Policy",
 		"footer.aria.privacyPolicy": "Read our privacy policy",
 		"footer.termsOfUse": "Terms of Use",
-		"footer.aria.termsOfUse": "Read our terms of use"
+		"footer.aria.termsOfUse": "Read our terms of use",
 	},
 	es: {
 		// Footer navigation items
@@ -40,6 +40,6 @@ export const footer: {
 		"footer.privacyPolicy": "Política de Privacidad",
 		"footer.aria.privacyPolicy": "Lee nuestra política de privacidad",
 		"footer.termsOfUse": "Términos de Uso",
-		"footer.aria.termsOfUse": "Lee nuestros términos de uso"
+		"footer.aria.termsOfUse": "Lee nuestros términos de uso",
 	},
 };

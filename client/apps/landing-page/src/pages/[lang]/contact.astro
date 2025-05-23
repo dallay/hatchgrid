@@ -1,10 +1,10 @@
 ---
+import Footer from "@/components/Footer.astro";
 import { LOCALES, type Lang, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Base.astro";
-import Footer from "@/components/Footer.astro";
 
-const t = useTranslations(Astro.currentLocale as Lang);
 const locale = Astro.currentLocale as Lang;
+const t = useTranslations(locale);
 
 export const getStaticPaths = () =>
 	Object.keys(LOCALES).map((lang) => ({

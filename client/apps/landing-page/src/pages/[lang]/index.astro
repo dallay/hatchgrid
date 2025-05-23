@@ -1,15 +1,15 @@
 ---
+import CTA from "@/components/CTA.astro";
+import FAQ from "@/components/FAQ.astro";
+import Feature from "@/components/Feature.astro";
+import Footer from "@/components/Footer.astro";
+import Hero from "@/components/Hero.astro";
+import Pricing from "@/components/Pricing.astro";
 import { LOCALES, type Lang, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Base.astro";
-import Hero from "@/components/Hero.astro";
-import Footer from "@/components/Footer.astro";
-import Feature from "@/components/Feature.astro";
-import CTA from "@/components/CTA.astro";
-import Pricing from "@/components/Pricing.astro";
-import FAQ from "@/components/FAQ.astro";
-const t = useTranslations(Astro.currentLocale as Lang);
 
 const locale = Astro.currentLocale as Lang;
+const t = useTranslations(locale);
 
 export const getStaticPaths = () =>
 	Object.keys(LOCALES).map((lang) => ({

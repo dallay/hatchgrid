@@ -1,3 +1,118 @@
+server:
+  port: 8443
+  ssl:
+    bundle: "web-server"
+    enabled: true
+    ciphers: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 ,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 ,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 ,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA,TLS_RSA_WITH_CAMELLIA_256_CBC_SHA,TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA,TLS_RSA_WITH_CAMELLIA_128_CBC_SHA
+logging:
+  level:
+    org.springframework.r2dbc: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2.client: DEBUG
+    com.hatchgrid: DEBUG
+  pattern:
+    console: "%d{dd-MM-yyyy HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
 spring:
+  liquibase:
+    change-log: classpath:db/changelog/master.xml
+    enabled: true
   application:
-    name: Hatchgrid
+    name: ${application.name}
+  main:
+    allow-bean-definition-overriding: true
+  ssl:
+    bundle:
+      pem:
+        keycloak:
+          reload-on-update: true
+          truststore:
+            certificate: ${SSL_CERTIFICATE:file:infra/ssl/localhost.pem}
+      jks:
+        web-server:
+          key:
+            alias: "server"
+            password: ${SSL_KEYSTORE_PASSWORD:S3cr3tP@ssw0rd*123}
+          keystore:
+            location: ${SSL_KEYSTORE_LOCATION:file:infra/ssl/localhost.p12}
+            password: ${SSL_KEYSTORE_PASSWORD:S3cr3tP@ssw0rd*123}
+            type: "PKCS12"
+  security:
+    oauth2:
+      client:
+        registration:
+          oidc:
+            client-secret: ${application.security.oauth2.client-secret}
+            client-id: ${application.security.oauth2.client-id}
+            scope: openid,profile,email
+        provider:
+          oidc:
+            issuer-uri: ${application.security.oauth2.issuer-uri}
+        resourceserver:
+          jwt:
+            audiences: ${application.security.oauth2.audience}
+            jwk-set-uri: ${application.security.oauth2.issuer-uri}/protocol/openid-connect/certs
+  r2dbc:
+    url: ${DATABASE_URL:r2dbc:postgresql://localhost:5432/postgres}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+    pool:
+      enabled: true
+      initial-size: 10
+      max-size: 20
+  jpa:
+    show-sql: true
+    hibernate.ddl-auto: none
+  cache:
+    caffeine:
+      caches:
+        linkPreviews:
+          spec: maximumSize=500,expireAfterWrite=5m
+application:
+  name: hatchgrid
+  description: Hatchgrid is the future of newsletter creation and social media management. It's an app that uses AI to help you create newsletters and manage social media.
+  version: 0.0.1-SNAPSHOT
+  security:
+    oauth2:
+      base-url: ${OAUTH2_SERVER_URL:https://localhost:6443}
+      server-url: ${application.security.oauth2.base-url}
+      issuer-uri: ${application.security.oauth2.base-url}/realms/${application.security.oauth2.realm}
+      realm: ${REALM:hatchgrid}
+      client-id: ${CLIENT_ID:web_app}
+      client-secret: ${CLIENT_SECRET:web_app}
+      admin-client-id: ${ADMIN_CLIENT_ID:admin-cli}
+      admin-realm: ${ADMIN_REALM:master}
+      admin-username: ${ADMIN_REALM_USERNAME:admin}
+      admin-password: ${ADMIN_REALM_PASSWORD:secret}
+      audience:
+        - account
+        - api://default
+    cors:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173, https://localhost:5173, http://localhost:3000, https://localhost:3000}
+      allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+      allowed-headers: ${CORS_ALLOWED_HEADERS:Authorization,Content-Type,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers, X-Requested-With, X-Xsrf-Token, X-New-Header}
+      exposed-headers: ${CORS_EXPOSED_HEADERS:Access-Control-Allow-Origin,Access-Control-Allow-Credentials}
+      allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
+      max-age: ${CORS_MAX_AGE:3600}
+    domain: ${HOSTNAME:localhost}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health, beans, openapi, swagger-ui
+notification:
+  email:
+    sendgrid-api-key: ${SENDGRID_API_KEY:WILL_BE_REPLACED}
+springdoc:
+  show-actuator: true
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /api-docs
+    csrf:
+      enabled: true
+    oauth:
+      app-name: ${application.name}
+      client-id: ${application.security.oauth2.client-id}
+      client-secret: ${application.security.oauth2.client-secret}

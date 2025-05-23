@@ -1,19 +1,16 @@
 package com.hatchgrid.thryve
 
+import com.hatchgrid.UnitTest
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
+import kotlin.test.assertEquals
 
-@Import(TestcontainersConfiguration::class)
-@SpringBootTest
+@UnitTest
 class ExampleTest {
 
     @Test
-    fun `simple addition test`() {
+    fun simpleAdditionTest() {
         // A simple test to demonstrate testing
         val result = 2 + 2
         assertEquals(4, result, "2 + 2 should equal 4")
-        println("[DEBUG_LOG] Simple addition test passed: 2 + 2 = ${result}")
     }
 }

@@ -1,30 +1,30 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu'
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import {
+	NavigationMenu,
+	NavigationMenuContent,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList,
+	NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from "@/components/ui/sheet";
 import { Menu } from "lucide-vue-next"; // Assuming lucide-vue-next is installed
+import { ref } from "vue";
 
-import type { MenuItem } from '@/models/menu/menu.type';
-import { useTranslations, useTranslatedPath, type Lang } from '@/i18n';
+import { type Lang, useTranslatedPath, useTranslations } from "@/i18n";
+import type { MenuItem } from "@/models/menu/menu.type";
 
 const props = defineProps<{
-  menuItems: MenuItem[];
-  lang: Lang;
-  currentPath: string;
+	menuItems: MenuItem[];
+	lang: Lang;
+	currentPath: string;
 }>();
 
 const t = useTranslations(props.lang);
@@ -33,7 +33,9 @@ const translatePath = useTranslatedPath(props.lang);
 const isMobileMenuOpen = ref(false);
 
 const getLinkClass = (href: string) => {
-  return props.currentPath === translatePath(href) ? 'text-primary-700 dark:text-primary-400 font-semibold' : '';
+	return props.currentPath === translatePath(href)
+		? "text-primary-700 dark:text-primary-400 font-semibold"
+		: "";
 };
 </script>
 
