@@ -13,8 +13,11 @@ logging:
   pattern:
     console: "%d{dd-MM-yyyy HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
 spring:
+  docker:
+    compose:
+      enabled: false
   liquibase:
-    change-log: classpath:db/changelog/master.xml
+    change-log: classpath:db/changelog/db.changelog-master.yaml
     enabled: true
   application:
     name: ${application.name}
@@ -26,15 +29,15 @@ spring:
         keycloak:
           reload-on-update: true
           truststore:
-            certificate: ${SSL_CERTIFICATE:file:infra/ssl/localhost.pem}
+            certificate: ${SSL_CERTIFICATE:file:/app/infra/ssl/localhost.pem}
       jks:
         web-server:
           key:
             alias: "server"
-            password: ${SSL_KEYSTORE_PASSWORD:S3cr3tP@ssw0rd*123}
+            password: ${SSL_KEYSTORE_PASSWORD:changeit}
           keystore:
-            location: ${SSL_KEYSTORE_LOCATION:file:infra/ssl/localhost.p12}
-            password: ${SSL_KEYSTORE_PASSWORD:S3cr3tP@ssw0rd*123}
+            location: ${SSL_KEYSTORE_LOCATION:file:/app/infra/ssl/localhost.p12}
+            password: ${SSL_KEYSTORE_PASSWORD:changeit}
             type: "PKCS12"
   security:
     oauth2:
