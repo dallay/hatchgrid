@@ -150,7 +150,7 @@ class KeycloakRepositoryTest {
         email: String = faker.internet().emailAddress(),
         firstName: String = faker.name().firstName(),
         lastName: String = faker.name().lastName(),
-        password: String = faker.internet().password(8, 80, true, true, true),
+        password: String = faker.internet().password(8, 80, true, true, true) + "!",
     ): User = User.create(email, firstName, lastName, password)
 
     private fun createUserRepresentation(user: User): UserRepresentation {
