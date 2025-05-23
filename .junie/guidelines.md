@@ -79,7 +79,7 @@ Tests that require a database use Testcontainers to automatically spin up a Post
 
 ### Adding New Tests
 1. Create a new test class in the `src/test/kotlin/com/hatchgrid/thryve` directory
-2. Annotate the class with `@SpringBootTest` and `@Import(TestcontainersConfiguration::class)` for integration tests
+2. Annotate the class with `@UnitTest` for unit tests or `@IntegrationTest` for integration tests
 3. Add test methods annotated with `@Test`
 
 ### Example Test
@@ -87,12 +87,11 @@ Here's a simple example test:
 
 ```kotlin
 // File: src/test/kotlin/com/hatchgrid/thryve/ExampleTest.kt
-@Import(TestcontainersConfiguration::class)
-@SpringBootTest
+@UnitTest
 class ExampleTest {
 
     @Test
-    fun `simple addition test`() {
+    fun simpleAdditionTest() {
         // A simple test to demonstrate testing
         val result = 2 + 2
         assertEquals(4, result, "2 + 2 should equal 4")
@@ -115,7 +114,11 @@ Mockito is currently self-attaching to enable the inline-mock-maker. This will n
 ## Additional Development Information
 
 ### Project Structure
-- `src/main/kotlin` - Kotlin source files
+The project follows a hexagonal architecture pattern:
+- `src/main/kotlin/com/hatchgrid/thryve` - Main application code
+  - `application` - Application services and use cases
+  - `domain` - Domain models and business logic
+  - `infrastructure` - External dependencies and adapters
 - `src/main/resources` - Configuration files and resources
 - `src/test/kotlin` - Test source files
 - `src/main/resources/db/changelog` - Liquibase database migration files
@@ -138,6 +141,12 @@ Mockito is currently self-attaching to enable the inline-mock-maker. This will n
 - Use coroutines for asynchronous programming
 - Use extension functions to extend existing classes
 - Use data classes for simple data containers
+- Follow domain-driven design principles
+- Use value objects for domain concepts
+- Use CQRS pattern with commands and responses
+- Use event-driven architecture with event publishing
+- Proper error handling with specific exceptions
+- Logging with SLF4J
 
 ### API Documentation
 API documentation is generated using Spring REST Docs and is available at:
