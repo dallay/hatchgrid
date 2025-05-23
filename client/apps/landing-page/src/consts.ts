@@ -20,5 +20,5 @@ export const NOT_TRANSLATED_CAUTION: string | Multilingual = {
 
 // Base URLs
 const BASE_URL_LOCAL = "http://localhost:4321";
-const BASE_URL_PROD = "https://astro-cms-dpv.pages.dev";
+const BASE_URL_PROD = "https://hatchgrid.pages.dev";
 export const BASE_URL = import.meta.env.DEV ? BASE_URL_LOCAL : BASE_URL_PROD;

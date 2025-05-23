@@ -12,7 +12,7 @@ import vue from "@astrojs/vue";
 // https://astro.build/config
 export default defineConfig({
 	// Set your site's URL
-	site: "https://astro-cms-dpv.pages.dev",
+	site: "https://hatchgrid.pages.dev",
 
 	i18n: {
 		defaultLocale: DEFAULT_LOCALE_SETTING,
