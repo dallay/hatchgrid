@@ -39,8 +39,8 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "concurrently": "^9.1.2",
-    "vite": "^5.4.19",
-    "vitest": "^2.1.9"
+    "vite": "^6.3.5",
+    "vitest": "^3.1.4"
   },
   "keywords": [
     "hatchgrid",
