@@ -1,0 +1,34 @@
+---
+import {
+	type LocalImageProps,
+	Picture,
+	type RemoteImageProps,
+} from "astro:assets";
+import type { ImageOutputFormat } from "astro";
+import type { HTMLAttributes } from "astro/types";
+
+type Props = (LocalImageProps | RemoteImageProps) & {
+	formats?: ImageOutputFormat[];
+	fallbackFormat?: ImageOutputFormat;
+	pictureAttributes?: HTMLAttributes<"picture">;
+	class?: string | null;
+};
+
+const {
+	formats = ["avif", "webp"],
+	fallbackFormat = "avif",
+	loading = "lazy",
+	fetchpriority = "auto",
+	class: className = "mx-auto w-full max-w-full rounded-lg",
+	...props
+} = Astro.props;
+---
+<Picture
+    {...props}
+    formats={formats}
+    fallbackFormat={fallbackFormat}
+    loading={loading}
+    fetchpriority={fetchpriority}
+		class={className}
+    inferSize
+  />

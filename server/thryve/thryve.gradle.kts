@@ -1,11 +1,8 @@
-import org.springframework.cloud.contract.verifier.config.TestMode
-
 plugins {
     id("app.spring.boot.convention")
     kotlin("jvm").version(libs.versions.kotlin)
     kotlin("plugin.spring").version(libs.versions.kotlin)
     alias(libs.plugins.gradle.git.properties)
-    id("org.springframework.cloud.contract") version "4.2.1"
     id("org.asciidoctor.jvm.convert") version "4.0.4"
 }
 
@@ -29,57 +26,78 @@ repositories {
 }
 
 extra["snippetsDir"] = file("build/generated-snippets")
-extra["springBootAdminVersion"] = "3.4.5"
 extra["springCloudVersion"] = "2024.0.1"
 extra["springModulithVersion"] = "1.3.5"
 
 dependencies {
+    // L O C A L   D E P E N D E N C I E S
+    implementation(project(":shared:common"))
+    implementation(project(":shared:spring-boot-common"))
+
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("org.springframework.boot:spring-boot-starter-mail")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-authorization-server")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    // SECURITY DEPENDENCIES
+    implementation("org.springframework.security:spring-security-oauth2-client")
+    implementation("org.springframework.security:spring-security-oauth2-jose")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-security")
+
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("de.codecentric:spring-boot-admin-starter-client")
-    implementation("de.codecentric:spring-boot-admin-starter-server")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.liquibase:liquibase-core")
     implementation("org.springframework:spring-jdbc")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
+
+    implementation("org.springframework:spring-r2dbc")
+    implementation("org.springframework.data:spring-data-r2dbc")
+
+    implementation("com.github.ben-manes.caffeine:caffeine")
+
+    implementation(libs.bundles.kotlin.jvm)
+    implementation(libs.commons.text)
+
+    implementation(libs.spring.dotenv)
+    implementation(libs.sendgrid)
+    implementation(libs.bundles.keycloak)
+    implementation(libs.jsoup)
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
-    runtimeOnly("org.postgresql:postgresql")
+
+    runtimeOnly("org.postgresql:postgresql:42.7.3")
     runtimeOnly("org.postgresql:r2dbc-postgresql")
     runtimeOnly("org.springframework.modulith:spring-modulith-actuator")
     runtimeOnly("org.springframework.modulith:spring-modulith-observability")
+
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("io.rest-assured:spring-web-test-client")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
-    testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier")
     testImplementation("org.springframework.modulith:spring-modulith-starter-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-webtestclient")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
     testImplementation("org.testcontainers:r2dbc")
+    testImplementation(libs.faker)
+    testImplementation(libs.mockk)
+    testImplementation("com.tngtech.archunit:archunit:1.3.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 dependencyManagement {
     imports {
-        mavenBom("de.codecentric:spring-boot-admin-dependencies:${property("springBootAdminVersion")}")
         mavenBom("org.springframework.modulith:spring-modulith-bom:${property("springModulithVersion")}")
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
     }
@@ -91,15 +109,7 @@ kotlin {
     }
 }
 
-contracts {
-    testMode = TestMode.WEBTESTCLIENT
-}
-
 tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
-tasks.contractTest {
     useJUnitPlatform()
 }
 

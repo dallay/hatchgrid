@@ -1,5 +1,10 @@
 packages:
-  - client/*
+  - client/apps/*
+  - client/packages/*
+  - client/config
 onlyBuiltDependencies:
+  - '@biomejs/biome'
+  - '@tailwindcss/oxide'
   - esbuild
   - sharp
+  - vue-demi

@@ -1,0 +1,136 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+        default: 'development'
+        required: true
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/backend-ci.yml'
+      - '.github/workflows/frontend-ci.yml'
+      - '.github/workflows/monorepo-ci.yml'
+    tags:
+      - 'v*'
+
+concurrency:
+  group: deploy-${{ github.ref_name }}-${{ inputs.environment || 'development' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  determine-environment:
+    name: Determine Environment
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.set-env.outputs.environment }}
+    steps:
+      - id: set-env
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+          else
+            echo "environment=development" >> $GITHUB_OUTPUT
+          fi
+
+  build-backend:
+    name: Build Backend
+    needs: determine-environment
+    runs-on: ubuntu-latest
+    environment: ${{ needs.determine-environment.outputs.environment }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: ./.github/actions/setup-java
+
+      - name: Build with Gradle
+        run: ./gradlew :server:thryve:bootJar
+
+      - name: Build and push Docker image
+        uses: ./.github/actions/docker-build-push
+        with:
+          image-name: backend
+          dockerfile: ./server/thryve/Dockerfile
+          context: .
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  build-frontend:
+    name: Build Frontend
+    needs: determine-environment
+    runs-on: ubuntu-latest
+    environment: ${{ needs.determine-environment.outputs.environment }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node
+
+      - name: Build
+        run: pnpm build
+        env:
+          NODE_ENV: production
+
+      - name: Build and push Docker image
+        uses: ./.github/actions/docker-build-push
+        with:
+          image-name: frontend
+          dockerfile: ./client/Dockerfile
+          context: .
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    name: Deploy
+    needs: [determine-environment, build-backend, build-frontend]
+    runs-on: ubuntu-latest
+    environment: ${{ needs.determine-environment.outputs.environment }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@901a10e89ea615cf61f57ac05cecdf23e7de06d8 # v3.2
+
+      - name: Set Kubernetes context
+        uses: azure/k8s-set-context@38d6bc72e5877b8eb640e995218d42b8fedf1a47 # v3.1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          context: ${{ needs.determine-environment.outputs.environment }}
+
+      - name: Deploy to Kubernetes
+        run: |
+          # Update image tags in Kubernetes manifests
+          BACKEND_IMAGE_TAG=$(echo ${{ github.sha }} | cut -c1-7)
+          FRONTEND_IMAGE_TAG=$(echo ${{ github.sha }} | cut -c1-7)
+
+          # Replace image tags in Kubernetes manifests
+          sed -i "s|image: ghcr.io/${{ github.repository }}/backend:.*|image: ghcr.io/${{ github.repository }}/backend:sha-$BACKEND_IMAGE_TAG|g" ./infra/kubernetes/${{ needs.determine-environment.outputs.environment }}/backend-deployment.yaml
+          sed -i "s|image: ghcr.io/${{ github.repository }}/frontend:.*|image: ghcr.io/${{ github.repository }}/frontend:sha-$FRONTEND_IMAGE_TAG|g" ./infra/kubernetes/${{ needs.determine-environment.outputs.environment }}/frontend-deployment.yaml
+
+          # Apply Kubernetes manifests
+          kubectl apply -f ./infra/kubernetes/${{ needs.determine-environment.outputs.environment }}/
+
+          # Wait for deployments to be ready
+          kubectl rollout status deployment/backend -n ${{ needs.determine-environment.outputs.environment }}
+          kubectl rollout status deployment/frontend -n ${{ needs.determine-environment.outputs.environment }}

@@ -3,7 +3,36 @@
   "version": "1.0.0",
   "description": "Hatchgrid Monorepo",
   "private": true,
+  "license": "Hatchgrid Custom License",
+  "homepage": "https://hatchgrid.tech",
+  "author": "Hatchgrid Team",
+  "keywords": [
+    "hatchgrid",
+    "monorepo"
+  ],
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "packageManager": "pnpm@10.10.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dallay/hatchgrid.git",
+    "branch": "main"
+  },
+  "bugs": {
+    "url": "https://github.com/dallay/hatchgrid/issues"
+  },
+  "workspaces": {
+    "packages": [
+      "client/apps/*",
+      "client/packages/*",
+      "client/config"
+    ]
+  },
   "scripts": {
+    "update-deps": "pnpm update -i -r --latest",
+    "preinstall": "npx only-allow pnpm",
     "prepare": "husky install || echo 'Skipping husky install'",
     "dev": "pnpm --recursive --parallel run dev",
     "dev:landing": "pnpm --filter @hatchgrid/landing-page dev",
@@ -11,7 +40,8 @@
     "build:landing": "pnpm --filter @hatchgrid/landing-page build",
     "preview:landing": "pnpm --filter @hatchgrid/landing-page preview",
     "test": "pnpm --recursive run test",
-    "lint": "pnpm --recursive run lint",
+    "lint": "pnpm --recursive run check",
+    "check": "pnpm --recursive run check",
     "clean": "pnpm --recursive run clean",
     "backend:build": "./gradlew build",
     "backend:run": "./gradlew bootRun",
@@ -21,24 +51,10 @@
     "check-updates": "pnpm --recursive exec -- pnpm outdated",
     "test:all": "pnpm backend:test && pnpm test"
   },
-  "workspaces": {
-    "packages": [
-      "client/*"
-    ]
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
-  },
-  "packageManager": "pnpm@10.10.0",
   "devDependencies": {
-    "husky": "^8.0.3",
-    "concurrently": "^9.1.2"
-  },
-  "keywords": [
-    "hatchgrid",
-    "monorepo"
-  ],
-  "author": "Hatchgrid Team",
-  "license": "Hatchgrid Custom License"
+    "husky": "^9.1.7",
+    "concurrently": "^9.1.2",
+    "vite": "^6.3.5",
+    "vitest": "^3.1.4"
+  }
 }

@@ -1,0 +1,73 @@
+---
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import PageHeadline from "@/components/PageHeadline.astro";
+import { LOCALES, type Lang, useTranslations } from "@/i18n";
+import Layout from "@/layouts/Base.astro";
+
+const locale = Astro.currentLocale as Lang;
+const t = useTranslations(locale);
+
+const posts = (await getCollection("articles"))
+	.filter((post) => post.id.split("/")[0] === locale)
+	.sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
+
+const title = t({
+	en: "Blog",
+	es: "Blog",
+});
+
+export const getStaticPaths = () =>
+	Object.keys(LOCALES).map((lang) => ({
+		params: { lang },
+	}));
+---
+
+<Layout {title}>
+  <PageHeadline {title} />
+
+  <p class="mt-4">
+    {
+      t({
+        en: "A sample for managing blog or news content. It uses Astro's content collection.",
+        es: "Un ejemplo para gestionar contenido de blog o noticias. Utiliza la colección de contenido de Astro.",
+      })
+    }
+  </p>
+
+  <p class="mt-4">
+    <a
+      href={`https://docs.astro.build/${Astro.currentLocale}/guides/content-collections/`}
+      target="_blank"
+      class="inline-flex items-center text-blue-600 hover:underline"
+    >
+      Content Collection | Astro Docs
+      <span class="material-icons-sharp ml-1"> open_in_new </span>
+    </a>
+  </p>
+
+  <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      posts.map((post) => {
+        const [, ...id] = post.id.split("/");
+        return (
+          <li class="mb-4">
+            <a
+              href={`/${locale}/blog/${id.join("/")}/`}
+              class="block rounded-lg border border-gray-200 p-4 shadow-sm transition hover:shadow-lg dark:border-gray-700 dark:hover:shadow-lg-dark"
+            >
+              {post.data.cover && (
+                <Image
+                  src={post.data.cover}
+                  alt={post.data.title}
+                  class="mb-2 h-48 w-full rounded-md object-cover"
+                />
+              )}
+              <h2 class="text-xl font-semibold">{post.data.title}</h2>
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</Layout>

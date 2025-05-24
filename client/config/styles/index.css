@@ -1,0 +1,11 @@
+/**
+ * Main CSS entry point for Hatchgrid.tech
+ *
+ * This file imports and re-exports all other CSS files in the project
+ * in the correct cascade order.
+ */
+
+/* Import global styles first (includes Tailwind) */
+@import "./global.css";
+
+/* Additional CSS imports can be added here */
