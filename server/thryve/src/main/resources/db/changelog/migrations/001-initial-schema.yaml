@@ -2,6 +2,13 @@ databaseChangeLog:
   - changeSet:
       id: 001-initial-schema
       author: hatchgrid
+      rollback:
+        - dropTable:
+            tableName: user_roles
+        - dropTable:
+            tableName: roles
+        - dropTable:
+            tableName: users
       comment: Create initial database schema
 
       # Users table
