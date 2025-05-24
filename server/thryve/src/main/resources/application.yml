@@ -14,7 +14,7 @@ logging:
     console: "%d{dd-MM-yyyy HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
 spring:
   liquibase:
-    change-log: classpath:db/changelog/master.xml
+    change-log: classpath:db/changelog/master.yaml
     enabled: true
   application:
     name: ${application.name}

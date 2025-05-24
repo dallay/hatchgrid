@@ -1,0 +1,208 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-initial-schema
+      author: hatchgrid
+      rollback:
+        - dropTable:
+            tableName: user_roles
+        - dropTable:
+            tableName: roles
+        - dropTable:
+            tableName: users
+      comment: Create initial database schema
+
+      # Users table
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(100)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password_hash
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(50)
+              - column:
+                  name: last_name
+                  type: varchar(50)
+              - column:
+                  name: activated
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: activation_key
+                  type: varchar(20)
+              - column:
+                  name: reset_key
+                  type: varchar(20)
+              - column:
+                  name: reset_date
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: varchar(50)
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+
+        # Roles table
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: created_by
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: varchar(50)
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+
+        # User roles junction table
+        - createTable:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+        # Primary key for user_roles
+        - addPrimaryKey:
+            tableName: user_roles
+            columnNames: user_id, role_id
+
+        # Foreign keys
+        - addForeignKeyConstraint:
+            baseTableName: user_roles
+            baseColumnNames: user_id
+            constraintName: fk_user_roles_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: user_roles
+            baseColumnNames: role_id
+            constraintName: fk_user_roles_role_id
+            referencedTableName: roles
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        # Indexes
+        - createIndex:
+            indexName: idx_users_username
+            tableName: users
+            columns:
+              - column:
+                  name: username
+
+        - createIndex:
+            indexName: idx_users_email
+            tableName: users
+            columns:
+              - column:
+                  name: email
+
+        - createIndex:
+            indexName: idx_roles_name
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+
+        # Insert default roles
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+              - column:
+                  name: name
+                  value: ROLE_ADMIN
+              - column:
+                  name: description
+                  value: Administrator role
+              - column:
+                  name: created_by
+                  value: system
+
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12
+              - column:
+                  name: name
+                  value: ROLE_USER
+              - column:
+                  name: description
+                  value: Regular user role
+              - column:
+                  name: created_by
+                  value: system
