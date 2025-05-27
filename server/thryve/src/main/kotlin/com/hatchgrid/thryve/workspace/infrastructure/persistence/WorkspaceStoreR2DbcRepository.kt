@@ -6,7 +6,6 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceException
 import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
-import com.hatchgrid.thryve.workspace.domain.WorkspaceStoreException
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toDomain
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toEntity
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceR2dbcRepository
@@ -32,7 +31,7 @@ class WorkspaceStoreR2DbcRepository(
             workspaceRepository.save(workspace.toEntity())
         } catch (e: DuplicateKeyException) {
             log.error("Workspace already exists in the database: ${workspace.id.value}")
-            throw WorkspaceStoreException("Error creating workspace", e)
+            throw WorkspaceException("Error creating workspace", e)
         }
     }
 

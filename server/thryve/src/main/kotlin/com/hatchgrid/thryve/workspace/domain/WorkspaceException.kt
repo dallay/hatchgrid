@@ -14,17 +14,6 @@ class WorkspaceException(
     override val cause: Throwable? = null
 ) : BusinessRuleValidationException(message, cause)
 
-/**
- * Exception thrown when there is an error storing or retrieving a workspace.
- *
- * @param message The error message.
- * @param cause The cause of the exception.
- */
-class WorkspaceStoreException(
-    override val message: String,
-    override val cause: Throwable? = null
-) : BusinessRuleValidationException(message, cause)
-
 
 /**
  * This class represents a specific exception that is thrown when a Workspace is not found.
