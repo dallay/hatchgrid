@@ -43,7 +43,18 @@ class WorkspaceStoreR2DbcRepository(
     override suspend fun update(workspace: Workspace) {
         log.debug("Updating workspace with id: {}", workspace.id)
         try {
-            workspaceRepository.save(workspace.toEntity())
+            // First, find the existing entity to preserve fields like createdBy
+            val existingEntity = workspaceRepository.findById(workspace.id.value)
+                ?: throw WorkspaceException("Workspace not found for update")
+
+            // Create a new entity with updated fields but preserve createdBy and other fields
+            val updatedEntity = existingEntity.copy(
+                name = workspace.name,
+                description = workspace.description,
+                updatedAt = workspace.updatedAt
+            )
+
+            workspaceRepository.save(updatedEntity)
         } catch (e: DuplicateKeyException) {
             log.error("Workspace already exists in the database: {}", workspace.id.value)
             throw WorkspaceException("Error updating workspace", e)
