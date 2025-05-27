@@ -66,16 +66,16 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: created_date
+                  name: created_at
                   type: timestamp
                   defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
               - column:
-                  name: last_modified_by
+                  name: updated_by
                   type: varchar(50)
               - column:
-                  name: last_modified_date
+                  name: updated_at
                   type: timestamp
 
         # Roles table
@@ -103,16 +103,16 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: created_date
+                  name: created_at
                   type: timestamp
                   defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
               - column:
-                  name: last_modified_by
+                  name: updated_by
                   type: varchar(50)
               - column:
-                  name: last_modified_date
+                  name: updated_at
                   type: timestamp
 
         # User roles junction table

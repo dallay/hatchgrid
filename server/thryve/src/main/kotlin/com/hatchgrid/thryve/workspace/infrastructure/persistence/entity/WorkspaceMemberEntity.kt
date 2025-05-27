@@ -1,4 +1,4 @@
-package com.hatchgrid.thryve.workspace.infrastructure.persistence
+package com.hatchgrid.thryve.workspace.infrastructure.persistence.entity
 
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate

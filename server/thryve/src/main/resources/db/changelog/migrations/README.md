@@ -21,11 +21,12 @@ The `users` table stores information about application users.
 | reset_key | varchar(20) | | Key for password reset |
 | reset_date | timestamp | | Date of the last password reset |
 | created_by | varchar(50) | NOT NULL | User who created this record |
-| created_date | timestamp | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Date when the record was created |
-| last_modified_by | varchar(50) | | User who last modified this record |
-| last_modified_date | timestamp | | Date when the record was last modified |
+| created_at | timestamp | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Date when the record was created |
+| updated_by | varchar(50) | | User who last modified this record |
+| updated_at | timestamp | | Date when the record was last modified |
 
 **Indexes:**
+
 - `idx_users_username` on `username`
 - `idx_users_email` on `email`
 
@@ -39,14 +40,16 @@ The `roles` table stores information about user roles.
 | name | varchar(50) | UNIQUE, NOT NULL | Role name |
 | description | varchar(255) | | Role description |
 | created_by | varchar(50) | NOT NULL | User who created this record |
-| created_date | timestamp | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Date when the record was created |
-| last_modified_by | varchar(50) | | User who last modified this record |
-| last_modified_date | timestamp | | Date when the record was last modified |
+| created_at | timestamp | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Date when the record was created |
+| updated_by | varchar(50) | | User who last modified this record |
+| updated_at | timestamp | | Date when the record was last modified |
 
 **Indexes:**
+
 - `idx_roles_name` on `name`
 
 **Default Roles:**
+
 - `ROLE_ADMIN`: Administrator role
 - `ROLE_USER`: Regular user role
 
@@ -60,6 +63,7 @@ The `user_roles` table is a junction table that establishes a many-to-many relat
 | role_id | uuid | PK, FK, NOT NULL | Reference to the roles table |
 
 **Foreign Keys:**
+
 - `fk_user_roles_user_id`: References `users(id)` with CASCADE on delete
 - `fk_user_roles_role_id`: References `roles(id)` with CASCADE on delete
 
@@ -75,16 +79,18 @@ The `refresh_tokens` table stores refresh tokens for authentication.
 | expires_at | timestamp | NOT NULL | Expiration date of the token |
 | revoked | boolean | NOT NULL, DEFAULT false | Whether the token has been revoked |
 | created_by | varchar(50) | NOT NULL | User who created this record |
-| created_date | timestamp | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Date when the record was created |
-| last_modified_by | varchar(50) | | User who last modified this record |
-| last_modified_date | timestamp | | Date when the record was last modified |
+| created_at | timestamp | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Date when the record was created |
+| updated_by | varchar(50) | | User who last modified this record |
+| updated_at | timestamp | | Date when the record was last modified |
 
 **Indexes:**
+
 - `idx_refresh_tokens_user_id` on `user_id`
 - `idx_refresh_tokens_token` on `token`
 - `idx_refresh_tokens_expires_at` on `expires_at`
 
 **Foreign Keys:**
+
 - `fk_refresh_tokens_user_id`: References `users(id)` with CASCADE on delete
 
 ### User Preferences
@@ -99,11 +105,12 @@ The `user_preferences` table stores user preferences.
 | language | varchar(10) | NOT NULL, DEFAULT 'en' | User's language preference |
 | notifications_enabled | boolean | NOT NULL, DEFAULT true | Whether notifications are enabled |
 | created_by | varchar(50) | NOT NULL | User who created this record |
-| created_date | timestamp | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Date when the record was created |
-| last_modified_by | varchar(50) | | User who last modified this record |
-| last_modified_date | timestamp | | Date when the record was last modified |
+| created_at | timestamp | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Date when the record was created |
+| updated_by | varchar(50) | | User who last modified this record |
+| updated_at | timestamp | | Date when the record was last modified |
 
 **Foreign Keys:**
+
 - `fk_user_preferences_user_id`: References `users(id)` with CASCADE on delete
 
 ### Database Version
@@ -121,7 +128,7 @@ The `database_version` table tracks database schema versions.
 
 ## Entity Relationship Diagram
 
-```
+```text
 +----------------+       +----------------+       +----------------+
 |     users      |       |   user_roles   |       |     roles      |
 +----------------+       +----------------+       +----------------+
@@ -129,16 +136,16 @@ The `database_version` table tracks database schema versions.
 | username       |       | role_id (PK,FK)|       | name           |
 | email          |       +----------------+       | description    |
 | password_hash  |                                | created_by     |
-| first_name     |                                | created_date   |
-| last_name      |                                | last_modified_by|
-| activated      |                                | last_modified_date|
+| first_name     |                                | created_at     |
+| last_name      |                                | updated_at     |
+| activated      |                                | updated_at     |
 | activation_key |                                +----------------+
 | reset_key      |
 | reset_date     |
 | created_by     |
-| created_date   |
-| last_modified_by|
-| last_modified_date|
+| created_at     |
+| updated_by     |
+| updated_at     |
 +----------------+
         ^
         |
@@ -152,9 +159,9 @@ The `database_version` table tracks database schema versions.
 | expires_at     |       | language       |
 | revoked        |       | notifications_enabled|
 | created_by     |       | created_by     |
-| created_date   |       | created_date   |
-| last_modified_by|      | last_modified_by|
-| last_modified_date|    | last_modified_date|
+| created_at     |       | created_at     |
+| updated_by     |       | updated_by     |
+| updated_at     |       | updated_at     |
 +----------------+       +----------------+
 ```
 
