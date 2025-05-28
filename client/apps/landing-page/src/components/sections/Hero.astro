@@ -14,6 +14,7 @@ if (astroLocale && LOCALES[astroLocale as Lang]) {
   langToUse = DEFAULT_LOCALE;
 }
 const t = useTranslations(langToUse);
+import VideoPlaceholder from "@/assets/video-placeholder.png";
 ---
 
 <section class="bg-gradient-to-b from-gray-50 to-white py-16 md:py-24 lg:py-32">
@@ -46,7 +47,7 @@ const t = useTranslations(langToUse);
 
     <div class="mt-12 lg:mt-16">
       <OptimizedPicture
-        src="https://placehold.co/800x450"
+        src={VideoPlaceholder}
         alt={t('hero.mockup.alt')}
         class="mx-auto rounded-lg shadow-2xl"
         width="800"
