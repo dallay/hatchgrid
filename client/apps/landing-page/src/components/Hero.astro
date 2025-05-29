@@ -1,0 +1,77 @@
+---
+import { useTranslations, DEFAULT_LOCALE, type Lang, LOCALES } from "@/i18n";
+import OptimizedPicture from "./OptimizedPicture.astro";
+import { Icon } from "astro-icon/components";
+
+// Determine the language to use
+const astroLocale = Astro.currentLocale;
+let langToUse: Lang;
+
+if (astroLocale && LOCALES[astroLocale as Lang]) {
+  langToUse = astroLocale as Lang;
+} else {
+  langToUse = DEFAULT_LOCALE;
+}
+const t = useTranslations(langToUse);
+---
+
+<section class="bg-gradient-to-b from-gray-50 to-white py-16 md:py-24 lg:py-32">
+  <div class="container mx-auto max-w-screen-xl px-4 text-center">
+     <a href="#" class="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700" role="alert">
+      <span class="text-xs bg-primary-600 rounded-full text-white px-4 py-1.5 mr-3">{t('hero.badge')}</span> <span class="text-sm font-medium">{t('hero.badge.text')}</span>
+      <Icon name="tabler:chevron-right" class="ml-2 h-4 w-4 text-gray-500" />
+    </a>
+
+    <h1
+      class="mb-6 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl lg:text-7xl"
+    >
+      {t('hero.title')}
+    </h1>
+
+    <p class="mx-auto mb-10 max-w-2xl text-lg text-gray-600 md:text-xl lg:text-2xl">
+      {t('hero.subtitle')}
+    </p>
+
+    <form class="mb-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+      <label for="email-hero" class="sr-only">{t('hero.email.placeholder')}</label>
+      <input
+        id="email-hero"
+        type="email"
+        placeholder={t('hero.email.placeholder')}
+        class="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:max-w-md"
+        required
+      />
+      <button
+        type="submit"
+        class="w-full whitespace-nowrap rounded-md bg-blue-600 px-8 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
+      >
+        {t('hero.email.button')}
+      </button>
+    </form>
+
+    <div class="mb-12 space-y-4 sm:space-x-4 sm:space-y-0">
+      <a
+        href="#"
+        class="inline-block w-full rounded-md bg-blue-600 px-8 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
+      >
+        {t('hero.cta.primary')}
+      </a>
+      <a
+        href="#"
+        class="inline-block w-full rounded-md bg-white px-8 py-3 text-base font-medium text-blue-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 sm:w-auto"
+      >
+        {t('hero.cta.secondary')}
+      </a>
+    </div>
+
+    <div class="mt-12 lg:mt-16">
+      <OptimizedPicture
+        src="https://placehold.co/800x450"
+        alt={t('hero.mockup.alt')}
+        class="mx-auto rounded-lg shadow-2xl"
+        width="800"
+        height="450"
+      />
+    </div>
+  </div>
+</section>
