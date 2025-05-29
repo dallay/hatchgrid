@@ -72,26 +72,25 @@ const onSubmit = handleSubmit((values) => {
     @submit="onSubmit"
   >
     <FormField v-slot="{ componentField }" name="email">
-      <FormItem class="w-full sm:w-auto sm:flex-1 sm:max-w-md">
+      <FormItem>
         <label for="email-hero" class="sr-only">{{ props.emailPlaceholder }}</label>
-        <FormControl>
-          <Input
-            id="email-hero"
-            type="email"
-            :placeholder="props.emailPlaceholder"
-            v-bind="componentField"
-            :class="cn(ctaEmailInputVariants({ variant: inputVariant, size: inputSize }), props.inputClass)"
-            required
-          />
-        </FormControl>
-        <FormMessage />
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto sm:flex-1 sm:max-w-md">
+          <FormControl class="flex-1">
+            <Input
+              id="email-hero"
+              type="email"
+              :placeholder="props.emailPlaceholder"
+              v-bind="componentField"
+              :class="cn(ctaEmailInputVariants({ variant: inputVariant, size: inputSize }), props.inputClass)"
+              required
+            />
+          </FormControl>
+          <Button type="submit">
+            {{ props.buttonText }}
+          </Button>
+        </div>
+        <FormMessage class="mt-1 text-red-600" />
       </FormItem>
     </FormField>
-    <Button
-      type="submit"
-      :class="cn(ctaEmailButtonVariants({ variant: buttonVariant, size: buttonSize }), props.buttonClass)"
-    >
-      {{ props.buttonText }}
-    </Button>
   </form>
 </template>
