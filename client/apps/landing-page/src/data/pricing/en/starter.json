@@ -1,14 +1,14 @@
 {
   "title": "Starter",
-  "description": "Best option for personal use & for your next project.",
-  "price": 29,
+  "description": "Perfect for creators starting their newsletter journey.",
+  "price": 0,
   "interval": "month",
   "features": [
-    { "text": "Individual configuration" },
-    { "text": "No setup, or hidden fees" },
-    { "text": "Team size", "value": "1 developer" },
-    { "text": "Premium support", "value": "6 months" },
-    { "text": "Free updates", "value": "6 months" }
+    { "text": "Up to 500 subscribers" },
+    { "text": "1 subscription form" },
+    { "text": "Basic newsletter editor" },
+    { "text": "Manual sending" },
+    { "text": "Hatchgrid branding in footer" }
   ],
   "order": 0
 }

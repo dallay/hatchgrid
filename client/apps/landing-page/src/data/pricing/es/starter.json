@@ -1,14 +1,14 @@
 {
   "title": "Inicial",
-  "description": "Mejor opción para uso personal y tu próximo proyecto.",
-  "price": 29,
+  "description": "Ideal para creadores que comienzan su newsletter.",
+  "price": 0,
   "interval": "month",
   "features": [
-    { "text": "Configuración individual" },
-    { "text": "Sin configuración o tarifas ocultas" },
-    { "text": "Tamaño del equipo", "value": "1 desarrollador" },
-    { "text": "Soporte premium", "value": "6 meses" },
-    { "text": "Actualizaciones gratuitas", "value": "6 meses" }
+    { "text": "Hasta 500 suscriptores" },
+    { "text": "1 formulario de suscripción" },
+    { "text": "Editor de newsletters básico" },
+    { "text": "Envíos manuales" },
+    { "text": "Marca Hatchgrid en el pie" }
   ],
   "order": 0
 }
