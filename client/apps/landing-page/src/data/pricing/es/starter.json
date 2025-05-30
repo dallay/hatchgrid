@@ -1,0 +1,14 @@
+{
+  "title": "Inicial",
+  "description": "Mejor opción para uso personal y tu próximo proyecto.",
+  "price": 29,
+  "interval": "month",
+  "features": [
+    { "text": "Configuración individual" },
+    { "text": "Sin configuración o tarifas ocultas" },
+    { "text": "Tamaño del equipo", "value": "1 desarrollador" },
+    { "text": "Soporte premium", "value": "6 meses" },
+    { "text": "Actualizaciones gratuitas", "value": "6 meses" }
+  ],
+  "order": 0
+}

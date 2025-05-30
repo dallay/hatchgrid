@@ -63,7 +63,7 @@ const authors = defineCollection({
 });
 
 const pricing = defineCollection({
-	loader: glob({ pattern: "**/[^_]*.{json,yml,yaml}", base: "./src/data/pricing" }),
+	loader: glob({ pattern: "**/**/*.{json,yml,yaml}", base: "./src/data/pricing" }),
 	schema: z.object({
 		title: z.string(),
 		description: z.string(),
@@ -77,6 +77,7 @@ const pricing = defineCollection({
 		),
 		highlighted: z.boolean().optional().default(false),
 		order: z.number().optional().default(0),
+		draft: z.boolean().optional().default(false),
 	}),
 });
 

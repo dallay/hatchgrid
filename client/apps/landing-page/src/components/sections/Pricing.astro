@@ -2,14 +2,11 @@
 import { Icon } from "astro-icon/components";
 import { Card } from '@/components/ui/card'
 import Link from "@/components/Link.astro";
-import { getCollection } from 'astro:content';
+import { getPricingPlans } from '@/models/pricing/pricing.service';
+import type { Lang } from "@/i18n";
 
-const pricingPlans = await getCollection('pricing', ({ data }) => {
-  return import.meta.env.PROD ? !data.draft : true;
-});
-
-// Sort plans by order
-const plans = pricingPlans.sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+const lang = Astro.currentLocale as Lang;
+const plans = await getPricingPlans({ lang });
 ---
 <section class="bg-background">
   <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
@@ -21,19 +18,19 @@ const plans = pricingPlans.sort((a, b) => (a.data.order || 0) - (b.data.order ||
       {plans.map((plan) => (
         <Card class:list={[
           "relative flex flex-col",
-          plan.data.highlighted && "ring-2 ring-primary"
+          plan.highlighted && "ring-2 ring-primary"
         ]}>
           <div class="flex-1 space-y-6 p-6">
             <div>
-              <h3 class="text-2xl font-semibold leading-none">{plan.data.title}</h3>
-              <p class="mt-2 text-sm text-muted-foreground">{plan.data.description}</p>
+              <h3 class="text-2xl font-semibold leading-none">{plan.title}</h3>
+              <p class="mt-2 text-sm text-muted-foreground">{plan.description}</p>
             </div>
             <div class="flex items-baseline">
-              <span class="text-5xl font-extrabold">${plan.data.price}</span>
-              <span class="ml-2 text-muted-foreground">/{plan.data.interval}</span>
+              <span class="text-5xl font-extrabold">${plan.price}</span>
+              <span class="ml-2 text-muted-foreground">/{plan.interval}</span>
             </div>
             <ul class="space-y-4">
-              {plan.data.features.map((feature) => (
+              {plan.features.map((feature) => (
                 <li class="flex items-center gap-3">
                   <Icon name="tabler:check" class="h-5 w-5 text-green-500 dark:text-green-400 flex-shrink-0" />
                   <span>
