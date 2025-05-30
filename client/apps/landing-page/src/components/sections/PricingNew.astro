@@ -4,11 +4,7 @@ import { Card } from '@/components/ui/card'
 import Link from "@/components/Link.astro";
 import { getCollection } from 'astro:content';
 
-const pricingPlans = await getCollection('pricing', ({ data }) => {
-  return import.meta.env.PROD ? !data.draft : true;
-});
-
-// Sort plans by order
+const pricingPlans = await getCollection('pricing');
 const plans = pricingPlans.sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
 ---
 <section class="bg-background">
@@ -19,10 +15,10 @@ const plans = pricingPlans.sort((a, b) => (a.data.order || 0) - (b.data.order ||
     </div>
     <div class="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-3">
       {plans.map((plan) => (
-        <Card class:list={[
+        <Card class={[
           "relative flex flex-col",
-          plan.data.highlighted && "ring-2 ring-primary"
-        ]}>
+          plan.data.highlighted ? "ring-2 ring-primary" : ""
+        ].filter(Boolean).join(" ")}>
           <div class="flex-1 space-y-6 p-6">
             <div>
               <h3 class="text-2xl font-semibold leading-none">{plan.data.title}</h3>

@@ -62,4 +62,22 @@ const authors = defineCollection({
 	}),
 });
 
-export const collections = { articles, tags, categories, authors };
+const pricing = defineCollection({
+	loader: glob({ pattern: "**/[^_]*.{json,yml,yaml}", base: "./src/data/pricing" }),
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		price: z.number(),
+		interval: z.enum(["month", "year"]).default("month"),
+		features: z.array(
+			z.object({
+				text: z.string(),
+				value: z.string().optional(),
+			})
+		),
+		highlighted: z.boolean().optional().default(false),
+		order: z.number().optional().default(0),
+	}),
+});
+
+export const collections = { articles, tags, categories, authors, pricing };

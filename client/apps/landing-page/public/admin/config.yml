@@ -26,6 +26,62 @@ i18n:
 
 
 collections:
+  - name: 'pricing'
+    label: 'Pricing Plans'
+    label_singular: 'Pricing Plan'
+    folder: 'src/data/pricing'
+    create: true
+    slug: '{{title}}'
+    extension: json
+    i18n: true
+    fields:
+      - name: 'title'
+        widget: 'string'
+        label: 'Plan Title'
+        i18n: true
+      - name: 'description'
+        widget: 'string'
+        label: 'Plan Description'
+        i18n: true
+      - name: 'price'
+        widget: 'number'
+        label: 'Price'
+        value_type: 'float'
+        min: 0
+        i18n: 'duplicate'
+      - name: 'interval'
+        widget: 'select'
+        label: 'Billing Interval'
+        options: ['month', 'year']
+        default: 'month'
+        i18n: 'duplicate'
+      - name: 'features'
+        widget: 'list'
+        label: 'Features'
+        i18n: true
+        fields:
+          - name: 'text'
+            widget: 'string'
+            label: 'Feature Text'
+          - name: 'value'
+            widget: 'string'
+            label: 'Feature Value'
+            required: false
+      - name: 'highlighted'
+        widget: 'boolean'
+        label: 'Highlight this plan'
+        required: false
+        default: false
+        i18n: 'duplicate'
+      - name: 'order'
+        widget: 'number'
+        label: 'Display Order'
+        value_type: 'int'
+        min: 0
+        required: false
+        default: 0
+        i18n: 'duplicate'
+
   - name: 'posts'
     label: 'Posts'
     label_singular: 'Post'
