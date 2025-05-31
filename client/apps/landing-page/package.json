@@ -39,6 +39,7 @@
 		"structure": "npx --yes tree-extended -max=5 -max-show-not-empty -gitignore > docs/structure.md && echo '```' >> docs/structure.md && cat docs/structure.md | sed -i '' -e '1i\\\n```plaintext' docs/structure.md && echo '# Project Structure\n' | cat - docs/structure.md > temp && mv temp docs/structure.md"
 	},
 	"dependencies": {
+    "@hatchgrid/utilities": "workspace:*",
 		"@astrojs/check": "^0.9.4",
 		"@astrojs/mdx": "^4.2.6",
 		"@astrojs/rss": "^4.0.11",
@@ -63,6 +64,7 @@
 		"zod": "^3.25.32"
 	},
 	"devDependencies": {
+    "@hatchgrid/config": "workspace:*",
 		"@biomejs/biome": "1.9.4",
 		"@tailwindcss/typography": "^0.5.16",
 		"happy-dom": "^17.4.7",

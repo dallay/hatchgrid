@@ -1,0 +1,57 @@
+---
+import type Article from "@/models/article/article.model";
+import type { ImageMetadata } from "astro";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import AuthorAvatarAstro from "./AuthorAvatarAstro.astro";
+import OptimizedPicture from "./OptimizedPicture.astro";
+import { cleanEntityId } from "@/utils/collection.entity";
+
+export interface Props {
+    article: Article;
+}
+
+const { article } = Astro.props;
+---
+
+<Card class="flex flex-col h-full overflow-hidden p-0">
+    {article.cover && (
+        <div class="w-full h-48 md:h-56 lg:h-64 overflow-hidden">
+            <OptimizedPicture
+                src={article.cover}
+                alt={article.title}
+                width={800}
+                height={450}
+                class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                formats={["avif", "webp"]}
+                loading="lazy"
+            />
+        </div>
+    )}
+    <CardHeader class="p-6">
+        {article.category && (
+            <p class="text-sm text-blue-600 font-semibold mb-1 uppercase tracking-wide">
+                {article.category.title}
+            </p>
+        )}
+        <CardTitle class="text-xl md:text-2xl font-bold hover:text-blue-700 transition-colors">
+            <a href={`/blog/${cleanEntityId(article.id).toLowerCase()}`}>{article.title}</a>
+        </CardTitle>
+    </CardHeader>
+    <CardContent class="p-6 pt-0 flex-grow">
+        {article.description && (
+            <CardDescription class="text-gray-700 text-base">
+                {article.description}
+            </CardDescription>
+        )}
+    </CardContent>
+    <CardFooter class="p-6 border-t border-gray-200">
+       <AuthorAvatarAstro author={article.author} date={article.date} />
+    </CardFooter>
+</Card>

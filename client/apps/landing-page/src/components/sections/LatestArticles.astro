@@ -1,0 +1,49 @@
+---
+import { getSelectionStrategy } from "@/models/article/article-selection.strategy";
+import ArticleCard from '@components/ArticleCard.astro';
+import { getArticles } from "@/models/article";
+import { type Lang, useTranslations } from "@/i18n";
+
+const currentLanguage = Astro.currentLocale as Lang
+const t = useTranslations(currentLanguage);
+const strategy = getSelectionStrategy('newest')
+const latestArticles = await getArticles({
+  includeDrafts: false,
+  lang: currentLanguage,
+}).then(articles => strategy.select(articles, 3)); 
+---
+
+<section class="py-12 md:py-16 lg:py-20">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+            <h2 class="text-xl font-bold mb-2 uppercase tracking-wide">
+                {t('blog.section.title')}
+            </h2>
+            
+            <h2 class="text-3xl md:text-4xl lg:text-[42px] font-bold text-gray-900 leading-tight">
+                {t('blog.section.subtitle')}
+            </h2>
+        </div>
+        
+        {
+            latestArticles && latestArticles.length > 0 ? (
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {latestArticles.map((article) => (
+                        <ArticleCard article={article} />
+                    ))}
+                </div>
+            ) : (
+                <p class="text-center text-gray-600">
+                    {t('blog.section.noArticles')}
+                </p>
+            )
+        }
+    </div>
+</section>
+
+<style>
+    /* Basic styling, can be expanded based on Figma */
+    .container {
+        max-width: 1200px;
+    }
+</style>
