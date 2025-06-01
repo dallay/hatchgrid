@@ -109,10 +109,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup kubectl
-        uses: azure/setup-kubectl@901a10e89ea615cf61f57ac05cecdf23e7de06d8 # v3.2
+        uses: azure/setup-kubectl@3e0aec4d80787158d308d7b364cb1b702e7feb7f # v4.0.0
 
       - name: Set Kubernetes context
-        uses: azure/k8s-set-context@38d6bc72e5877b8eb640e995218d42b8fedf1a47 # v3.1
+        uses: azure/k8s-set-context@212a19233d93f03eceaac31ae5a1d1acf650b6ef # v4.0.1
         with:
           method: kubeconfig
           kubeconfig: ${{ secrets.KUBECONFIG }}
