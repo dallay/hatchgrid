@@ -1,0 +1,64 @@
+---
+import { useTranslations, DEFAULT_LOCALE, type Lang, LOCALES } from "@/i18n";
+import OptimizedPicture from "@/components/OptimizedPicture.astro";
+import { CTAEmail } from "@/components/cta-email";
+import { Icon } from "astro-icon/components";
+
+// Determine the language to use
+const astroLocale = Astro.currentLocale;
+let langToUse: Lang;
+
+if (astroLocale && LOCALES[astroLocale as Lang]) {
+  langToUse = astroLocale as Lang;
+} else {
+  langToUse = DEFAULT_LOCALE;
+}
+const t = useTranslations(langToUse);
+import VideoPlaceholder from "@/assets/video-placeholder.png";
+---
+
+<section class="bg-gradient-to-b from-gray-50 to-white py-16 md:py-24 lg:py-32">
+  <div class="container mx-auto max-w-screen-xl px-4">
+    <!-- Badge centered above content -->
+    <div class="text-center mb-12">
+      <a href="#" class="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700" role="alert">
+        <span class="text-xs bg-primary-600 rounded-full text-white px-4 py-1.5 mr-3">{t('hero.badge')}</span> <span class="text-sm font-medium">{t('hero.badge.text')}</span>
+        <Icon name="tabler:chevron-right" class="ml-2 h-4 w-4 text-gray-500" />
+      </a>
+    </div>
+
+    <!-- Two column layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <!-- Left column: Content -->
+      <div class="text-center lg:text-left">
+        <h1 class="mb-6 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl md:text-6xl lg:text-6xl">
+          {t('hero.title')}
+        </h1>
+
+        <p class="mb-10 text-lg text-gray-600 md:text-xl lg:text-2xl">
+          {t('hero.subtitle')}
+        </p>
+
+        <CTAEmail
+          client:visible
+          emailPlaceholder={t('hero.email.placeholder')}
+          buttonText={t('hero.email.button')}
+          size="default"
+          alignment="left"
+          inputVariant="default"
+          buttonVariant="default"
+          class="justify-center lg:justify-start"
+        />
+      </div>
+
+      <!-- Right column: Video/Mockup -->
+      <div class="order-first lg:order-last">
+        <OptimizedPicture
+          src={VideoPlaceholder}
+          alt={t('hero.mockup.alt')}
+          class="mx-auto rounded-2xl shadow-2xl border border-gray-200"
+        />
+      </div>
+    </div>
+  </div>
+</section>
