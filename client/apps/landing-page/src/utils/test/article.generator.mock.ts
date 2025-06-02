@@ -16,6 +16,7 @@ export const generateMockArticle = (
 			email: "mock@example.com",
 			avatar: "",
 			bio: "Mock bio",
+			role: "Developer",
 			location: "Mock location",
 			socials: [],
 		},

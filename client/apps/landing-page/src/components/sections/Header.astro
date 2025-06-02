@@ -109,7 +109,6 @@ const currentPath = Astro.url.pathname;
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const header = document.getElementById('main-header');
-    let lastScrollY = window.scrollY;
     let ticking = false;
 
     const handleScroll = () => {
@@ -127,7 +126,6 @@ const currentPath = Astro.url.pathname;
             header?.classList.add('bg-white', 'dark:bg-gray-800');
           }
 
-          lastScrollY = currentScrollY;
           ticking = false;
         });
 
