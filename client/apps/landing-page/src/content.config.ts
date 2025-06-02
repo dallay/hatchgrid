@@ -48,6 +48,7 @@ const authors = defineCollection({
 		email: z.string(),
 		avatar: z.string(),
 		bio: z.string(),
+    role: z.string(),
 		location: z.string().optional(),
 		socials: z
 			.array(
@@ -81,4 +82,12 @@ const pricing = defineCollection({
 	}),
 });
 
-export const collections = { articles, tags, categories, authors, pricing };
+const faq = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.md", base: "./src/data/faq" }),
+  schema: z.object({
+    question: z.string(),
+    answer: z.string(),
+  }),
+});
+
+export const collections = { articles, tags, categories, authors, pricing, faq };

@@ -1,14 +1,13 @@
 ---
+import OptimizedPicture from "./OptimizedPicture.astro";
 import type Author from "@/models/author/author.model";
-import { formatDate } from "@hatchgrid/utilities";
 
 export interface Props {
     author?: Author;
-    date?: Date;
     size?: 'sm' | 'md' | 'lg';
 }
 
-const { author, date, size = 'md' } = Astro.props;
+const { author, size = 'md' } = Astro.props;
 
 const getInitials = (name: string): string => {
     if (!name) return "";
@@ -25,9 +24,9 @@ const sizeClasses = {
 };
 
 const textSizes = {
-    sm: { name: 'text-sm font-semibold', bio: 'text-xs text-gray-500' },
-    md: { name: 'font-semibold text-gray-800', bio: 'text-xs text-gray-500' },
-    lg: { name: 'text-base font-semibold text-gray-800', bio: 'text-sm text-gray-500' }
+    sm: { name: 'text-sm font-semibold text-white', bio: 'text-xs text-gray-400' },
+    md: { name: 'font-semibold text-white', bio: 'text-xs text-gray-400' },
+    lg: { name: 'text-base font-semibold text-white', bio: 'text-sm text-gray-400' }
 };
 
 const avatarClasses = `${sizeClasses[size]} mr-3 relative flex shrink-0 overflow-hidden rounded-full border border-gray-200 bg-gray-100`;
@@ -39,9 +38,11 @@ const bioClasses = textSizes[size].bio;
     <div class="flex items-center mb-2 sm:mb-0">
         <div class={avatarClasses}>
             {author.avatar ? (
-                <img
+                <OptimizedPicture
                     src={author.avatar}
                     alt={author.name}
+                    width={100}
+                    height={100}
                     class="aspect-square h-full w-full object-cover"
                 />
             ) : (
@@ -52,11 +53,8 @@ const bioClasses = textSizes[size].bio;
         </div>
         <div>
             <p class={nameClasses}>{author.name}</p>
-            {author.bio && (
-                <p class={bioClasses}>{author.bio}</p>
-            )}
-            {date && (
-                <p class="text-xs text-gray-400 mt-1">{formatDate(date)}</p>
+            {author.role && (
+                <p class={bioClasses}>{author.role}</p>
             )}
         </div>
     </div>

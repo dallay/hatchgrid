@@ -1,6 +1,6 @@
 ---
 import type Article from "@/models/article/article.model";
-import type { ImageMetadata } from "astro";
+import { render } from "astro:content";
 import {
     Card,
     CardContent,
@@ -9,49 +9,74 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import AuthorAvatarAstro from "./AuthorAvatarAstro.astro";
+import AuthorAvatarAstro from "./AuthorCard.astro";
 import OptimizedPicture from "./OptimizedPicture.astro";
+import { Badge } from '@/components/ui/badge'
 import { cleanEntityId } from "@/utils/collection.entity";
+import FormattedDate from "./FormattedDate.astro";
+import ReadingTime from "./ReadingTime.astro";
+import Link from "./Link.astro";
+import { type Lang, useTranslations } from "@/i18n";
 
 export interface Props {
     article: Article;
 }
 
 const { article } = Astro.props;
+const lang = Astro.currentLocale as Lang;
+const t = useTranslations(lang);
+
+const blogUrl = `/blog/${cleanEntityId(article.id).toLowerCase()}`;
+if (!article.entry) {
+	throw new Error(`No entry found for article: ${article.id}`);
+}
+const { Content, remarkPluginFrontmatter } = await render(article.entry);
 ---
 
-<Card class="flex flex-col h-full overflow-hidden p-0">
-    {article.cover && (
-        <div class="w-full h-48 md:h-56 lg:h-64 overflow-hidden">
-            <OptimizedPicture
-                src={article.cover}
-                alt={article.title}
-                width={800}
-                height={450}
-                class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                formats={["avif", "webp"]}
-                loading="lazy"
-            />
+<Card class="group flex flex-col h-full overflow-hidden p-0 bg-slate-800 border-slate-700 hover:bg-slate-750 transition-all duration-300">
+    <a href={blogUrl} class="block">
+        {article.cover && (
+            <div class="w-full h-48 md:h-56 overflow-hidden">
+                <OptimizedPicture
+                    src={article.cover}
+                    alt={`Cover image for "${article.title}" article`}
+                    width={800}
+                    height={450}
+                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    formats={["avif", "webp"]}
+                    loading="lazy"
+                />
+            </div>
+        )}
+        <CardHeader class="p-6">
+            {article.category && (
+                <Badge variant="secondary" class="mb-3 bg-blue-600 text-white hover:bg-blue-700 border-0">
+                    Article
+                </Badge>
+            )}
+            <div class="flex items-center justify-between mb-2 text-sm">
+                <FormattedDate date={article.date} class="text-gray-400 text-sm" />
+                <ReadingTime readingTime={remarkPluginFrontmatter.minutesRead} class="text-gray-400 text-sm" />
+            </div>
+            <CardTitle class="text-xl md:text-2xl font-bold text-white group-hover:text-blue-300 transition-colors line-clamp-2">
+                {article.title}
+            </CardTitle>
+        </CardHeader>
+        <CardContent class="p-6 pt-0 flex-grow">
+            {article.description && (
+                <CardDescription class="text-gray-300 text-base line-clamp-3 mb-4">
+                    {article.description}
+                </CardDescription>
+            )}
+            <Link href={blogUrl}>
+                {t('blog.readMore')} &rarr;
+            </Link>
+        </CardContent>
+    </a>
+    <CardFooter class="p-6 pt-4 mt-auto">
+        <div class="flex flex-col justify-center w-full">
+            <AuthorAvatarAstro author={article.author} size="sm" />
         </div>
-    )}
-    <CardHeader class="p-6">
-        {article.category && (
-            <p class="text-sm text-blue-600 font-semibold mb-1 uppercase tracking-wide">
-                {article.category.title}
-            </p>
-        )}
-        <CardTitle class="text-xl md:text-2xl font-bold hover:text-blue-700 transition-colors">
-            <a href={`/blog/${cleanEntityId(article.id).toLowerCase()}`}>{article.title}</a>
-        </CardTitle>
-    </CardHeader>
-    <CardContent class="p-6 pt-0 flex-grow">
-        {article.description && (
-            <CardDescription class="text-gray-700 text-base">
-                {article.description}
-            </CardDescription>
-        )}
-    </CardContent>
-    <CardFooter class="p-6 border-t border-gray-200">
-       <AuthorAvatarAstro author={article.author} date={article.date} />
+
     </CardFooter>
 </Card>

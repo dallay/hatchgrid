@@ -9,6 +9,8 @@ import tailwindcss from "@tailwindcss/vite";
 
 import vue from "@astrojs/vue";
 
+import { remarkReadingTime } from "./src/utils/remark-reading-time.mjs";
+
 // https://astro.build/config
 export default defineConfig({
 	// Set your site's URL
@@ -49,5 +51,8 @@ export default defineConfig({
 
 	vite: {
 		plugins: [tailwindcss()],
+	},
+  markdown: {
+		remarkPlugins: [remarkReadingTime],
 	},
 });

@@ -153,6 +153,10 @@ collections:
         widget: 'markdown'
         label: 'Bio'
         i18n: true
+      - name: role
+        widget: string
+        label: Role
+        i18n: true
       - name: location
         widget: string
         label: Location
@@ -256,3 +260,21 @@ collections:
         required: false
         default: 0
         i18n: 'duplicate'
+
+  - name: 'faq'
+    label: 'FAQ'
+    label_singular: 'FAQ Item'
+    folder: client/apps/landing-page/src/data/faq
+    create: true
+    slug: '{{question}}'
+    extension: md
+    i18n: true
+    fields:
+      - name: 'question'
+        widget: 'string'
+        label: 'Question'
+        i18n: true
+      - name: 'answer'
+        widget: 'markdown'
+        label: 'Answer'
+        i18n: true
