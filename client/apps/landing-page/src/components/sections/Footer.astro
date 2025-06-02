@@ -1,6 +1,30 @@
 ---
 import Brand from "@/components/Brand.astro";
 import { Icon } from "astro-icon/components";
+import { footerNavLinks } from "@/models/menu/menu.constants";
+import { filterMenuItems } from "@/models/menu/menu.service";
+import { type Lang, useTranslations, useTranslatedPath } from "@/i18n";
+
+// Get the current language from Astro context
+const lang = (Astro.currentLocale as Lang) || "en";
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+
+// Filter footer links based on their conditions
+const visibleFooterLinks = filterMenuItems(footerNavLinks);
+
+// Group footer links into categories
+const companyLinks = visibleFooterLinks.filter(link =>
+  ["footer.about", "footer.contact"].includes(link.translationKey)
+);
+
+const resourceLinks = visibleFooterLinks.filter(link =>
+  ["footer.donate", "footer.rss"].includes(link.translationKey)
+);
+
+const legalLinks = visibleFooterLinks.filter(link =>
+  ["footer.privacyPolicy", "footer.termsOfUse"].includes(link.translationKey)
+);
 ---
 
 <footer class="bg-white dark:bg-gray-900">
@@ -9,50 +33,65 @@ import { Icon } from "astro-icon/components";
       <div class="mb-12 md:mb-0">
         <Brand />
         <p class="mt-8 max-w-sm text-gray-600 dark:text-gray-400">
-          Hatchgrid is a platform for developers to build and deploy applications with ease.
+          {t("footer.description")}
         </p>
       </div>
       <div class="grid grid-cols-2 gap-8 sm:gap-10 sm:grid-cols-3">
         <div>
-          <h2 class="mb-8 text-lg font-bold text-gray-900 dark:text-white">Company</h2>
+          <h2 class="mb-8 text-lg font-bold text-gray-900 dark:text-white">{t("footer.company")}</h2>
           <ul class="text-gray-600 dark:text-gray-400 font-medium space-y-5">
-            <li>
-              <a href="#" class="hover:underline">About</a>
-            </li>
-            <li>
-              <a href="#" class="hover:underline">Careers</a>
-            </li>
-            <li>
-              <a href="#" class="hover:underline">Blog</a>
-            </li>
+            {companyLinks.map((link) => (
+              link.type === 'link' && (
+                <li>
+                  <a
+                    href={translatePath(link.href)}
+                    class="hover:underline"
+                    aria-label={link.ariaLabelKey ? t(link.ariaLabelKey) : undefined}
+                    target={link.target}
+                  >
+                    {t(link.translationKey)}
+                  </a>
+                </li>
+              )
+            ))}
           </ul>
         </div>
         <div>
-          <h2 class="mb-8 text-lg font-bold text-gray-900 dark:text-white">Resources</h2>
+          <h2 class="mb-8 text-lg font-bold text-gray-900 dark:text-white">{t("footer.resources")}</h2>
           <ul class="text-gray-600 dark:text-gray-400 font-medium space-y-5">
-            <li>
-              <a href="#" class="hover:underline">Documentation</a>
-            </li>
-            <li>
-              <a href="#" class="hover:underline">Support</a>
-            </li>
-            <li>
-              <a href="#" class="hover:underline">API Reference</a>
-            </li>
+            {resourceLinks.map((link) => (
+              link.type === 'link' && (
+                <li>
+                  <a
+                    href={translatePath(link.href)}
+                    class="hover:underline"
+                    aria-label={link.ariaLabelKey ? t(link.ariaLabelKey) : undefined}
+                    target={link.target}
+                  >
+                    {t(link.translationKey)}
+                  </a>
+                </li>
+              )
+            ))}
           </ul>
         </div>
         <div>
-          <h2 class="mb-8 text-lg font-bold text-gray-900 dark:text-white">Legal</h2>
+          <h2 class="mb-8 text-lg font-bold text-gray-900 dark:text-white">{t("footer.legal")}</h2>
           <ul class="text-gray-600 dark:text-gray-400 font-medium space-y-5">
-            <li>
-              <a href="#" class="hover:underline">Privacy Policy</a>
-            </li>
-            <li>
-              <a href="#" class="hover:underline">Terms of Service</a>
-            </li>
-            <li>
-              <a href="#" class="hover:underline">Cookie Policy</a>
-            </li>
+            {legalLinks.map((link) => (
+              link.type === 'link' && (
+                <li>
+                  <a
+                    href={translatePath(link.href)}
+                    class="hover:underline"
+                    aria-label={link.ariaLabelKey ? t(link.ariaLabelKey) : undefined}
+                    target={link.target}
+                  >
+                    {t(link.translationKey)}
+                  </a>
+                </li>
+              )
+            ))}
           </ul>
         </div>
       </div>
