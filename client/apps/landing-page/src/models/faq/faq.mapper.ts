@@ -12,18 +12,24 @@ export function toFAQ(faqData: CollectionEntry<"faq">): FAQ {
 		throw new Error("Invalid FAQ data: data object is missing");
 	}
 
-	const { data } = faqData;
+	const { data, body } = faqData;
 	if (!data.question) {
 		throw new Error("Invalid FAQ data: question is required");
 	}
-	if (!data.answer) {
+	if (!data.date) {
+		throw new Error("Invalid FAQ data: date is required");
+	}
+
+	if (!body) {
 		throw new Error("Invalid FAQ data: answer is required");
 	}
 
 	return {
 		id: faqData.id,
 		question: data.question,
-		answer: data.answer,
+		answer: body,
+		date: data.date,
+		entry: faqData,
 	};
 }
 

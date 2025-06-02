@@ -18,9 +18,9 @@ import type FAQ from "./faq.model";
 export const getFAQs = async (
 	criteria?: FaqCriteria,
 ): Promise<FAQ[]> => {
-	const { lang, question, answer } = criteria || {};
+	const { lang, question, answer, date } = criteria || {};
 
-  const faqs = await getCollection("faq", ({ id, data }) => {
+  const faqs = await getCollection("faq", ({ id, data, body }) => {
     // Filter by language if provided
     if (lang) {
       const faqLang = parseEntityId(id).lang;
@@ -33,7 +33,12 @@ export const getFAQs = async (
     }
 
     // Filter by answer if provided
-    if (answer && !data.answer.toLowerCase().includes(answer.toLowerCase())) {
+    if (answer && !body?.toLowerCase().includes(answer.toLowerCase())) {
+      return false;
+    }
+
+    // Filter by date if provided
+    if (date && data.date !== date) {
       return false;
     }
 

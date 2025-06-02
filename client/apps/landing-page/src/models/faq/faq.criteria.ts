@@ -6,5 +6,6 @@ import type { Lang } from "@/i18n";
 export interface FaqCriteria {
 	lang?: Lang;
 	question?: string;
+  date?: Date;
 	answer?: string;
 }

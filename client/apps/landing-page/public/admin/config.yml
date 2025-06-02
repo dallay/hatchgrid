@@ -274,7 +274,11 @@ collections:
         widget: 'string'
         label: 'Question'
         i18n: true
-      - name: 'answer'
+      - name: 'date'
+        widget: 'datetime'
+        label: 'Publish Date'
+        i18n: 'duplicate'
+      - name: 'body'
         widget: 'markdown'
-        label: 'Answer'
+        label: 'Body'
         i18n: true

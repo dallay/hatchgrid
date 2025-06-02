@@ -30,7 +30,7 @@ const blogUrl = `/blog/${cleanEntityId(article.id).toLowerCase()}`;
 if (!article.entry) {
 	throw new Error(`No entry found for article: ${article.id}`);
 }
-const { Content, remarkPluginFrontmatter } = await render(article.entry);
+const { remarkPluginFrontmatter } = await render(article.entry);
 ---
 
 <Card class="group flex flex-col h-full overflow-hidden p-0 bg-slate-800 border-slate-700 hover:bg-slate-750 transition-all duration-300">

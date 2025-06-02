@@ -86,7 +86,7 @@ const faq = defineCollection({
   loader: glob({ pattern: "**/[^_]*.md", base: "./src/data/faq" }),
   schema: z.object({
     question: z.string(),
-    answer: z.string(),
+    date: z.coerce.date(),
   }),
 });
 
