@@ -1,0 +1,26 @@
+
+
+databaseChangeLog:
+  - changeSet:
+      id: 008-enable-rls-workspaces
+      author: hatchgrid
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              ALTER TABLE workspaces ENABLE ROW LEVEL SECURITY;
+              CREATE POLICY select_own_workspace ON workspaces
+              FOR SELECT TO PUBLIC
+              USING (id = current_setting('hatchgrid.current_workspace')::uuid);
+
+  - changeSet:
+      id: 009-enable-rls-workspace-members
+      author: hatchgrid
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              ALTER TABLE workspace_members ENABLE ROW LEVEL SECURITY;
+              CREATE POLICY select_workspace_members ON workspace_members
+              FOR SELECT TO PUBLIC
+              USING (workspace_id = current_setting('hatchgrid.current_workspace')::uuid);

@@ -1,16 +1,10 @@
+
+
 databaseChangeLog:
   - changeSet:
-      id: 004-workspace-tables
+      id: 003-create-workspaces
       author: hatchgrid
-      rollback:
-        - dropTable:
-            tableName: workspace_members
-        - dropTable:
-            tableName: workspaces
-      comment: Create workspace tables
-
       changes:
-        # Workspaces table
         - createTable:
             tableName: workspaces
             columns:
@@ -36,9 +30,9 @@ databaseChangeLog:
               - column:
                   name: created_by
                   type: varchar(50)
+                  defaultValue: 'system'
                   constraints:
                     nullable: false
-                  defaultValue: 'system'
               - column:
                   name: created_at
                   type: timestamp
@@ -51,8 +45,18 @@ databaseChangeLog:
               - column:
                   name: updated_at
                   type: timestamp
+        - addForeignKeyConstraint:
+            baseTableName: workspaces
+            baseColumnNames: owner_id
+            constraintName: fk_workspace_owner
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
 
-        # Workspace members table
+  - changeSet:
+      id: 004-create-workspace-members
+      author: hatchgrid
+      changes:
         - createTable:
             tableName: workspace_members
             columns:
@@ -67,67 +71,34 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: created_by
-                  type: varchar(50)
+                  name: role
+                  type: role_type
+                  defaultValue: EDITOR
                   constraints:
                     nullable: false
-                  defaultValue: 'system'
               - column:
                   name: created_at
-                  type: timestamp
+                  type: timestamp with time zone
                   defaultValueComputed: CURRENT_TIMESTAMP
-                  constraints:
-                    nullable: false
-
-        # Primary key for workspace_members
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
         - addPrimaryKey:
             tableName: workspace_members
             columnNames: workspace_id, user_id
             constraintName: pk_workspace_members
-
-        # Foreign keys
-        - addForeignKeyConstraint:
-            baseTableName: workspaces
-            baseColumnNames: owner_id
-            constraintName: fk_workspaces_owner_id
-            referencedTableName: users
-            referencedColumnNames: id
-            onDelete: CASCADE
-
         - addForeignKeyConstraint:
             baseTableName: workspace_members
             baseColumnNames: workspace_id
-            constraintName: fk_workspace_members_workspace_id
+            constraintName: fk_member_workspace
             referencedTableName: workspaces
             referencedColumnNames: id
             onDelete: CASCADE
-
         - addForeignKeyConstraint:
             baseTableName: workspace_members
             baseColumnNames: user_id
-            constraintName: fk_workspace_members_user_id
+            constraintName: fk_member_user
             referencedTableName: users
             referencedColumnNames: id
             onDelete: CASCADE
-
-        # Indexes
-        - createIndex:
-            indexName: idx_workspaces_owner_id
-            tableName: workspaces
-            columns:
-              - column:
-                  name: owner_id
-
-        - createIndex:
-            indexName: idx_workspace_members_workspace_id
-            tableName: workspace_members
-            columns:
-              - column:
-                  name: workspace_id
-
-        - createIndex:
-            indexName: idx_workspace_members_user_id
-            tableName: workspace_members
-            columns:
-              - column:
-                  name: user_id

@@ -12,10 +12,12 @@ internal class FindWorkspaceControllerIntegrationTest : ControllerIntegrationTes
 
     @Test
     @Sql(
+        "/db/user/users.sql",
         "/db/workspace/workspace.sql",
     )
     @Sql(
         "/db/workspace/clean.sql",
+        "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     fun `should return workspace when workspace is found`(): Unit = runBlocking {
@@ -30,7 +32,7 @@ internal class FindWorkspaceControllerIntegrationTest : ControllerIntegrationTes
             .expectBody()
             .jsonPath("$.id").isEqualTo(id)
             .jsonPath("$.name").isEqualTo("Test: My First Workspace")
-            .jsonPath("$.userId").isEqualTo("efc4b2b8-08be-4020-93d5-f795762bf5c9")
+            .jsonPath("$.ownerId").isEqualTo("efc4b2b8-08be-4020-93d5-f795762bf5c9")
             .jsonPath("$.createdAt").isNotEmpty
             .jsonPath("$.updatedAt").isNotEmpty
             .consumeWith { response ->

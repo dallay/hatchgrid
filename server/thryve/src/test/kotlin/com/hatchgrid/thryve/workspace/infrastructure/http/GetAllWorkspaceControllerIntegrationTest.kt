@@ -12,10 +12,12 @@ internal class GetAllWorkspaceControllerIntegrationTest : ControllerIntegrationT
 
     @Test
     @Sql(
+        "/db/user/users.sql",
         "/db/workspace/all-workspaces.sql",
     )
     @Sql(
         "/db/workspace/clean.sql",
+        "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     fun `should get all workspaces`(): Unit = runBlocking {

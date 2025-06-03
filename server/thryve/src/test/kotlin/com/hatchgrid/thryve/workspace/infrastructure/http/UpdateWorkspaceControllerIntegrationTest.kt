@@ -14,10 +14,12 @@ internal class UpdateWorkspaceControllerIntegrationTest : ControllerIntegrationT
 
     @Test
     @Sql(
+        "/db/user/users.sql",
         "/db/workspace/workspace.sql",
     )
     @Sql(
         "/db/workspace/clean.sql",
+        "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     fun `should update an workspace`(): Unit = runBlocking {
@@ -35,10 +37,12 @@ internal class UpdateWorkspaceControllerIntegrationTest : ControllerIntegrationT
 
     @Test
     @Sql(
+        "/db/user/users.sql",
         "/db/workspace/workspace.sql",
     )
     @Sql(
         "/db/workspace/clean.sql",
+        "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     fun `should return 404 when workspace is not found`(): Unit = runBlocking {

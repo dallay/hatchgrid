@@ -48,7 +48,7 @@ class WorkspaceStoreR2DbcRepository(
                 workspaceMemberRepository.insertWorkspaceMember(
                     workspaceId = workspace.id.value,
                     userId = memberId.value,
-                    createdBy = workspace.createdBy
+                    role = "EDITOR" // TODO: Default role, can be changed later
                 )
             }
         }

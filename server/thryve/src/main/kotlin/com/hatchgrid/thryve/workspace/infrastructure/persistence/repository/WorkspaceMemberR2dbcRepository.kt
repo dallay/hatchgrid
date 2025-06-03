@@ -45,18 +45,18 @@ interface WorkspaceMemberR2dbcRepository : CoroutineCrudRepository<WorkspaceMemb
      *
      * @param workspaceId The ID of the workspace.
      * @param userId The ID of the user.
-     * @param createdBy The user who created this membership.
+     * @param role The role of the user in the workspace.
      * @return The number of affected rows.
      */
     @Modifying
     @Query("""
-        INSERT INTO workspace_members (workspace_id, user_id, created_by, created_at)
-        VALUES (:workspaceId, :userId, :createdBy, CURRENT_TIMESTAMP)
+        INSERT INTO workspace_members (workspace_id, user_id, role, created_at, updated_at)
+        VALUES (:workspaceId, :userId, :role::role_type, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     """)
     suspend fun insertWorkspaceMember(
         workspaceId: UUID,
         userId: UUID,
-        createdBy: String
+        role: String
     ): Int
 
     /**

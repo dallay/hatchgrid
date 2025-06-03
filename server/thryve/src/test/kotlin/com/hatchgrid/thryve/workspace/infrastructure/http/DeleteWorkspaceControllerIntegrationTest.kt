@@ -12,10 +12,12 @@ internal class DeleteWorkspaceControllerIntegrationTest : ControllerIntegrationT
 
     @Test
     @Sql(
+        "/db/user/users.sql",
         "/db/workspace/workspace.sql",
     )
     @Sql(
         "/db/workspace/clean.sql",
+        "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     fun `should delete workspace`(): Unit = runBlocking {
