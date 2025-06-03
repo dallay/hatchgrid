@@ -4,7 +4,9 @@ import com.hatchgrid.UnitTest
 import com.hatchgrid.thryve.workspace.WorkspaceStub
 import com.hatchgrid.thryve.workspace.domain.Workspace
 import com.hatchgrid.thryve.workspace.domain.WorkspaceException
+import com.hatchgrid.thryve.workspace.infrastructure.persistence.entity.WorkspaceMemberEntity
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toEntity
+import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceMemberR2dbcRepository
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceR2dbcRepository
 import com.hatchgrid.thryve.users.domain.UserId
 import io.mockk.coEvery
@@ -24,8 +26,9 @@ import org.springframework.dao.TransientDataAccessResourceException
 @UnitTest
 internal class WorkspaceStoreR2DbcRepositoryTest {
     private val workspaceRepository: WorkspaceR2dbcRepository = mockk()
+    private val workspaceMemberRepository: WorkspaceMemberR2dbcRepository = mockk()
     private val workspaceStoreR2dbcRepository =
-        WorkspaceStoreR2DbcRepository(workspaceRepository)
+        WorkspaceStoreR2DbcRepository(workspaceRepository, workspaceMemberRepository)
     private lateinit var workspace: Workspace
 
     @BeforeEach
@@ -37,18 +40,28 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
     fun `should create workspace`() = runBlocking {
         // Given
         coEvery { workspaceRepository.save(any()) } returns workspace.toEntity()
+        coEvery { workspaceMemberRepository.save(any()) } returns mockk()
 
         // When
         workspaceStoreR2dbcRepository.create(workspace)
 
         // Then
         coVerify(exactly = 1) { workspaceRepository.save(workspace.toEntity()) }
+        // Verify that each member is saved
+        workspace.members.forEach { memberId ->
+            coVerify(exactly = 1) {
+                workspaceMemberRepository.save(match {
+                    it.workspaceId == workspace.id.value && it.userId == memberId.value
+                })
+            }
+        }
     }
 
     @Test
     fun `should handle duplicate workspace creation gracefully`(): Unit = runBlocking {
         // Given
         coEvery { workspaceRepository.save(any()) } throws DuplicateKeyException("Duplicate key")
+        coEvery { workspaceMemberRepository.save(any()) } returns mockk()
 
         // When / Then
         assertThrows<WorkspaceException> {

@@ -8,10 +8,10 @@ import com.hatchgrid.common.domain.bus.event.BaseDomainEvent
  *
  * @property id The unique identifier of the workspace that was updated.
  * @property workspaceName The new name of the workspace after the update.
- * @property userId The unique identifier of the user who updated the workspace.
+ * @property ownerId The unique identifier of the user who owns the workspace.
  */
 data class WorkspaceUpdatedEvent(
     val id: String,
     val workspaceName: String,
-    val userId: String
+    val ownerId: String
 ) : BaseDomainEvent()

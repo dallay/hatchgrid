@@ -55,7 +55,7 @@ class CreateWorkspaceController(
                 request.ownerId,
             ),
         )
-        return ResponseEntity.created(URI.create("/api/workspace")).build()
+        return ResponseEntity.created(URI.create("/api/workspace/$safeId")).build()
     }
 
     companion object {

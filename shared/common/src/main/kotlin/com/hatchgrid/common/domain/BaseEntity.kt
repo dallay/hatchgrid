@@ -5,25 +5,43 @@ import java.io.Serializable
 import java.time.LocalDateTime
 
 /**
- * A base class for entities with a generic identifier.
+ * Abstract base class for all domain entities.
+ * It provides common properties for identification, auditing, and domain event management.
  *
- * @param ID the type of the identifier
- * @property id The unique identifier of the entity.
+ * @param ID The type of the unique identifier for the entity.
  */
 abstract class BaseEntity<ID> : Serializable {
     abstract val id: ID
     open val createdAt: LocalDateTime = LocalDateTime.now()
+    open val createdBy: String = "system"
     open var updatedAt: LocalDateTime? = null
+    open var updatedBy: String? = null
     private val domainEvents: MutableList<DomainEvent> = mutableListOf()
 
+    /**
+     * Records a domain event associated with this entity.
+     *
+     * @param event The [DomainEvent] to record.
+     */
     fun record(event: DomainEvent) = domainEvents.add(event)
+
+    /**
+     * Retrieves all recorded domain events and clears the internal list.
+     * This is typically called by the persistence layer to dispatch events.
+     *
+     * @return A list of [DomainEvent]s.
+     */
     fun pullDomainEvents(): List<DomainEvent> {
         val events = domainEvents.toList()
         clearDomainEvents()
         return events
     }
 
+    /**
+     * Clears all domain events from the internal list.
+     */
     private fun clearDomainEvents() = domainEvents.clear()
+
     @Generated
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

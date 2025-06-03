@@ -8,15 +8,18 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toDomain
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toEntity
+import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceMemberR2dbcRepository
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceR2dbcRepository
 import kotlinx.coroutines.flow.toList
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
 class WorkspaceStoreR2DbcRepository(
-    private val workspaceRepository: WorkspaceR2dbcRepository
+    private val workspaceRepository: WorkspaceR2dbcRepository,
+    private val workspaceMemberRepository: WorkspaceMemberR2dbcRepository
 ) : WorkspaceRepository,
     WorkspaceFinderRepository{
 
@@ -25,13 +28,29 @@ class WorkspaceStoreR2DbcRepository(
      *
      * @param workspace The workspace to be created.
      */
+    @Transactional("connectionFactoryTransactionManager")
     override suspend fun create(workspace: Workspace) {
         log.debug("Creating workspace with id: {}", workspace.id)
-        try {
-            workspaceRepository.save(workspace.toEntity())
-        } catch (e: DuplicateKeyException) {
-            log.error("Workspace already exists in the database: ${workspace.id.value}")
-            throw WorkspaceException("Error creating workspace", e)
+        // Idempotent create: skip if workspace exists
+        val existing = workspaceRepository.findById(workspace.id.value)
+        if (existing == null) {
+            // Save the new workspace entity
+            val workspaceEntity = workspace.toEntity()
+            workspaceRepository.save(workspaceEntity)
+        }
+        // Insert workspace members if not already present
+        for (memberId in workspace.members) {
+            val exists = workspaceMemberRepository.existsByWorkspaceIdAndUserId(
+                workspaceId = workspace.id.value,
+                userId = memberId.value
+            )
+            if (!exists) {
+                workspaceMemberRepository.insertWorkspaceMember(
+                    workspaceId = workspace.id.value,
+                    userId = memberId.value,
+                    createdBy = workspace.createdBy
+                )
+            }
         }
     }
 
@@ -40,12 +59,13 @@ class WorkspaceStoreR2DbcRepository(
      *
      * @param workspace The workspace to be updated.
      */
+    @Transactional("connectionFactoryTransactionManager")
     override suspend fun update(workspace: Workspace) {
         log.debug("Updating workspace with id: {}", workspace.id)
         try {
             // First, find the existing entity to preserve fields like createdBy
             val existingEntity = workspaceRepository.findById(workspace.id.value)
-                ?: throw WorkspaceException("Workspace not found for update")
+                ?: throw WorkspaceException("Workspace not found for update: ${workspace.id.value}")
 
             // Create a new entity with updated fields but preserve createdBy and other fields
             val updatedEntity = existingEntity.copy(

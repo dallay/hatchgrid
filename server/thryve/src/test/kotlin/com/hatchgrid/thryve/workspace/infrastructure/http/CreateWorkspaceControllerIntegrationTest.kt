@@ -13,16 +13,48 @@ private const val ENDPOINT = "/api/workspace"
 
 internal class CreateWorkspaceControllerIntegrationTest : ControllerIntegrationTest() {
     @Test
+    @Sql(
+        "/db/workspace/all-workspaces.sql"
+    )
+    @Sql(
+        "/db/workspace/clean.sql",
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+    )
     fun `should create a new workspace`() {
-        val request: CreateWorkspaceRequest = WorkspaceStub.generateRequest()
+        // Use a fixed user ID that exists in the database for testing
+        val ownerId = "efc4b2b8-08be-4020-93d5-f795762bf5c9" // This ID is from workspace.sql
+        val request = CreateWorkspaceRequest(
+            name = "Test Workspace",
+            description = "Test Description",
+            ownerId = ownerId
+        )
         val id = UUID.randomUUID().toString()
-        webTestClient.mutateWith(csrf()).put()
-            .uri("$ENDPOINT/$id")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(request)
-            .exchange()
-            .expectStatus().isCreated
-            .expectBody().isEmpty
+        println("[DEBUG_LOG] Creating workspace with ID: $id and request: $request")
+
+        try {
+            val response = webTestClient.mutateWith(csrf()).put()
+                .uri("$ENDPOINT/$id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectBody(String::class.java)
+                .returnResult()
+
+            println("[DEBUG_LOG] Response status: ${response.status}")
+            println("[DEBUG_LOG] Response body: ${response.responseBody}")
+
+            webTestClient.mutateWith(csrf()).put()
+                .uri("$ENDPOINT/$id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isCreated
+                .expectBody().isEmpty
+        } catch (e: Exception) {
+            println("[DEBUG_LOG] Exception: ${e.message}")
+            e.printStackTrace()
+            throw e
+        }
     }
 
     @Test

@@ -2,12 +2,14 @@ package com.hatchgrid.thryve.workspace.infrastructure.persistence.repository
 
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.entity.WorkspaceMemberEntity
 import java.util.*
+import org.springframework.data.r2dbc.repository.Modifying
 import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 import org.springframework.stereotype.Repository
 
 /**
  * R2DBC repository for workspace members.
+ * Note: Using custom queries due to composite key limitations in Spring Data R2DBC.
  */
 @Repository
 interface WorkspaceMemberR2dbcRepository : CoroutineCrudRepository<WorkspaceMemberEntity, UUID> {
@@ -36,4 +38,36 @@ interface WorkspaceMemberR2dbcRepository : CoroutineCrudRepository<WorkspaceMemb
      */
     @Query("SELECT EXISTS(SELECT 1 FROM workspace_members WHERE workspace_id = :workspaceId AND user_id = :userId)")
     suspend fun existsByWorkspaceIdAndUserId(workspaceId: UUID, userId: UUID): Boolean
+
+    /**
+     * Inserts a workspace member using a custom query.
+     * This is needed due to composite key limitations in Spring Data R2DBC.
+     *
+     * @param workspaceId The ID of the workspace.
+     * @param userId The ID of the user.
+     * @param createdBy The user who created this membership.
+     * @return The number of affected rows.
+     */
+    @Modifying
+    @Query("""
+        INSERT INTO workspace_members (workspace_id, user_id, created_by, created_at)
+        VALUES (:workspaceId, :userId, :createdBy, CURRENT_TIMESTAMP)
+    """)
+    suspend fun insertWorkspaceMember(
+        workspaceId: UUID,
+        userId: UUID,
+        createdBy: String
+    ): Int
+
+    /**
+     * Deletes a workspace member using a custom query.
+     * This is needed due to composite key limitations in Spring Data R2DBC.
+     *
+     * @param workspaceId The ID of the workspace.
+     * @param userId The ID of the user.
+     * @return The number of affected rows.
+     */
+    @Modifying
+    @Query("DELETE FROM workspace_members WHERE workspace_id = :workspaceId AND user_id = :userId")
+    suspend fun deleteByWorkspaceIdAndUserId(workspaceId: UUID, userId: UUID): Int
 }

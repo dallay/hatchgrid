@@ -26,7 +26,9 @@ data class Workspace(
     val ownerId: UserId,
     val members: MutableSet<UserId> = mutableSetOf(),
     override val createdAt: LocalDateTime = LocalDateTime.now(),
-    override var updatedAt: LocalDateTime? = createdAt
+    override val createdBy: String = "system",
+    override var updatedAt: LocalDateTime? = createdAt,
+    override var updatedBy: String? = null
 ) : AggregateRoot<WorkspaceId>() {
 
     init {
@@ -88,7 +90,7 @@ data class Workspace(
             WorkspaceUpdatedEvent(
                 id = this.id.value.toString(),
                 workspaceName = this.name,
-                userId = this.ownerId.value.toString()
+                ownerId = this.ownerId.value.toString()
             )
         )
     }
@@ -124,7 +126,7 @@ data class Workspace(
                 WorkspaceCreatedEvent(
                     id = workspace.id.value.toString(),
                     workspaceName = workspace.name,
-                    userId = workspace.ownerId.value.toString()
+                    ownerId = workspace.ownerId.value.toString()
                 )
             )
 

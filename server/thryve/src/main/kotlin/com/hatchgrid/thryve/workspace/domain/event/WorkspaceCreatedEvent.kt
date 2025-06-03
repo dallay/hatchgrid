@@ -8,11 +8,11 @@ import com.hatchgrid.common.domain.bus.event.BaseDomainEvent
  *
  * @property id The unique identifier of the workspace that was created.
  * @property workspaceName The name of the workspace that was created.
- * @property userId The unique identifier of the user who created the workspace.
+ * @property ownerId The unique identifier of the user who created the workspace.
  */
 data class WorkspaceCreatedEvent(
     val id: String,
     val workspaceName: String,
-    val userId: String
+    val ownerId: String
 ) :
     BaseDomainEvent()

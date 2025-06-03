@@ -21,7 +21,9 @@ object WorkspaceMapper {
         description = description,
         ownerId = ownerId.value,
         createdAt = createdAt,
+        createdBy = createdBy,
         updatedAt = updatedAt,
+        updatedBy = updatedBy,
     )
 
     /**
@@ -36,6 +38,8 @@ object WorkspaceMapper {
         description = description,
         ownerId = UserId(ownerId),
         createdAt = createdAt,
-        updatedAt = updatedAt,
+        createdBy = createdBy,
+        updatedAt = updatedAt ?: createdAt,
+        updatedBy = updatedBy,
     )
 }

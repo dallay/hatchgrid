@@ -38,6 +38,7 @@ databaseChangeLog:
                   type: varchar(50)
                   constraints:
                     nullable: false
+                  defaultValue: 'system'
               - column:
                   name: created_at
                   type: timestamp
@@ -70,6 +71,7 @@ databaseChangeLog:
                   type: varchar(50)
                   constraints:
                     nullable: false
+                  defaultValue: 'system'
               - column:
                   name: created_at
                   type: timestamp

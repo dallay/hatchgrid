@@ -32,7 +32,7 @@ data class WorkspaceEntity(
 
     @CreatedBy
     @Column("created_by")
-    val createdBy: String? = null,
+    override val createdBy: String = "system",
 
     @CreatedDate
     @Column("created_at")
@@ -40,12 +40,12 @@ data class WorkspaceEntity(
 
     @LastModifiedBy
     @Column("updated_by")
-    val updatedBy: String? = null,
+    override var updatedBy: String? = null,
 
     @LastModifiedDate
     @Column("updated_at")
     override var updatedAt: LocalDateTime? = null
-) : AuditableEntity(createdAt, updatedAt), Persistable<UUID> {
+) : AuditableEntity(createdAt, createdBy,updatedAt, updatedBy), Persistable<UUID> {
     /**
      * This method returns the unique identifier of the workspace.
      *
@@ -60,4 +60,3 @@ data class WorkspaceEntity(
      */
     override fun isNew(): Boolean = createdAt == updatedAt
 }
-
