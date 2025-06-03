@@ -1,0 +1,15 @@
+{
+  "title": "Creador",
+  "description": "Automatiza tu contenido y haz crecer tu audiencia.",
+  "price": 19,
+  "interval": "month",
+  "features": [
+    { "text": "Hasta 5,000 suscriptores" },
+    { "text": "Múltiples formularios y etiquetas" },
+    { "text": "Automatización de bienvenida" },
+    { "text": "Sin marca Hatchgrid" },
+    { "text": "Análisis de apertura y clics" }
+  ],
+  "highlighted": true,
+  "order": 1
+}

@@ -1,0 +1,31 @@
+---
+title: Designing the Subscriber Model for a SaaS Product
+description: How we approached modeling subscriber data in Hatchgrid to support flexibility, security, and growth.
+date: 2025-05-31T11:00:00
+lastModified: 2025-05-31T11:00:00
+author: en/yuniel-acosta
+cover: src/assets/images/blog-placeholder-1.avif
+tags:
+  - en/startups
+  - en/mvp
+  - en/engineering
+category: en/startups
+draft: false
+---
+
+One of the most foundational parts of Hatchgrid is the subscriber model. From tagging to segmentation to automation — everything starts with how we store and manage subscribers.
+
+## Goals of the Model
+
+- Support multi-tenancy (1 org, many subscribers)
+- Enable tagging and segmentation
+- Enforce row-level security for data isolation
+- Track metadata (status, custom attributes)
+
+## Enum and RLS by Default
+We use PostgreSQL with enums for `subscriber_status` (ENABLED, DISABLED, BLOCKLISTED) and RLS policies based on `current_setting('lyra.current_organization')` to isolate each creator’s data.
+
+## Tagging and Attributes
+Subscribers are associated with tags via a many-to-many table. Attributes are stored as JSON to allow flexibility in extending without schema changes.
+
+This structure allows us to ship fast while keeping things secure, scalable, and adaptable.

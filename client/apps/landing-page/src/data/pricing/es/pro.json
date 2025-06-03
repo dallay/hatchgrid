@@ -1,0 +1,14 @@
+{
+  "title": "Pro",
+  "description": "Para creadores con comunidades grandes o productos.",
+  "price": 49,
+  "interval": "month",
+  "features": [
+    { "text": "Hasta 20,000 suscriptores" },
+    { "text": "Integración con Stripe" },
+    { "text": "Secuencias avanzadas (drip campaigns)" },
+    { "text": "Soporte prioritario" },
+    { "text": "Dominio de envío personalizado" }
+  ],
+  "order": 2
+}

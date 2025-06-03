@@ -1,0 +1,38 @@
+---
+import { getPricingPlans } from '@/models/pricing/pricing.service';
+import type { Lang } from "@/i18n";
+
+const lang = Astro.currentLocale as Lang;
+const plans = await getPricingPlans({ lang });
+---
+
+<html>
+<head>
+    <title>Pricing Test</title>
+</head>
+<body>
+    <h1>Pricing Plans Test</h1>
+    <p>Language: {lang}</p>
+    <p>Number of plans found: {plans.length}</p>
+
+    <div>
+        {plans.map((plan) => (
+            <div style="border: 1px solid #ccc; margin: 10px; padding: 10px;">
+                <h3>{plan.title}</h3>
+                <p>{plan.description}</p>
+                <p>Price: ${plan.price}/{plan.interval}</p>
+                <p>Order: {plan.order}</p>
+                <p>Highlighted: {plan.highlighted ? 'Yes' : 'No'}</p>
+                <ul>
+                    {plan.features.map((feature) => (
+                        <li>
+                            {feature.text}
+                            {feature.value && <span> - {feature.value}</span>}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        ))}
+    </div>
+</body>
+</html>

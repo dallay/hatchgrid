@@ -20,11 +20,12 @@ export function toAuthor(authorData: CollectionEntry<"authors">): Author {
 	return {
 		id: authorData.id,
 		name: data.name,
-		email: data.email ?? "", // Provide default for optional fields
-		avatar: data.avatar ?? "", // Provide default for optional fields
-		bio: data.bio ?? "", // Provide default for optional fields
-		location: data.location ?? "", // Provide default for optional fields
-		socials: data.socials ?? [], // Provide default for optional fields
+		email: data.email ?? "", 
+		avatar: data.avatar ?? "",
+		bio: data.bio ?? "",
+		location: data.location ?? "",
+		role: data.role ?? "",
+		socials: data.socials ?? [],
 	};
 }
 

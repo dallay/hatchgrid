@@ -6,6 +6,8 @@ import type { Lang } from "@/i18n";
 export interface AuthorCriteria {
 	lang?: Lang;
 	name?: string;
+  email?: string;
+  role?: string;
 	location?: string;
 	hasArticles?: boolean;
 }
