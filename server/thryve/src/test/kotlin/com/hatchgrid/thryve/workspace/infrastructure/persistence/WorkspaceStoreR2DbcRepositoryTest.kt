@@ -1,14 +1,13 @@
 package com.hatchgrid.thryve.workspace.infrastructure.persistence
 
 import com.hatchgrid.UnitTest
+import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.workspace.WorkspaceStub
 import com.hatchgrid.thryve.workspace.domain.Workspace
 import com.hatchgrid.thryve.workspace.domain.WorkspaceException
-import com.hatchgrid.thryve.workspace.infrastructure.persistence.entity.WorkspaceMemberEntity
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toEntity
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceMemberR2dbcRepository
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceR2dbcRepository
-import com.hatchgrid.thryve.users.domain.UserId
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

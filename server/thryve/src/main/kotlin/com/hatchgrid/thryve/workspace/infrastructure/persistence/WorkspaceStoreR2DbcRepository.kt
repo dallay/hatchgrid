@@ -6,6 +6,7 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceException
 import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
+import com.hatchgrid.thryve.workspace.infrastructure.persistence.entity.WorkspaceMemberEntity
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toDomain
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toEntity
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceMemberR2dbcRepository
@@ -13,6 +14,7 @@ import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.Work
 import kotlinx.coroutines.flow.toList
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DuplicateKeyException
+import org.springframework.dao.TransientDataAccessResourceException
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
@@ -31,26 +33,21 @@ class WorkspaceStoreR2DbcRepository(
     @Transactional("connectionFactoryTransactionManager")
     override suspend fun create(workspace: Workspace) {
         log.debug("Creating workspace with id: {}", workspace.id)
-        // Idempotent create: skip if workspace exists
-        val existing = workspaceRepository.findById(workspace.id.value)
-        if (existing == null) {
-            // Save the new workspace entity
-            val workspaceEntity = workspace.toEntity()
-            workspaceRepository.save(workspaceEntity)
-        }
-        // Insert workspace members if not already present
-        for (memberId in workspace.members) {
-            val exists = workspaceMemberRepository.existsByWorkspaceIdAndUserId(
-                workspaceId = workspace.id.value,
-                userId = memberId.value
-            )
-            if (!exists) {
-                workspaceMemberRepository.insertWorkspaceMember(
-                    workspaceId = workspace.id.value,
-                    userId = memberId.value,
-                    role = "EDITOR" // TODO: Default role, can be changed later
+        try {
+            // Save workspace
+            workspaceRepository.save(workspace.toEntity())
+            // Save each member
+            workspace.members.forEach { memberId ->
+                workspaceMemberRepository.save(
+                    WorkspaceMemberEntity(
+                        workspaceId = workspace.id.value,
+                        userId = memberId.value
+                    )
                 )
             }
+        } catch (e: DuplicateKeyException) {
+            log.error("Error creating workspace with id: {}", workspace.id, e)
+            throw WorkspaceException("Error creating workspace", e)
         }
     }
 
@@ -63,23 +60,13 @@ class WorkspaceStoreR2DbcRepository(
     override suspend fun update(workspace: Workspace) {
         log.debug("Updating workspace with id: {}", workspace.id)
         try {
-            // First, find the existing entity to preserve fields like createdBy
-            val existingEntity = workspaceRepository.findById(workspace.id.value)
-                ?: throw WorkspaceException("Workspace not found for update: ${workspace.id.value}")
-
-            // Create a new entity with updated fields but preserve createdBy and other fields
-            val updatedEntity = existingEntity.copy(
-                name = workspace.name,
-                description = workspace.description,
-                updatedAt = workspace.updatedAt
-            )
-
-            workspaceRepository.save(updatedEntity)
+            // Update workspace
+            workspaceRepository.save(workspace.toEntity())
         } catch (e: DuplicateKeyException) {
-            log.error("Workspace already exists in the database: {}", workspace.id.value)
+            log.error("Error updating workspace with id: {}", workspace.id, e)
             throw WorkspaceException("Error updating workspace", e)
-        } catch (e: org.springframework.dao.TransientDataAccessResourceException) {
-            log.error("Error updating form with id: ${workspace.id.value}")
+        } catch (e: TransientDataAccessResourceException) {
+            log.error("Error updating workspace with id: {}", workspace.id, e)
             throw WorkspaceException("Error updating form because it does not exist", e)
         }
     }
