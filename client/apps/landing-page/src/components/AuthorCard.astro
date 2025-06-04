@@ -24,12 +24,12 @@ const sizeClasses = {
 };
 
 const textSizes = {
-    sm: { name: 'text-sm font-semibold text-white', bio: 'text-xs text-gray-400' },
-    md: { name: 'font-semibold text-white', bio: 'text-xs text-gray-400' },
-    lg: { name: 'text-base font-semibold text-white', bio: 'text-sm text-gray-400' }
+    sm: { name: 'text-sm font-semibold text-gray-900 dark:text-white', bio: 'text-xs text-gray-600 dark:text-gray-400' },
+    md: { name: 'font-semibold text-gray-900 dark:text-white', bio: 'text-xs text-gray-600 dark:text-gray-400' },
+    lg: { name: 'text-base font-semibold text-gray-900 dark:text-white', bio: 'text-sm text-gray-600 dark:text-gray-400' }
 };
 
-const avatarClasses = `${sizeClasses[size]} mr-3 relative flex shrink-0 overflow-hidden rounded-full border border-gray-200 bg-gray-100`;
+const avatarClasses = `${sizeClasses[size]} mr-3 relative flex shrink-0 overflow-hidden rounded-full border bg-gray-100 border-[var(--border)] dark:bg-gray-700 dark:border-gray-600`;
 const nameClasses = textSizes[size].name;
 const bioClasses = textSizes[size].bio;
 ---
@@ -46,7 +46,7 @@ const bioClasses = textSizes[size].bio;
                     class="aspect-square h-full w-full object-cover"
                 />
             ) : (
-                <div class="flex h-full w-full items-center justify-center bg-gray-200 text-gray-600 font-medium text-sm">
+                <div class="flex h-full w-full items-center justify-center bg-gray-200 text-gray-600 dark:bg-gray-600 dark:text-gray-300 font-medium text-sm">
                     {getInitials(author.name)}
                 </div>
             )}

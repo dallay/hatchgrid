@@ -70,7 +70,7 @@ const getLinkClass = (href: string) => {
                   <a :href="translatePath(item.href)">{{ t(item.translationKey) }}</a>
                 </Button>
                 <div v-if="item.type === 'dropdown'">
-                  <p class="px-4 py-2 font-semibold text-base">{{ t(item.translationKey) }}</p>
+                  <p class="px-4 py-2 font-semibold text-base text-gray-800 dark:text-gray-200">{{ t(item.translationKey) }}</p>
                   <!-- Iterate over children of DropdownMenuItem -->
                   <template v-for="child in item.children" :key="child.translationKey">
                     <!-- Add a type guard for child items -->

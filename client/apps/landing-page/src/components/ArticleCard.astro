@@ -33,7 +33,7 @@ if (!article.entry) {
 const { remarkPluginFrontmatter } = await render(article.entry);
 ---
 
-<Card class="group flex flex-col h-full overflow-hidden p-0 bg-slate-800 border-slate-700 hover:bg-slate-750 transition-all duration-300">
+<Card class="group flex flex-col h-full overflow-hidden p-0 bg-[var(--card)] border-[var(--border)] hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-750 transition-all duration-300">
     <a href={blogUrl} class="block">
         {article.cover && (
             <div class="w-full h-48 md:h-56 overflow-hidden">
@@ -55,16 +55,16 @@ const { remarkPluginFrontmatter } = await render(article.entry);
                 </Badge>
             )}
             <div class="flex items-center justify-between mb-2 text-sm">
-                <FormattedDate date={article.date} class="text-gray-400 text-sm" />
-                <ReadingTime readingTime={remarkPluginFrontmatter.minutesRead} class="text-gray-400 text-sm" />
+                <FormattedDate date={article.date} class="text-[var(--muted-foreground)] dark:text-gray-400 text-sm" />
+                <ReadingTime readingTime={remarkPluginFrontmatter.minutesRead} class="text-[var(--muted-foreground)] dark:text-gray-400 text-sm" />
             </div>
-            <CardTitle class="text-xl md:text-2xl font-bold text-white group-hover:text-blue-300 transition-colors line-clamp-2">
+            <CardTitle class="text-xl md:text-2xl font-bold text-[var(--card-foreground)] group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-300 transition-colors line-clamp-2">
                 {article.title}
             </CardTitle>
         </CardHeader>
         <CardContent class="p-6 pt-0 flex-grow">
             {article.description && (
-                <CardDescription class="text-gray-300 text-base line-clamp-3 mb-4">
+                <CardDescription class="text-[var(--muted-foreground)] dark:text-gray-300 text-base line-clamp-3 mb-4">
                     {article.description}
                 </CardDescription>
             )}
