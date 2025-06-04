@@ -44,10 +44,11 @@ class GetAllWorkspaceController(
     suspend fun findAll(): Response {
         val authentication = authentication()
         val jwt = authentication?.principal as? Jwt
-        val userId = jwt?.claims?.get("sub") as? String
+            ?: return QueryResponse("Authentication required")
+        val userId = jwt.claims["sub"] as? String
         log.debug("Get All workspaces for user: {}", userId)
-        if (userId == null) {
-            return QueryResponse("User not found")
+        if (userId.isNullOrBlank()) {
+            return QueryResponse("Invalid authentication")
         }
         val response = ask(
             AllWorkspaceByMemberQuery(userId),
