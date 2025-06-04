@@ -125,7 +125,7 @@ data class Workspace(
             workspace.record(
                 WorkspaceCreatedEvent(
                     id = workspace.id.value.toString(),
-                    workspaceName = workspace.name,
+                    name = workspace.name,
                     ownerId = workspace.ownerId.value.toString()
                 )
             )
