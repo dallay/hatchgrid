@@ -3,6 +3,7 @@ package com.hatchgrid.thryve.workspace.infrastructure.http
 import com.hatchgrid.thryve.workspace.application.create.CreateWorkspaceCommand
 import com.hatchgrid.thryve.workspace.infrastructure.http.request.CreateWorkspaceRequest
 import com.hatchgrid.common.domain.bus.Mediator
+import com.hatchgrid.common.domain.bus.command.CommandHandlerExecutionError
 import com.hatchgrid.spring.boot.ApiController
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -60,15 +61,20 @@ class CreateWorkspaceController(
     ): ResponseEntity<String> {
         val safeId = sanitizePathVariable(id)
         log.debug("Creating Workspace with ID: {}", safeId)
-        dispatch(
-            CreateWorkspaceCommand(
-                safeId,
-                request.name,
-                request.description,
-                request.ownerId,
-            ),
-        )
-        return ResponseEntity.created(URI.create("/api/workspace/$safeId")).build()
+        try {
+            dispatch(
+                CreateWorkspaceCommand(
+                    safeId,
+                    request.name,
+                    request.description,
+                    request.ownerId,
+                ),
+            )
+            return ResponseEntity.created(URI.create("/api/workspace/$safeId")).build()
+        } catch (e: CommandHandlerExecutionError) {
+            log.error("Error creating workspace with ID: {}", id, e)
+            throw e
+        }
     }
 
     companion object {
