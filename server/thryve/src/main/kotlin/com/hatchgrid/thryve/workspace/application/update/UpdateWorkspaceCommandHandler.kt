@@ -22,8 +22,17 @@ class UpdateWorkspaceCommandHandler(
      * @param command The [UpdateWorkspaceCommand] that triggers the update operation.
      */
     override suspend fun handle(command: UpdateWorkspaceCommand) {
+        require(command.id.isNotBlank()) { "Workspace ID cannot be blank" }
+        require(command.name.isNotBlank()) { "Workspace name cannot be blank" }
+
         log.debug("Updating workspace with id: ${command.id}")
-        workspaceUpdater.update(command.id, command.name, command.description)
+        try {
+            workspaceUpdater.update(command.id, command.name, command.description)
+            log.info("Successfully updated workspace with id: ${command.id}")
+        } catch (exception: Exception) {
+            log.error("Failed to update workspace with id: ${command.id}", exception)
+            throw exception
+        }
     }
 
     companion object {
