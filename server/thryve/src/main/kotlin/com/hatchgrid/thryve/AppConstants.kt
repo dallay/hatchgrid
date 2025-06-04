@@ -13,10 +13,10 @@ object AppConstants {
 
     object Paths {
         const val API = "/api"
-        const val ORGANIZATIONS = "/workspace"
-        const val FORMS = "$ORGANIZATIONS/{workspaceId}/form"
-        const val FORMS_ID = "$ORGANIZATIONS/{workspaceId}/form/{formId}"
-        const val SUBSCRIBER = "$ORGANIZATIONS/{workspaceId}/newsletter/subscriber"
-        const val TAG = "$ORGANIZATIONS/{workspaceId}/tag"
+        const val WORKSPACE = "/workspace"
+        const val FORMS = "$WORKSPACE/{workspaceId}/form"
+        const val FORMS_ID = "$WORKSPACE/{workspaceId}/form/{formId}"
+        const val SUBSCRIBER = "$WORKSPACE/{workspaceId}/newsletter/subscriber"
+        const val TAG = "$WORKSPACE/{workspaceId}/tag"
     }
 }
