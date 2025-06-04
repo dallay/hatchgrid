@@ -8,6 +8,7 @@ import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.event.EventBroadcaster
 import com.hatchgrid.common.domain.bus.event.EventPublisher
 import com.hatchgrid.thryve.workspace.domain.WorkspaceNotFoundException
+import com.hatchgrid.thryve.workspace.domain.event.WorkspaceCreatedEvent
 import org.slf4j.LoggerFactory
 
 /**
@@ -46,7 +47,10 @@ class WorkspaceUpdater(
         workspaceRepository.update(workspace)
         val domainEvents = workspace.pullDomainEvents()
         domainEvents.forEach {
-            eventPublisher.publish(it as WorkspaceUpdatedEvent)
+            require(it is WorkspaceUpdatedEvent) {
+                "Unexpected domain event type: ${it::class.simpleName}"
+            }
+            eventPublisher.publish(it)
         }
     }
 

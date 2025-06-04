@@ -28,7 +28,7 @@ internal class AllWorkspaceByMemberQueryHandlerTest {
         finder = AllWorkspaceByMemberFinder(repository)
         handler = AllWorkspaceByMemberQueryHandler(finder)
         workspaces = WorkspaceStub.dummyRandomWorkspaces(6)
-        userId = UserId(UUID.randomUUID().toString())
+        userId = UserId(UUID.randomUUID())
 
         coEvery { repository.findByMemberId(userId) } returns workspaces
     }

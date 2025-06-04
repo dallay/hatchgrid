@@ -38,7 +38,10 @@ class WorkspaceCreator(
         workspaceRepository.create(workspace)
         val domainEvents = workspace.pullDomainEvents()
         domainEvents.forEach {
-            eventPublisher.publish(it as WorkspaceCreatedEvent)
+            require(it is WorkspaceCreatedEvent) {
+                "Unexpected domain event type: ${it::class.simpleName}"
+            }
+            eventPublisher.publish(it)
         }
     }
 
