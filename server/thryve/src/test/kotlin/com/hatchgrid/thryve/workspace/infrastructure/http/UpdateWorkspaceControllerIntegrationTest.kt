@@ -8,8 +8,6 @@ import org.springframework.http.MediaType
 import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf
 import org.springframework.test.context.jdbc.Sql
 
-private const val ENDPOINT = "/api/workspace/update"
-
 internal class UpdateWorkspaceControllerIntegrationTest : ControllerIntegrationTest() {
 
     @Test
@@ -26,7 +24,7 @@ internal class UpdateWorkspaceControllerIntegrationTest : ControllerIntegrationT
         val id = "a0654720-35dc-49d0-b508-1f7df5d915f1"
         val request = WorkspaceStub.generateUpdateRequest()
         webTestClient.mutateWith(csrf()).put()
-            .uri("$ENDPOINT/$id")
+            .uri("/api/workspace/$id/update")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(request)
             .exchange()
@@ -49,7 +47,7 @@ internal class UpdateWorkspaceControllerIntegrationTest : ControllerIntegrationT
         val id = "a0654720-35dc-49d0-b508-1f7df5d915f2"
         val request = WorkspaceStub.generateUpdateRequest()
         webTestClient.mutateWith(csrf()).put()
-            .uri("$ENDPOINT/$id")
+            .uri("/api/workspace/$id/update")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(request)
             .exchange()
@@ -60,7 +58,7 @@ internal class UpdateWorkspaceControllerIntegrationTest : ControllerIntegrationT
             .jsonPath("$.status").isEqualTo(404)
             .jsonPath("$.detail").isEqualTo("Workspace not found")
             .jsonPath("$.instance")
-            .isEqualTo("$ENDPOINT/$id")
+            .isEqualTo("/api/workspace/$id/update")
             .jsonPath("$.errorCategory").isEqualTo("NOT_FOUND")
             .jsonPath("$.timestamp").isNotEmpty
             .consumeWith { response ->

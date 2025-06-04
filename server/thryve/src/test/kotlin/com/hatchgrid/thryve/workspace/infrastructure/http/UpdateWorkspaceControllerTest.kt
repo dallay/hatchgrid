@@ -37,7 +37,7 @@ internal class UpdateWorkspaceControllerTest : ControllerTest() {
         )
 
         webTestClient.put()
-            .uri("/api/workspace/update/$id")
+            .uri("/api/workspace/$id/update")
             .bodyValue(request)
             .exchange()
             .expectStatus().isOk

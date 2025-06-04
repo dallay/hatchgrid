@@ -45,7 +45,7 @@ class UpdateWorkspaceController(
         ApiResponse(responseCode = "400", description = "Bad request error (validation error)"),
         ApiResponse(responseCode = "500", description = "Internal server error"),
     )
-    @PutMapping("/workspace/update/{id}")
+    @PutMapping("/workspace/{id}/update")
     suspend fun update(
         @Parameter(
             description = "ID of the workspace to be found",
