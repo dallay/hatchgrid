@@ -25,14 +25,28 @@ class CreateWorkspaceCommandHandler(
      * @param command The [CreateWorkspaceCommand] containing the information needed to create a workspace.
      */
     override suspend fun handle(command: CreateWorkspaceCommand) {
+        require(command.name.isNotBlank()) { "Workspace name cannot be blank" }
+
         log.debug("Creating workspace with name: ${command.name}")
-        val workspace = Workspace.create(
-            id = UUID.fromString(command.id),
-            name = command.name,
-            description = command.description,
-            ownerId = UUID.fromString(command.ownerId),
-        )
-        workspaceCreator.create(workspace)
+        try {
+            val workspaceId = UUID.fromString(command.id)
+            val ownerId = UUID.fromString(command.ownerId)
+
+            val workspace = Workspace.create(
+                id = workspaceId,
+                name = command.name,
+                description = command.description,
+                ownerId = ownerId,
+            )
+            workspaceCreator.create(workspace)
+            log.info("Successfully created workspace with id: ${command.id}")
+        } catch (exception: IllegalArgumentException) {
+            log.error("Invalid UUID format in create workspace command: ${exception.message}")
+            throw IllegalArgumentException("Invalid workspace or owner ID format", exception)
+        } catch (exception: Exception) {
+            log.error("Failed to create workspace with name: ${command.name}", exception)
+            throw exception
+        }
     }
 
     companion object {
