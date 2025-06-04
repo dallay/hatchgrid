@@ -56,6 +56,7 @@ export default interface Author {
 	email: string;
 	avatar: string;
 	bio: string;
+	role: string;
 	location: string;
 	socials: Social[];
 }

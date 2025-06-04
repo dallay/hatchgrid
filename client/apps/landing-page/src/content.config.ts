@@ -7,7 +7,7 @@ import {
 import { glob } from "astro/loaders";
 
 const articles = defineCollection({
-	loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/data/articles" }),
+	loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/data/blog" }),
 	schema: ({ image }: SchemaContext) =>
 		z.object({
 			title: z.string(),
@@ -48,6 +48,7 @@ const authors = defineCollection({
 		email: z.string(),
 		avatar: z.string(),
 		bio: z.string(),
+    role: z.string(),
 		location: z.string().optional(),
 		socials: z
 			.array(
@@ -62,4 +63,31 @@ const authors = defineCollection({
 	}),
 });
 
-export const collections = { articles, tags, categories, authors };
+const pricing = defineCollection({
+	loader: glob({ pattern: "**/**/*.{json,yml,yaml}", base: "./src/data/pricing" }),
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		price: z.number(),
+		interval: z.enum(["month", "year"]).default("month"),
+		features: z.array(
+			z.object({
+				text: z.string(),
+				value: z.string().optional(),
+			})
+		),
+		highlighted: z.boolean().optional().default(false),
+		order: z.number().optional().default(0),
+		draft: z.boolean().optional().default(false),
+	}),
+});
+
+const faq = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.md", base: "./src/data/faq" }),
+  schema: z.object({
+    question: z.string(),
+    date: z.coerce.date(),
+  }),
+});
+
+export const collections = { articles, tags, categories, authors, pricing, faq };

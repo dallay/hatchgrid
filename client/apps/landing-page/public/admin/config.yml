@@ -4,7 +4,7 @@ logo_url: /favicon.svg
 
 backend:
   name: github
-  repo: yacosta738/astro-cms
+  repo: dallay/hatchgrid
   branch: main
   base_url: https://sveltia-cms-auth.yunielacosta738.workers.dev/
 
@@ -16,20 +16,20 @@ slug:
   sanitize_replacement: '-'
 
 
-media_folder: "src/assets/images" # Location where files will be stored in the repo
-public_folder: "src/assets/images" # The src attribute for uploaded media
+media_folder: "client/apps/landing-page/src/assets/images" # Location where files will be stored in the repo
+public_folder: "client/apps/landing-page/src/assets/images" # The src attribute for uploaded media
 
 i18n:
   structure: 'multiple_folders'
-  locales: ['en', 'es', 'ar', 'ja', 'zh-cn']
+  locales: ['en', 'es']
   default_locale: 'en'
 
 
 collections:
-  - name: 'posts'
-    label: 'Posts'
-    label_singular: 'Post'
-    folder: 'src/data/blog'
+  - name: 'articles'
+    label: 'Articles'
+    label_singular: 'Article'
+    folder: client/apps/landing-page/src/data/blog
     create: true
     slug: '{{year}}/{{month}}/{{day}}/{{slug}}'
     extension: mdx
@@ -95,7 +95,7 @@ collections:
   - name: categories
     label: Categories
     label_singular: Category
-    folder: src/data/categories
+    folder: client/apps/landing-page/src/data/categories
     slug: '{{title}}'
     create: true
     i18n: true
@@ -118,7 +118,7 @@ collections:
   - name: tags
     label: Tags
     label_singular: Tag
-    folder: src/data/tags
+    folder: client/apps/landing-page/src/data/tags
     slug: '{{title}}'
     create: true
     i18n: true
@@ -131,7 +131,7 @@ collections:
   - name: 'authors'
     label: 'Authors'
     label_singular: 'Author'
-    folder: apps/website/src/data/authors
+    folder: client/apps/landing-page/src/data/authors
     slug: '{{name}}'
     create: true
     extension: json
@@ -152,6 +152,10 @@ collections:
       - name: 'bio'
         widget: 'markdown'
         label: 'Bio'
+        i18n: true
+      - name: role
+        widget: string
+        label: Role
         i18n: true
       - name: location
         widget: string
@@ -179,7 +183,7 @@ collections:
 
   - name: 'page'
     label: 'Pages'
-    folder: apps/website/src/pages
+    folder: client/apps/landing-page/src/pages
     create: true
     slug: '{{slug}}'
     extension: mdx
@@ -196,6 +200,84 @@ collections:
         widget: 'string'
         label: 'Description'
         i18n: true
+      - name: 'body'
+        widget: 'markdown'
+        label: 'Body'
+        i18n: true
+
+  - name: 'pricing'
+    label: 'Pricing Plans'
+    label_singular: 'Pricing Plan'
+    folder: client/apps/landing-page/src/data/pricing
+    create: true
+    slug: '{{title}}'
+    extension: json
+    i18n: true
+    fields:
+      - name: 'title'
+        widget: 'string'
+        label: 'Plan Title'
+        i18n: true
+      - name: 'description'
+        widget: 'string'
+        label: 'Plan Description'
+        i18n: true
+      - name: 'price'
+        widget: 'number'
+        label: 'Price'
+        value_type: 'float'
+        min: 0
+        i18n: 'duplicate'
+      - name: 'interval'
+        widget: 'select'
+        label: 'Billing Interval'
+        options: ['month', 'year']
+        default: 'month'
+        i18n: 'duplicate'
+      - name: 'features'
+        widget: 'list'
+        label: 'Features'
+        i18n: true
+        fields:
+          - name: 'text'
+            widget: 'string'
+            label: 'Feature Text'
+          - name: 'value'
+            widget: 'string'
+            label: 'Feature Value'
+            required: false
+      - name: 'highlighted'
+        widget: 'boolean'
+        label: 'Highlight this plan'
+        required: false
+        default: false
+        i18n: 'duplicate'
+      - name: 'order'
+        widget: 'number'
+        label: 'Display Order'
+        value_type: 'int'
+        min: 0
+        required: false
+        default: 0
+        i18n: 'duplicate'
+
+  - name: 'faq'
+    label: 'FAQ'
+    label_singular: 'FAQ Item'
+    folder: client/apps/landing-page/src/data/faq
+    create: true
+    slug: '{{question}}'
+    extension: md
+    i18n: true
+    fields:
+      - name: 'question'
+        widget: 'string'
+        label: 'Question'
+        i18n: true
+      - name: 'date'
+        widget: 'datetime'
+        label: 'Publish Date'
+        i18n: 'duplicate'
       - name: 'body'
         widget: 'markdown'
         label: 'Body'

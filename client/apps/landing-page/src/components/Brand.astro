@@ -12,16 +12,43 @@ import Logo from "../assets/hatchgrid.svg";
 ---
 
 <a
-	href={translatePath("/")}
-	id="site-title"
-	class={cn(
-      "flex items-center gap-2",
-		"text-xl font-medium text-gray-800 dark:text-white transition-colors",
-		className
-	)}
-	{...attrs}
-	aria-label={t("logo.description")}
+  href={translatePath("/")}
+  id="site-title"
+  class={cn(
+    "items-start gap-1 flex-[0_0_auto] inline-flex relative",
+    "transition-colors",
+    className,
+  )}
+  {...attrs}
+  aria-label={t("logo.description")}
 >
-  <Logo width={32} height={32} fill="currentColor" />
-	{SITE_TITLE}
+  <!-- Logo Icon -->
+  <Logo
+    width={32}
+    height={32}
+    fill="currentColor"
+    class="relative flex-[0_0_auto] text-gray-800 dark:text-white"
+  />
+
+  <!-- Brand Text Container -->
+  <div class="inline-flex flex-col items-end justify-center relative flex-[0_0_auto] -gap-1">
+    <!-- Main Title -->
+    <div
+      class="relative w-fit text-xl font-semibold text-gray-800 dark:text-white whitespace-nowrap"
+    >
+      {SITE_TITLE}
+    </div>
+
+    <!-- Subtitle -->
+    <div
+      class="relative w-fit font-normal text-xs leading-[140%] text-gray-600 dark:text-gray-400 whitespace-nowrap"
+    >
+      {
+        t({
+          en: "for Astrum",
+          es: "por Astrum",
+        })
+      }
+    </div>
+  </div>
 </a>

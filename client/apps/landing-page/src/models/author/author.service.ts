@@ -20,28 +20,38 @@ export const getAuthors = async (
 ): Promise<Author[]> => {
 	const { lang, name, location } = criteria || {};
 
-	const authors = await getCollection("authors", ({ id, data }) => {
-		// Filter by language if provided
-		if (lang) {
-			const authorLang = parseEntityId(id).lang;
-			if (authorLang !== lang) return false;
-		}
+  const authors = await getCollection("authors", ({ id, data }) => {
+    // Filter by language if provided
+    if (lang) {
+      const authorLang = parseEntityId(id).lang;
+      if (authorLang !== lang) return false;
+    }
 
-		// Filter by name if provided
-		if (name && !data.name.toLowerCase().includes(name.toLowerCase())) {
-			return false;
-		}
+    // Filter by name if provided
+    if (name && !data.name.toLowerCase().includes(name.toLowerCase())) {
+      return false;
+    }
 
-		// Filter by location if provided
-		if (
-			location &&
-			!data.location?.toLowerCase().includes(location.toLowerCase())
-		) {
-			return false;
-		}
+    // Filter by email if provided
+    if (criteria?.email && !data.email?.toLowerCase().includes(criteria.email.toLowerCase())) {
+      return false;
+    }
 
-		return true;
-	});
+    // Filter by role if provided
+    if (criteria?.role && !data.role?.toLowerCase().includes(criteria.role.toLowerCase())) {
+      return false;
+    }
+
+    // Filter by location if provided
+    if (
+      location &&
+      !data.location?.toLowerCase().includes(location.toLowerCase())
+    ) {
+      return false;
+    }
+
+    return true;
+  });
 
 	return toAuthors(authors);
 };

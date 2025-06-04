@@ -5,6 +5,14 @@ export const footer: {
 	es: UIDict;
 } = {
 	en: {
+		// Footer description
+		"footer.description": "Hatchgrid is a platform for developers to build and deploy applications with ease.",
+
+		// Footer section headers
+		"footer.company": "Company",
+		"footer.resources": "Resources",
+		"footer.legal": "Legal",
+
 		// Footer navigation items
 		"footer.about": "About Us",
 		"footer.aria.about": "Go to About Us page",
@@ -24,6 +32,14 @@ export const footer: {
 		"footer.aria.termsOfUse": "Read our terms of use",
 	},
 	es: {
+		// Footer description
+		"footer.description": "Hatchgrid es una plataforma para desarrolladores para construir y desplegar aplicaciones con facilidad.",
+
+		// Footer section headers
+		"footer.company": "Empresa",
+		"footer.resources": "Recursos",
+		"footer.legal": "Legal",
+
 		// Footer navigation items
 		"footer.about": "Sobre Nosotros",
 		"footer.aria.about": "Ir a la página Sobre Nosotros",

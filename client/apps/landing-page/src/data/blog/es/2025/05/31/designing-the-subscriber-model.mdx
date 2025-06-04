@@ -1,0 +1,31 @@
+---
+title: Diseñando el modelo de suscriptores para un SaaS
+description: Cómo diseñamos el modelo de datos de suscriptores en Hatchgrid para que sea flexible, seguro y escalable.
+date: 2025-05-31T11:00:00
+lastModified: 2025-05-31T11:00:00
+author: es/yuniel-acosta
+cover: src/assets/images/blog-placeholder-1.avif
+tags:
+  - es/startups
+  - es/mvp
+  - es/engineering
+category: es/startups
+draft: false
+---
+
+Uno de los pilares de Hatchgrid es el modelo de suscriptores. Desde la segmentación hasta la automatización, todo parte de cómo modelamos esta entidad.
+
+## Objetivos del modelo
+
+- Soporte para multitenencia (1 organización, muchos suscriptores)
+- Etiquetado y segmentación
+- Seguridad a nivel de fila (RLS)
+- Almacenamiento de atributos y metadatos
+
+## Enums y RLS desde el inicio
+Usamos PostgreSQL con enums para `subscriber_status` (ENABLED, DISABLED, BLOCKLISTED) y políticas RLS basadas en `current_setting('lyra.current_organization')` para aislar los datos por organización.
+
+## Etiquetas y atributos
+Las etiquetas se manejan con una tabla intermedia many-to-many. Los atributos se almacenan como JSON para permitir extensibilidad sin cambios estructurales.
+
+Este diseño nos permite avanzar rápido, manteniendo seguridad, escalabilidad y flexibilidad.
