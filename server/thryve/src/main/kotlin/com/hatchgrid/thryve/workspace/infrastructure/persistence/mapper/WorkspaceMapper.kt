@@ -39,7 +39,7 @@ object WorkspaceMapper {
         ownerId = UserId(ownerId),
         createdAt = createdAt,
         createdBy = createdBy,
-        updatedAt = updatedAt ?: createdAt,
+        updatedAt = updatedAt,
         updatedBy = updatedBy,
     )
 }
