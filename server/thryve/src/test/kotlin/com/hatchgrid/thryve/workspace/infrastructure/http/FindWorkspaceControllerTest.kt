@@ -6,7 +6,6 @@ import com.hatchgrid.thryve.workspace.application.WorkspaceResponse
 import com.hatchgrid.thryve.workspace.application.find.FindWorkspaceQuery
 import com.hatchgrid.thryve.workspace.domain.WorkspaceNotFoundException
 import io.mockk.coEvery
-import io.mockk.mockk
 import java.util.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -35,7 +34,6 @@ internal class FindWorkspaceControllerTest : ControllerTest() {
             .expectStatus().isOk
             .expectBody(WorkspaceResponse::class.java)
             .isEqualTo(response)
-        coEvery { mediator.send(query) }
     }
 
     @Test
