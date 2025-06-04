@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 @UnitTest
-internal class DeleteCreateWorkspaceCommandHandlerTest {
+internal class DeleteWorkspaceCommandHandlerTest {
     private lateinit var eventPublisher: EventPublisher<WorkspaceDeletedEvent>
     private lateinit var repository: WorkspaceRepository
     private lateinit var destroyer: WorkspaceDestroyer
