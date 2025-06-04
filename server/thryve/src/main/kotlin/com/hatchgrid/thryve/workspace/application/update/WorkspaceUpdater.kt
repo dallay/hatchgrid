@@ -8,7 +8,6 @@ import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.event.EventBroadcaster
 import com.hatchgrid.common.domain.bus.event.EventPublisher
 import com.hatchgrid.thryve.workspace.domain.WorkspaceNotFoundException
-import com.hatchgrid.thryve.workspace.domain.event.WorkspaceCreatedEvent
 import org.slf4j.LoggerFactory
 
 /**
@@ -24,10 +23,10 @@ class WorkspaceUpdater(
     private val workspaceFinderRepository: WorkspaceFinderRepository,
     eventPublisher: EventPublisher<WorkspaceUpdatedEvent>
 ) {
-    private val eventPublisher = EventBroadcaster<WorkspaceUpdatedEvent>()
+    private val eventBroadcaster = EventBroadcaster<WorkspaceUpdatedEvent>()
 
     init {
-        this.eventPublisher.use(eventPublisher)
+        this.eventBroadcaster.use(eventPublisher)
     }
 
     /**
@@ -50,7 +49,7 @@ class WorkspaceUpdater(
             require(it is WorkspaceUpdatedEvent) {
                 "Unexpected domain event type: ${it::class.simpleName}"
             }
-            eventPublisher.publish(it)
+            eventBroadcaster.publish(it)
         }
     }
 

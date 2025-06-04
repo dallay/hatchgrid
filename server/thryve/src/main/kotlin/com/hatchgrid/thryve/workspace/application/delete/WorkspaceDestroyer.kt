@@ -19,10 +19,10 @@ class WorkspaceDestroyer(
     private val destroyer: WorkspaceRepository,
     eventPublisher: EventPublisher<WorkspaceDeletedEvent>
 ) {
-    private val eventPublisher = EventBroadcaster<WorkspaceDeletedEvent>()
+    private val eventBroadcaster = EventBroadcaster<WorkspaceDeletedEvent>()
 
     init {
-        this.eventPublisher.use(eventPublisher)
+        this.eventBroadcaster.use(eventPublisher)
     }
 
     /**
@@ -33,7 +33,7 @@ class WorkspaceDestroyer(
     suspend fun delete(id: WorkspaceId) {
         log.debug("Deleting workspace with id: {}", id)
         destroyer.delete(id)
-        eventPublisher.publish(WorkspaceDeletedEvent(id.value.toString()))
+        eventBroadcaster.publish(WorkspaceDeletedEvent(id.value.toString()))
     }
 
     companion object {

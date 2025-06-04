@@ -21,10 +21,10 @@ class WorkspaceCreator(
     private val workspaceRepository: WorkspaceRepository,
     eventPublisher: EventPublisher<WorkspaceCreatedEvent>
 ) {
-    private val eventPublisher = EventBroadcaster<WorkspaceCreatedEvent>()
+    private val eventBroadcaster = EventBroadcaster<WorkspaceCreatedEvent>()
 
     init {
-        this.eventPublisher.use(eventPublisher)
+        this.eventBroadcaster.use(eventPublisher)
     }
 
     /**
@@ -41,7 +41,7 @@ class WorkspaceCreator(
             require(it is WorkspaceCreatedEvent) {
                 "Unexpected domain event type: ${it::class.simpleName}"
             }
-            eventPublisher.publish(it)
+            eventBroadcaster.publish(it)
         }
     }
 
