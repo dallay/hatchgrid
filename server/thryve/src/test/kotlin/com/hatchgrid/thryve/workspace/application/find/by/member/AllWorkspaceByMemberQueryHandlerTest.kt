@@ -12,6 +12,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 @UnitTest
 internal class AllWorkspaceByMemberQueryHandlerTest {
@@ -42,5 +43,30 @@ internal class AllWorkspaceByMemberQueryHandlerTest {
 
         // Then
         assertEquals(workspaces.size, response.data.size)
+    }
+
+    @Test
+    fun `should return empty list when no workspaces found`() = runBlocking {
+        // Given
+        coEvery { repository.findByMemberId(any()) } returns emptyList()
+        val query = AllWorkspaceByMemberQuery(userId.value.toString())
+
+        // When
+        val response = handler.handle(query)
+
+        // Then
+        assertEquals(0, response.data.size)
+    }
+
+    @Test
+    fun `should handle repository exception`(): Unit = runBlocking {
+        // Given
+        coEvery { repository.findByMemberId(any()) } throws RuntimeException("Database error")
+        val query = AllWorkspaceByMemberQuery(userId.value.toString())
+
+        // When & Then
+        assertThrows<RuntimeException> {
+            runBlocking { handler.handle(query) }
+        }
     }
 }
