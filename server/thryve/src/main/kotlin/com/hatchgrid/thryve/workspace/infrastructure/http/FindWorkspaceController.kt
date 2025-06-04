@@ -5,8 +5,11 @@ import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.common.domain.bus.query.Response
 import com.hatchgrid.spring.boot.ApiController
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import jakarta.validation.constraints.Pattern
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -39,7 +42,19 @@ class FindWorkspaceController(
         ApiResponse(responseCode = "500", description = "Internal server error"),
     )
     @GetMapping("/workspace/{id}")
-    suspend fun find(@PathVariable id: String): Response {
+    suspend fun find(
+        @Parameter(
+            description = "ID of the workspace to be found",
+            required = true,
+            schema = Schema(type = "string", format = "uuid")
+        )
+        @PathVariable
+        @Pattern(
+            regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            message = "Invalid UUID format"
+        )
+        id: String
+    ): Response {
         log.debug("Finding workspace")
         val query = FindWorkspaceQuery(id)
         val response = ask(query)

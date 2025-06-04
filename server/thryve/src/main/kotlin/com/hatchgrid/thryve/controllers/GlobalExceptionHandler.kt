@@ -111,7 +111,6 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         problemDetail.setProperty(TIMESTAMP, Instant.now())
         return problemDetail
     }
-
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception::class)
     fun handleException(e: Exception): ProblemDetail {
@@ -125,4 +124,5 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         problemDetail.setProperty(TIMESTAMP, Instant.now())
         return problemDetail
     }
+
 }

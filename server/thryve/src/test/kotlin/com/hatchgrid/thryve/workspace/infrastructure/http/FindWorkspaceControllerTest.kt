@@ -4,6 +4,7 @@ import com.hatchgrid.ControllerTest
 import com.hatchgrid.thryve.workspace.WorkspaceStub
 import com.hatchgrid.thryve.workspace.application.WorkspaceResponse
 import com.hatchgrid.thryve.workspace.application.find.FindWorkspaceQuery
+import com.hatchgrid.thryve.workspace.domain.WorkspaceNotFoundException
 import io.mockk.coEvery
 import io.mockk.mockk
 import java.util.*
@@ -19,7 +20,6 @@ internal class FindWorkspaceControllerTest : ControllerTest() {
     @BeforeEach
     override fun setUp() {
         super.setUp()
-        coEvery { mediator.send(any<FindWorkspaceQuery>()) } returns mockk()
     }
 
     @Test
@@ -36,5 +36,26 @@ internal class FindWorkspaceControllerTest : ControllerTest() {
             .expectBody(WorkspaceResponse::class.java)
             .isEqualTo(response)
         coEvery { mediator.send(query) }
+    }
+
+    @Test
+    fun `should return 404 when workspace is not found`() {
+        val query = FindWorkspaceQuery(id)
+        coEvery { mediator.send(query) } throws WorkspaceNotFoundException("Workspace not found")
+
+        webTestClient.get()
+            .uri("/api/workspace/$id")
+            .exchange()
+            .expectStatus().isNotFound
+    }
+
+    @Test
+    fun `should return 400 for invalid workspace ID format`() {
+        val invalidId = "invalid-uuid"
+
+        webTestClient.get()
+            .uri("/api/workspace/$invalidId")
+            .exchange()
+            .expectStatus().isBadRequest
     }
 }

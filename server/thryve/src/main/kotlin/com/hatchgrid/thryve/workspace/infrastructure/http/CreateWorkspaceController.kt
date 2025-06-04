@@ -5,8 +5,11 @@ import com.hatchgrid.thryve.workspace.infrastructure.http.request.CreateWorkspac
 import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.spring.boot.ApiController
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import jakarta.validation.constraints.Pattern
 import java.net.URI
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -42,7 +45,17 @@ class CreateWorkspaceController(
     )
     @PutMapping("/workspace/{id}")
     suspend fun create(
-        @PathVariable id: String,
+        @Parameter(
+            description = "ID of the workspace to be found",
+            required = true,
+            schema = Schema(type = "string", format = "uuid")
+        )
+        @PathVariable
+        @Pattern(
+            regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            message = "Invalid UUID format"
+        )
+        id: String,
         @Validated @RequestBody request: CreateWorkspaceRequest
     ): ResponseEntity<String> {
         val safeId = sanitizePathVariable(id)
