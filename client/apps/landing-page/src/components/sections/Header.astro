@@ -3,7 +3,7 @@ import Brand from "@/components/Brand.astro";
 import NavMenus from "@/components/NavMenus.vue";
 import { type Lang, useTranslations } from "@/i18n";
 import { headerMenuItems } from "@/models/menu/menu.constants";
-import ThemeToggle from "@/components/ThemeToggle.astro";
+import ThemeToggleButton from "../ThemeToggleButton.jsx";
 import LocaleSelect from "@/components/i18n/LocaleSelect.astro";
 import Link from "@/components/Link.astro";
 import { cn } from "@/lib/utils";
@@ -34,7 +34,7 @@ const currentPath = Astro.url.pathname;
   <div class="flex items-center justify-end gap-4 relative flex-1 grow">
     <!-- Theme and Locale controls -->
     <div class="hidden lg:flex items-center gap-2">
-      <ThemeToggle/>
+      <ThemeToggleButton client:load />
       <LocaleSelect />
     </div>
 
@@ -81,7 +81,7 @@ const currentPath = Astro.url.pathname;
       />
       <div class="flex flex-col gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
         <div class="flex items-center gap-3">
-          <ThemeToggle/>
+          <ThemeToggleButton client:load />
           <LocaleSelect />
         </div>
         <div class="flex flex-col gap-2">
