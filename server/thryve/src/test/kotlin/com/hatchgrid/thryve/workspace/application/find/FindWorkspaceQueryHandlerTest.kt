@@ -43,7 +43,7 @@ internal class FindWorkspaceQueryHandlerTest {
     }
 
     @Test
-    fun `should throw exception when workspace is not found`(): Unit = runBlocking {
+    fun `should throw exception when workspace is not found`() {
         // Given
         val id = UUID.randomUUID().toString()
         val workspaceId = WorkspaceId(id)
