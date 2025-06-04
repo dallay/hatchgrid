@@ -11,23 +11,26 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 @UnitTest
-internal class UpdateCreateWorkspaceCommandHandlerTest {
+internal class UpdateWorkspaceCommandHandlerTest {
     private lateinit var eventPublisher: EventPublisher<WorkspaceUpdatedEvent>
     private lateinit var workspaceRepository: WorkspaceRepository
     private lateinit var workspaceFinderRepository: WorkspaceFinderRepository
     private lateinit var workspaceUpdater: WorkspaceUpdater
     private lateinit var updateWorkspaceCommandHandler: UpdateWorkspaceCommandHandler
     private lateinit var workspace: Workspace
+
     @BeforeEach
     fun setUp() {
         eventPublisher = mockk()
         workspaceRepository = mockk()
         workspaceFinderRepository = mockk()
-        workspaceUpdater = WorkspaceUpdater(workspaceRepository, workspaceFinderRepository, eventPublisher)
+        workspaceUpdater =
+            WorkspaceUpdater(workspaceRepository, workspaceFinderRepository, eventPublisher)
         updateWorkspaceCommandHandler = UpdateWorkspaceCommandHandler(workspaceUpdater)
         workspace = WorkspaceStub.create()
 
@@ -51,13 +54,23 @@ internal class UpdateCreateWorkspaceCommandHandlerTest {
         // Then
         coVerify(exactly = 1) {
             workspaceRepository.update(
-                withArg {
-                    assert(it.id.value.toString() == workspace.id.value.toString())
-                    assert(it.name == workspace.name)
-                    assert(it.description == workspace.description)
-                    assert(it.ownerId == workspace.ownerId)
-                    assert(it.members.size == 1) // Owner is added as a member
-                    assert(it.members.first().value.toString() == workspace.ownerId.value.toString())
+                withArg { updatedWorkspace ->
+                    assertEquals(
+                        workspace.id.value.toString(),
+                        updatedWorkspace.id.value.toString()
+                    )
+                    assertEquals(workspace.name, updatedWorkspace.name)
+                    assertEquals(workspace.description, updatedWorkspace.description)
+                    assertEquals(workspace.ownerId, updatedWorkspace.ownerId)
+                    assertEquals(
+                        1,
+                        updatedWorkspace.members.size,
+                        "Owner should be added as a member"
+                    )
+                    assertEquals(
+                        workspace.ownerId.value.toString(),
+                        updatedWorkspace.members.first().value.toString()
+                    )
                 },
             )
         }

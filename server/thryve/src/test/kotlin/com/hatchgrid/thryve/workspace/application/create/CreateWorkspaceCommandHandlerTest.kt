@@ -9,6 +9,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import java.util.*
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -50,12 +51,12 @@ internal class CreateWorkspaceCommandHandlerTest {
         coVerify {
             workspaceRepository.create(
                 withArg {
-                    assert(it.id.value.toString() == workspaceId)
-                    assert(it.name == name)
-                    assert(it.description == "A test workspace")
-                    assert(it.ownerId.value.toString() == ownerId)
-                    assert(it.members.size == 1) // Owner is added as a member
-                    assert(it.members.first().value.toString() == ownerId)
+                    assertEquals(workspaceId, it.id.value.toString())
+                    assertEquals(name, it.name)
+                    assertEquals("A test workspace", it.description)
+                    assertEquals(ownerId, it.ownerId.value.toString())
+                    assertEquals(1, it.members.size) // Owner is added as a member
+                    assertEquals(ownerId, it.members.first().value.toString())
                 },
             )
         }

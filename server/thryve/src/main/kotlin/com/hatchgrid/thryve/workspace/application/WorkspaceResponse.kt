@@ -9,6 +9,7 @@ import com.hatchgrid.common.domain.bus.query.Response
 data class WorkspaceResponse(
     val id: String,
     val name: String,
+    val description: String?,
     val ownerId: String,
     val createdAt: String,
     val updatedAt: String?
@@ -17,6 +18,7 @@ data class WorkspaceResponse(
         fun from(workspace: Workspace) = WorkspaceResponse(
             id = workspace.id.value.toString(),
             name = workspace.name,
+            description = workspace.description,
             ownerId = workspace.ownerId.value.toString(),
             createdAt = workspace.createdAt.toString(),
             updatedAt = workspace.updatedAt?.toString(),
