@@ -1,6 +1,7 @@
 package com.hatchgrid.thryve.workspace.infrastructure.persistence.repository
 
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.entity.WorkspaceMemberEntity
+import com.hatchgrid.thryve.workspace.infrastructure.persistence.entity.WorkspaceMemberId
 import java.util.*
 import org.springframework.data.r2dbc.repository.Modifying
 import org.springframework.data.r2dbc.repository.Query
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Repository
  * Note: Using custom queries due to composite key limitations in Spring Data R2DBC.
  */
 @Repository
-interface WorkspaceMemberR2dbcRepository : CoroutineCrudRepository<WorkspaceMemberEntity, UUID> {
+interface WorkspaceMemberR2dbcRepository : CoroutineCrudRepository<WorkspaceMemberEntity, WorkspaceMemberId> {
     /**
      * Finds all workspace members for a workspace.
      *
@@ -27,6 +28,7 @@ interface WorkspaceMemberR2dbcRepository : CoroutineCrudRepository<WorkspaceMemb
      * @param userId The ID of the user.
      * @return A flux of workspace member entities.
      */
+    @Query("SELECT * FROM workspace_members WHERE user_id = :userId")
     suspend fun findByUserId(userId: UUID): List<WorkspaceMemberEntity>
 
     /**

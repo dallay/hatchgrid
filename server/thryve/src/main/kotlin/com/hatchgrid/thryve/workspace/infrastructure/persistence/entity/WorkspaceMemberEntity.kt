@@ -6,6 +6,7 @@ import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
 import java.util.UUID
+import org.springframework.data.domain.Persistable
 
 enum class WorkspaceRole {
     OWNER,
@@ -19,10 +20,8 @@ enum class WorkspaceRole {
  */
 @Table("workspace_members")
 data class WorkspaceMemberEntity(
-    @Column("workspace_id")
-    val workspaceId: UUID,
 
-    @Column("user_id")
+    val workspaceId: UUID,
     val userId: UUID,
 
     @Column("role")
@@ -35,6 +34,17 @@ data class WorkspaceMemberEntity(
     @CreatedDate
     @Column("created_at")
     val createdAt: LocalDateTime? = null
-) {
-    // Composite primary key is defined in the database schema
+) : Persistable<WorkspaceMemberId> {
+
+    @Transient
+    private var isNew: Boolean = true
+
+    override fun getId(): WorkspaceMemberId? = id
+
+    override fun isNew(): Boolean = isNew
+
+    fun markAsNotNew(): WorkspaceMemberEntity {
+        this.isNew = false
+        return this
+    }
 }
