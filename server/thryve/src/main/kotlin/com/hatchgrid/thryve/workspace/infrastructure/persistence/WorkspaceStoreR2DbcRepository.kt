@@ -6,7 +6,7 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceException
 import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
-import com.hatchgrid.thryve.workspace.infrastructure.persistence.entity.WorkspaceMemberEntity
+import com.hatchgrid.thryve.workspace.infrastructure.persistence.entity.WorkspaceRole
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toDomain
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toEntity
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceMemberR2dbcRepository
@@ -38,11 +38,10 @@ class WorkspaceStoreR2DbcRepository(
             workspaceRepository.save(workspace.toEntity())
             // Save each member
             workspace.members.forEach { memberId ->
-                workspaceMemberRepository.save(
-                    WorkspaceMemberEntity(
-                        workspaceId = workspace.id.value,
-                        userId = memberId.value
-                    )
+                workspaceMemberRepository.insertWorkspaceMember(
+                    workspace.id.value,
+                    memberId.value,
+                    WorkspaceRole.EDITOR.name
                 )
             }
         } catch (e: DuplicateKeyException) {

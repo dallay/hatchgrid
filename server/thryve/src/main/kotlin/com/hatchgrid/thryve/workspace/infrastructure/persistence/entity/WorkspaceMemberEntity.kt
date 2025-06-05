@@ -7,6 +7,13 @@ import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
 import java.util.UUID
 
+enum class WorkspaceRole {
+    OWNER,
+    ADMIN,
+    EDITOR,
+    VIEWER
+}
+
 /**
  * R2DBC entity for workspace members.
  */
@@ -17,6 +24,9 @@ data class WorkspaceMemberEntity(
 
     @Column("user_id")
     val userId: UUID,
+
+    @Column("role")
+    val role: WorkspaceRole = WorkspaceRole.EDITOR,
 
     @CreatedBy
     @Column("created_by")

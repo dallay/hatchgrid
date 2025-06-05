@@ -5,6 +5,7 @@ import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.workspace.WorkspaceStub
 import com.hatchgrid.thryve.workspace.domain.Workspace
 import com.hatchgrid.thryve.workspace.domain.WorkspaceException
+import com.hatchgrid.thryve.workspace.infrastructure.persistence.entity.WorkspaceRole
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toEntity
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceMemberR2dbcRepository
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceR2dbcRepository
@@ -38,20 +39,29 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
     @Test
     fun `should create workspace`() = runBlocking {
         // Given
-        coEvery { workspaceRepository.save(any()) } returns workspace.toEntity()
-        coEvery { workspaceMemberRepository.save(any()) } returns mockk()
+        val workspaceEntity = workspace.toEntity()
+        coEvery { workspaceRepository.save(eq(workspaceEntity)) } returns workspaceEntity
+        coEvery {
+            workspaceMemberRepository.insertWorkspaceMember(
+                eq(workspaceEntity.id), eq(workspaceEntity.ownerId), eq(
+                    WorkspaceRole.EDITOR.name
+                )
+            )
+        } returns mockk()
 
         // When
         workspaceStoreR2dbcRepository.create(workspace)
 
         // Then
-        coVerify(exactly = 1) { workspaceRepository.save(workspace.toEntity()) }
+        coVerify(exactly = 1) { workspaceRepository.save(workspaceEntity) }
         // Verify that each member is saved
         workspace.members.forEach { memberId ->
             coVerify(exactly = 1) {
-                workspaceMemberRepository.save(match {
-                    it.workspaceId == workspace.id.value && it.userId == memberId.value
-                })
+                workspaceMemberRepository.insertWorkspaceMember(
+                    eq(workspaceEntity.id),
+                    eq(memberId.value),
+                    eq(WorkspaceRole.EDITOR.name)
+                )
             }
         }
     }
@@ -60,7 +70,6 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
     fun `should handle duplicate workspace creation gracefully`(): Unit = runBlocking {
         // Given
         coEvery { workspaceRepository.save(any()) } throws DuplicateKeyException("Duplicate key")
-        coEvery { workspaceMemberRepository.save(any()) } returns mockk()
 
         // When / Then
         assertThrows<WorkspaceException> {
