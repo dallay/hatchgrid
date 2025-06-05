@@ -72,7 +72,7 @@ class CreateWorkspaceController(
             )
             return ResponseEntity.created(URI.create("/api/workspace/$safeId")).build()
         } catch (e: CommandHandlerExecutionError) {
-            log.error("Error creating workspace with ID: {}", id, e)
+            log.error("Error creating workspace with ID: {}", sanitizePathVariable(id), e)
             throw e
         }
     }
