@@ -1,5 +1,3 @@
-
-
 databaseChangeLog:
   - changeSet:
       id: 003-create-workspaces
@@ -35,7 +33,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: created_at
-                  type: timestamp
+                  type: timestamp with time zone
                   defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
@@ -44,7 +42,7 @@ databaseChangeLog:
                   type: varchar(50)
               - column:
                   name: updated_at
-                  type: timestamp
+                  type: timestamp with time zone
         - addForeignKeyConstraint:
             baseTableName: workspaces
             baseColumnNames: owner_id
