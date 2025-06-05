@@ -80,7 +80,7 @@ User–workspace relationship with role.
 ## 🔁 Enums
 
 ```sql
-CREATE TYPE role_type AS ENUM ('OWNER', 'EDITOR');
+CREATE TYPE role_type AS ENUM ('OWNER', 'ADMIN', 'EDITOR', 'VIEWER');
 ```
 
 ---

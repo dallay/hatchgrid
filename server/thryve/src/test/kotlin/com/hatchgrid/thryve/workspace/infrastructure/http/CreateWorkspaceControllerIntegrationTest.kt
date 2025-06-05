@@ -33,6 +33,7 @@ internal class CreateWorkspaceControllerIntegrationTest : ControllerIntegrationT
             .expectBody().isEmpty
     }
 
+    @Test
     @Sql(
         "/db/user/users.sql",
         "/db/workspace/all-workspaces.sql"
