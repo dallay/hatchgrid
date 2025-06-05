@@ -39,7 +39,7 @@ data class WorkspaceMemberEntity(
     @Transient
     private var isNew: Boolean = true
 
-    override fun getId(): WorkspaceMemberId? = id
+    override fun getId(): WorkspaceMemberId? = WorkspaceMemberId(workspaceId, userId)
 
     override fun isNew(): Boolean = isNew
 
