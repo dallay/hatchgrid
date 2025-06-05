@@ -1,0 +1,22 @@
+package com.hatchgrid.thryve.workspace.application.update
+
+import com.hatchgrid.common.domain.bus.command.Command
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Pattern
+
+/**
+ * Represents a command to update a workspace.
+ * @property id The unique identifier of the workspace.
+ * @property name The new name of the workspace.
+ * @property description An optional description of the workspace.
+ */
+data class UpdateWorkspaceCommand(
+    @field:NotBlank(message = "Workspace ID cannot be blank")
+    @field:Pattern(
+        regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+        message = "Workspace ID must be a valid UUID"
+    )
+    val id: String,
+    @field:NotBlank(message = "Workspace name cannot be blank")
+    val name: String, val description: String?) :
+    Command
