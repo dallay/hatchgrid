@@ -45,7 +45,7 @@ internal class CreateWorkspaceControllerIntegrationTest : ControllerIntegrationT
     )
     fun `should fail when the workspace already exists`() {
         val request: CreateWorkspaceRequest = WorkspaceStub.generateRequest()
-        val id = "a0654720-35dc-49d0-b508-1f7df5d915f1"
+        val id = "95ded4bb-2946-4dbe-87df-afb701788eb4"
         webTestClient.mutateWith(csrf()).put()
             .uri("$ENDPOINT/$id")
             .contentType(MediaType.APPLICATION_JSON)

@@ -3,6 +3,7 @@ package com.hatchgrid.thryve.workspace.application.create
 import com.hatchgrid.thryve.workspace.domain.Workspace
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.command.CommandHandler
+import com.hatchgrid.thryve.workspace.domain.WorkspaceException
 import java.util.*
 import org.slf4j.LoggerFactory
 
@@ -45,7 +46,7 @@ class CreateWorkspaceCommandHandler(
             throw IllegalArgumentException("Invalid workspace or owner ID format", exception)
         } catch (exception: Exception) {
             log.error("Failed to create workspace with name: ${command.name}", exception)
-            throw exception
+            throw WorkspaceException("Error creating workspace", exception)
         }
     }
 
