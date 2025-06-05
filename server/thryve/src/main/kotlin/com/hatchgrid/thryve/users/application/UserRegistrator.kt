@@ -18,10 +18,10 @@ class UserRegistrator(
     private val userCreator: UserCreator,
     eventPublisher: EventPublisher<UserCreatedEvent>
 ) {
-    private val eventPublisher = EventBroadcaster<UserCreatedEvent>()
+    private val eventBroadcaster = EventBroadcaster<UserCreatedEvent>()
 
     init {
-        this.eventPublisher.use(eventPublisher)
+        this.eventBroadcaster.use(eventPublisher)
     }
 
     suspend fun registerNewUser(registerUserCommand: RegisterUserCommand): ApiDataResponse<UserResponse> {
@@ -52,7 +52,7 @@ class UserRegistrator(
     }
 
     private suspend fun publishUserCreatedEvent(user: User) {
-        eventPublisher.publish(
+        eventBroadcaster.publish(
             UserCreatedEvent(
                 userId = user.id.value.toString(),
                 email = user.email.value,

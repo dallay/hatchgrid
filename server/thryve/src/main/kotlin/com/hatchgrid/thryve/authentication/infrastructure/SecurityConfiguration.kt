@@ -189,12 +189,12 @@ class SecurityConfiguration(
             ).permitAll()
             .pathMatchers(
                 HttpMethod.GET,
-                "/api/organization/{organizationId}/form/{formId}",
+                "/api/workspace/{workspaceId}/form/{formId}",
                 "/api/form/{formId}",
             ).permitAll()
             .pathMatchers(
                 HttpMethod.PUT,
-                "/api/organization/{organizationId}/newsletter/subscriber/{subscriberId}",
+                "/api/workspace/{workspaceId}/newsletter/subscriber/{subscriberId}",
             ).permitAll()
             .pathMatchers("/actuator/**").authenticated()
             .pathMatchers("/api/**").authenticated()

@@ -160,4 +160,7 @@
   body {
     @apply bg-background text-foreground;
   }
+  img {
+    mask-image: linear-gradient(black 80%, transparent);
+  }
 }
