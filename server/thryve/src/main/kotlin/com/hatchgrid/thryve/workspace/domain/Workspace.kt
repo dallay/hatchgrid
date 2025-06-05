@@ -78,11 +78,11 @@ data class Workspace(
      * Updates the workspace information.
      *
      * @param name The new name of the workspace.
-     * @param description The new description of the workspace.
+     * @param description The new description of the workspace. If null, the existing description is retained.
      */
-    fun update(name: String, description: String? = null) {
+    fun update(name: String, description: String? = this.description) {
         this.name = name
-        if (description != null) {this.description = description}
+        this.description = description
         this.updatedAt = LocalDateTime.now()
 
         // Record the workspace updated event
