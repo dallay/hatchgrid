@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { ref } from 'vue'
 import { useEmailValidation } from '../useEmailValidation'
 
 // Mock the i18n module

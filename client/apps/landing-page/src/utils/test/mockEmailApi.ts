@@ -99,20 +99,25 @@ export function setupMockApi(config?: MockApiConfig) {
 
     const originalFetch = window.fetch
 
-    window.fetch = async (url: string | URL | Request, options?: RequestInit) => {
+    window.fetch = async (url: string | URL | Request, options?: RequestInit): Promise<Response> => {
       const urlString = url.toString()
 
       // Intercept waitlist API calls
       if (urlString.includes('/api/waitlist') && options?.method === 'POST') {
         try {
           const body = JSON.parse(options.body as string)
-          return mockApi.submitEmail(body.email, body.metadata)
+          const mockResponseData = await mockApi.submitEmail(body.email, body.metadata)
+          const responseBody = await mockResponseData.json()
+          return new Response(JSON.stringify(responseBody), {
+            status: mockResponseData.status,
+            headers: { 'Content-Type': 'application/json' }
+          })
         } catch (error) {
-          return {
-            ok: false,
+          const errorResponse = { error: 'Invalid request body' }
+          return new Response(JSON.stringify(errorResponse), {
             status: 500,
-            json: async () => ({ error: 'Invalid request body' })
-          }
+            headers: { 'Content-Type': 'application/json' }
+          })
         }
       }
 
@@ -121,7 +126,7 @@ export function setupMockApi(config?: MockApiConfig) {
     }
 
     console.log('🚀 Mock Email API enabled for development')
-    return mockApi
+    // return mockApi // This return is not strictly necessary if not used elsewhere after setup
   }
 }
 
