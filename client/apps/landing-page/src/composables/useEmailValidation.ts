@@ -34,10 +34,6 @@ export function useEmailValidation(options: EmailValidationOptions = {}) {
     lastValidatedEmail.value = email
 
     try {
-      // Add a small delay in test environment to make loading state testable
-      if (typeof process !== 'undefined' && process.env.NODE_ENV === 'test') {
-        await new Promise(resolve => setTimeout(resolve, 10))
-      }
 
       await validationSchema.value.parseAsync(email)
       return { isValid: true }
