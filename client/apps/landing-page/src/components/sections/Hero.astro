@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { CTAEmail } from "@/components/cta-email";
 import { Icon } from "astro-icon/components";
 
-// Determine the language to use
 const astroLocale = Astro.currentLocale;
 let langToUse: Lang;
 
@@ -39,17 +38,16 @@ import VideoPlaceholder from "@/assets/video-placeholder.png";
         <p class="mb-10 text-lg text-muted-foreground md:text-xl lg:text-2xl">
           {t('hero.subtitle')}
         </p>
-
-        <CTAEmail
-          client:visible
-          emailPlaceholder={t('hero.email.placeholder')}
-          buttonText={t('hero.email.button')}
-          size="default"
-          alignment="left"
-          inputVariant="default"
-          buttonVariant="default"
-          class="justify-center lg:justify-start"
-        />
+      <CTAEmail
+        emailPlaceholder={t('hero.email.placeholder')}
+        buttonText={t('hero.email.button')}
+        size="default"
+        alignment="left"
+        apiEndpoint="/api/newsletter/subscribe"
+        source="homepage-newsletter"
+        metadata={{ campaign: 'summer-2024', utmSource: 'organic' }}
+        class="justify-center lg:justify-start"
+      />
       </div>
 
       <!-- Right column: Video/Mockup -->
