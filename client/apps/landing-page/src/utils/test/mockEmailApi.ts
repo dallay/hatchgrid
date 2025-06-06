@@ -21,7 +21,6 @@ export class MockEmailApi {
       successRate: 0.9,
       responses: {
         success: {
-          id: this.generateId(),
           email: '',
           status: 'subscribed',
           createdAt: new Date().toISOString(),
