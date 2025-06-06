@@ -7,7 +7,7 @@ global.fetch = vi.fn();
 describe("useEmailSubmission", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-		(fetch as any).mockClear();
+		(fetch as unknown as ReturnType<typeof vi.fn>).mockClear();
 	});
 
 	it("should initialize with correct default values", () => {
@@ -24,7 +24,9 @@ describe("useEmailSubmission", () => {
 			status: 200,
 			json: vi.fn().mockResolvedValue({ id: "123", message: "Success" }),
 		};
-		(fetch as any).mockResolvedValue(mockResponse);
+		(fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(
+			mockResponse,
+		);
 
 		const { submitEmail, isSubmitting, lastSubmission } = useEmailSubmission();
 
@@ -46,7 +48,9 @@ describe("useEmailSubmission", () => {
 			status: 400,
 			statusText: "Bad Request",
 		};
-		(fetch as any).mockResolvedValue(mockResponse);
+		(fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(
+			mockResponse,
+		);
 
 		const { submitEmail, error } = useEmailSubmission();
 
@@ -58,7 +62,9 @@ describe("useEmailSubmission", () => {
 	});
 
 	it("should handle network errors", async () => {
-		(fetch as any).mockRejectedValue(new Error("Network error"));
+		(fetch as unknown as ReturnType<typeof vi.fn>).mockRejectedValue(
+			new Error("Network error"),
+		);
 
 		const { submitEmail, error } = useEmailSubmission();
 
@@ -70,11 +76,11 @@ describe("useEmailSubmission", () => {
 	});
 
 	it("should set loading state during submission", async () => {
-		let resolvePromise: (value: any) => void;
+		let resolvePromise: ((value: unknown) => void) | undefined;
 		const mockPromise = new Promise((resolve) => {
 			resolvePromise = resolve;
 		});
-		(fetch as any).mockReturnValue(mockPromise);
+		(fetch as unknown as ReturnType<typeof vi.fn>).mockReturnValue(mockPromise);
 
 		const { submitEmail, isSubmitting } = useEmailSubmission();
 
@@ -85,7 +91,7 @@ describe("useEmailSubmission", () => {
 		expect(isSubmitting.value).toBe(true);
 
 		// Resolve the mock promise
-		resolvePromise!({
+		resolvePromise?.({
 			ok: true,
 			status: 200,
 			json: () => Promise.resolve({ success: true }),
@@ -102,7 +108,9 @@ describe("useEmailSubmission", () => {
 			status: 400,
 			statusText: "Bad Request",
 		};
-		(fetch as any).mockResolvedValue(mockResponse);
+		(fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(
+			mockResponse,
+		);
 
 		const {
 			resetSubmission,
@@ -133,7 +141,9 @@ describe("useEmailSubmission", () => {
 			status: 200,
 			json: vi.fn().mockResolvedValue({ success: true }),
 		};
-		(fetch as any).mockResolvedValue(mockResponse);
+		(fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(
+			mockResponse,
+		);
 
 		const { submitEmail } = useEmailSubmission();
 

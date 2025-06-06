@@ -1,6 +1,6 @@
 import { readonly, ref } from "vue";
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = Record<string, unknown>> {
 	success: boolean;
 	data?: T;
 	error?: string;
@@ -11,7 +11,7 @@ export interface EmailSubmissionData {
 	email: string;
 	source?: string;
 	timestamp?: string;
-	metadata?: Record<string, any>;
+	metadata?: Record<string, string | number | boolean>;
 }
 
 export function useEmailSubmission() {
@@ -23,7 +23,7 @@ export function useEmailSubmission() {
 		email: string,
 		options: {
 			source?: string;
-			metadata?: Record<string, any>;
+			metadata?: Record<string, string | number | boolean>;
 			apiEndpoint?: string;
 		} = {},
 	): Promise<ApiResponse> => {

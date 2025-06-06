@@ -41,7 +41,7 @@ interface Props {
 	buttonClass?: HTMLAttributes["class"];
 	apiEndpoint?: string;
 	source?: string;
-	metadata?: Record<string, any>;
+	metadata?: Record<string, string | number | boolean>;
 	showLoadingToast?: boolean;
 	lang?: Lang;
 }

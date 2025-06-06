@@ -7,8 +7,8 @@ export interface MockApiConfig {
 	delay?: number;
 	successRate?: number;
 	responses?: {
-		success?: any;
-		error?: any;
+		success?: Record<string, unknown>;
+		error?: Record<string, unknown>;
 	};
 }
 
@@ -46,11 +46,11 @@ export class MockEmailApi {
 
 	async submitEmail(
 		email: string,
-		metadata?: Record<string, any>,
+		metadata?: Record<string, string | number | boolean>,
 	): Promise<{
 		ok: boolean;
 		status: number;
-		json: () => Promise<any>;
+		json: () => Promise<Record<string, unknown>>;
 	}> {
 		// Simulate network delay
 		await this.delay(this.config.delay || 800);
@@ -70,19 +70,18 @@ export class MockEmailApi {
 					createdAt: new Date().toISOString(),
 				}),
 			};
-		} else {
-			return {
-				ok: false,
-				status: 400,
-				json: async () => ({
-					...this.config.responses?.error,
-					details: {
-						email,
-						timestamp: new Date().toISOString(),
-					},
-				}),
-			};
 		}
+		return {
+			ok: false,
+			status: 400,
+			json: async () => ({
+				...this.config.responses?.error,
+				details: {
+					email,
+					timestamp: new Date().toISOString(),
+				},
+			}),
+		};
 	}
 
 	// Preset scenarios for testing
