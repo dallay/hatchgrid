@@ -65,15 +65,16 @@ describe('useEmailValidation', () => {
   })
 
   it('should handle loading state during validation', async () => {
+    vi.useFakeTimers()
     const { validateEmail, isValidating } = useEmailValidation({ lang: 'en' })
 
     expect(isValidating.value).toBe(false)
 
     // Start validation but don't await immediately
     const validationPromise = validateEmail('test@example.com')
-
-    // Wait a brief moment for the loading state to be set
-    await new Promise(resolve => setTimeout(resolve, 5))
+    
+    // Advance timers immediately
+    vi.runAllTimers()
 
     // Check if validation is in progress
     expect(isValidating.value).toBe(true)
@@ -83,6 +84,8 @@ describe('useEmailValidation', () => {
 
     expect(result.isValid).toBe(true)
     expect(isValidating.value).toBe(false)
+    
+    vi.useRealTimers()
   })
 
   it('should use custom error message when provided', async () => {

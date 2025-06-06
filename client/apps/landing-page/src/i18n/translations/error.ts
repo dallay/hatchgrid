@@ -15,6 +15,8 @@ export const error: {
 		"form.email.required": "Email address is required.",
 		"form.submission.success": "Email Submitted!",
 		"form.submission.error": "There was an error submitting your email. Please try again.",
+		"form.submission.processing": "Processing...",
+		"form.submission.please.wait": "Please wait...",
 	},
 	es: {
 		"404.title": "Página No Encontrada",
@@ -27,5 +29,7 @@ export const error: {
 		"form.email.required": "La dirección de correo es requerida.",
 		"form.submission.success": "¡Correo Enviado!",
 		"form.submission.error": "Hubo un error al enviar tu correo. Por favor intenta de nuevo.",
+		"form.submission.processing": "Procesando...",
+		"form.submission.please.wait": "Por favor espera...",
 	},
 };

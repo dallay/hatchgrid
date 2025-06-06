@@ -38,7 +38,7 @@ export function useEnhancedToast(options: ToastOptions = {}) {
 
   const showLoadingToast = (message?: string) => {
     return toast({
-      title: message || (lang === 'es' ? 'Procesando...' : 'Processing...'),
+      title: message || t('form.submission.processing'),
       description: h('div', {
         class: 'flex items-center gap-2 mt-2'
       }, [
@@ -46,10 +46,10 @@ export function useEnhancedToast(options: ToastOptions = {}) {
           class: 'w-4 h-4 border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin'
         }),
         h('span', { class: 'text-sm text-muted-foreground' },
-          lang === 'es' ? 'Por favor espera...' : 'Please wait...'
+          t('form.submission.please.wait')
         )
       ]),
-      duration: Infinity, // Manual dismiss for loading toasts
+      duration: Infinity,
     })
   }
 
