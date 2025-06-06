@@ -1,16 +1,16 @@
 ---
-import { getSelectionStrategy } from "@/models/article/article-selection.strategy";
-import ArticleCard from '@components/ArticleCard.astro';
-import { getArticles } from "@/models/article";
 import { type Lang, useTranslations } from "@/i18n";
+import { getArticles } from "@/models/article";
+import { getSelectionStrategy } from "@/models/article/article-selection.strategy";
+import ArticleCard from "@components/ArticleCard.astro";
 
-const currentLanguage = Astro.currentLocale as Lang
+const currentLanguage = Astro.currentLocale as Lang;
 const t = useTranslations(currentLanguage);
-const strategy = getSelectionStrategy('newest')
+const strategy = getSelectionStrategy("newest");
 const latestArticles = await getArticles({
-  includeDrafts: false,
-  lang: currentLanguage,
-}).then(articles => strategy.select(articles, 3));
+	includeDrafts: false,
+	lang: currentLanguage,
+}).then((articles) => strategy.select(articles, 3));
 ---
 
 <section class="py-12 md:py-16 lg:py-20 bg-background">

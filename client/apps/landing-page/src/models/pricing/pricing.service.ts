@@ -66,7 +66,9 @@ export const getPricingPlans = async (
 	});
 
 	// Sort by order field
-	const sortedPlans = pricingPlans.sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+	const sortedPlans = pricingPlans.sort(
+		(a, b) => (a.data.order || 0) - (b.data.order || 0),
+	);
 
 	return toPricingPlans(sortedPlans);
 };

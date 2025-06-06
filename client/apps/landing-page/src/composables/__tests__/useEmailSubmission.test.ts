@@ -1,148 +1,155 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useEmailSubmission } from '../useEmailSubmission'
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { useEmailSubmission } from "../useEmailSubmission";
 
 // Mock fetch globally
-global.fetch = vi.fn()
+global.fetch = vi.fn();
 
-describe('useEmailSubmission', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-    ;(fetch as any).mockClear()
-  })
+describe("useEmailSubmission", () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		(fetch as any).mockClear();
+	});
 
-  it('should initialize with correct default values', () => {
-    const { isSubmitting, lastSubmission, error } = useEmailSubmission()
+	it("should initialize with correct default values", () => {
+		const { isSubmitting, lastSubmission, error } = useEmailSubmission();
 
-    expect(isSubmitting.value).toBe(false)
-    expect(lastSubmission.value).toBeNull()
-    expect(error.value).toBeNull()
-  })
+		expect(isSubmitting.value).toBe(false);
+		expect(lastSubmission.value).toBeNull();
+		expect(error.value).toBeNull();
+	});
 
-  it('should submit email successfully', async () => {
-    const mockResponse = {
-      ok: true,
-      status: 200,
-      json: vi.fn().mockResolvedValue({ id: '123', message: 'Success' })
-    }
-    ;(fetch as any).mockResolvedValue(mockResponse)
+	it("should submit email successfully", async () => {
+		const mockResponse = {
+			ok: true,
+			status: 200,
+			json: vi.fn().mockResolvedValue({ id: "123", message: "Success" }),
+		};
+		(fetch as any).mockResolvedValue(mockResponse);
 
-    const { submitEmail, isSubmitting, lastSubmission } = useEmailSubmission()
+		const { submitEmail, isSubmitting, lastSubmission } = useEmailSubmission();
 
-    const result = await submitEmail('test@example.com', {
-      source: 'test-form'
-    })
+		const result = await submitEmail("test@example.com", {
+			source: "test-form",
+		});
 
-    expect(result.success).toBe(true)
-    expect(result.data).toEqual({ id: '123', message: 'Success' })
-    expect(result.statusCode).toBe(200)
-    expect(isSubmitting.value).toBe(false)
-    expect(lastSubmission.value?.email).toBe('test@example.com')
-    expect(lastSubmission.value?.source).toBe('test-form')
-  })
+		expect(result.success).toBe(true);
+		expect(result.data).toEqual({ id: "123", message: "Success" });
+		expect(result.statusCode).toBe(200);
+		expect(isSubmitting.value).toBe(false);
+		expect(lastSubmission.value?.email).toBe("test@example.com");
+		expect(lastSubmission.value?.source).toBe("test-form");
+	});
 
-  it('should handle API errors correctly', async () => {
-    const mockResponse = {
-      ok: false,
-      status: 400,
-      statusText: 'Bad Request'
-    }
-    ;(fetch as any).mockResolvedValue(mockResponse)
+	it("should handle API errors correctly", async () => {
+		const mockResponse = {
+			ok: false,
+			status: 400,
+			statusText: "Bad Request",
+		};
+		(fetch as any).mockResolvedValue(mockResponse);
 
-    const { submitEmail, error } = useEmailSubmission()
+		const { submitEmail, error } = useEmailSubmission();
 
-    const result = await submitEmail('test@example.com')
+		const result = await submitEmail("test@example.com");
 
-    expect(result.success).toBe(false)
-    expect(result.error).toBe('HTTP 400: Bad Request')
-    expect(error.value).toBe('HTTP 400: Bad Request')
-  })
+		expect(result.success).toBe(false);
+		expect(result.error).toBe("HTTP 400: Bad Request");
+		expect(error.value).toBe("HTTP 400: Bad Request");
+	});
 
-  it('should handle network errors', async () => {
-    ;(fetch as any).mockRejectedValue(new Error('Network error'))
+	it("should handle network errors", async () => {
+		(fetch as any).mockRejectedValue(new Error("Network error"));
 
-    const { submitEmail, error } = useEmailSubmission()
+		const { submitEmail, error } = useEmailSubmission();
 
-    const result = await submitEmail('test@example.com')
+		const result = await submitEmail("test@example.com");
 
-    expect(result.success).toBe(false)
-    expect(result.error).toBe('Network error')
-    expect(error.value).toBe('Network error')
-  })
+		expect(result.success).toBe(false);
+		expect(result.error).toBe("Network error");
+		expect(error.value).toBe("Network error");
+	});
 
-  it('should set loading state during submission', async () => {
-    let resolvePromise: (value: any) => void
-    const mockPromise = new Promise(resolve => {
-      resolvePromise = resolve
-    })
+	it("should set loading state during submission", async () => {
+		let resolvePromise: (value: any) => void;
+		const mockPromise = new Promise((resolve) => {
+			resolvePromise = resolve;
+		});
+		(fetch as any).mockReturnValue(mockPromise);
 
-    ;(fetch as any).mockReturnValue(mockPromise)
+		const { submitEmail, isSubmitting } = useEmailSubmission();
 
-    const { submitEmail, isSubmitting } = useEmailSubmission()
+		expect(isSubmitting.value).toBe(false);
 
-    expect(isSubmitting.value).toBe(false)
+		const submissionPromise = submitEmail("test@example.com");
 
-    const submissionPromise = submitEmail('test@example.com')
+		expect(isSubmitting.value).toBe(true);
 
-    expect(isSubmitting.value).toBe(true)
+		// Resolve the mock promise
+		resolvePromise!({
+			ok: true,
+			status: 200,
+			json: () => Promise.resolve({ success: true }),
+		});
 
-    // Resolve the mock promise
-    resolvePromise!({
-      ok: true,
-      status: 200,
-      json: () => Promise.resolve({ success: true })
-    })
+		await submissionPromise;
 
-    await submissionPromise
+		expect(isSubmitting.value).toBe(false);
+	});
 
-    expect(isSubmitting.value).toBe(false)
-  })
+	it("should reset submission state", async () => {
+		const mockResponse = {
+			ok: false,
+			status: 400,
+			statusText: "Bad Request",
+		};
+		(fetch as any).mockResolvedValue(mockResponse);
 
-  it('should reset submission state', async () => {
-    const mockResponse = {
-      ok: false,
-      status: 400,
-      statusText: 'Bad Request'
-    }
-    ;(fetch as any).mockResolvedValue(mockResponse)
+		const {
+			resetSubmission,
+			submitEmail,
+			isSubmitting,
+			lastSubmission,
+			error,
+		} = useEmailSubmission();
 
-    const { resetSubmission, submitEmail, isSubmitting, lastSubmission, error } = useEmailSubmission()
+		// First trigger an error state by making a failed submission
+		await submitEmail("test@example.com");
 
-    // First trigger an error state by making a failed submission
-    await submitEmail('test@example.com')
+		// Verify error state is set
+		expect(error.value).toBe("HTTP 400: Bad Request");
+		expect(lastSubmission.value).toBeNull();
 
-    // Verify error state is set
-    expect(error.value).toBe('HTTP 400: Bad Request')
-    expect(lastSubmission.value).toBeNull()
+		// Now reset
+		resetSubmission();
 
-    // Now reset
-    resetSubmission()
+		expect(isSubmitting.value).toBe(false);
+		expect(lastSubmission.value).toBeNull();
+		expect(error.value).toBeNull();
+	});
 
-    expect(isSubmitting.value).toBe(false)
-    expect(lastSubmission.value).toBeNull()
-    expect(error.value).toBeNull()
-  })
+	it("should include metadata in submission", async () => {
+		const mockResponse = {
+			ok: true,
+			status: 200,
+			json: vi.fn().mockResolvedValue({ success: true }),
+		};
+		(fetch as any).mockResolvedValue(mockResponse);
 
-  it('should include metadata in submission', async () => {
-    const mockResponse = {
-      ok: true,
-      status: 200,
-      json: vi.fn().mockResolvedValue({ success: true })
-    }
-    ;(fetch as any).mockResolvedValue(mockResponse)
+		const { submitEmail } = useEmailSubmission();
 
-    const { submitEmail } = useEmailSubmission()
+		await submitEmail("test@example.com", {
+			source: "newsletter",
+			metadata: { campaign: "summer-2024", utm_source: "google" },
+		});
 
-    await submitEmail('test@example.com', {
-      source: 'newsletter',
-      metadata: { campaign: 'summer-2024', utm_source: 'google' }
-    })
-
-    expect(fetch).toHaveBeenCalledWith('/api/waitlist', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: expect.stringContaining('"metadata":{"campaign":"summer-2024","utm_source":"google"}')
-    })
-  })
-})
+		expect(fetch).toHaveBeenCalledWith("/api/waitlist", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: expect.stringContaining(
+				'"metadata":{"campaign":"summer-2024","utm_source":"google"}',
+			),
+		});
+	});
+});

@@ -3,10 +3,10 @@ import FAQCard from "@/components/FAQCard.astro";
 import { type Lang, useTranslations } from "@/i18n";
 import { getFAQs } from "@/models/faq/faq.service";
 
-const currentLanguage = Astro.currentLocale as Lang
+const currentLanguage = Astro.currentLocale as Lang;
 const t = useTranslations(currentLanguage);
 const faqs = await getFAQs({
-  lang: currentLanguage,
+	lang: currentLanguage,
 });
 ---
 <section class="bg-white dark:bg-gray-900">

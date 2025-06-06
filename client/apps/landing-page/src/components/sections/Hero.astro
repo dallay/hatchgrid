@@ -1,17 +1,17 @@
 ---
-import { useTranslations, DEFAULT_LOCALE, type Lang, LOCALES } from "@/i18n";
 import OptimizedPicture from "@/components/OptimizedPicture.astro";
-import { Badge } from "@/components/ui/badge";
 import { CTAEmail } from "@/components/cta-email";
+import { Badge } from "@/components/ui/badge";
+import { DEFAULT_LOCALE, LOCALES, type Lang, useTranslations } from "@/i18n";
 import { Icon } from "astro-icon/components";
 
 const astroLocale = Astro.currentLocale;
 let langToUse: Lang;
 
 if (astroLocale && LOCALES[astroLocale as Lang]) {
-  langToUse = astroLocale as Lang;
+	langToUse = astroLocale as Lang;
 } else {
-  langToUse = DEFAULT_LOCALE;
+	langToUse = DEFAULT_LOCALE;
 }
 const t = useTranslations(langToUse);
 import VideoPlaceholder from "@/assets/video-placeholder.png";

@@ -15,35 +15,36 @@ import type FAQ from "./faq.model";
  * @param {FaqCriteria} criteria - Criteria for filtering FAQs
  * @returns {Promise<FAQ[]>} A promise that resolves to an array of filtered FAQ objects
  */
-export const getFAQs = async (
-	criteria?: FaqCriteria,
-): Promise<FAQ[]> => {
+export const getFAQs = async (criteria?: FaqCriteria): Promise<FAQ[]> => {
 	const { lang, question, answer, date } = criteria || {};
 
-  const faqs = await getCollection("faq", ({ id, data, body }) => {
-    // Filter by language if provided
-    if (lang) {
-      const faqLang = parseEntityId(id).lang;
-      if (faqLang !== lang) return false;
-    }
+	const faqs = await getCollection("faq", ({ id, data, body }) => {
+		// Filter by language if provided
+		if (lang) {
+			const faqLang = parseEntityId(id).lang;
+			if (faqLang !== lang) return false;
+		}
 
-    // Filter by question if provided
-    if (question && !data.question.toLowerCase().includes(question.toLowerCase())) {
-      return false;
-    }
+		// Filter by question if provided
+		if (
+			question &&
+			!data.question.toLowerCase().includes(question.toLowerCase())
+		) {
+			return false;
+		}
 
-    // Filter by answer if provided
-    if (answer && !body?.toLowerCase().includes(answer.toLowerCase())) {
-      return false;
-    }
+		// Filter by answer if provided
+		if (answer && !body?.toLowerCase().includes(answer.toLowerCase())) {
+			return false;
+		}
 
-    // Filter by date if provided
-    if (date && data.date !== date) {
-      return false;
-    }
+		// Filter by date if provided
+		if (date && data.date !== date) {
+			return false;
+		}
 
-    return true;
-  });
+		return true;
+	});
 
 	return toFAQs(faqs);
 };
@@ -54,9 +55,7 @@ export const getFAQs = async (
  * @param {string} id - The unique identifier of the FAQ to retrieve.
  * @returns {Promise<FAQ | undefined>} A promise that resolves to an FAQ object if found, undefined otherwise.
  */
-export const getFAQById = async (
-	id: string,
-): Promise<FAQ | undefined> => {
+export const getFAQById = async (id: string): Promise<FAQ | undefined> => {
 	const faqs = await getFAQs();
 	return faqs.find((faq) => faq.id === id);
 };

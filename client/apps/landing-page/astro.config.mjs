@@ -52,7 +52,7 @@ export default defineConfig({
 	vite: {
 		plugins: [tailwindcss()],
 	},
-  markdown: {
+	markdown: {
 		remarkPlugins: [remarkReadingTime],
 	},
 });

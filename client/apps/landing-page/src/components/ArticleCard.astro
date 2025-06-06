@@ -1,25 +1,25 @@
 ---
-import type Article from "@/models/article/article.model";
 import { render } from "astro:content";
+import { Badge } from "@/components/ui/badge";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
 } from "@/components/ui/card";
-import AuthorAvatarAstro from "./AuthorCard.astro";
-import OptimizedPicture from "./OptimizedPicture.astro";
-import { Badge } from '@/components/ui/badge'
-import { cleanEntityId } from "@/utils/collection.entity";
-import FormattedDate from "./FormattedDate.astro";
-import ReadingTime from "./ReadingTime.astro";
-import Link from "./Link.astro";
 import { type Lang, useTranslations } from "@/i18n";
+import type Article from "@/models/article/article.model";
+import { cleanEntityId } from "@/utils/collection.entity";
+import AuthorAvatarAstro from "./AuthorCard.astro";
+import FormattedDate from "./FormattedDate.astro";
+import Link from "./Link.astro";
+import OptimizedPicture from "./OptimizedPicture.astro";
+import ReadingTime from "./ReadingTime.astro";
 
 export interface Props {
-    article: Article;
+	article: Article;
 }
 
 const { article } = Astro.props;

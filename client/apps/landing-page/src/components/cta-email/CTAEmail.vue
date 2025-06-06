@@ -1,130 +1,132 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod'
-import { useForm } from 'vee-validate'
-import { computed } from 'vue'
-import type { HTMLAttributes } from 'vue'
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import { computed } from "vue";
+import type { HTMLAttributes } from "vue";
 
-import { Button } from '@/components/ui/button'
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
-import { type Lang, useTranslations } from '@/i18n'
+	type CTAEmailButtonVariants,
+	type CTAEmailInputVariants,
+	type CTAEmailVariants,
+	ctaEmailButtonVariants,
+	ctaEmailInputVariants,
+	ctaEmailVariants,
+} from "@/components/cta-email";
+import { Button } from "@/components/ui/button";
 import {
-  ctaEmailVariants,
-  ctaEmailInputVariants,
-  ctaEmailButtonVariants,
-  type CTAEmailVariants,
-  type CTAEmailInputVariants,
-  type CTAEmailButtonVariants
-} from '@/components/cta-email'
-import { useEmailValidation } from '@/composables/useEmailValidation'
-import { useEmailSubmission } from '@/composables/useEmailSubmission'
-import { useEnhancedToast } from '@/composables/useEnhancedToast'
+	FormControl,
+	FormField,
+	FormItem,
+	FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useEmailSubmission } from "@/composables/useEmailSubmission";
+import { useEmailValidation } from "@/composables/useEmailValidation";
+import { useEnhancedToast } from "@/composables/useEnhancedToast";
+import { type Lang, useTranslations } from "@/i18n";
+import { cn } from "@/lib/utils";
 
 // Props interface
 interface Props {
-  emailPlaceholder: string;
-  buttonText: string;
-  size?: CTAEmailVariants['size'];
-  alignment?: CTAEmailVariants['alignment'];
-  inputVariant?: CTAEmailInputVariants['variant'];
-  inputSize?: CTAEmailInputVariants['size'];
-  buttonVariant?: CTAEmailButtonVariants['variant'];
-  buttonSize?: CTAEmailButtonVariants['size'];
-  class?: HTMLAttributes['class'];
-  inputClass?: HTMLAttributes['class'];
-  buttonClass?: HTMLAttributes['class'];
-  apiEndpoint?: string;
-  source?: string;
-  metadata?: Record<string, any>;
-  showLoadingToast?: boolean;
-  lang?: Lang;
+	emailPlaceholder: string;
+	buttonText: string;
+	size?: CTAEmailVariants["size"];
+	alignment?: CTAEmailVariants["alignment"];
+	inputVariant?: CTAEmailInputVariants["variant"];
+	inputSize?: CTAEmailInputVariants["size"];
+	buttonVariant?: CTAEmailButtonVariants["variant"];
+	buttonSize?: CTAEmailButtonVariants["size"];
+	class?: HTMLAttributes["class"];
+	inputClass?: HTMLAttributes["class"];
+	buttonClass?: HTMLAttributes["class"];
+	apiEndpoint?: string;
+	source?: string;
+	metadata?: Record<string, any>;
+	showLoadingToast?: boolean;
+	lang?: Lang;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  size: 'default',
-  alignment: 'center',
-  inputVariant: 'default',
-  inputSize: 'default',
-  buttonVariant: 'default',
-  buttonSize: 'default',
-  showLoadingToast: true,
-  lang: 'en',
+	size: "default",
+	alignment: "center",
+	inputVariant: "default",
+	inputSize: "default",
+	buttonVariant: "default",
+	buttonSize: "default",
+	showLoadingToast: true,
+	lang: "en",
 });
 
-const t = useTranslations(props.lang)
+const t = useTranslations(props.lang);
 // Initialize composables
-const { validationSchema } = useEmailValidation({ lang: props.lang })
-const { isSubmitting, submitEmail, error } = useEmailSubmission()
-const { showSuccessToast, showErrorToast, showLoadingToast } = useEnhancedToast({ lang: props.lang })
+const { validationSchema } = useEmailValidation({ lang: props.lang });
+const { isSubmitting, submitEmail, error } = useEmailSubmission();
+const { showSuccessToast, showErrorToast, showLoadingToast } = useEnhancedToast(
+	{ lang: props.lang },
+);
 
 // Form setup
 const { handleSubmit, resetForm, meta } = useForm({
-  validationSchema: toTypedSchema(validationSchema.value),
-})
+	validationSchema: toTypedSchema(validationSchema.value),
+});
 
 // Computed loading text
 const loadingText = computed(() =>
-  props.lang === 'es' ? 'Enviando...' : 'Submitting...'
-)
+	props.lang === "es" ? "Enviando..." : "Submitting...",
+);
 
 // Enhanced submit handler
 const onSubmit = handleSubmit(async (values) => {
-  let loadingToastId: string | number | undefined
+	let loadingToastId: string | number | undefined;
 
-  try {
-    // Show loading toast if enabled
-    if (props.showLoadingToast) {
-      loadingToastId = showLoadingToast()
-    }
+	try {
+		// Show loading toast if enabled
+		if (props.showLoadingToast) {
+			loadingToastId = showLoadingToast();
+		}
 
-    // Submit email with enhanced options
-    const result = await submitEmail(values.email, {
-      source: props.source || 'cta-email-enhanced',
-      apiEndpoint: props.apiEndpoint,
-      metadata: {
-        ...props.metadata,
-        formType: 'cta-email',
-        timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        language: props.lang,
-      }
-    })
+		// Submit email with enhanced options
+		const result = await submitEmail(values.email, {
+			source: props.source || "cta-email-enhanced",
+			apiEndpoint: props.apiEndpoint,
+			metadata: {
+				...props.metadata,
+				formType: "cta-email",
+				timestamp: new Date().toISOString(),
+				userAgent: navigator.userAgent,
+				language: props.lang,
+			},
+		});
 
-    // Dismiss loading toast
-    if (loadingToastId && typeof loadingToastId === 'string') {
-      // Note: Sonner doesn't have a direct dismiss method, so we'll let it auto-dismiss
-    }
+		// Dismiss loading toast
+		if (loadingToastId && typeof loadingToastId === "string") {
+			// Note: Sonner doesn't have a direct dismiss method, so we'll let it auto-dismiss
+		}
 
-    if (result.success) {
-      showSuccessToast(values.email)
-      resetForm()
+		if (result.success) {
+			showSuccessToast(values.email);
+			resetForm();
 
-      // Emit success event for parent components
-      console.log('✅ Email successfully submitted:', {
-        email: values.email,
-        response: result.data
-      })
-    } else {
-      showErrorToast(result.error)
-    }
-
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error'
-    showErrorToast(errorMessage)
-    console.error('❌ Email submission failed:', err)
-  }
-})
+			// Emit success event for parent components
+			console.log("✅ Email successfully submitted:", {
+				email: values.email,
+				response: result.data,
+			});
+		} else {
+			showErrorToast(result.error);
+		}
+	} catch (err) {
+		const errorMessage = err instanceof Error ? err.message : "Unknown error";
+		showErrorToast(errorMessage);
+		console.error("❌ Email submission failed:", err);
+	}
+});
 
 // Accessibility improvements
-const inputAriaLabel = computed(() =>
-  `${props.emailPlaceholder} (${props.lang === 'es' ? 'requerido' : 'required'})`
-)
+const inputAriaLabel = computed(
+	() =>
+		`${props.emailPlaceholder} (${props.lang === "es" ? "requerido" : "required"})`,
+);
 </script>
 
 <template>

@@ -14,7 +14,8 @@ export const error: {
 		"form.email.invalid": "Invalid email address. Please enter a valid email.",
 		"form.email.required": "Email address is required.",
 		"form.submission.success": "Email Submitted!",
-		"form.submission.error": "There was an error submitting your email. Please try again.",
+		"form.submission.error":
+			"There was an error submitting your email. Please try again.",
 		"form.submission.processing": "Processing...",
 		"form.submission.please.wait": "Please wait...",
 	},
@@ -25,10 +26,12 @@ export const error: {
 		"404.top.page": "Página Principal",
 		"404.other.languages": "Ver en otros idiomas",
 		// Form validation errors
-		"form.email.invalid": "Dirección de correo inválida. Por favor ingresa un correo válido.",
+		"form.email.invalid":
+			"Dirección de correo inválida. Por favor ingresa un correo válido.",
 		"form.email.required": "La dirección de correo es requerida.",
 		"form.submission.success": "¡Correo Enviado!",
-		"form.submission.error": "Hubo un error al enviar tu correo. Por favor intenta de nuevo.",
+		"form.submission.error":
+			"Hubo un error al enviar tu correo. Por favor intenta de nuevo.",
 		"form.submission.processing": "Procesando...",
 		"form.submission.please.wait": "Por favor espera...",
 	},

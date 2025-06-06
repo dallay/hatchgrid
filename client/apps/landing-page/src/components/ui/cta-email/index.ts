@@ -52,9 +52,12 @@ export const ctaEmailButtonVariants = cva(
 		variants: {
 			variant: {
 				default: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
-				primary: "bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary/20",
-				secondary: "bg-white text-blue-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:ring-gray-300",
-				outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground focus:ring-ring/20",
+				primary:
+					"bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary/20",
+				secondary:
+					"bg-white text-blue-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:ring-gray-300",
+				outline:
+					"border border-input bg-background hover:bg-accent hover:text-accent-foreground focus:ring-ring/20",
 			},
 			size: {
 				sm: "px-6 py-2 text-sm",
@@ -71,4 +74,6 @@ export const ctaEmailButtonVariants = cva(
 
 export type CTAEmailVariants = VariantProps<typeof ctaEmailVariants>;
 export type CTAEmailInputVariants = VariantProps<typeof ctaEmailInputVariants>;
-export type CTAEmailButtonVariants = VariantProps<typeof ctaEmailButtonVariants>;
+export type CTAEmailButtonVariants = VariantProps<
+	typeof ctaEmailButtonVariants
+>;

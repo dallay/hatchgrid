@@ -1,14 +1,14 @@
 {
-  "title": "Pro",
-  "description": "For creators with large communities or products.",
-  "price": 49,
-  "interval": "month",
-  "features": [
-    { "text": "Up to 20,000 subscribers" },
-    { "text": "Stripe integration" },
-    { "text": "Advanced sequences (drip campaigns)" },
-    { "text": "Priority support" },
-    { "text": "Custom sending domain" }
-  ],
-  "order": 2
+	"title": "Pro",
+	"description": "For creators with large communities or products.",
+	"price": 49,
+	"interval": "month",
+	"features": [
+		{ "text": "Up to 20,000 subscribers" },
+		{ "text": "Stripe integration" },
+		{ "text": "Advanced sequences (drip campaigns)" },
+		{ "text": "Priority support" },
+		{ "text": "Custom sending domain" }
+	],
+	"order": 2
 }
