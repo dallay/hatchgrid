@@ -38,7 +38,7 @@ export class MockEmailApi {
   }
 
   private generateId(): string {
-    return `sub_${Math.random().toString(36).substr(2, 9)}`
+    return `sub_${Math.random().toString(36).substring(2, 11)}`
   }
 
   private delay(ms: number): Promise<void> {
