@@ -26,10 +26,6 @@ import { useEmailValidation } from '@/composables/useEmailValidation'
 import { useEmailSubmission } from '@/composables/useEmailSubmission'
 import { useEnhancedToast } from '@/composables/useEnhancedToast'
 
-// Get current language and translations
-const lang = (globalThis as any)?.Astro?.currentLocale as Lang || 'en'
-const t = useTranslations(lang)
-
 // Props interface
 interface Props {
   emailPlaceholder: string;
@@ -43,11 +39,11 @@ interface Props {
   class?: HTMLAttributes['class'];
   inputClass?: HTMLAttributes['class'];
   buttonClass?: HTMLAttributes['class'];
-  // New props for enhanced functionality
   apiEndpoint?: string;
   source?: string;
   metadata?: Record<string, any>;
   showLoadingToast?: boolean;
+  lang?: Lang;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -58,12 +54,14 @@ const props = withDefaults(defineProps<Props>(), {
   buttonVariant: 'default',
   buttonSize: 'default',
   showLoadingToast: true,
+  lang: 'en',
 });
 
+const t = useTranslations(props.lang)
 // Initialize composables
-const { validationSchema } = useEmailValidation({ lang })
+const { validationSchema } = useEmailValidation({ lang: props.lang })
 const { isSubmitting, submitEmail, error } = useEmailSubmission()
-const { showSuccessToast, showErrorToast, showLoadingToast } = useEnhancedToast({ lang })
+const { showSuccessToast, showErrorToast, showLoadingToast } = useEnhancedToast({ lang: props.lang })
 
 // Form setup
 const { handleSubmit, resetForm, meta } = useForm({
@@ -72,7 +70,7 @@ const { handleSubmit, resetForm, meta } = useForm({
 
 // Computed loading text
 const loadingText = computed(() =>
-  lang === 'es' ? 'Enviando...' : 'Submitting...'
+  props.lang === 'es' ? 'Enviando...' : 'Submitting...'
 )
 
 // Enhanced submit handler
@@ -94,7 +92,7 @@ const onSubmit = handleSubmit(async (values) => {
         formType: 'cta-email',
         timestamp: new Date().toISOString(),
         userAgent: navigator.userAgent,
-        language: lang,
+        language: props.lang,
       }
     })
 
@@ -125,7 +123,7 @@ const onSubmit = handleSubmit(async (values) => {
 
 // Accessibility improvements
 const inputAriaLabel = computed(() =>
-  `${props.emailPlaceholder} (${lang === 'es' ? 'requerido' : 'required'})`
+  `${props.emailPlaceholder} (${props.lang === 'es' ? 'requerido' : 'required'})`
 )
 </script>
 
