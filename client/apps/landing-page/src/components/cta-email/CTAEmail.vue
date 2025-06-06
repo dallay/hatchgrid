@@ -70,10 +70,10 @@ const { handleSubmit, resetForm, meta } = useForm({
 	validationSchema: toTypedSchema(validationSchema.value),
 });
 
-// Computed loading text
-const loadingText = computed(() =>
-	props.lang === "es" ? "Enviando..." : "Submitting...",
-);
+const loadingText = computed(() => t({
+  en: "Submitting...",
+  es: "Enviando...",
+}));
 
 // Enhanced submit handler
 const onSubmit = handleSubmit(async (values) => {
@@ -125,7 +125,12 @@ const onSubmit = handleSubmit(async (values) => {
 // Accessibility improvements
 const inputAriaLabel = computed(
 	() =>
-		`${props.emailPlaceholder} (${props.lang === "es" ? "requerido" : "required"})`,
+		`${props.emailPlaceholder} (${
+      t({
+        en: "Enter your email address",
+        es: "Ingresa tu dirección de correo electrónico",
+      })
+    })`
 );
 </script>
 
