@@ -1,69 +1,77 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod'
-import { useForm } from 'vee-validate'
-import { h } from 'vue'
-import * as z from 'zod'
-import type { HTMLAttributes } from 'vue'
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import { h } from "vue";
+import type { HTMLAttributes } from "vue";
+import * as z from "zod";
 
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { toast } from 'vue-sonner'
-import { cn } from '@/lib/utils'
+	type CTAEmailButtonVariants,
+	type CTAEmailInputVariants,
+	type CTAEmailVariants,
+	ctaEmailButtonVariants,
+	ctaEmailInputVariants,
+	ctaEmailVariants,
+} from "@/components/ui/cta-email";
 import {
-  ctaEmailVariants,
-  ctaEmailInputVariants,
-  ctaEmailButtonVariants,
-  type CTAEmailVariants,
-  type CTAEmailInputVariants,
-  type CTAEmailButtonVariants
-} from '@/components/ui/cta-email'
+	FormControl,
+	FormField,
+	FormItem,
+	FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { toast } from "vue-sonner";
 
 // Define props interface
 interface Props {
-  emailPlaceholder: string;
-  buttonText: string;
-  size?: CTAEmailVariants['size'];
-  alignment?: CTAEmailVariants['alignment'];
-  inputVariant?: CTAEmailInputVariants['variant'];
-  inputSize?: CTAEmailInputVariants['size'];
-  buttonVariant?: CTAEmailButtonVariants['variant'];
-  buttonSize?: CTAEmailButtonVariants['size'];
-  class?: HTMLAttributes['class'];
-  inputClass?: HTMLAttributes['class'];
-  buttonClass?: HTMLAttributes['class'];
+	emailPlaceholder: string;
+	buttonText: string;
+	size?: CTAEmailVariants["size"];
+	alignment?: CTAEmailVariants["alignment"];
+	inputVariant?: CTAEmailInputVariants["variant"];
+	inputSize?: CTAEmailInputVariants["size"];
+	buttonVariant?: CTAEmailButtonVariants["variant"];
+	buttonSize?: CTAEmailButtonVariants["size"];
+	class?: HTMLAttributes["class"];
+	inputClass?: HTMLAttributes["class"];
+	buttonClass?: HTMLAttributes["class"];
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  size: 'default',
-  alignment: 'center',
-  inputVariant: 'default',
-  inputSize: 'default',
-  buttonVariant: 'default',
-  buttonSize: 'default',
+	size: "default",
+	alignment: "center",
+	inputVariant: "default",
+	inputSize: "default",
+	buttonVariant: "default",
+	buttonSize: "default",
 });
 
-const formSchema = toTypedSchema(z.object({
-  email: z.string().email({ message: "Invalid email address. Please enter a valid email." }),
-}))
+const formSchema = toTypedSchema(
+	z.object({
+		email: z
+			.string()
+			.email({ message: "Invalid email address. Please enter a valid email." }),
+	}),
+);
 
 const { handleSubmit } = useForm({
-  validationSchema: formSchema,
-})
+	validationSchema: formSchema,
+});
 
 const onSubmit = handleSubmit((values) => {
-  toast({
-    title: 'Email Submitted!',
-    description: h('pre', { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' }, h('code', { class: 'text-white' }, JSON.stringify(values, null, 2))),
-  })
-  // Here you would typically send the email to your backend
-  console.log('Email submitted:', values.email);
-})
+	toast({
+		title: "Email Submitted!",
+		description: h(
+			"pre",
+			{ class: "mt-2 w-[340px] rounded-md bg-slate-950 p-4" },
+			h("code", { class: "text-white" }, JSON.stringify(values, null, 2)),
+		),
+	});
+	// Here you would typically send the email to your backend
+	console.log("Email submitted:", values.email);
+});
 </script>
 
 <template>

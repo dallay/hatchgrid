@@ -9,7 +9,7 @@
 		"node": ">=22.0.0",
 		"pnpm": ">=10.0.0"
 	},
-	"packageManager": "pnpm@10.11.1",
+	"packageManager": "pnpm@10.10.0",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/dallay/hatchgrid.git",
@@ -19,11 +19,7 @@
 	"bugs": {
 		"url": "https://github.com/dallay/hatchgrid/issues"
 	},
-	"keywords": [
-		"hatchgrid",
-		"landing-page",
-		"astro"
-	],
+	"keywords": ["hatchgrid", "landing-page", "astro"],
 	"author": "Hatchgrid Team",
 	"scripts": {
 		"update": "pnpm update",

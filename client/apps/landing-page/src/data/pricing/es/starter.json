@@ -1,14 +1,14 @@
 {
-  "title": "Inicial",
-  "description": "Ideal para creadores que comienzan su newsletter.",
-  "price": 0,
-  "interval": "month",
-  "features": [
-    { "text": "Hasta 500 suscriptores" },
-    { "text": "1 formulario de suscripción" },
-    { "text": "Editor de newsletters básico" },
-    { "text": "Envíos manuales" },
-    { "text": "Marca Hatchgrid en el pie" }
-  ],
-  "order": 0
+	"title": "Inicial",
+	"description": "Ideal para creadores que comienzan su newsletter.",
+	"price": 0,
+	"interval": "month",
+	"features": [
+		{ "text": "Hasta 500 suscriptores" },
+		{ "text": "1 formulario de suscripción" },
+		{ "text": "Editor de newsletters básico" },
+		{ "text": "Envíos manuales" },
+		{ "text": "Marca Hatchgrid en el pie" }
+	],
+	"order": 0
 }

@@ -6,7 +6,8 @@ export const footer: {
 } = {
 	en: {
 		// Footer description
-		"footer.description": "Hatchgrid is a platform for developers to build and deploy applications with ease.",
+		"footer.description":
+			"Hatchgrid is a platform for developers to build and deploy applications with ease.",
 
 		// Footer section headers
 		"footer.company": "Company",
@@ -33,7 +34,8 @@ export const footer: {
 	},
 	es: {
 		// Footer description
-		"footer.description": "Hatchgrid es una plataforma para desarrolladores para construir y desplegar aplicaciones con facilidad.",
+		"footer.description":
+			"Hatchgrid es una plataforma para desarrolladores para construir y desplegar aplicaciones con facilidad.",
 
 		// Footer section headers
 		"footer.company": "Empresa",

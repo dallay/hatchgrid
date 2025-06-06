@@ -1,12 +1,12 @@
 ---
 import Brand from "@/components/Brand.astro";
+import Link from "@/components/Link.astro";
 import NavMenus from "@/components/NavMenus.vue";
-import { type Lang, useTranslations } from "@/i18n";
-import { headerMenuItems } from "@/models/menu/menu.constants";
 import ThemeToggle from "@/components/ThemeToggle.astro";
 import LocaleSelect from "@/components/i18n/LocaleSelect.astro";
-import Link from "@/components/Link.astro";
+import { type Lang, useTranslations } from "@/i18n";
 import { cn } from "@/lib/utils";
+import { headerMenuItems } from "@/models/menu/menu.constants";
 import { buttonVariants } from "../ui/button";
 
 const lang = Astro.currentLocale as Lang;
@@ -88,13 +88,13 @@ const currentPath = Astro.url.pathname;
           <a href="https://codary.tech/login"
              target="_blank"
              rel="noopener noreferrer"
-             class="inline-flex items-center justify-center h-12 px-7 py-4 border-2 border-primary-600 bg-transparent text-primary-600 font-medium text-sm rounded-none">
+             class="inline-flex items-center justify-center h-12 px-7 py-4 border-2 border-primary-600 bg-transparent text-primary-600 dark:text-primary-400 dark:border-primary-400 font-medium text-sm rounded-none">
             Log In
           </a>
           <a href="https://codary.tech"
              target="_blank"
              rel="noopener noreferrer"
-             class="inline-flex items-center justify-center h-12 px-7 py-4 bg-primary-600 border-2 border-primary-600 text-white font-medium text-sm rounded-none">
+             class="inline-flex items-center justify-center h-12 px-7 py-4 bg-primary-600 border-2 border-primary-600 text-white dark:bg-primary-500 dark:text-gray-100 dark:border-primary-500 font-medium text-sm rounded-none">
             {t("header.cta")}
           </a>
         </div>

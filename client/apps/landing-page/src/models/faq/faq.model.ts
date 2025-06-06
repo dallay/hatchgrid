@@ -1,4 +1,4 @@
-import type { CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from "astro:content";
 
 /**
  * Represents a Frequently Asked Question (FAQ) entry.
@@ -11,6 +11,6 @@ export default interface FAQ {
 	id: string;
 	question: string;
 	date: Date;
-  answer: string;
-  entry?: CollectionEntry<"faq">;
+	answer: string;
+	entry?: CollectionEntry<"faq">;
 }

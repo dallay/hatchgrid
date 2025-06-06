@@ -20,7 +20,7 @@ export function toAuthor(authorData: CollectionEntry<"authors">): Author {
 	return {
 		id: authorData.id,
 		name: data.name,
-		email: data.email ?? "", 
+		email: data.email ?? "",
 		avatar: data.avatar ?? "",
 		bio: data.bio ?? "",
 		location: data.location ?? "",

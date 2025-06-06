@@ -1,14 +1,14 @@
 {
-  "title": "Starter",
-  "description": "Perfect for creators starting their newsletter journey.",
-  "price": 0,
-  "interval": "month",
-  "features": [
-    { "text": "Up to 500 subscribers" },
-    { "text": "1 subscription form" },
-    { "text": "Basic newsletter editor" },
-    { "text": "Manual sending" },
-    { "text": "Hatchgrid branding in footer" }
-  ],
-  "order": 0
+	"title": "Starter",
+	"description": "Perfect for creators starting their newsletter journey.",
+	"price": 0,
+	"interval": "month",
+	"features": [
+		{ "text": "Up to 500 subscribers" },
+		{ "text": "1 subscription form" },
+		{ "text": "Basic newsletter editor" },
+		{ "text": "Manual sending" },
+		{ "text": "Hatchgrid branding in footer" }
+	],
+	"order": 0
 }

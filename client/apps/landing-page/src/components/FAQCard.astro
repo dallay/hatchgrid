@@ -1,19 +1,19 @@
 ---
+import { render } from "astro:content";
 import { type Lang, useTranslations } from "@/i18n";
 import { cn } from "@/lib/utils";
 import type FAQ from "@/models/faq/faq.model";
 import { Icon } from "astro-icon/components";
 import type { HTMLAttributes } from "astro/types";
-import { render } from "astro:content";
 interface Props extends HTMLAttributes<"details"> {
-  faq: FAQ;
+	faq: FAQ;
 }
 const { faq, ...attrs } = Astro.props;
 
 const currentLocale = Astro.currentLocale as Lang;
 const t = useTranslations(currentLocale);
 if (!faq || !faq.entry) {
-  throw new Error(t("errors.faqNotFound"));
+	throw new Error(t("errors.faqNotFound"));
 }
 const { Content } = await render(faq.entry);
 ---

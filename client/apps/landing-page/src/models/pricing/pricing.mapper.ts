@@ -6,7 +6,9 @@ import type PricingPlan from "./pricing.model";
  * @param pricingData - The pricing collection entry from Astro content
  * @returns A PricingPlan model object with all required properties
  */
-export function toPricingPlan(pricingData: CollectionEntry<"pricing">): PricingPlan {
+export function toPricingPlan(
+	pricingData: CollectionEntry<"pricing">,
+): PricingPlan {
 	if (!pricingData?.data) {
 		throw new Error("Invalid pricing data: data object is missing");
 	}
@@ -34,6 +36,8 @@ export function toPricingPlan(pricingData: CollectionEntry<"pricing">): PricingP
  * @param pricingPlans - Array of pricing collection entries from Astro content
  * @returns Array of PricingPlan model objects
  */
-export function toPricingPlans(pricingPlans: CollectionEntry<"pricing">[]): PricingPlan[] {
+export function toPricingPlans(
+	pricingPlans: CollectionEntry<"pricing">[],
+): PricingPlan[] {
 	return pricingPlans.map(toPricingPlan);
 }
