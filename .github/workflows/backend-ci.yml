@@ -32,28 +32,35 @@ permissions:
 
 jobs:
   lint:
-    name: Lint with ktlint
+    name: Lint with Detekt # Renamed
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      checks: write # Required for reviewdog to post annotations
-      pull-requests: read # Required for reviewdog to determine PR context
+      checks: write
+      pull-requests: read # Or 'write' if reviewdog needs to create PR review comments directly
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Java
-        uses: ./.github/actions/setup-java # Assuming this sets up JDK
+        uses: ./.github/actions/setup-java
 
-      - name: Download ktlint
+      - name: Install reviewdog
         run: |
-          curl -sSLOf https://github.com/pinterest/ktlint/releases/download/1.2.1/ktlint && chmod a+x ktlint && sudo mv ktlint /usr/local/bin/
+          curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin v0.17.0 # Using a specific version
 
-      - name: Run ktlint with reviewdog
+      - name: Run Detekt and Reviewdog
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ktlint --reporter=checkstyle "**/*.kt" "**/*.kts" | reviewdog -f=checkstyle -name="ktlint" -reporter="github-pr-check" -level="warning" --filter-mode=nofilter
+          echo "Running Detekt..."
+          # Run detektAll. The task generates reports in build/reports/detekt/
+          # We use || true so that the workflow continues to the reviewdog step even if detekt finds issues.
+          ./gradlew detektAll || true
+
+          echo "Running Reviewdog on Detekt results..."
+          # Assuming detektAll generates a SARIF report at the root level
+          reviewdog -reporter=github-pr-check -name="Detekt" -f=sarif -level="warning" --filter-mode="nofilter" < build/reports/detekt/detektAll.sarif
 
   build:
     name: Build and Test
