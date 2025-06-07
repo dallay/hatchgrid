@@ -31,6 +31,30 @@ permissions:
   pull-requests: write
 
 jobs:
+  lint:
+    name: Lint with ktlint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write # Required for reviewdog to post annotations
+      pull-requests: read # Required for reviewdog to determine PR context
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: ./.github/actions/setup-java # Assuming this sets up JDK
+
+      - name: Download ktlint
+        run: |
+          curl -sSLOf https://github.com/pinterest/ktlint/releases/download/1.2.1/ktlint && chmod a+x ktlint && sudo mv ktlint /usr/local/bin/
+
+      - name: Run ktlint with reviewdog
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ktlint --reporter=checkstyle "**/*.kt" "**/*.kts" | reviewdog -f=checkstyle -name="ktlint" -reporter="github-pr-check" -level="warning" --filter-mode=nofilter
+
   build:
     name: Build and Test
     runs-on: ubuntu-latest
@@ -54,6 +78,16 @@ jobs:
         with:
           files: |
             **/build/test-results/**/*.xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./server/thryve/build/reports/kover/report.xml # Updated path for Kover
+          # flags: backend # Optional: add flags to distinguish reports
+          # name: codecov-backend # Optional: name for the report
+          # fail_ci_if_error: true # Optional: fail CI if Codecov upload fails
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
