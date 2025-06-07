@@ -56,6 +56,7 @@ dependencies {
 
     implementation("org.springframework:spring-r2dbc")
     implementation("org.springframework.data:spring-data-r2dbc")
+    implementation("org.postgresql:r2dbc-postgresql")
 
     implementation("com.github.ben-manes.caffeine:caffeine")
 
@@ -72,7 +73,6 @@ dependencies {
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
 
     runtimeOnly("org.postgresql:postgresql:42.7.6")
-    runtimeOnly("org.postgresql:r2dbc-postgresql")
     runtimeOnly("org.springframework.modulith:spring-modulith-actuator")
     runtimeOnly("org.springframework.modulith:spring-modulith-observability")
 

@@ -23,7 +23,7 @@ Uno de los pilares de Hatchgrid es el modelo de suscriptores. Desde la segmentac
 - Almacenamiento de atributos y metadatos
 
 ## Enums y RLS desde el inicio
-Usamos PostgreSQL con enums para `subscriber_status` (ENABLED, DISABLED, BLOCKLISTED) y políticas RLS basadas en `current_setting('lyra.current_organization')` para aislar los datos por organización.
+Usamos PostgreSQL con enums para `subscriber_status` (ENABLED, DISABLED, BLOCKLISTED) y políticas RLS basadas en `current_setting('hatchgrid.current_workspace')` para aislar los datos por organización.
 
 ## Etiquetas y atributos
 Las etiquetas se manejan con una tabla intermedia many-to-many. Los atributos se almacenan como JSON para permitir extensibilidad sin cambios estructurales.

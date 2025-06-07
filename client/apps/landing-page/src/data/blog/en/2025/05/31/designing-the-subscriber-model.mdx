@@ -23,7 +23,7 @@ One of the most foundational parts of Hatchgrid is the subscriber model. From ta
 - Track metadata (status, custom attributes)
 
 ## Enum and RLS by Default
-We use PostgreSQL with enums for `subscriber_status` (ENABLED, DISABLED, BLOCKLISTED) and RLS policies based on `current_setting('lyra.current_organization')` to isolate each creator’s data.
+We use PostgreSQL with enums for `subscriber_status` (ENABLED, DISABLED, BLOCKLISTED) and RLS policies based on `current_setting('hatchgrid.current_workspace')` to isolate each creator’s data.
 
 ## Tagging and Attributes
 Subscribers are associated with tags via a many-to-many table. Attributes are stored as JSON to allow flexibility in extending without schema changes.

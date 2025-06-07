@@ -13,6 +13,9 @@ internal class ArchTest {
     private lateinit var importedClasses: JavaClasses
     private val boundedContexts = listOf(
         "users",
+        "authentication",
+        "workspace",
+        "newsletter.subscriber",
     )
 
     @BeforeEach
