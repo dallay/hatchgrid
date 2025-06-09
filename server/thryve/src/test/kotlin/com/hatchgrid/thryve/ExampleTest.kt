@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve
 
 import com.hatchgrid.UnitTest
-import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import org.junit.jupiter.api.Test
 
 @UnitTest
 class ExampleTest {

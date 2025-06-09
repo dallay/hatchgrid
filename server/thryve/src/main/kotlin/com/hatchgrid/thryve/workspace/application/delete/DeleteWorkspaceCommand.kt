@@ -13,7 +13,7 @@ data class DeleteWorkspaceCommand(
     @field:NotBlank(message = "Workspace ID cannot be blank")
     @field:Pattern(
         regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-        message = "Workspace ID must be a valid UUID"
+        message = "Workspace ID must be a valid UUID",
     )
     val id: String
 ) : Command

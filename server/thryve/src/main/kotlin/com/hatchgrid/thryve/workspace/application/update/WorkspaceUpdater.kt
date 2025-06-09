@@ -1,13 +1,13 @@
 package com.hatchgrid.thryve.workspace.application.update
 
-import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
-import com.hatchgrid.thryve.workspace.domain.WorkspaceId
-import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
-import com.hatchgrid.thryve.workspace.domain.event.WorkspaceUpdatedEvent
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.event.EventBroadcaster
 import com.hatchgrid.common.domain.bus.event.EventPublisher
+import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
+import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.thryve.workspace.domain.WorkspaceNotFoundException
+import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
+import com.hatchgrid.thryve.workspace.domain.event.WorkspaceUpdatedEvent
 import org.slf4j.LoggerFactory
 
 /**

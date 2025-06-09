@@ -43,9 +43,10 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
         coEvery { workspaceRepository.save(eq(workspaceEntity)) } returns workspaceEntity
         coEvery {
             workspaceMemberRepository.insertWorkspaceMember(
-                eq(workspaceEntity.id), eq(workspaceEntity.ownerId), eq(
-                    WorkspaceRole.EDITOR.name
-                )
+                eq(workspaceEntity.id), eq(workspaceEntity.ownerId),
+                eq(
+                    WorkspaceRole.EDITOR.name,
+                ),
             )
         } returns mockk()
 
@@ -60,7 +61,7 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
                 workspaceMemberRepository.insertWorkspaceMember(
                     eq(workspaceEntity.id),
                     eq(memberId.value),
-                    eq(WorkspaceRole.EDITOR.name)
+                    eq(WorkspaceRole.EDITOR.name),
                 )
             }
         }

@@ -1,9 +1,9 @@
 package com.hatchgrid.thryve.users.infrastructure.event.consumer
 
-import com.hatchgrid.thryve.users.domain.event.UserCreatedEvent
-import com.hatchgrid.thryve.users.infrastructure.persistence.keycloak.KeycloakRepository
 import com.hatchgrid.common.domain.bus.event.EventConsumer
 import com.hatchgrid.common.domain.bus.event.Subscribe
+import com.hatchgrid.thryve.users.domain.event.UserCreatedEvent
+import com.hatchgrid.thryve.users.infrastructure.persistence.keycloak.KeycloakRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 

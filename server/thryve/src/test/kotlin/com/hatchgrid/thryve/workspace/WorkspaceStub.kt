@@ -29,7 +29,7 @@ object WorkspaceStub {
     ): CreateWorkspaceRequest = CreateWorkspaceRequest(
         name = name,
         description = description,
-        ownerId = ownerId
+        ownerId = ownerId,
     )
 
     fun generateUpdateRequest(
@@ -47,7 +47,7 @@ object WorkspaceStub {
                 id = UUID.randomUUID(),
                 name = generateName(),
                 description = faker.lorem().sentence(),
-                ownerId = ownerId
+                ownerId = ownerId,
             )
         }
         return workspaces

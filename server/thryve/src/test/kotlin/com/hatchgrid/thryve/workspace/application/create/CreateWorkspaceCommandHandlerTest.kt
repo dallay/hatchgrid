@@ -1,9 +1,9 @@
 package com.hatchgrid.thryve.workspace.application.create
 
 import com.hatchgrid.UnitTest
+import com.hatchgrid.common.domain.bus.event.EventPublisher
 import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
 import com.hatchgrid.thryve.workspace.domain.event.WorkspaceCreatedEvent
-import com.hatchgrid.common.domain.bus.event.EventPublisher
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

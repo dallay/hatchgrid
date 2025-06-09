@@ -33,7 +33,7 @@ internal class UpdateWorkspaceControllerTest : ControllerTest() {
     fun `should return 200 when workspace is updated successfully`() {
         val request = UpdateWorkspaceRequest(
             name = workspace.name,
-            description = workspace.description
+            description = workspace.description,
         )
 
         webTestClient.put()

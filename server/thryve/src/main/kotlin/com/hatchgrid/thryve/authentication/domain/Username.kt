@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.authentication.domain
 
-import com.hatchgrid.thryve.authentication.domain.error.UsernameException
 import com.hatchgrid.common.domain.BaseValidateValueObject
+import com.hatchgrid.thryve.authentication.domain.error.UsernameException
 import java.util.*
 
 private const val MAX_LENGTH = 100

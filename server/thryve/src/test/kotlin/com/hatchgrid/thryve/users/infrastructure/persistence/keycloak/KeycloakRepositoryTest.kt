@@ -1,10 +1,10 @@
 package com.hatchgrid.thryve.users.infrastructure.persistence.keycloak
 
 import com.hatchgrid.UnitTest
+import com.hatchgrid.common.domain.vo.credential.Credential
 import com.hatchgrid.thryve.authentication.infrastructure.ApplicationSecurityProperties
 import com.hatchgrid.thryve.users.domain.User
 import com.hatchgrid.thryve.users.domain.UserStoreException
-import com.hatchgrid.common.domain.vo.credential.Credential
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
