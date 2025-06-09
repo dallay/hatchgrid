@@ -5,8 +5,8 @@ import com.hatchgrid.common.domain.bus.command.CommandHandler
 import com.hatchgrid.thryve.workspace.domain.WorkspaceException
 import com.hatchgrid.thryve.workspace.domain.WorkspaceNotFoundException
 import io.r2dbc.spi.R2dbcException
-import org.springframework.dao.DataAccessException
 import org.slf4j.LoggerFactory
+import org.springframework.dao.DataAccessException
 
 /**
  * This class is responsible for handling the update workspace command.
