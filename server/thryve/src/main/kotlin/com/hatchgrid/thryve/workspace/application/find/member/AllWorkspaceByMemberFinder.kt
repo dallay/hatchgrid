@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.workspace.application.find.member
 
 import com.hatchgrid.common.domain.Service
-import com.hatchgrid.thryve.users.domain.UserId  // Fixed import path
+import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.workspace.application.WorkspaceResponses
 import com.hatchgrid.thryve.workspace.domain.WorkspaceException
 import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
