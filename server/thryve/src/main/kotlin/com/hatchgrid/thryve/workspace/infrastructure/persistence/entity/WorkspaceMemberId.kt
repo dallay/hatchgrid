@@ -9,4 +9,8 @@ import java.util.UUID
 data class WorkspaceMemberId(
     val workspaceId: UUID,
     val userId: UUID
-) : Serializable
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 1L
+    }
+}

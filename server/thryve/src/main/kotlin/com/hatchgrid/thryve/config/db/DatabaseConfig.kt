@@ -14,4 +14,8 @@ class DatabaseConfig {
     companion object {
         private val log = LoggerFactory.getLogger(DatabaseConfig::class.java)
     }
+
+    init {
+        log.info("Database configuration initialized")
+    }
 }
