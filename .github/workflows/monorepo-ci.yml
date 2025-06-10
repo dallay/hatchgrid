@@ -48,9 +48,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Run Labeler
+      - name: Run Labeler
         uses: actions/labeler@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
   codeql-analysis:
     name: CodeQL Analysis
