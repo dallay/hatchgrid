@@ -1,4 +1,4 @@
-package com.hatchgrid.thryve.workspace.application.find.by.member
+package com.hatchgrid.thryve.workspace.application.find.member
 
 import com.hatchgrid.common.domain.bus.query.Query
 import com.hatchgrid.thryve.workspace.application.WorkspaceResponses
