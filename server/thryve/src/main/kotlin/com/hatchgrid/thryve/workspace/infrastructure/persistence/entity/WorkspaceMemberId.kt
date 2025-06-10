@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.workspace.infrastructure.persistence.entity
 
-import java.util.UUID
 import java.io.Serializable
+import java.util.UUID
 
 /**
  * Represents the composite primary key for WorkspaceMemberEntity.

@@ -1,9 +1,9 @@
 package com.hatchgrid.thryve.authentication.infrastructure
 
+import com.hatchgrid.common.domain.Generated
 import com.hatchgrid.thryve.authentication.domain.Role
 import com.hatchgrid.thryve.authentication.infrastructure.csrf.SpaCsrfTokenRequestHandler
 import com.hatchgrid.thryve.authentication.infrastructure.filter.CookieCsrfFilter
-import com.hatchgrid.common.domain.Generated
 import java.time.Duration
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientSsl

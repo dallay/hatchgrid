@@ -1,12 +1,12 @@
 package com.hatchgrid.thryve.controllers
 
+import com.hatchgrid.common.domain.error.BusinessRuleValidationException
+import com.hatchgrid.common.domain.error.EntityNotFoundException
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticationException
 import com.hatchgrid.thryve.authentication.domain.UserRefreshTokenException
 import com.hatchgrid.thryve.authentication.domain.error.LogoutFailedException
 import com.hatchgrid.thryve.authentication.domain.error.MissingCookieException
 import com.hatchgrid.thryve.authentication.infrastructure.cookie.AuthCookieBuilder
-import com.hatchgrid.common.domain.error.BusinessRuleValidationException
-import com.hatchgrid.common.domain.error.EntityNotFoundException
 import java.net.URI
 import java.time.Instant
 import org.springframework.http.HttpStatus
@@ -124,5 +124,4 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         problemDetail.setProperty(TIMESTAMP, Instant.now())
         return problemDetail
     }
-
 }

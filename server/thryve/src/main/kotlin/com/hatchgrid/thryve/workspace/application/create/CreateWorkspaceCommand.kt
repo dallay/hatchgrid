@@ -16,7 +16,7 @@ data class CreateWorkspaceCommand(
     @field:NotBlank(message = "Workspace ID cannot be blank")
     @field:Pattern(
         regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-        message = "Workspace ID must be a valid UUID"
+        message = "Workspace ID must be a valid UUID",
     )
     val id: String,
     @field:NotBlank(message = "Workspace name cannot be blank")
@@ -25,7 +25,7 @@ data class CreateWorkspaceCommand(
     @field:NotBlank(message = "Owner ID cannot be blank")
     @field:Pattern(
         regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-        message = "Owner ID must be a valid UUID"
+        message = "Owner ID must be a valid UUID",
     )
     val ownerId: String,
 ) : Command

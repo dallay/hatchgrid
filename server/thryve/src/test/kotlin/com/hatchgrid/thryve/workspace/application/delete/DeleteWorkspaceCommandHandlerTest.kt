@@ -1,9 +1,9 @@
 package com.hatchgrid.thryve.workspace.application.delete
 
 import com.hatchgrid.UnitTest
-import com.hatchgrid.thryve.workspace.domain.event.WorkspaceDeletedEvent
 import com.hatchgrid.common.domain.bus.event.EventPublisher
 import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
+import com.hatchgrid.thryve.workspace.domain.event.WorkspaceDeletedEvent
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

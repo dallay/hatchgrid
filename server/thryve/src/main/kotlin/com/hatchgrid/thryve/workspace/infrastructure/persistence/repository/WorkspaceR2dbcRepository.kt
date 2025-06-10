@@ -40,7 +40,7 @@ interface WorkspaceR2dbcRepository :
       INNER JOIN workspace_members wm
         ON w.id = wm.workspace_id
       WHERE wm.user_id = :memberId
-      """
+      """,
     )
     fun findByMemberId(memberId: UUID): Flow<WorkspaceEntity>
 }

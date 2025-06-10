@@ -1,15 +1,15 @@
 package com.hatchgrid.thryve.users.application
 
+import com.hatchgrid.common.domain.Service
+import com.hatchgrid.common.domain.bus.event.EventBroadcaster
+import com.hatchgrid.common.domain.bus.event.EventPublisher
+import com.hatchgrid.common.domain.error.BusinessRuleValidationException
 import com.hatchgrid.thryve.users.application.command.RegisterUserCommand
 import com.hatchgrid.thryve.users.application.response.UserResponse
 import com.hatchgrid.thryve.users.domain.ApiDataResponse
 import com.hatchgrid.thryve.users.domain.User
 import com.hatchgrid.thryve.users.domain.UserCreator
 import com.hatchgrid.thryve.users.domain.event.UserCreatedEvent
-import com.hatchgrid.common.domain.Service
-import com.hatchgrid.common.domain.bus.event.EventBroadcaster
-import com.hatchgrid.common.domain.bus.event.EventPublisher
-import com.hatchgrid.common.domain.error.BusinessRuleValidationException
 import org.apache.commons.text.StringEscapeUtils
 import org.slf4j.LoggerFactory
 

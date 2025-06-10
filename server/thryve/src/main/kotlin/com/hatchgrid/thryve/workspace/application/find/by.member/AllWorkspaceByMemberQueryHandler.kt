@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve.workspace.application.find.by.member
 
-import com.hatchgrid.thryve.workspace.application.WorkspaceResponses
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.query.QueryHandler
+import com.hatchgrid.thryve.workspace.application.WorkspaceResponses
 import org.slf4j.LoggerFactory
 
 /**

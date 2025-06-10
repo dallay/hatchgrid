@@ -14,5 +14,4 @@ class TestcontainersConfiguration {
     fun postgresContainer(): PostgreSQLContainer<*> {
         return PostgreSQLContainer(DockerImageName.parse("postgres:16.9-alpine"))
     }
-
 }

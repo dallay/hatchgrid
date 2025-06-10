@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve.users.application.command
 
-import com.hatchgrid.thryve.users.domain.User
 import com.hatchgrid.common.domain.bus.command.Command
 import com.hatchgrid.common.domain.vo.credential.Credential
+import com.hatchgrid.thryve.users.domain.User
 import java.util.*
 
 /**
