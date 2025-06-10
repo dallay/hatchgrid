@@ -1,5 +1,6 @@
 name: Backend CI
-
+env:
+  NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 on:
   push:
     branches: [ main ]
@@ -56,11 +57,10 @@ jobs:
           echo "Running Detekt..."
           # Run detektAll. The task generates reports in build/reports/detekt/
           # We use || true so that the workflow continues to the reviewdog step even if detekt finds issues.
-          ./gradlew detektAll || true
+          ./gradlew detektAll --no-daemon --stacktrace || true
 
           echo "Running Reviewdog on Detekt results..."
-          # Assuming detektAll generates a SARIF report at the root level
-          reviewdog -reporter=github-pr-check -name="Detekt" -f=sarif -level="warning" --filter-mode="nofilter" < build/reports/detekt/detektAll.sarif
+          reviewdog -reporter=github-pr-check -name="Detekt" -f=sarif -level="warning" --filter-mode="nofilter" < build/reports/detekt/detekt.sarif
 
   build:
     name: Build and Test
