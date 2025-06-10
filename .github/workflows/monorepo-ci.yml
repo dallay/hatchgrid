@@ -37,21 +37,21 @@ permissions:
   pull-requests: write
   security-events: write # Required for CodeQL to upload results
 
-labeler:
-  name: Label PRs
-  runs-on: ubuntu-latest
-  permissions:
-    contents: read
-    pull-requests: write
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    - name: Run Labeler
-      uses: actions/labeler@v5
-      with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
+  labeler:
+    name: Label PRs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run Labeler
+        uses: actions/labeler@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
   codeql-analysis:
     name: CodeQL Analysis
     runs-on: ubuntu-latest
@@ -134,7 +134,7 @@ jobs:
         uses: dependency-check/Dependency-Check_Action@75ba02d6183445fe0761d26e836bde58b1560600
         with:
           project: 'hatchgrid-monorepo'
-          scanPath: '.'
+          path: '.'
           format: 'HTML' # You can choose other formats like XML, JSON, CSV
           # Optional: specify suppression file if you have one
           # suppressionPath: 'config/owasp/owasp-suppression.xml'
