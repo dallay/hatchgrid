@@ -131,7 +131,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Run OWASP Dependency Check
-        uses: dependency-check/Dependency-Check_Action@main # Or a specific version
+        uses: dependency-check/Dependency-Check_Action@75ba02d6183445fe0761d26e836bde58b1560600
         with:
           project: 'hatchgrid-monorepo'
           scanPath: '.'
