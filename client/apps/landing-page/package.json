@@ -19,11 +19,7 @@
 	"bugs": {
 		"url": "https://github.com/dallay/hatchgrid/issues"
 	},
-	"keywords": [
-		"hatchgrid",
-		"landing-page",
-		"astro"
-	],
+	"keywords": ["hatchgrid", "landing-page", "astro"],
 	"author": "Hatchgrid Team",
 	"scripts": {
 		"update": "pnpm update",
