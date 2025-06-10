@@ -23,7 +23,7 @@ class WorkspaceStoreR2DbcRepository(
     private val workspaceRepository: WorkspaceR2dbcRepository,
     private val workspaceMemberRepository: WorkspaceMemberR2dbcRepository
 ) : WorkspaceRepository,
-    WorkspaceFinderRepository{
+    WorkspaceFinderRepository {
 
     /**
      * Create a new workspace.
@@ -41,7 +41,7 @@ class WorkspaceStoreR2DbcRepository(
                 workspaceMemberRepository.insertWorkspaceMember(
                     workspace.id.value,
                     memberId.value,
-                    WorkspaceRole.EDITOR.name
+                    WorkspaceRole.EDITOR.name,
                 )
             }
         } catch (e: DuplicateKeyException) {

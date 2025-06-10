@@ -30,6 +30,7 @@ concurrency:
 permissions:
   contents: read
   packages: write
+  security-events: write # For uploading SARIF results
 
 jobs:
   determine-environment:
@@ -72,6 +73,22 @@ jobs:
           context: .
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Scan backend image with Trivy
+        uses: aquasecurity/trivy-action@b2933f565dbc598b29947660e66259e3c7bc8561 #0.20.0
+        with:
+          image-ref: 'ghcr.io/${{ github.repository }}/backend:${{ github.sha }}'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results-backend.sarif'
+          severity: 'HIGH,CRITICAL'
+
+      - name: Upload Trivy scan results for backend
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results-backend.sarif'
+          category: backend-trivy
+
   build-frontend:
     name: Build Frontend
     needs: determine-environment
@@ -97,6 +114,22 @@ jobs:
           dockerfile: ./client/Dockerfile
           context: .
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Scan frontend image with Trivy
+        uses: aquasecurity/trivy-action@b2933f565dbc598b29947660e66259e3c7bc8561 #0.20.0
+        with:
+          image-ref: 'ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results-frontend.sarif'
+          severity: 'HIGH,CRITICAL'
+
+      - name: Upload Trivy scan results for frontend
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results-frontend.sarif'
+          category: frontend-trivy
 
   deploy:
     name: Deploy

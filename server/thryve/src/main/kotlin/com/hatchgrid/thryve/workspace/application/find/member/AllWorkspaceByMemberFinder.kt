@@ -1,4 +1,4 @@
-package com.hatchgrid.thryve.workspace.application.find.by.member
+package com.hatchgrid.thryve.workspace.application.find.member
 
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.thryve.users.domain.UserId
@@ -21,17 +21,17 @@ class AllWorkspaceByMemberFinder(private val finder: WorkspaceFinderRepository) 
      * @throws Exception If an error occurs while finding all workspaces.
      * @return The [WorkspaceResponses] containing all workspaces.
      */
-  suspend fun findAll(userId: String): WorkspaceResponses {
-     require(userId.isNotBlank()) { "User ID cannot be blank" }
-     log.debug("Finding all workspaces for user with id: $userId")
-     try {
-         val workspaces = finder.findByMemberId(UserId(userId))
-         return WorkspaceResponses.from(workspaces)
-     } catch (exception: Exception) {
-         log.error("Failed to find workspaces for user: $userId", exception)
-         throw exception
-     }
- }
+    suspend fun findAll(userId: String): WorkspaceResponses {
+        require(userId.isNotBlank()) { "User ID cannot be blank" }
+        log.debug("Finding all workspaces for user with id: $userId")
+        try {
+            val workspaces = finder.findByMemberId(UserId(userId))
+            return WorkspaceResponses.from(workspaces)
+        } catch (exception: Exception) {
+            log.error("Failed to find workspaces for user: $userId", exception)
+            throw exception
+        }
+    }
 
     companion object {
         private val log = LoggerFactory.getLogger(AllWorkspaceByMemberFinder::class.java)

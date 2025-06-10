@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.aop.logging
 
-import com.hatchgrid.thryve.AppConstants
 import com.hatchgrid.common.domain.Generated
+import com.hatchgrid.thryve.AppConstants
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.AfterThrowing

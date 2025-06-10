@@ -1,12 +1,12 @@
 package com.hatchgrid.thryve.users.application
 
+import com.hatchgrid.UnitTest
+import com.hatchgrid.common.domain.vo.credential.Credential
 import com.hatchgrid.thryve.users.application.command.RegisterUserCommand
 import com.hatchgrid.thryve.users.application.response.UserResponse
 import com.hatchgrid.thryve.users.domain.ApiDataResponse
 import com.hatchgrid.thryve.users.domain.ApiResponseStatus
 import com.hatchgrid.thryve.users.domain.event.UserCreatedEvent
-import com.hatchgrid.common.domain.vo.credential.Credential
-import com.hatchgrid.UnitTest
 import io.kotest.common.runBlocking
 import net.datafaker.Faker
 import org.junit.jupiter.api.Assertions.assertEquals

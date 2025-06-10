@@ -1,11 +1,11 @@
 package com.hatchgrid.thryve.authentication.infrastructure.http
 
+import com.hatchgrid.common.domain.bus.Mediator
+import com.hatchgrid.spring.boot.ApiController
 import com.hatchgrid.thryve.authentication.application.logout.UserLogoutCommand
 import com.hatchgrid.thryve.authentication.domain.error.MissingCookieException
 import com.hatchgrid.thryve.authentication.infrastructure.cookie.AuthCookieBuilder
 import com.hatchgrid.thryve.authentication.infrastructure.cookie.getCookie
-import com.hatchgrid.common.domain.bus.Mediator
-import com.hatchgrid.spring.boot.ApiController
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses

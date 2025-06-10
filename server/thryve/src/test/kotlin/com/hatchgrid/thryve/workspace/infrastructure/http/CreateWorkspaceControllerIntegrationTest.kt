@@ -14,15 +14,15 @@ private const val ENDPOINT = "/api/workspace"
 internal class CreateWorkspaceControllerIntegrationTest : ControllerIntegrationTest() {
     @Test
     @Sql(
-        "/db/user/users.sql"
+        "/db/user/users.sql",
     )
     @Sql(
         "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     fun `should create a new workspace`() {
         val ownerId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
-        val request: CreateWorkspaceRequest = WorkspaceStub.generateRequest(ownerId= ownerId)
+        val request: CreateWorkspaceRequest = WorkspaceStub.generateRequest(ownerId = ownerId)
         val id = UUID.randomUUID().toString()
         webTestClient.mutateWith(csrf()).put()
             .uri("$ENDPOINT/$id")
@@ -36,12 +36,12 @@ internal class CreateWorkspaceControllerIntegrationTest : ControllerIntegrationT
     @Test
     @Sql(
         "/db/user/users.sql",
-        "/db/workspace/all-workspaces.sql"
+        "/db/workspace/all-workspaces.sql",
     )
     @Sql(
         "/db/workspace/clean.sql",
         "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     fun `should fail when the workspace already exists`() {
         val request: CreateWorkspaceRequest = WorkspaceStub.generateRequest()

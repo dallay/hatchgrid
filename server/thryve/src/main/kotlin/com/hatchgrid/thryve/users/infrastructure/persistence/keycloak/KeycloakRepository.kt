@@ -1,14 +1,14 @@
 package com.hatchgrid.thryve.users.infrastructure.persistence.keycloak
 
+import com.hatchgrid.common.domain.error.BusinessRuleValidationException
+import com.hatchgrid.common.domain.vo.credential.Credential
+import com.hatchgrid.common.domain.vo.credential.CredentialException
 import com.hatchgrid.thryve.authentication.infrastructure.ApplicationSecurityProperties
 import com.hatchgrid.thryve.users.domain.User
 import com.hatchgrid.thryve.users.domain.UserCreator
 import com.hatchgrid.thryve.users.domain.UserException
 import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.users.domain.UserStoreException
-import com.hatchgrid.common.domain.error.BusinessRuleValidationException
-import com.hatchgrid.common.domain.vo.credential.Credential
-import com.hatchgrid.common.domain.vo.credential.CredentialException
 import jakarta.ws.rs.ClientErrorException
 import jakarta.ws.rs.WebApplicationException
 import kotlinx.coroutines.Dispatchers
