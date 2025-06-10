@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.authentication.application.logout
 
-import com.hatchgrid.common.domain.Service
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticatorLogout
+import com.hatchgrid.common.domain.Service
 
 /**
  * This service class is responsible for logging out a user.

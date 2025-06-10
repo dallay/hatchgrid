@@ -30,9 +30,9 @@ permissions:
 
 jobs:
   lint:
-    name: Lint with eslint # Updated job name
+    name: Lint with Biome # Renamed
     runs-on: ubuntu-latest
-    # Permissions are inherited from workflow level: contents: read, checks: write, pull-requests: write
+    # Permissions are inherited from workflow level
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -42,17 +42,19 @@ jobs:
 
       - name: Install reviewdog
         run: |
-          curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin/
+          curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin v0.17.0 # Using a specific version
 
-      - name: Run eslint with reviewdog
+      - name: Run Biome with reviewdog # Renamed step
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Install eslint-formatter-rdjson if not already a project dependency
-          if ! pnpm list eslint-formatter-rdjson --depth -1 --json | grep -q '"name": "eslint-formatter-rdjson"'; then
-            pnpm add --save-dev eslint-formatter-rdjson
-          fi
-          pnpm eslint --format rdjson client/**/*.{js,jsx,ts,tsx} | reviewdog -f=rdjson -name="eslint" -reporter="github-pr-check" -level="warning" --filter-mode=nofilter
+          echo "Running Biome..."
+          # Run Biome check, output SARIF to a file.
+          # Use || true so workflow continues to reviewdog step even if Biome finds issues.
+          pnpm biome check --reporter=sarif client/ > biome-report.sarif || true
+
+          echo "Running Reviewdog on Biome results..."
+          reviewdog -reporter=github-pr-check -name="Biome" -f=sarif -level="warning" --filter-mode="nofilter" < biome-report.sarif
 
   build:
     name: Build

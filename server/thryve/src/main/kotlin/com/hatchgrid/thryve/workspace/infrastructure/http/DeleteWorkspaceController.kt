@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve.workspace.infrastructure.http
 
+import com.hatchgrid.thryve.workspace.application.delete.DeleteWorkspaceCommand
 import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.spring.boot.ApiController
-import com.hatchgrid.thryve.workspace.application.delete.DeleteWorkspaceCommand
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
@@ -48,12 +48,12 @@ class DeleteWorkspaceController(
         @Parameter(
             description = "ID of the workspace to be found",
             required = true,
-            schema = Schema(type = "string", format = "uuid"),
+            schema = Schema(type = "string", format = "uuid")
         )
         @PathVariable
         @Pattern(
             regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-            message = "Invalid UUID format",
+            message = "Invalid UUID format"
         )
         id: String,
     ) {

@@ -1,10 +1,10 @@
 package com.hatchgrid.thryve.authentication.application
 
-import com.hatchgrid.common.domain.Service
-import com.hatchgrid.common.domain.vo.credential.Credential
 import com.hatchgrid.thryve.authentication.domain.AccessToken
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticator
 import com.hatchgrid.thryve.authentication.domain.Username
+import com.hatchgrid.common.domain.Service
+import com.hatchgrid.common.domain.vo.credential.Credential
 import org.slf4j.LoggerFactory
 
 /**

@@ -209,7 +209,6 @@ complexity:
         '**/androidInstrumentedTest/**',
         '**/jsTest/**',
         '**/iosTest/**',
-        '**/*.kts',
       ]
     threshold: 3
     ignoreAnnotation: true

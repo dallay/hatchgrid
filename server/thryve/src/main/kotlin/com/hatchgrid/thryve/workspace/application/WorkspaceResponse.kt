@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.workspace.application
 
-import com.hatchgrid.common.domain.bus.query.Response
 import com.hatchgrid.thryve.workspace.domain.Workspace
+import com.hatchgrid.common.domain.bus.query.Response
 
 /**
  * Represents a workspace response.

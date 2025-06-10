@@ -1,11 +1,11 @@
 package com.hatchgrid.thryve.authentication.application
 
-import com.hatchgrid.common.domain.Service
-import com.hatchgrid.common.domain.bus.query.QueryHandler
 import com.hatchgrid.thryve.authentication.application.query.RefreshTokenQuery
 import com.hatchgrid.thryve.authentication.domain.AccessToken
 import com.hatchgrid.thryve.authentication.domain.RefreshToken
 import com.hatchgrid.thryve.authentication.domain.RefreshTokenManager
+import com.hatchgrid.common.domain.Service
+import com.hatchgrid.common.domain.bus.query.QueryHandler
 import org.slf4j.LoggerFactory
 
 /**

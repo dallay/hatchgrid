@@ -90,8 +90,8 @@ data class Workspace(
             WorkspaceUpdatedEvent(
                 id = this.id.value.toString(),
                 workspaceName = this.name,
-                ownerId = this.ownerId.value.toString(),
-            ),
+                ownerId = this.ownerId.value.toString()
+            )
         )
     }
 
@@ -114,11 +114,11 @@ data class Workspace(
             val workspaceId = WorkspaceId(id.toString())
             val owner = UserId(ownerId.toString())
             val workspace = Workspace(
-                id = workspaceId,
+                id =  workspaceId,
                 name = name,
                 description = description,
                 ownerId = owner,
-                members = mutableSetOf(owner),
+                members = mutableSetOf(owner)
             )
 
             // Record the workspace created event
@@ -126,8 +126,8 @@ data class Workspace(
                 WorkspaceCreatedEvent(
                     id = workspace.id.value.toString(),
                     name = workspace.name,
-                    ownerId = workspace.ownerId.value.toString(),
-                ),
+                    ownerId = workspace.ownerId.value.toString()
+                )
             )
 
             return workspace

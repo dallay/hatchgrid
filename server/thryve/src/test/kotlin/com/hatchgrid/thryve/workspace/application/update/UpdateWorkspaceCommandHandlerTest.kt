@@ -1,12 +1,12 @@
 package com.hatchgrid.thryve.workspace.application.update
 
 import com.hatchgrid.UnitTest
-import com.hatchgrid.common.domain.bus.event.EventPublisher
 import com.hatchgrid.thryve.workspace.WorkspaceStub
 import com.hatchgrid.thryve.workspace.domain.Workspace
 import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
 import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
 import com.hatchgrid.thryve.workspace.domain.event.WorkspaceUpdatedEvent
+import com.hatchgrid.common.domain.bus.event.EventPublisher
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -57,7 +57,7 @@ internal class UpdateWorkspaceCommandHandlerTest {
                 withArg { updatedWorkspace ->
                     assertEquals(
                         workspace.id.value.toString(),
-                        updatedWorkspace.id.value.toString(),
+                        updatedWorkspace.id.value.toString()
                     )
                     assertEquals(workspace.name, updatedWorkspace.name)
                     assertEquals(workspace.description, updatedWorkspace.description)
@@ -65,11 +65,11 @@ internal class UpdateWorkspaceCommandHandlerTest {
                     assertEquals(
                         1,
                         updatedWorkspace.members.size,
-                        "Owner should be added as a member",
+                        "Owner should be added as a member"
                     )
                     assertEquals(
                         workspace.ownerId.value.toString(),
-                        updatedWorkspace.members.first().value.toString(),
+                        updatedWorkspace.members.first().value.toString()
                     )
                 },
             )

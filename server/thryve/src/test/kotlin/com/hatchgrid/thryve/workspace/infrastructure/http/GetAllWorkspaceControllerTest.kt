@@ -3,7 +3,7 @@ package com.hatchgrid.thryve.workspace.infrastructure.http
 import com.hatchgrid.ControllerTest
 import com.hatchgrid.thryve.workspace.WorkspaceStub
 import com.hatchgrid.thryve.workspace.application.WorkspaceResponses
-import com.hatchgrid.thryve.workspace.application.find.member.AllWorkspaceByMemberQuery
+import com.hatchgrid.thryve.workspace.application.find.by.member.AllWorkspaceByMemberQuery
 import com.hatchgrid.thryve.workspace.domain.Workspace
 import io.mockk.coEvery
 import org.junit.jupiter.api.BeforeEach

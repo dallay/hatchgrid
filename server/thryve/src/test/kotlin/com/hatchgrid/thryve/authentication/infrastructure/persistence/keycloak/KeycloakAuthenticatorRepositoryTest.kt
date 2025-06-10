@@ -1,12 +1,12 @@
 package com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak
 
 import com.hatchgrid.UnitTest
-import com.hatchgrid.common.domain.vo.credential.Credential
 import com.hatchgrid.thryve.CredentialGenerator
 import com.hatchgrid.thryve.authentication.domain.AccessToken
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticationException
 import com.hatchgrid.thryve.authentication.domain.Username
 import com.hatchgrid.thryve.authentication.infrastructure.ApplicationSecurityProperties
+import com.hatchgrid.common.domain.vo.credential.Credential
 import io.mockk.CapturingSlot
 import io.mockk.coEvery
 import io.mockk.coVerify

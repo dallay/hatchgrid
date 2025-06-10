@@ -14,11 +14,9 @@ data class UpdateWorkspaceCommand(
     @field:NotBlank(message = "Workspace ID cannot be blank")
     @field:Pattern(
         regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-        message = "Workspace ID must be a valid UUID",
+        message = "Workspace ID must be a valid UUID"
     )
     val id: String,
     @field:NotBlank(message = "Workspace name cannot be blank")
-    val name: String,
-    val description: String?
-) :
+    val name: String, val description: String?) :
     Command

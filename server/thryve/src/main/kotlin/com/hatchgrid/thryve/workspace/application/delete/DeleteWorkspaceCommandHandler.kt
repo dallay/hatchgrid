@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve.workspace.application.delete
 
+import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.command.CommandHandler
-import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import org.slf4j.LoggerFactory
 
 /**

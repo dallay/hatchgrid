@@ -1,12 +1,11 @@
 package com.hatchgrid.thryve.workspace.application.create
 
+import com.hatchgrid.thryve.workspace.domain.Workspace
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.command.CommandHandler
-import com.hatchgrid.thryve.workspace.domain.Workspace
 import com.hatchgrid.thryve.workspace.domain.WorkspaceException
 import java.util.*
 import org.slf4j.LoggerFactory
-import org.springframework.dao.DataAccessException
 
 /**
  * [CreateWorkspaceCommandHandler] is a class responsible for handling the creation of workspace.
@@ -45,7 +44,7 @@ class CreateWorkspaceCommandHandler(
         } catch (exception: IllegalArgumentException) {
             log.error("Invalid UUID format in create workspace command: ${exception.message}")
             throw IllegalArgumentException("Invalid workspace or owner ID format", exception)
-        } catch (exception: DataAccessException) {
+        } catch (exception: Exception) {
             log.error("Failed to create workspace with name: ${command.name}", exception)
             throw WorkspaceException("Error creating workspace", exception)
         }

@@ -1,9 +1,9 @@
 package com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak
 
-import com.hatchgrid.common.domain.Service
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticatorLogout
 import com.hatchgrid.thryve.authentication.domain.error.LogoutFailedException
 import com.hatchgrid.thryve.authentication.infrastructure.ApplicationSecurityProperties
+import com.hatchgrid.common.domain.Service
 import org.springframework.http.MediaType
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap

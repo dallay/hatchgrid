@@ -28,14 +28,12 @@ internal class AppOwaspPlugin : ConventionPlugin {
             }
 
             // Delete the database files in the dependency-check-data directory
-            delete(
-                fileTree(layout.buildDirectory.dir("dependency-check-data").get().asFile) {
-                    include("*.h2.db")
-                    include("*.mv.db") // Include odc.mv.db file
-                    include("*.trace.db")
-                    include("*.lock.db")
-                },
-            )
+            delete(fileTree(layout.buildDirectory.dir("dependency-check-data").get().asFile) {
+                include("*.h2.db")
+                include("*.mv.db")  // Include odc.mv.db file
+                include("*.trace.db")
+                include("*.lock.db")
+            })
 
             doLast {
                 println("Dependency check database purged successfully.")

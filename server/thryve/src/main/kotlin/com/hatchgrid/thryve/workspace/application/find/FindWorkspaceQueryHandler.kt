@@ -1,10 +1,10 @@
 package com.hatchgrid.thryve.workspace.application.find
 
-import com.hatchgrid.common.domain.Service
-import com.hatchgrid.common.domain.bus.query.QueryHandler
 import com.hatchgrid.thryve.workspace.application.WorkspaceResponse
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.thryve.workspace.domain.WorkspaceNotFoundException
+import com.hatchgrid.common.domain.Service
+import com.hatchgrid.common.domain.bus.query.QueryHandler
 import org.slf4j.LoggerFactory
 
 /**

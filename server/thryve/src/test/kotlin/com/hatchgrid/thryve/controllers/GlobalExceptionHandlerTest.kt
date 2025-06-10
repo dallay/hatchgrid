@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.controllers
 
-import com.hatchgrid.UnitTest
 import com.hatchgrid.common.domain.error.BusinessRuleValidationException
+import com.hatchgrid.UnitTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock

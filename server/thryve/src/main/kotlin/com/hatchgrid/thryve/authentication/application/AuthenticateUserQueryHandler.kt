@@ -1,12 +1,12 @@
 package com.hatchgrid.thryve.authentication.application
 
+import com.hatchgrid.thryve.authentication.application.query.AuthenticateUserQuery
+import com.hatchgrid.thryve.authentication.domain.AccessToken
+import com.hatchgrid.thryve.authentication.domain.Username
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.query.QueryHandler
 import com.hatchgrid.common.domain.vo.credential.Credential
 import com.hatchgrid.common.domain.vo.credential.CredentialId
-import com.hatchgrid.thryve.authentication.application.query.AuthenticateUserQuery
-import com.hatchgrid.thryve.authentication.domain.AccessToken
-import com.hatchgrid.thryve.authentication.domain.Username
 import java.util.UUID
 import org.slf4j.LoggerFactory
 

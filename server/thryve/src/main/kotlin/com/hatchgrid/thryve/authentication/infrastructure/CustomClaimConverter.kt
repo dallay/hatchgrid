@@ -1,9 +1,9 @@
 package com.hatchgrid.thryve.authentication.infrastructure
 
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.hatchgrid.common.domain.Memoizers
 import com.hatchgrid.thryve.authentication.infrastructure.ClaimExtractor.CLAIM_APPENDERS
 import com.hatchgrid.thryve.authentication.infrastructure.ClaimExtractor.SUB
+import com.hatchgrid.common.domain.Memoizers
 import org.springframework.core.convert.converter.Converter
 import org.springframework.security.oauth2.client.registration.ClientRegistration
 import org.springframework.security.oauth2.jwt.MappedJwtClaimSetConverter

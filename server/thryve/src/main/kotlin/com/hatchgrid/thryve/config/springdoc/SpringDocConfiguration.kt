@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.config.springdoc
 
-import com.hatchgrid.common.domain.Generated
 import com.hatchgrid.thryve.authentication.infrastructure.ApplicationSecurityProperties
+import com.hatchgrid.common.domain.Generated
 import io.swagger.v3.oas.models.ExternalDocumentation
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Contact

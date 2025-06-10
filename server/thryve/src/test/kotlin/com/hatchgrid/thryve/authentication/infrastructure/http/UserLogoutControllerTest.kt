@@ -1,10 +1,10 @@
 package com.hatchgrid.thryve.authentication.infrastructure.http
 
 import com.hatchgrid.UnitTest
-import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.thryve.authentication.application.logout.UserLogoutCommand
 import com.hatchgrid.thryve.authentication.infrastructure.cookie.AuthCookieBuilder
 import com.hatchgrid.thryve.controllers.GlobalExceptionHandler
+import com.hatchgrid.common.domain.bus.Mediator
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach

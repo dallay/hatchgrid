@@ -10,9 +10,7 @@ import java.util.UUID
  */
 data class WorkspaceId(val value: UUID) : Serializable {
     constructor(id: String) : this(UUID.fromString(id))
-
     companion object {
-        private const val serialVersionUID: Long = 1L
         fun create() = WorkspaceId(UUID.randomUUID())
     }
 }

@@ -1,11 +1,11 @@
 package com.hatchgrid.thryve.users.domain
 
+import com.hatchgrid.thryve.authentication.domain.Username
 import com.hatchgrid.common.domain.AggregateRoot
 import com.hatchgrid.common.domain.vo.credential.Credential
 import com.hatchgrid.common.domain.vo.credential.CredentialType
 import com.hatchgrid.common.domain.vo.email.Email
 import com.hatchgrid.common.domain.vo.name.Name
-import com.hatchgrid.thryve.authentication.domain.Username
 import java.util.*
 
 /**

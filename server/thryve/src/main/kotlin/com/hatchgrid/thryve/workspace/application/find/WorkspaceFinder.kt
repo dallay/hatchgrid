@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve.workspace.application.find
 
-import com.hatchgrid.common.domain.Service
 import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
+import com.hatchgrid.common.domain.Service
 
 /**
  * This is a service class that handles the finding of workspaces.

@@ -22,11 +22,9 @@ internal class AppDetektPlugin : ConventionPlugin {
             autoCorrect = true
             buildUponDefaultConfig = true
             jvmTarget = AppConfiguration.jvmTargetStr
-            setSource(
-                fileTree(projectDir).matching {
-                    include("**/*.kt", "**/*.kts")
-                }.files,
-            )
+            setSource(fileTree(projectDir).matching {
+                include("**/*.kt", "**/*.kts")
+            }.files)
             config.setFrom(files("$rootDir/config/detekt.yml"))
             include("**/*.kt", "**/*.kts")
             exclude("**/resources/**", "**/build/**")

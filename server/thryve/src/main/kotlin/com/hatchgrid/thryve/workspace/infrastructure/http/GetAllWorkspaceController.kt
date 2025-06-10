@@ -4,7 +4,7 @@ import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.common.domain.bus.query.QueryResponse
 import com.hatchgrid.common.domain.bus.query.Response
 import com.hatchgrid.spring.boot.ApiController
-import com.hatchgrid.thryve.workspace.application.find.member.AllWorkspaceByMemberQuery
+import com.hatchgrid.thryve.workspace.application.find.by.member.AllWorkspaceByMemberQuery
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses

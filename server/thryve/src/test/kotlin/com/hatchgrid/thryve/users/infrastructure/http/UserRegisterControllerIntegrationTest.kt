@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.users.infrastructure.http
 
-import com.hatchgrid.common.domain.vo.credential.Credential
 import com.hatchgrid.thryve.config.InfrastructureTestContainers
+import com.hatchgrid.common.domain.vo.credential.Credential
 import io.kotest.assertions.print.print
 import net.datafaker.Faker
 import org.junit.jupiter.api.BeforeEach

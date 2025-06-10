@@ -1,8 +1,7 @@
 package com.hatchgrid.thryve.workspace.infrastructure.persistence.entity
 
-import com.hatchgrid.thryve.workspace.domain.WorkspaceId
-import java.io.Serializable
 import java.util.UUID
+import java.io.Serializable
 
 /**
  * Represents the composite primary key for WorkspaceMemberEntity.
@@ -10,9 +9,4 @@ import java.util.UUID
 data class WorkspaceMemberId(
     val workspaceId: UUID,
     val userId: UUID
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 1L
-        fun create() = WorkspaceId(UUID.randomUUID())
-    }
-}
+) : Serializable

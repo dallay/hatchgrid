@@ -1,11 +1,11 @@
 package com.hatchgrid.thryve.users.infrastructure.persistence.keycloak
 
-import com.hatchgrid.common.domain.vo.email.Email
 import com.hatchgrid.thryve.authentication.domain.Username
 import com.hatchgrid.thryve.config.InfrastructureTestContainers
 import com.hatchgrid.thryve.users.domain.User
 import com.hatchgrid.thryve.users.domain.UserCreator
 import com.hatchgrid.thryve.users.domain.UserStoreException
+import com.hatchgrid.common.domain.vo.email.Email
 import io.kotest.common.runBlocking
 import net.datafaker.Faker
 import org.junit.jupiter.api.Assertions.assertEquals

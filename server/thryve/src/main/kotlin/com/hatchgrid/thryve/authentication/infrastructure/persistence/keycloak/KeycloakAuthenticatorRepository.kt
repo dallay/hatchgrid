@@ -1,12 +1,12 @@
 package com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak
 
-import com.hatchgrid.common.domain.vo.credential.Credential
 import com.hatchgrid.thryve.authentication.domain.AccessToken
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticationException
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticator
 import com.hatchgrid.thryve.authentication.domain.Username
 import com.hatchgrid.thryve.authentication.infrastructure.ApplicationSecurityProperties
 import com.hatchgrid.thryve.authentication.infrastructure.mapper.AccessTokenResponseMapper.toAccessToken
+import com.hatchgrid.common.domain.vo.credential.Credential
 import jakarta.ws.rs.BadRequestException
 import jakarta.ws.rs.ClientErrorException
 import jakarta.ws.rs.NotAuthorizedException
