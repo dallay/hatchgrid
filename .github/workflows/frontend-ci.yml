@@ -40,21 +40,13 @@ jobs:
       - name: Setup Node.js and pnpm
         uses: ./.github/actions/setup-node
 
-      - name: Install reviewdog
-        run: |
-          curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b /usr/local/bin v0.17.0 # Using a specific version
-
-      - name: Run Biome with reviewdog # Renamed step
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Running Biome..."
-          # Run Biome check, output SARIF to a file.
-          # Use || true so workflow continues to reviewdog step even if Biome finds issues.
-          pnpm biome check --reporter=sarif client/ > biome-report.sarif || true
-
-          echo "Running Reviewdog on Biome results..."
-          reviewdog -reporter=github-pr-check -name="Biome" -f=sarif -level="warning" --filter-mode="nofilter" < biome-report.sarif
+      - name: Run Biome with Reviewdog
+        uses: mongolyy/reviewdog-action-biome@bf7dffa9b14e8904941a18a28782b74fc40104f0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          fail_on_error: true
+          biome_args: --reporter=json client/apps/*
 
   build:
     name: Build
