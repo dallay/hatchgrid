@@ -9,8 +9,10 @@ import com.hatchgrid.common.domain.bus.query.Response
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.apache.commons.text.StringEscapeUtils
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 
 /**
  * Abstract base class for API controllers.
@@ -54,6 +56,29 @@ abstract class ApiController(
             .awaitSingleOrNull()
         return authentication
     }
+
+    /**
+     * Retrieves the current user ID (from the JWT "sub" claim).
+     * If the authentication is not a JwtAuthenticationToken, this method returns null,
+     * as other token types like UsernamePasswordAuthenticationToken do not inherently provide
+     * a JWT 'sub' claim.
+     *
+     * @return The current user ID (JWT "sub" claim), or null if not available.
+     */
+    protected suspend fun userId(): String? {
+        val authentication = ReactiveSecurityContextHolder.getContext()
+            .map { it.authentication }
+            .awaitSingleOrNull()
+
+        return when (authentication) {
+            is JwtAuthenticationToken -> authentication.token.subject
+            // For other authentication types, a JWT 'sub' claim is not available.
+            // Returning null makes the contract of this method clear: it provides the JWT subject.
+            is UsernamePasswordAuthenticationToken -> null
+            else -> null
+        }
+    }
+
 
     /**
      * Sanitizes a path variable to prevent injection attacks.

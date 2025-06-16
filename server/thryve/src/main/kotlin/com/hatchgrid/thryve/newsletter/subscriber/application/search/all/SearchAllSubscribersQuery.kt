@@ -9,12 +9,16 @@ import com.hatchgrid.common.domain.presentation.sort.Sort
 /**
  * This class represents a query to search all subscribers.
  *
+ * @property workspaceId The identifier of the workspace the subscribers belong to.
+ * @property userId The identifier of the user making the request.
  * @property criteria The criteria to filter the subscribers. It can be null.
  * @property size The size of the page to return. It can be null.
  * @property cursor The cursor to paginate through the subscribers. It can be null.
  * @property sort The sort order for the subscribers. It can be null.
  */
 data class SearchAllSubscribersQuery(
+    val workspaceId: String,
+    val userId: String,
     val criteria: Criteria? = null,
     val size: Int? = null,
     val cursor: String? = null,

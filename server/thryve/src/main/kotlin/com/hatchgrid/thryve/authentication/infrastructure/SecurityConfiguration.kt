@@ -279,7 +279,6 @@ class SecurityConfiguration(
             DelegatingOAuth2TokenValidator(withIssuer, audienceValidator)
         jwtDecoder.setJwtValidator(withAudience)
 
-        val sslCertificate = ssl.fromBundle("keycloak")
         return ReactiveJwtDecoder { token ->
             jwtDecoder.decode(token)
                 .flatMap { jwt ->
@@ -294,7 +293,6 @@ class SecurityConfiguration(
                                     ),
                                 )
                                 .baseUrl(it!!.providerDetails.issuerUri)
-                                .apply(sslCertificate)
                                 .build()
                             jwtDecoder.setClaimSetConverter(
                                 CustomClaimConverter(

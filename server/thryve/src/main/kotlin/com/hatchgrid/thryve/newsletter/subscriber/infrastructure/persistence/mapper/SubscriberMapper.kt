@@ -28,7 +28,9 @@ object SubscriberMapper {
             attributes = attributes,
             workspaceId = workspaceId.value,
             createdAt = createdAt,
+            createdBy = createdBy,
             updatedAt = updatedAt,
+            updatedBy = updatedBy,
         )
     }
 
@@ -49,7 +51,9 @@ object SubscriberMapper {
             attributes = attributes,
             workspaceId = WorkspaceId(workspaceId),
             createdAt = createdAt,
+            createdBy = createdBy,
             updatedAt = updatedAt,
+            updatedBy = updatedBy,
         )
     }
 }

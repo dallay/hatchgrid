@@ -19,6 +19,7 @@ import com.hatchgrid.common.domain.presentation.pagination.TimestampCursor
 import com.hatchgrid.common.domain.presentation.sort.Sort
 import com.hatchgrid.spring.boot.presentation.sort.toSpringSort
 import com.hatchgrid.spring.boot.repository.R2DBCCriteriaParser
+import com.hatchgrid.thryve.users.domain.UserId
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.data.domain.PageRequest
@@ -127,6 +128,7 @@ class SubscriberR2dbcRepository(
      * This method returns a flow of pairs, where each pair consists of a status
      * (as a string) and the count of subscribers with that status (as an integer).
      *
+     * @param workspaceId The ID of the workspace to count subscribers for.
      * @return List<Pair<String, Long>> A flow emitting pairs of status and count.
      */
     override suspend fun countByStatus(workspaceId: WorkspaceId): List<Pair<String, Long>> =

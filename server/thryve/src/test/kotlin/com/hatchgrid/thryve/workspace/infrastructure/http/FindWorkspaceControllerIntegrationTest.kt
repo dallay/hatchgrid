@@ -23,8 +23,6 @@ internal class FindWorkspaceControllerIntegrationTest : ControllerIntegrationTes
     fun `should return workspace when workspace is found`(): Unit = runBlocking {
         val id = "a0654720-35dc-49d0-b508-1f7df5d915f1"
         webTestClient
-            .mutateWith(csrf())
-            .mutateWith(mockAuthentication<SecurityMockServerConfigurers.JwtMutator>(jwt()))
             .get()
             .uri("/api/workspace/$id")
             .exchange()

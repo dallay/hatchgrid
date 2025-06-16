@@ -51,13 +51,22 @@ databaseChangeLog:
                   name: created_at
                   type: timestamp with time zone
                   defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: varchar(50)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
               - column:
                   name: updated_at
                   type: timestamp with time zone
                   defaultValueComputed: CURRENT_TIMESTAMP
               - column:
-                  name: deleted_at
-                  type: timestamp with time zone
+                  name: updated_by
+                  type: varchar(50)
+                  defaultValue: 'system'
         - addForeignKeyConstraint:
             baseTableName: subscribers
             baseColumnNames: workspace_id

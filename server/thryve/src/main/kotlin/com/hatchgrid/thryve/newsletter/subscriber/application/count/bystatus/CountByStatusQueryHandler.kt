@@ -2,6 +2,7 @@ package com.hatchgrid.thryve.newsletter.subscriber.application.count.bystatus
 
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.query.QueryHandler
+import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import org.slf4j.LoggerFactory
 
 /**
@@ -10,11 +11,15 @@ import org.slf4j.LoggerFactory
  * This class handles the [CountByStatusQuery] by using the [SubscriberCountByStatus] service
  * to retrieve the count of subscribers by their status.
  *
+ * @property workspaceAuthorizationService The service used to authorize access to the workspace.
  * @property counter The service used to count subscribers by their status.
  * @created 8/9/24
  */
 @Service
-class CountByStatusQueryHandler(private val counter: SubscriberCountByStatus) :
+class CountByStatusQueryHandler(
+    private val workspaceAuthorizationService: WorkspaceAuthorizationService,
+    private val counter: SubscriberCountByStatus
+) :
     QueryHandler<CountByStatusQuery, SubscriberCountByStatusResponse> {
 
     /**
@@ -28,6 +33,8 @@ class CountByStatusQueryHandler(private val counter: SubscriberCountByStatus) :
      */
     override suspend fun handle(query: CountByStatusQuery): SubscriberCountByStatusResponse {
         log.debug("Counting subscribers by status for workspace {}", query.workspaceId)
+        // Authorization: ensure current user has access to this workspace
+        workspaceAuthorizationService.ensureAccess(query.workspaceId, query.userId)
         return SubscriberCountByStatusResponse(counter.count(query.workspaceId))
     }
 

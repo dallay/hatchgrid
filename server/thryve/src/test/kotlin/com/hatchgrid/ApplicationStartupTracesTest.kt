@@ -53,6 +53,27 @@ $SEPARATOR""",
     }
 
     @Test
+    fun `should use https when ssl bundle is configured`() {
+        val environment = MockEnvironment()
+        environment.setProperty("server.ssl.bundle", "web-server")
+        environment.setProperty("server.port", "8080")
+        environment.setProperty("server.servlet.context-path", "/custom-path")
+        environment.setProperty("configserver.status", "config")
+        environment.setActiveProfiles("local", "mongo")
+        val traceOutput = of(environment)
+        @Suppress("TrimMultilineRawString")
+        Assertions.assertThat(traceOutput)
+            .contains("  Local: \thttps://localhost:8080/custom-path")
+            .containsPattern("  External: \thttps://[^:]+:8080/custom-path")
+            .contains("Profile(s): \tlocal, mongo")
+            .contains(
+                """$SEPARATOR
+  Config Server: config
+$SEPARATOR""",
+            )
+    }
+
+    @Test
     fun shouldBuildTraceForEnvironmentWithApplicationName() {
         val environment = MockEnvironment()
         environment.setProperty("spring.application.name", "Hatchgrid")

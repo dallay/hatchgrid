@@ -1,4 +1,4 @@
-package com.hatchgrid.thryve.newsletter.subscriber.application
+package com.hatchgrid.thryve.newsletter.subscriber.application.create
 
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.command.CommandHandler

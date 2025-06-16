@@ -1,15 +1,4 @@
-server:
-  port: 8443
-  ssl:
-    bundle: "web-server"
-    enabled: true
-    ciphers: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 ,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 ,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 ,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA,TLS_RSA_WITH_CAMELLIA_256_CBC_SHA,TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA,TLS_RSA_WITH_CAMELLIA_128_CBC_SHA
 logging:
-  level:
-    org.springframework.r2dbc: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.security.oauth2.client: DEBUG
-    com.hatchgrid: DEBUG
   pattern:
     console: "%d{dd-MM-yyyy HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
 spring:
@@ -20,22 +9,6 @@ spring:
     name: ${application.name}
   main:
     allow-bean-definition-overriding: true
-  ssl:
-    bundle:
-      pem:
-        keycloak:
-          reload-on-update: true
-          truststore:
-            certificate: ${SSL_CERTIFICATE:file:infra/ssl/localhost.pem}
-      jks:
-        web-server:
-          key:
-            alias: "server"
-            password: ${SSL_KEYSTORE_PASSWORD:S3cr3tP@ssw0rd*123}
-          keystore:
-            location: ${SSL_KEYSTORE_LOCATION:file:infra/ssl/localhost.p12}
-            password: ${SSL_KEYSTORE_PASSWORD:S3cr3tP@ssw0rd*123}
-            type: "PKCS12"
   security:
     oauth2:
       client:
@@ -43,7 +16,7 @@ spring:
           oidc:
             client-secret: ${application.security.oauth2.client-secret}
             client-id: ${application.security.oauth2.client-id}
-            scope: openid,profile,email
+            scope: openid, profile, email, offline_access # last one for refresh tokens
         provider:
           oidc:
             issuer-uri: ${application.security.oauth2.issuer-uri}
@@ -73,7 +46,7 @@ application:
   version: 0.0.1-SNAPSHOT
   security:
     oauth2:
-      base-url: ${OAUTH2_SERVER_URL:https://localhost:6443}
+      base-url: ${OAUTH2_SERVER_URL:http://localhost:9080}
       server-url: ${application.security.oauth2.base-url}
       issuer-uri: ${application.security.oauth2.base-url}/realms/${application.security.oauth2.realm}
       realm: ${REALM:hatchgrid}

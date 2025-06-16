@@ -7,6 +7,7 @@ import com.hatchgrid.thryve.authentication.domain.error.MissingCookieException
 import com.hatchgrid.thryve.authentication.infrastructure.cookie.AuthCookieBuilder
 import com.hatchgrid.common.domain.error.BusinessRuleValidationException
 import com.hatchgrid.common.domain.error.EntityNotFoundException
+import com.hatchgrid.thryve.workspace.domain.WorkspaceAuthorizationException
 import java.net.URI
 import java.time.Instant
 import org.springframework.http.HttpStatus
@@ -42,7 +43,9 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
      * @return The ProblemDetail object representing the exception.
      */
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(UserAuthenticationException::class, UserRefreshTokenException::class)
+    @ExceptionHandler(UserAuthenticationException::class, UserRefreshTokenException::class,
+        WorkspaceAuthorizationException::class
+    )
     fun handleUserAuthenticationException(
         e: Exception,
         response: ServerHttpResponse

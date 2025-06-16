@@ -1,14 +1,17 @@
 package com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http
 
 import com.hatchgrid.thryve.AppConstants.Paths.API
-import com.hatchgrid.thryve.AppConstants.Paths.SUBSCRIBER
-import com.hatchgrid.thryve.newsletter.subscriber.application.SubscribeNewsletterCommand
+import com.hatchgrid.thryve.newsletter.subscriber.application.create.SubscribeNewsletterCommand
 import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.request.SubscribeNewsletterRequest
 import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.spring.boot.ApiController
+import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import jakarta.validation.constraints.Pattern
 import java.net.URI
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -29,9 +32,26 @@ class NewsletterSubscriberController(
         ApiResponse(responseCode = "201", description = "Created"),
         ApiResponse(responseCode = "500", description = "Internal server error"),
     )
-    @PutMapping("$SUBSCRIBER/{subscriberId}")
+    @PutMapping("/workspace/{workspaceId}/newsletter/subscriber/{subscriberId}")
     suspend fun subscribe(
-        @PathVariable workspaceId: String,
+        @Parameter(
+            description = "ID of the workspace to be found",
+            required = true,
+            schema = Schema(type = "string", format = "uuid")
+        )
+        @Pattern(
+            regexp = UUID_PATTERN,
+            message = "Invalid UUID format"
+        ) @PathVariable workspaceId: String,
+        @Parameter(
+            description = "ID of the subscriber to be found",
+            required = true,
+            schema = Schema(type = "string", format = "uuid")
+        )
+        @Pattern(
+            regexp = UUID_PATTERN,
+            message = "Invalid UUID format"
+        )
         @PathVariable subscriberId: String,
         @Validated @RequestBody request: SubscribeNewsletterRequest
     ): ResponseEntity<String> {
@@ -51,14 +71,7 @@ class NewsletterSubscriberController(
         )
 
         return ResponseEntity.created(
-            URI.create(
-                "/api${
-                    SUBSCRIBER.replace(
-                        "{workspaceId}",
-                        workspaceId,
-                    )
-                }",
-            ),
+            URI.create("/workspace/$workspaceId/newsletter/subscriber/$subscriberId"),
         ).build()
     }
 

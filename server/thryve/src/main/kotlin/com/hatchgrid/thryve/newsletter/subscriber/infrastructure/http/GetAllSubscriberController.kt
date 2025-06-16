@@ -1,7 +1,6 @@
 package com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http
 
 import com.hatchgrid.thryve.AppConstants.Paths.API
-import com.hatchgrid.thryve.AppConstants.Paths.SUBSCRIBER
 import com.hatchgrid.thryve.newsletter.subscriber.application.SubscriberResponse
 import com.hatchgrid.thryve.newsletter.subscriber.application.search.all.SearchAllSubscribersQuery
 import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.entity.SubscriberEntity
@@ -16,12 +15,17 @@ import com.hatchgrid.common.domain.presentation.pagination.LogicalOperator
 import com.hatchgrid.spring.boot.ApiController
 import com.hatchgrid.spring.boot.presentation.filter.RHSFilterParserFactory
 import com.hatchgrid.spring.boot.presentation.sort.SortParserFactory
+import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import jakarta.validation.constraints.Pattern
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -44,21 +48,34 @@ class GetAllSubscriberController(
         ApiResponse(responseCode = "200", description = "Success"),
         ApiResponse(responseCode = "500", description = "Internal server error"),
     )
-    @GetMapping(SUBSCRIBER)
+    @GetMapping("/workspace/{workspaceId}/newsletter/subscriber")
     @ResponseBody
     suspend fun findAll(
-        @PathVariable workspaceId: String,
+        @Parameter(
+            description = "ID of the workspace to be found",
+            required = true,
+            schema = Schema(type = "string", format = "uuid")
+        )
+        @Pattern(
+            regexp = UUID_PATTERN,
+            message = "Invalid UUID format"
+        ) @PathVariable workspaceId: String,
         cursorRequestPageable: CursorRequestPageable
     ): ResponseEntity<CursorPageResponse<SubscriberResponse>> {
         log.debug(
             "Get all subscribers with cursor: {}",
             sanitizeAndJoinPathVariables(workspaceId, cursorRequestPageable.toString()),
         )
+        // Authorization: ensure current user has access to this workspace
+        val userId = userId() ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+
         val criteria: Criteria =
             criteria(cursorRequestPageable).and(Criteria.Equals("workspaceId", workspaceId))
 
         val response = ask(
             SearchAllSubscribersQuery(
+                workspaceId,
+                userId,
                 criteria,
                 cursorRequestPageable.size,
                 cursorRequestPageable.cursor,

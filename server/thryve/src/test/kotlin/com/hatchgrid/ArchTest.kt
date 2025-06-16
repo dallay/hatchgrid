@@ -16,6 +16,7 @@ internal class ArchTest {
         "authentication",
         "workspace",
         "newsletter.subscriber",
+        "newsletter.tag",
     )
 
     @BeforeEach

@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 018-enable-rls-tags
+      author: hatchgrid
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              ALTER TABLE tags ENABLE ROW LEVEL SECURITY;
+
+              CREATE POLICY tags_access_policy ON tags
+              FOR ALL TO PUBLIC
+              USING (
+                workspace_id = current_setting('hatchgrid.current_workspace')::uuid
+              )
+              WITH CHECK (
+                workspace_id = current_setting('hatchgrid.current_workspace')::uuid
+              );

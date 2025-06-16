@@ -31,7 +31,7 @@ interface SubscriberReactiveR2dbcRepository :
         """
             SELECT tag, COUNT(*)
             FROM (
-                SELECT json_array_elements_text(attributes->'tags') AS tag
+                SELECT json_array_elements_text((attributes->'tags')::json) AS tag
                 FROM subscribers
                  WHERE  workspace_id = :workspaceId
             ) AS tags

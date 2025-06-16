@@ -20,6 +20,7 @@ interface WorkspaceMemberR2dbcRepository : CoroutineCrudRepository<WorkspaceMemb
      * @param workspaceId The ID of the workspace.
      * @return A flux of workspace member entities.
      */
+    @Query("SELECT workspace_id, user_id, role, created_at FROM workspace_members WHERE workspace_id = :workspaceId")
     suspend fun findByWorkspaceId(workspaceId: UUID): List<WorkspaceMemberEntity>
 
     /**
@@ -28,7 +29,7 @@ interface WorkspaceMemberR2dbcRepository : CoroutineCrudRepository<WorkspaceMemb
      * @param userId The ID of the user.
      * @return A flux of workspace member entities.
      */
-    @Query("SELECT * FROM workspace_members WHERE user_id = :userId")
+    @Query("SELECT workspace_id, user_id, role, created_at FROM workspace_members WHERE user_id = :userId")
     suspend fun findByUserId(userId: UUID): List<WorkspaceMemberEntity>
 
     /**

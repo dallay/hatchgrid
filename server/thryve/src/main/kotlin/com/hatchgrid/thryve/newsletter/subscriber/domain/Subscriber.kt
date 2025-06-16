@@ -27,7 +27,9 @@ data class Subscriber(
     val attributes: Attributes? = Attributes(),
     val workspaceId: WorkspaceId,
     override val createdAt: LocalDateTime = LocalDateTime.now(),
-    override var updatedAt: LocalDateTime? = null,
+    override val createdBy: String = "system",
+    override var updatedAt: LocalDateTime? = createdAt,
+    override var updatedBy: String? = null
 ) : BaseEntity<SubscriberId>() {
 
     /**
@@ -72,7 +74,7 @@ data class Subscriber(
             attributes: Attributes? = Attributes(),
             workspaceId: UUID,
             createdAt: LocalDateTime = LocalDateTime.now(),
-            updatedAt: LocalDateTime? = null,
+            updatedAt: LocalDateTime? = null
         ): Subscriber {
             val subscriberId = SubscriberId(id)
             val subscriberEmail = Email(email)

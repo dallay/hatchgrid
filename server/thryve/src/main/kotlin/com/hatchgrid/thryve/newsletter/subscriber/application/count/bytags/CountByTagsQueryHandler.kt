@@ -2,6 +2,7 @@ package com.hatchgrid.thryve.newsletter.subscriber.application.count.bytags
 
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.query.QueryHandler
+import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import org.slf4j.LoggerFactory
 
 /**
@@ -10,11 +11,15 @@ import org.slf4j.LoggerFactory
  * This class handles the [CountByTagsQuery] by using the [SubscriberCountByTags] service
  * to retrieve the count of subscribers by their tag.
  *
+ * @property workspaceAuthorizationService The service used to authorize access to the workspace.
  * @property counter The service used to count subscribers by their tag.
  * @created 8/9/24
  */
 @Service
-class CountByTagsQueryHandler(private val counter: SubscriberCountByTags) :
+class CountByTagsQueryHandler(
+    private val workspaceAuthorizationService: WorkspaceAuthorizationService,
+    private val counter: SubscriberCountByTags
+) :
     QueryHandler<CountByTagsQuery, SubscriberCountByTagsResponse> {
 
     /**
@@ -28,6 +33,8 @@ class CountByTagsQueryHandler(private val counter: SubscriberCountByTags) :
      */
     override suspend fun handle(query: CountByTagsQuery): SubscriberCountByTagsResponse {
         log.debug("Counting subscribers by tag for workspace {}", query.workspaceId)
+        // Authorization: ensure current user has access to this workspace
+        workspaceAuthorizationService.ensureAccess(query.workspaceId, query.userId)
         return SubscriberCountByTagsResponse(counter.count(query.workspaceId))
     }
 

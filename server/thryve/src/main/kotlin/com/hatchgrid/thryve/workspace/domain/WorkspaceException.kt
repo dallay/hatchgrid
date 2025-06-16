@@ -2,6 +2,7 @@ package com.hatchgrid.thryve.workspace.domain
 
 import com.hatchgrid.common.domain.error.BusinessRuleValidationException
 import com.hatchgrid.common.domain.error.EntityNotFoundException
+import org.springframework.security.access.AccessDeniedException
 
 /**
  * Exception thrown when a workspace-related business rule is violated.
@@ -26,3 +27,18 @@ data class WorkspaceNotFoundException(
     override val message: String,
     override val cause: Throwable? = null
 ) : EntityNotFoundException(message, cause)
+
+
+/**
+ * Exception thrown when a user is not authorized to access a workspace.
+ *
+ * This exception extends the `AccessDeniedException` from Spring Security,
+ * providing additional context specific to workspace authorization failures.
+ *
+ * @property message The detail message string of this exception.
+ * @property cause The cause of this exception, if available.
+ */
+data class WorkspaceAuthorizationException(
+    override val message: String,
+    override val cause: Throwable? = null
+) : AccessDeniedException(message, cause)

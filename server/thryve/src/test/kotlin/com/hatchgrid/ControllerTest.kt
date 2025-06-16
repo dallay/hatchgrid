@@ -52,15 +52,13 @@ abstract class ControllerTest {
             .mutateWith(mockAuthentication(jwtAuthenticationToken))
     }
 
-    private fun mockSecurity(jwt: JwtAuthenticationToken = jwtAuthenticationToken()) {
+    private fun mockSecurity(jwtToken: JwtAuthenticationToken = jwtAuthenticationToken()) {
         mockkStatic(ReactiveSecurityContextHolder::class)
 
-        val authentication: Authentication = mockk {
-            every { principal } returns jwt.principal
-        }
-
+        // The securityContext mock should return the actual jwtToken instance
+        // for the getAuthentication() call.
         val securityContext: SecurityContext = mockk {
-            every { getAuthentication() } returns authentication
+            every { authentication } returns jwtToken
         }
 
         every { ReactiveSecurityContextHolder.getContext() } returns Mono.just(securityContext)

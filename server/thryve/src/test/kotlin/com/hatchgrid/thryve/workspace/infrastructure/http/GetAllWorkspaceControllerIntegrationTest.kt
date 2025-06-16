@@ -22,8 +22,6 @@ internal class GetAllWorkspaceControllerIntegrationTest : ControllerIntegrationT
     )
     fun `should get all workspaces`(): Unit = runBlocking {
         webTestClient
-            .mutateWith(csrf())
-            .mutateWith(mockAuthentication<SecurityMockServerConfigurers.JwtMutator>(jwt()))
             .get()
             .uri("/api/workspace")
             .exchange()

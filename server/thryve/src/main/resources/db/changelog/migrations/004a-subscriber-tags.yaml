@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: 015-create-subscriber-tags
+      author: hatchgrid
+      changes:
+        - createTable:
+            tableName: subscriber_tags
+            columns:
+              - column:
+                  name: subscriber_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tag_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addPrimaryKey:
+            tableName: subscriber_tags
+            columnNames: subscriber_id, tag_id
+            constraintName: pk_subscriber_tags
+        - addForeignKeyConstraint:
+            baseTableName: subscriber_tags
+            baseColumnNames: subscriber_id
+            constraintName: fk_subscriber_tags_subscriber
+            referencedTableName: subscribers
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: subscriber_tags
+            baseColumnNames: tag_id
+            constraintName: fk_subscriber_tags_tag
+            referencedTableName: tags
+            referencedColumnNames: id
+            onDelete: CASCADE

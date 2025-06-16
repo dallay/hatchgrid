@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      id: 014-create-tags
+      author: hatchgrid
+      changes:
+        - createTable:
+            tableName: tags
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: color
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: workspace_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: deleted_at
+                  type: timestamp with time zone
+        - addForeignKeyConstraint:
+            baseTableName: tags
+            baseColumnNames: workspace_id
+            constraintName: fk_tags_workspace
+            referencedTableName: workspaces
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - sql:
+            splitStatements: false
+            sql: |
+              ALTER TABLE tags ADD CONSTRAINT chk_tag_color_valid
+              CHECK (color IN ('default', 'purple', 'pink', 'red', 'blue', 'yellow'));

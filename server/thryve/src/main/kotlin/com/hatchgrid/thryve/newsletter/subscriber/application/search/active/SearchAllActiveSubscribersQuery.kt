@@ -8,7 +8,10 @@ import com.hatchgrid.common.domain.bus.query.Query
  * It implements the Query interface with a SubscribersResponse.
  * The equals and hashCode methods are overridden for proper comparison of query objects.
  */
-class SearchAllActiveSubscribersQuery : Query<SubscribersResponse> {
+data class SearchAllActiveSubscribersQuery(
+    val workspaceId: String,
+    val userId: String,
+) : Query<SubscribersResponse> {
     /**
      * Checks if this query is equal to another object.
      * It is equal if the other object is a SearchAllActiveSubscribersQuery.

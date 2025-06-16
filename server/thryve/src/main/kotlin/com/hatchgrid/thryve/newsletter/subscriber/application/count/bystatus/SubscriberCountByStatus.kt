@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve.newsletter.subscriber.application.count.bystatus
 
+import com.hatchgrid.common.domain.Service
 import com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriberStatsRepository
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
-import com.hatchgrid.common.domain.Service
 import org.slf4j.LoggerFactory
 
 /**
