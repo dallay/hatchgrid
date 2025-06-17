@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.repository
 
+import com.hatchgrid.spring.boot.repository.ReactiveSearchRepository
 import com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.entity.SubscriberTagEntity
 import com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.entity.SubscriberTagEntityId
-import com.hatchgrid.spring.boot.repository.ReactiveSearchRepository
 import org.springframework.data.r2dbc.repository.Modifying
 import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.repository.kotlin.CoroutineCrudRepository

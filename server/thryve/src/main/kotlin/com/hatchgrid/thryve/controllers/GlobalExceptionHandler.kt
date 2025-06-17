@@ -1,12 +1,12 @@
 package com.hatchgrid.thryve.controllers
 
+import com.hatchgrid.common.domain.error.BusinessRuleValidationException
+import com.hatchgrid.common.domain.error.EntityNotFoundException
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticationException
 import com.hatchgrid.thryve.authentication.domain.UserRefreshTokenException
 import com.hatchgrid.thryve.authentication.domain.error.LogoutFailedException
 import com.hatchgrid.thryve.authentication.domain.error.MissingCookieException
 import com.hatchgrid.thryve.authentication.infrastructure.cookie.AuthCookieBuilder
-import com.hatchgrid.common.domain.error.BusinessRuleValidationException
-import com.hatchgrid.common.domain.error.EntityNotFoundException
 import com.hatchgrid.thryve.workspace.domain.WorkspaceAuthorizationException
 import java.net.URI
 import java.time.Instant
@@ -43,8 +43,9 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
      * @return The ProblemDetail object representing the exception.
      */
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(UserAuthenticationException::class, UserRefreshTokenException::class,
-        WorkspaceAuthorizationException::class
+    @ExceptionHandler(
+        UserAuthenticationException::class, UserRefreshTokenException::class,
+        WorkspaceAuthorizationException::class,
     )
     fun handleUserAuthenticationException(
         e: Exception,
@@ -127,5 +128,4 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         problemDetail.setProperty(TIMESTAMP, Instant.now())
         return problemDetail
     }
-
 }

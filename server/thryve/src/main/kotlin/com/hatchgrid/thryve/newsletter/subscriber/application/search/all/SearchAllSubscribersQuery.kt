@@ -1,10 +1,10 @@
 package com.hatchgrid.thryve.newsletter.subscriber.application.search.all
 
-import com.hatchgrid.thryve.newsletter.subscriber.application.SubscriberResponse
 import com.hatchgrid.common.domain.bus.query.Query
 import com.hatchgrid.common.domain.criteria.Criteria
 import com.hatchgrid.common.domain.presentation.pagination.CursorPageResponse
 import com.hatchgrid.common.domain.presentation.sort.Sort
+import com.hatchgrid.thryve.newsletter.subscriber.application.SubscriberResponse
 
 /**
  * This class represents a query to search all subscribers.

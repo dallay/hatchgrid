@@ -1,10 +1,10 @@
 package com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.repository
 
+import com.hatchgrid.spring.boot.repository.ReactiveSearchRepository
 import com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriberStatus
 import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.entity.CountByStatusEntity
 import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.entity.CountByTagsEntity
 import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.entity.SubscriberEntity
-import com.hatchgrid.spring.boot.repository.ReactiveSearchRepository
 import java.util.UUID
 import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.repository.kotlin.CoroutineCrudRepository

@@ -1,15 +1,15 @@
 package com.hatchgrid.thryve.newsletter.tag.application.delete
 
 import com.hatchgrid.UnitTest
+import com.hatchgrid.common.domain.bus.event.EventPublisher
 import com.hatchgrid.thryve.newsletter.tag.TagStub
 import com.hatchgrid.thryve.newsletter.tag.domain.Tag
 import com.hatchgrid.thryve.newsletter.tag.domain.TagId
 import com.hatchgrid.thryve.newsletter.tag.domain.TagRepository
 import com.hatchgrid.thryve.newsletter.tag.domain.event.DeleteTagEvent
-import com.hatchgrid.thryve.workspace.domain.WorkspaceId
-import com.hatchgrid.common.domain.bus.event.EventPublisher
 import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
+import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -45,7 +45,7 @@ internal class DeleteTagCommandHandlerTest {
         coEvery {
             workspaceMemberRepository.existsByWorkspaceIdAndUserId(
                 eq(workspaceId.value),
-                eq(userId.value)
+                eq(userId.value),
             )
         } returns true
         coEvery { tagRepository.delete(workspaceId, tagId) } returns Unit

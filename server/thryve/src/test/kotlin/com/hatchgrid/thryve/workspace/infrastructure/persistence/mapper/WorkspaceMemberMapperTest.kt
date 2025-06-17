@@ -4,10 +4,10 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceMember
 import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberId
 import com.hatchgrid.thryve.workspace.domain.WorkspaceRole
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.entity.WorkspaceMemberEntity
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.util.UUID
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class WorkspaceMemberMapperTest {
 
@@ -20,12 +20,12 @@ class WorkspaceMemberMapperTest {
             workspaceId = workspaceId,
             userId = userId,
             role = WorkspaceRole.ADMIN,
-            createdAt = LocalDateTime.now()
+            createdAt = LocalDateTime.now(),
         )
 
         val expectedDomainObject = WorkspaceMember(
             id = WorkspaceMemberId(workspaceId, userId),
-            role = WorkspaceRole.ADMIN
+            role = WorkspaceRole.ADMIN,
         )
 
         // When

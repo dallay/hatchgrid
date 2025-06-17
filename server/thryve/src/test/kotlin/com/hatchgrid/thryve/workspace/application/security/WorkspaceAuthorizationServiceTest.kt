@@ -5,10 +5,10 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceAuthorizationException
 import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
 import io.mockk.coEvery
 import io.mockk.mockk
+import java.util.UUID
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import java.util.UUID
 import org.junit.jupiter.api.assertThrows
 
 @UnitTest

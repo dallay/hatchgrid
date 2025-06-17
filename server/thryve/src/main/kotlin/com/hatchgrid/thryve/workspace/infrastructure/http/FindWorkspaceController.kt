@@ -1,10 +1,10 @@
 package com.hatchgrid.thryve.workspace.infrastructure.http
 
-import com.hatchgrid.thryve.workspace.application.find.FindWorkspaceQuery
 import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.common.domain.bus.query.Response
 import com.hatchgrid.spring.boot.ApiController
 import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
+import com.hatchgrid.thryve.workspace.application.find.FindWorkspaceQuery
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
@@ -52,7 +52,7 @@ class FindWorkspaceController(
         @PathVariable
         @Pattern(
             regexp = UUID_PATTERN,
-            message = "Invalid UUID format"
+            message = "Invalid UUID format",
         )
         id: String
     ): Response {

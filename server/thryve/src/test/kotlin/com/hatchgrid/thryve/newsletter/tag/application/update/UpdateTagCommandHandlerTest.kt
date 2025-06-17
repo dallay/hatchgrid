@@ -1,6 +1,7 @@
 package com.hatchgrid.thryve.newsletter.tag.application.update
 
 import com.hatchgrid.UnitTest
+import com.hatchgrid.common.domain.bus.event.EventPublisher
 import com.hatchgrid.thryve.newsletter.subscriber.SubscriberStub
 import com.hatchgrid.thryve.newsletter.subscriber.application.search.email.GetAllSubscribersByEmailService
 import com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriberSearchRepository
@@ -13,7 +14,6 @@ import com.hatchgrid.thryve.newsletter.tag.domain.event.TagSubscriberDeletedEven
 import com.hatchgrid.thryve.newsletter.tag.domain.event.TagSubscriberUpdatedEvent
 import com.hatchgrid.thryve.newsletter.tag.domain.event.TagUpdatedEvent
 import com.hatchgrid.thryve.newsletter.tag.domain.exceptions.TagNotFoundException
-import com.hatchgrid.common.domain.bus.event.EventPublisher
 import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
@@ -46,7 +46,7 @@ internal class UpdateTagCommandHandlerTest {
     private val workspaceMemberRepository: WorkspaceMemberRepository = mockk()
     private val workspaceAuthorizationService: WorkspaceAuthorizationService =
         WorkspaceAuthorizationService(workspaceMemberRepository)
-    private val updateTagCommandHandler = UpdateTagCommandHandler(workspaceAuthorizationService,tagUpdater)
+    private val updateTagCommandHandler = UpdateTagCommandHandler(workspaceAuthorizationService, tagUpdater)
     private val tag = TagStub.create()
     private val tagId = tag.id
     private val workspaceId = tag.workspaceId
@@ -57,7 +57,7 @@ internal class UpdateTagCommandHandlerTest {
         coEvery {
             workspaceMemberRepository.existsByWorkspaceIdAndUserId(
                 eq(workspaceId.value),
-                eq(userId.value)
+                eq(userId.value),
             )
         } returns true
         coEvery { tagSearchRepository.findById(workspaceId, tagId) } returns tag

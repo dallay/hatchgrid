@@ -18,11 +18,11 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import java.util.UUID
 import kotlinx.coroutines.runBlocking
 import net.datafaker.Faker
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.UUID
 
 @UnitTest
 internal class CreateTagCommandHandlerTest {
@@ -44,7 +44,7 @@ internal class CreateTagCommandHandlerTest {
     private val workspaceMemberRepository: WorkspaceMemberRepository = mockk()
     private val workspaceAuthorizationService: WorkspaceAuthorizationService =
         WorkspaceAuthorizationService(workspaceMemberRepository)
-    private val createTagCommandHandler = CreateTagCommandHandler(workspaceAuthorizationService,tagCreator)
+    private val createTagCommandHandler = CreateTagCommandHandler(workspaceAuthorizationService, tagCreator)
     private val faker = Faker()
     private val name = faker.lorem().word()
     private val allColorSupported = listOf("default", "purple", "pink", "red", "blue", "yellow")
@@ -64,7 +64,7 @@ internal class CreateTagCommandHandlerTest {
         coEvery {
             workspaceMemberRepository.existsByWorkspaceIdAndUserId(
                 eq(workspaceId.value),
-                eq(userId.value)
+                eq(userId.value),
             )
         } returns true
         coEvery { tagRepository.create(any(Tag::class)) } returns Unit

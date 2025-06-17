@@ -2,16 +2,16 @@ package com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hatchgrid.ControllerTest
-import com.hatchgrid.thryve.newsletter.subscriber.SubscriberStub
-import com.hatchgrid.thryve.newsletter.subscriber.application.SubscriberResponse
-import com.hatchgrid.thryve.newsletter.subscriber.application.search.all.SearchAllSubscribersQuery
-import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.entity.SubscriberEntity
 import com.hatchgrid.common.domain.criteria.Criteria
 import com.hatchgrid.common.domain.presentation.filter.RHSFilterParser
 import com.hatchgrid.common.domain.presentation.pagination.CursorPageResponse
 import com.hatchgrid.spring.boot.presentation.filter.RHSFilterParserFactory
 import com.hatchgrid.spring.boot.presentation.sort.SortParser
 import com.hatchgrid.spring.boot.presentation.sort.SortParserFactory
+import com.hatchgrid.thryve.newsletter.subscriber.SubscriberStub
+import com.hatchgrid.thryve.newsletter.subscriber.application.SubscriberResponse
+import com.hatchgrid.thryve.newsletter.subscriber.application.search.all.SearchAllSubscribersQuery
+import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.entity.SubscriberEntity
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -150,7 +150,7 @@ internal class GetAllSubscriberControllerTest : ControllerTest() {
                 workspaceId,
                 userId.toString(),
                 size = pageSize,
-                cursor = firstRequest?.nextPageCursor
+                cursor = firstRequest?.nextPageCursor,
             )
         coEvery { mediator.send(secondQuery) } returns secondResponse
 

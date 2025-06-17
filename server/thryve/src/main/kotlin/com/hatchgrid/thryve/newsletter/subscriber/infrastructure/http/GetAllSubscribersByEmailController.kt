@@ -43,12 +43,12 @@ class GetAllSubscribersByEmailController(
         @Parameter(
             description = "ID of the workspace to be found",
             required = true,
-            schema = Schema(type = "string", format = "uuid")
+            schema = Schema(type = "string", format = "uuid"),
         )
         @PathVariable
         @Pattern(
             regexp = UUID_PATTERN,
-            message = "Invalid UUID format"
+            message = "Invalid UUID format",
         )
         workspaceId: String,
         @RequestParam @Valid emails: Set<@Email(message = "Invalid email format") String>
@@ -56,11 +56,10 @@ class GetAllSubscribersByEmailController(
 
         val userId = userId() ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
 
-
         log.debug(
             "Getting all subscribers for workspace: {} (number of emails: {})",
             sanitizeAndJoinPathVariables(workspaceId),
-            emails.size
+            emails.size,
         )
         val response = ask(
             AllSubscribersByEmailQuery(

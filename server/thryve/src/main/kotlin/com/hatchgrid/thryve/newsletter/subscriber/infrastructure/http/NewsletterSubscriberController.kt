@@ -1,11 +1,11 @@
 package com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http
 
-import com.hatchgrid.thryve.AppConstants.Paths.API
-import com.hatchgrid.thryve.newsletter.subscriber.application.create.SubscribeNewsletterCommand
-import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.request.SubscribeNewsletterRequest
 import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.spring.boot.ApiController
+import com.hatchgrid.thryve.AppConstants.Paths.API
 import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
+import com.hatchgrid.thryve.newsletter.subscriber.application.create.SubscribeNewsletterCommand
+import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.request.SubscribeNewsletterRequest
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
@@ -37,20 +37,20 @@ class NewsletterSubscriberController(
         @Parameter(
             description = "ID of the workspace to be found",
             required = true,
-            schema = Schema(type = "string", format = "uuid")
+            schema = Schema(type = "string", format = "uuid"),
         )
         @Pattern(
             regexp = UUID_PATTERN,
-            message = "Invalid UUID format"
+            message = "Invalid UUID format",
         ) @PathVariable workspaceId: String,
         @Parameter(
             description = "ID of the subscriber to be found",
             required = true,
-            schema = Schema(type = "string", format = "uuid")
+            schema = Schema(type = "string", format = "uuid"),
         )
         @Pattern(
             regexp = UUID_PATTERN,
-            message = "Invalid UUID format"
+            message = "Invalid UUID format",
         )
         @PathVariable subscriberId: String,
         @Validated @RequestBody request: SubscribeNewsletterRequest

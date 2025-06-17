@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.newsletter.subscriber.application.search.active
 
-import com.hatchgrid.thryve.newsletter.subscriber.application.SubscribersResponse
 import com.hatchgrid.common.domain.bus.query.Query
+import com.hatchgrid.thryve.newsletter.subscriber.application.SubscribersResponse
 
 /**
  * This class represents a query for searching all active subscribers.

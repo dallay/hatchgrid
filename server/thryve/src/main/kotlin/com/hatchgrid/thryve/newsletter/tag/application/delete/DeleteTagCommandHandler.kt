@@ -1,10 +1,10 @@
 package com.hatchgrid.thryve.newsletter.tag.application.delete
 
-import com.hatchgrid.thryve.newsletter.tag.domain.TagId
-import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.command.CommandHandler
+import com.hatchgrid.thryve.newsletter.tag.domain.TagId
 import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
+import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import org.slf4j.LoggerFactory
 
 /**
@@ -14,7 +14,10 @@ import org.slf4j.LoggerFactory
  * @property tagDestroyer The service responsible for deleting tags.
  */
 @Service
-class DeleteTagCommandHandler(private val workspaceAuthorizationService: WorkspaceAuthorizationService,private val tagDestroyer: TagDestroyer) :
+class DeleteTagCommandHandler(
+    private val workspaceAuthorizationService: WorkspaceAuthorizationService,
+    private val tagDestroyer: TagDestroyer
+) :
     CommandHandler<DeleteTagCommand> {
 
     /**

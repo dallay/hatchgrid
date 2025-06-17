@@ -1,11 +1,11 @@
 package com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http
 
 import com.hatchgrid.ControllerIntegrationTest
-import com.hatchgrid.thryve.newsletter.subscriber.SubscriberStub.subscriberResponsesByBatch
-import com.hatchgrid.thryve.newsletter.subscriber.application.SubscriberResponse
 import com.hatchgrid.common.domain.presentation.pagination.CursorPageResponse
 import com.hatchgrid.common.domain.presentation.pagination.FilterCondition
 import com.hatchgrid.common.domain.presentation.pagination.LogicalOperator
+import com.hatchgrid.thryve.newsletter.subscriber.SubscriberStub.subscriberResponsesByBatch
+import com.hatchgrid.thryve.newsletter.subscriber.application.SubscriberResponse
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull

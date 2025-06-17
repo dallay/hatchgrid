@@ -35,7 +35,7 @@ data class TagEntity(
     @LastModifiedBy
     @Column("updated_by")
     override var updatedBy: String? = null,
-) : AuditableEntity(createdAt, createdBy,updatedAt, updatedBy), Persistable<UUID> {
+) : AuditableEntity(createdAt, createdBy, updatedAt, updatedBy), Persistable<UUID> {
     override fun getId(): UUID = id
 
     override fun isNew(): Boolean = createdAt == updatedAt

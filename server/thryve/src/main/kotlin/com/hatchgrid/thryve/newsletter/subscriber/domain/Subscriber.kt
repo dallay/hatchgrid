@@ -1,9 +1,9 @@
 package com.hatchgrid.thryve.newsletter.subscriber.domain
 
-import com.hatchgrid.thryve.newsletter.subscriber.domain.event.SubscriberCreatedEvent
-import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.common.domain.BaseEntity
 import com.hatchgrid.common.domain.vo.email.Email
+import com.hatchgrid.thryve.newsletter.subscriber.domain.event.SubscriberCreatedEvent
+import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import java.time.LocalDateTime
 import java.util.*
 

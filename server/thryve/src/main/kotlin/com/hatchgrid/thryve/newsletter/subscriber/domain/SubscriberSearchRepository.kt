@@ -1,11 +1,11 @@
 package com.hatchgrid.thryve.newsletter.subscriber.domain
 
-import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.common.domain.criteria.Criteria
 import com.hatchgrid.common.domain.presentation.pagination.Cursor
 import com.hatchgrid.common.domain.presentation.pagination.CursorPageResponse
 import com.hatchgrid.common.domain.presentation.pagination.OffsetPageResponse
 import com.hatchgrid.common.domain.presentation.sort.Sort
+import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 
 /**
  * This is an interface for a repository that handles subscriber data.

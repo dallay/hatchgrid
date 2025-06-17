@@ -79,7 +79,6 @@ abstract class ApiController(
         }
     }
 
-
     /**
      * Sanitizes a path variable to prevent injection attacks.
      *

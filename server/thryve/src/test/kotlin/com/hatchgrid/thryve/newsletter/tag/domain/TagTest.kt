@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve.newsletter.tag.domain
 
 import com.hatchgrid.UnitTest
-import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.common.domain.vo.email.Email
+import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import java.util.UUID
 import net.datafaker.Faker
 import org.junit.jupiter.api.Assertions.assertEquals

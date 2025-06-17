@@ -46,7 +46,7 @@ class SubscriberConverter : Converter<Row, SubscriberEntity> {
             createdAt = sourceCreatedAt!!,
             createdBy = sourceCreatedBy,
             updatedAt = sourceUpdatedAt!!,
-            updatedBy = sourceUpdatedBy
+            updatedBy = sourceUpdatedBy,
         )
     }
 }

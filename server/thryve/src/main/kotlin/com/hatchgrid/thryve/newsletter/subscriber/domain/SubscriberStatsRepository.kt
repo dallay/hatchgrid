@@ -1,6 +1,5 @@
 package com.hatchgrid.thryve.newsletter.subscriber.domain
 
-import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 
 /**

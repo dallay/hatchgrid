@@ -39,4 +39,4 @@ data class SubscriberEntity(
     @LastModifiedDate
     @Column("updated_at")
     override var updatedAt: LocalDateTime? = null
-) : AuditableEntity(createdAt, createdBy,updatedAt, updatedBy)
+) : AuditableEntity(createdAt, createdBy, updatedAt, updatedBy)

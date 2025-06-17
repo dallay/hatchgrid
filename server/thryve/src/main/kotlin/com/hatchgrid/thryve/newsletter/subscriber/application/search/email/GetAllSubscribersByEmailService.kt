@@ -1,10 +1,10 @@
 package com.hatchgrid.thryve.newsletter.subscriber.application.search.email
 
+import com.hatchgrid.common.domain.Service
 import com.hatchgrid.thryve.newsletter.subscriber.application.SubscriberResponse
 import com.hatchgrid.thryve.newsletter.subscriber.application.SubscribersResponse
 import com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriberSearchRepository
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
-import com.hatchgrid.common.domain.Service
 import org.slf4j.LoggerFactory
 
 /**

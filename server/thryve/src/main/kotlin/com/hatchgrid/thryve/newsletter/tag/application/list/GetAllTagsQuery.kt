@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve.newsletter.tag.application.list
 
-import com.hatchgrid.thryve.newsletter.tag.application.TagResponse
 import com.hatchgrid.common.domain.bus.query.Query
 import com.hatchgrid.common.domain.presentation.PageResponse
+import com.hatchgrid.thryve.newsletter.tag.application.TagResponse
 
 /**
  * Query to get all tags for a specific workspace.

@@ -9,5 +9,5 @@ import com.hatchgrid.thryve.workspace.infrastructure.persistence.entity.Workspac
  */
 fun WorkspaceMemberEntity.toDomain(): WorkspaceMember = WorkspaceMember(
     id = WorkspaceMemberId(workspaceId = this.workspaceId, userId = this.userId),
-    role = this.role
+    role = this.role,
 )

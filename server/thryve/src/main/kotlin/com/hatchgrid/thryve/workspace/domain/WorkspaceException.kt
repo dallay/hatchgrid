@@ -27,7 +27,6 @@ data class WorkspaceNotFoundException(
     override val cause: Throwable? = null
 ) : EntityNotFoundException(message, cause)
 
-
 /**
  * Exception thrown when a user is not authorized to access a workspace.
  *

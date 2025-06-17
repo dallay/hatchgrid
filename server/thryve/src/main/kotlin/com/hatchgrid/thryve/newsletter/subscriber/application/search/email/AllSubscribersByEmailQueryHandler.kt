@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve.newsletter.subscriber.application.search.email
 
-import com.hatchgrid.thryve.newsletter.subscriber.application.SubscribersResponse
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.query.QueryHandler
+import com.hatchgrid.thryve.newsletter.subscriber.application.SubscribersResponse
 import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import org.slf4j.LoggerFactory
 
@@ -30,7 +30,7 @@ class AllSubscribersByEmailQueryHandler(
         log.debug(
             "Handling AllSubscribersByEmailQuery for workspace: {} with emails: {}",
             query.workspaceId,
-            query.emails
+            query.emails,
         )
 
         workspaceAuthorizationService.ensureAccess(query.workspaceId, query.userId)

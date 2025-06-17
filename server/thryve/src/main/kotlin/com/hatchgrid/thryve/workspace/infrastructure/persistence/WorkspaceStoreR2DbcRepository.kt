@@ -28,7 +28,8 @@ class WorkspaceStoreR2DbcRepository(
     private val workspaceRepository: WorkspaceR2dbcRepository,
     private val workspaceMemberRepository: WorkspaceMemberR2dbcRepository
 ) : WorkspaceRepository,
-    WorkspaceFinderRepository, WorkspaceMemberRepository{
+    WorkspaceFinderRepository,
+    WorkspaceMemberRepository {
 
     /**
      * Create a new workspace.
@@ -46,13 +47,13 @@ class WorkspaceStoreR2DbcRepository(
                 workspaceMemberRepository.insertWorkspaceMember(
                     workspace.id.value,
                     memberId.value,
-                    WorkspaceRole.EDITOR.name
+                    WorkspaceRole.EDITOR.name,
                 )
             }
         } catch (e: DuplicateKeyException) {
             log.error("Error creating workspace with id: {}", workspace.id, e)
             throw WorkspaceException("Error creating workspace", e)
-        } catch (e: PessimisticLockingFailureException){
+        } catch (e: PessimisticLockingFailureException) {
             log.error("Error creating workspace with id: {}", workspace.id, e)
             throw WorkspaceException("Error creating workspace due to a locking issue", e)
         } catch (e: TransientDataAccessResourceException) {
@@ -79,7 +80,7 @@ class WorkspaceStoreR2DbcRepository(
                 createdAt = existingEntity.createdAt,
                 createdBy = existingEntity.createdBy,
                 updatedAt = java.time.LocalDateTime.now(),
-                updatedBy = "system" // TODO: Get from security context
+                updatedBy = "system", // TODO: Get from security context
             )
 
             // Update workspace

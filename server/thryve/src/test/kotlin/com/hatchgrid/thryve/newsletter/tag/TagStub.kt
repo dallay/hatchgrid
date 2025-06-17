@@ -1,6 +1,7 @@
 package com.hatchgrid.thryve.newsletter.tag
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.hatchgrid.common.domain.vo.email.Email
 import com.hatchgrid.thryve.newsletter.tag.domain.SubscriberTag
 import com.hatchgrid.thryve.newsletter.tag.domain.SubscriberTagId
 import com.hatchgrid.thryve.newsletter.tag.domain.Tag
@@ -9,7 +10,6 @@ import com.hatchgrid.thryve.newsletter.tag.domain.TagId
 import com.hatchgrid.thryve.newsletter.tag.infrastructure.http.request.CreateTagRequest
 import com.hatchgrid.thryve.newsletter.tag.infrastructure.http.request.UpdateTagRequest
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
-import com.hatchgrid.common.domain.vo.email.Email
 import java.util.UUID
 import kotlin.String
 import kotlin.collections.Set

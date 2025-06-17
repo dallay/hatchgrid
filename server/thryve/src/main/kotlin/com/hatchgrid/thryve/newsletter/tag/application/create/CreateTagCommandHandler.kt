@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve.newsletter.tag.application.create
 
-import com.hatchgrid.thryve.newsletter.tag.domain.TagColor
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.command.CommandHandler
+import com.hatchgrid.thryve.newsletter.tag.domain.TagColor
 import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import java.util.UUID
 import org.slf4j.LoggerFactory

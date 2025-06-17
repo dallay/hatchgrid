@@ -1,9 +1,5 @@
 package com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http
 
-import com.hatchgrid.thryve.AppConstants.Paths.API
-import com.hatchgrid.thryve.newsletter.subscriber.application.SubscriberResponse
-import com.hatchgrid.thryve.newsletter.subscriber.application.search.all.SearchAllSubscribersQuery
-import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.entity.SubscriberEntity
 import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.common.domain.criteria.Criteria
 import com.hatchgrid.common.domain.criteria.and
@@ -15,7 +11,11 @@ import com.hatchgrid.common.domain.presentation.pagination.LogicalOperator
 import com.hatchgrid.spring.boot.ApiController
 import com.hatchgrid.spring.boot.presentation.filter.RHSFilterParserFactory
 import com.hatchgrid.spring.boot.presentation.sort.SortParserFactory
+import com.hatchgrid.thryve.AppConstants.Paths.API
 import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
+import com.hatchgrid.thryve.newsletter.subscriber.application.SubscriberResponse
+import com.hatchgrid.thryve.newsletter.subscriber.application.search.all.SearchAllSubscribersQuery
+import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.entity.SubscriberEntity
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
@@ -54,11 +54,11 @@ class GetAllSubscriberController(
         @Parameter(
             description = "ID of the workspace to be found",
             required = true,
-            schema = Schema(type = "string", format = "uuid")
+            schema = Schema(type = "string", format = "uuid"),
         )
         @Pattern(
             regexp = UUID_PATTERN,
-            message = "Invalid UUID format"
+            message = "Invalid UUID format",
         ) @PathVariable workspaceId: String,
         cursorRequestPageable: CursorRequestPageable
     ): ResponseEntity<CursorPageResponse<SubscriberResponse>> {

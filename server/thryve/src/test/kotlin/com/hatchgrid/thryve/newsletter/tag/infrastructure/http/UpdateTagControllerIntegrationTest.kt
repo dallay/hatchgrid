@@ -17,14 +17,14 @@ internal class UpdateTagControllerIntegrationTest : ControllerIntegrationTest() 
         "/db/user/users.sql",
         "/db/workspace/workspace.sql",
         "/db/subscriber/subscriber.sql",
-        "/db/tag/tag.sql"
+        "/db/tag/tag.sql",
     )
     @Sql(
         "/db/subscriber/clean.sql",
         "/db/tag/clean.sql",
         "/db/workspace/clean.sql",
         "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     fun `should update a tag`() {
         val request = TagStub.generateTagRequest(isUpdate = true)
@@ -43,14 +43,14 @@ internal class UpdateTagControllerIntegrationTest : ControllerIntegrationTest() 
         "/db/user/users.sql",
         "/db/workspace/workspace.sql",
         "/db/subscriber/subscriber.sql",
-        "/db/tag/tag.sql"
+        "/db/tag/tag.sql",
     )
     @Sql(
         "/db/subscriber/clean.sql",
         "/db/tag/clean.sql",
         "/db/workspace/clean.sql",
         "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     @Test
     fun `should not update a tag if not found`() {

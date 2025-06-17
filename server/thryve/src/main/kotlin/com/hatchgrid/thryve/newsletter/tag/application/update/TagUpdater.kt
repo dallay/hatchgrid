@@ -1,5 +1,9 @@
 package com.hatchgrid.thryve.newsletter.tag.application.update
 
+import com.hatchgrid.common.domain.Service
+import com.hatchgrid.common.domain.bus.event.EventBroadcaster
+import com.hatchgrid.common.domain.bus.event.EventPublisher
+import com.hatchgrid.common.domain.vo.email.Email
 import com.hatchgrid.thryve.newsletter.subscriber.application.SubscribersResponse
 import com.hatchgrid.thryve.newsletter.subscriber.application.search.email.GetAllSubscribersByEmailService
 import com.hatchgrid.thryve.newsletter.tag.application.create.SubscriberTagCreator
@@ -16,10 +20,6 @@ import com.hatchgrid.thryve.newsletter.tag.domain.event.TagSubscriberUpdatedEven
 import com.hatchgrid.thryve.newsletter.tag.domain.event.TagUpdatedEvent
 import com.hatchgrid.thryve.newsletter.tag.domain.exceptions.TagNotFoundException
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
-import com.hatchgrid.common.domain.Service
-import com.hatchgrid.common.domain.bus.event.EventBroadcaster
-import com.hatchgrid.common.domain.bus.event.EventPublisher
-import com.hatchgrid.common.domain.vo.email.Email
 import java.util.UUID
 import org.slf4j.LoggerFactory
 

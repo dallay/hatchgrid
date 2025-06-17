@@ -1,12 +1,12 @@
 package com.hatchgrid.thryve.newsletter.tag.application.delete
 
+import com.hatchgrid.common.domain.Service
+import com.hatchgrid.common.domain.bus.event.EventBroadcaster
+import com.hatchgrid.common.domain.bus.event.EventPublisher
 import com.hatchgrid.thryve.newsletter.tag.domain.TagId
 import com.hatchgrid.thryve.newsletter.tag.domain.TagRepository
 import com.hatchgrid.thryve.newsletter.tag.domain.event.DeleteTagEvent
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
-import com.hatchgrid.common.domain.Service
-import com.hatchgrid.common.domain.bus.event.EventBroadcaster
-import com.hatchgrid.common.domain.bus.event.EventPublisher
 import org.slf4j.LoggerFactory
 
 /**

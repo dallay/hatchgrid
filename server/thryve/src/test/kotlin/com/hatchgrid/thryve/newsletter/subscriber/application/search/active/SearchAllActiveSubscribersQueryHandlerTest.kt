@@ -77,7 +77,7 @@ internal class SearchAllActiveSubscribersQueryHandlerTest {
         coVerify(exactly = 1) { // This will now work
             workspaceAuthorizationService.ensureAccess(
                 workspaceId.toString(),
-                userId.toString()
+                userId.toString(),
             )
         }
         coVerify(exactly = 0) { repository.searchActive() }

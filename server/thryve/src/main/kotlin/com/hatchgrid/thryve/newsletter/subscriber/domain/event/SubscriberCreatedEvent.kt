@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.newsletter.subscriber.domain.event
 
-import com.hatchgrid.thryve.newsletter.subscriber.domain.Attributes
 import com.hatchgrid.common.domain.bus.event.BaseDomainEvent
+import com.hatchgrid.thryve.newsletter.subscriber.domain.Attributes
 
 /**
  * Data class representing the event of a subscriber being created.

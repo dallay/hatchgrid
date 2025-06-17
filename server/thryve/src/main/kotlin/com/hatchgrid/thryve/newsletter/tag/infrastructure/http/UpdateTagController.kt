@@ -1,11 +1,11 @@
 package com.hatchgrid.thryve.newsletter.tag.infrastructure.http
 
-import com.hatchgrid.thryve.AppConstants.Paths.API
-import com.hatchgrid.thryve.newsletter.tag.application.update.UpdateTagCommand
-import com.hatchgrid.thryve.newsletter.tag.infrastructure.http.request.UpdateTagRequest
 import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.spring.boot.ApiController
+import com.hatchgrid.thryve.AppConstants.Paths.API
 import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
+import com.hatchgrid.thryve.newsletter.tag.application.update.UpdateTagCommand
+import com.hatchgrid.thryve.newsletter.tag.infrastructure.http.request.UpdateTagRequest
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
@@ -41,20 +41,20 @@ class UpdateTagController(
         @Parameter(
             description = "ID of the workspace to be found",
             required = true,
-            schema = Schema(type = "string", format = "uuid")
+            schema = Schema(type = "string", format = "uuid"),
         )
         @Pattern(
             regexp = UUID_PATTERN,
-            message = "Invalid UUID format"
+            message = "Invalid UUID format",
         ) @PathVariable workspaceId: String,
-         @Parameter(
+        @Parameter(
             description = "ID of the tag to be found",
             required = true,
-            schema = Schema(type = "string", format = "uuid")
+            schema = Schema(type = "string", format = "uuid"),
         )
         @Pattern(
             regexp = UUID_PATTERN,
-            message = "Invalid UUID format"
+            message = "Invalid UUID format",
         )
         @PathVariable tagId: String,
         @Validated @RequestBody request: UpdateTagRequest

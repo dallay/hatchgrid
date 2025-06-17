@@ -9,10 +9,10 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.mockkClass
+import java.util.UUID
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.UUID
 
 @UnitTest
 internal class CreateSubscribeNewsletterCommandHandlerTest {

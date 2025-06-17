@@ -33,7 +33,7 @@ internal class CountByStatusQueryHandlerTest {
         coEvery {
             workspaceMemberRepository.existsByWorkspaceIdAndUserId(
                 eq(workspaceId.value),
-                eq(userId.value)
+                eq(userId.value),
             )
         } returns true
         coEvery { repository.countByStatus(workspaceId) } returns statuses

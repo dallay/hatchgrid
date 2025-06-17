@@ -1,5 +1,8 @@
 package com.hatchgrid.thryve.newsletter.tag.application.create
 
+import com.hatchgrid.common.domain.Service
+import com.hatchgrid.common.domain.bus.event.EventBroadcaster
+import com.hatchgrid.common.domain.bus.event.EventPublisher
 import com.hatchgrid.thryve.newsletter.subscriber.application.SubscribersResponse
 import com.hatchgrid.thryve.newsletter.subscriber.application.search.email.GetAllSubscribersByEmailService
 import com.hatchgrid.thryve.newsletter.tag.domain.SubscriberTag
@@ -8,10 +11,6 @@ import com.hatchgrid.thryve.newsletter.tag.domain.Tag
 import com.hatchgrid.thryve.newsletter.tag.domain.TagColor
 import com.hatchgrid.thryve.newsletter.tag.domain.TagRepository
 import com.hatchgrid.thryve.newsletter.tag.domain.event.TagCreatedEvent
-import com.hatchgrid.common.domain.Service
-import com.hatchgrid.common.domain.bus.event.EventBroadcaster
-import com.hatchgrid.common.domain.bus.event.EventPublisher
-import com.hatchgrid.thryve.newsletter.tag.application.create.SubscriberTagCreator
 import java.util.UUID
 import org.slf4j.LoggerFactory
 

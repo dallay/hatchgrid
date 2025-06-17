@@ -1,9 +1,9 @@
 package com.hatchgrid.thryve.newsletter.tag.application.list
 
+import com.hatchgrid.common.domain.Service
 import com.hatchgrid.thryve.newsletter.tag.domain.Tag
 import com.hatchgrid.thryve.newsletter.tag.domain.TagSearchRepository
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
-import com.hatchgrid.common.domain.Service
 import org.slf4j.LoggerFactory
 
 /**

@@ -1,5 +1,6 @@
 package com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.mapper
 
+import com.hatchgrid.common.domain.vo.email.Email
 import com.hatchgrid.thryve.newsletter.subscriber.domain.FirstName
 import com.hatchgrid.thryve.newsletter.subscriber.domain.LastName
 import com.hatchgrid.thryve.newsletter.subscriber.domain.Name
@@ -7,7 +8,6 @@ import com.hatchgrid.thryve.newsletter.subscriber.domain.Subscriber
 import com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriberId
 import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.entity.SubscriberEntity
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
-import com.hatchgrid.common.domain.vo.email.Email
 
 /**
  * Object responsible for mapping between the Subscriber domain object and the SubscriberEntity persistence object.

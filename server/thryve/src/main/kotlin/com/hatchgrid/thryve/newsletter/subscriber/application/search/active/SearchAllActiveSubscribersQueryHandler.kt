@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve.newsletter.subscriber.application.search.active
 
-import com.hatchgrid.thryve.newsletter.subscriber.application.SubscribersResponse
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.query.QueryHandler
+import com.hatchgrid.thryve.newsletter.subscriber.application.SubscribersResponse
 import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import org.slf4j.LoggerFactory
 

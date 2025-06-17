@@ -1,12 +1,12 @@
 package com.hatchgrid.thryve.newsletter.tag.domain
 
+import com.hatchgrid.common.domain.BaseEntity
+import com.hatchgrid.common.domain.vo.email.Email
 import com.hatchgrid.thryve.newsletter.tag.domain.event.TagCreatedEvent
 import com.hatchgrid.thryve.newsletter.tag.domain.event.TagSubscriberDeletedEvent
 import com.hatchgrid.thryve.newsletter.tag.domain.event.TagSubscriberUpdatedEvent
 import com.hatchgrid.thryve.newsletter.tag.domain.event.TagUpdatedEvent
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
-import com.hatchgrid.common.domain.BaseEntity
-import com.hatchgrid.common.domain.vo.email.Email
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -126,8 +126,8 @@ data class Tag(
                     color,
                     WorkspaceId(workspaceId),
                     mutableSetOf(),
-                    createdAt= createdAt,
-                    updatedAt=updatedAt,
+                    createdAt = createdAt,
+                    updatedAt = updatedAt,
                 )
             tag.record(
                 TagCreatedEvent(

@@ -1,12 +1,12 @@
 package com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.mapper
 
+import com.hatchgrid.common.domain.vo.email.Email
 import com.hatchgrid.thryve.newsletter.tag.domain.Tag
 import com.hatchgrid.thryve.newsletter.tag.domain.TagColor
 import com.hatchgrid.thryve.newsletter.tag.domain.TagId
 import com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.entity.TagEntity
 import com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.entity.TagWithSubscribersEntity
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
-import com.hatchgrid.common.domain.vo.email.Email
 
 /**
  * Mapper object for converting between Tag domain objects and [TagEntity] persistence objects.

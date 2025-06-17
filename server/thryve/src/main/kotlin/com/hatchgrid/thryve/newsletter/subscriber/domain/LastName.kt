@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.newsletter.subscriber.domain
 
-import com.hatchgrid.thryve.newsletter.subscriber.domain.exceptions.LastNameNotValidException
 import com.hatchgrid.common.domain.BaseValidateValueObject
+import com.hatchgrid.thryve.newsletter.subscriber.domain.exceptions.LastNameNotValidException
 
 private const val NAME_LEN = 150
 

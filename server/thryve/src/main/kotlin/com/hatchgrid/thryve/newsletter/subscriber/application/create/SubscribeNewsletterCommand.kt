@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.newsletter.subscriber.application.create
 
-import com.hatchgrid.thryve.newsletter.subscriber.domain.Attributes
 import com.hatchgrid.common.domain.bus.command.Command
+import com.hatchgrid.thryve.newsletter.subscriber.domain.Attributes
 
 /**
  * Data class representing the command to subscribe to a newsletter.

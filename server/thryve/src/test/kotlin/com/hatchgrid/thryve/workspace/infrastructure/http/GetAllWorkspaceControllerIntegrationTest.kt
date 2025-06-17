@@ -3,9 +3,6 @@ package com.hatchgrid.thryve.workspace.infrastructure.http
 import com.hatchgrid.ControllerIntegrationTest
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
-import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers
-import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf
-import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockAuthentication
 import org.springframework.test.context.jdbc.Sql
 
 internal class GetAllWorkspaceControllerIntegrationTest : ControllerIntegrationTest() {

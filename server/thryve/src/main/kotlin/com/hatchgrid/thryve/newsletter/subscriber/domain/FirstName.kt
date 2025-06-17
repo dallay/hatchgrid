@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.newsletter.subscriber.domain
 
-import com.hatchgrid.thryve.newsletter.subscriber.domain.exceptions.FirstNameNotValidException
 import com.hatchgrid.common.domain.BaseValidateValueObject
+import com.hatchgrid.thryve.newsletter.subscriber.domain.exceptions.FirstNameNotValidException
 
 private const val NAME_LEN = 150
 

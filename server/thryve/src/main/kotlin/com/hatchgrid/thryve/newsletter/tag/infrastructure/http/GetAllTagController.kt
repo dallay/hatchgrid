@@ -1,12 +1,12 @@
 package com.hatchgrid.thryve.newsletter.tag.infrastructure.http
 
-import com.hatchgrid.thryve.AppConstants.Paths.API
-import com.hatchgrid.thryve.newsletter.tag.application.TagResponse
-import com.hatchgrid.thryve.newsletter.tag.application.list.GetAllTagsQuery
 import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.common.domain.presentation.PageResponse
 import com.hatchgrid.spring.boot.ApiController
+import com.hatchgrid.thryve.AppConstants.Paths.API
 import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
+import com.hatchgrid.thryve.newsletter.tag.application.TagResponse
+import com.hatchgrid.thryve.newsletter.tag.application.list.GetAllTagsQuery
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
@@ -48,11 +48,11 @@ class GetAllTagController(
         @Parameter(
             description = "ID of the workspace to be found",
             required = true,
-            schema = Schema(type = "string", format = "uuid")
+            schema = Schema(type = "string", format = "uuid"),
         )
         @Pattern(
             regexp = UUID_PATTERN,
-            message = "Invalid UUID format"
+            message = "Invalid UUID format",
         ) @PathVariable workspaceId: String,
     ): ResponseEntity<PageResponse<TagResponse>> {
         log.debug("Getting all tags for workspace with id: {}", sanitizePathVariable(workspaceId))

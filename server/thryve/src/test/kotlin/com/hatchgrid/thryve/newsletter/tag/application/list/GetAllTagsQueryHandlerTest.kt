@@ -23,7 +23,7 @@ internal class GetAllTagsQueryHandlerTest {
     private val workspaceMemberRepository: WorkspaceMemberRepository = mockk()
     private val workspaceAuthorizationService: WorkspaceAuthorizationService =
         WorkspaceAuthorizationService(workspaceMemberRepository)
-    private val handler = GetAllTagsQueryHandler(workspaceAuthorizationService,searcher)
+    private val handler = GetAllTagsQueryHandler(workspaceAuthorizationService, searcher)
     private val wId = "27172d5a-b88e-451c-9787-312706f4570d"
     private val uId = "fd5ca30f-ec5c-4939-9ada-66bb3f58b4bb"
     private val workspaceId = WorkspaceId(wId)
@@ -36,7 +36,7 @@ internal class GetAllTagsQueryHandlerTest {
         coEvery {
             workspaceMemberRepository.existsByWorkspaceIdAndUserId(
                 eq(workspaceId.value),
-                eq(userId.value)
+                eq(userId.value),
             )
         } returns true
         coEvery { repository.findAllTagsByWorkspaceId(workspaceId) } returns tags

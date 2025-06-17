@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.newsletter.tag.domain
 
-import com.hatchgrid.thryve.newsletter.tag.domain.event.SubscriberTaggedEvent
 import com.hatchgrid.common.domain.BaseEntity
+import com.hatchgrid.thryve.newsletter.tag.domain.event.SubscriberTaggedEvent
 import java.time.LocalDateTime
 
 data class SubscriberTag(

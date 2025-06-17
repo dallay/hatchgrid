@@ -17,22 +17,20 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.dao.PessimisticLockingFailureException
 import org.springframework.test.context.jdbc.Sql
 
 @IntegrationTest
 @Sql(
     scripts = ["/db/user/users.sql", "/db/workspace/workspace.sql"],
-    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
+    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
 )
 @Sql(
     scripts = ["/db/workspace/clean.sql", "/db/user/clean.sql"],
-    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
 )
 internal class WorkspaceStoreR2DbcRepositoryTest {
     @Autowired
@@ -65,7 +63,7 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
             name = "Workspace 1",
             description = "Description for Workspace 1",
             ownerId = ownerId,
-            members = mutableSetOf(ownerId)
+            members = mutableSetOf(ownerId),
         )
 
         workspace2 = Workspace(
@@ -73,7 +71,7 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
             name = "Workspace 2",
             description = "Description for Workspace 2",
             ownerId = ownerId,
-            members = mutableSetOf(ownerId)
+            members = mutableSetOf(ownerId),
         )
 
         val stub = WorkspaceStub.create()
@@ -98,7 +96,7 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
         val stubWorkspace = WorkspaceStub.create(name = "Test Create")
         val workspaceToCreate = stubWorkspace.copy(
             ownerId = commonExistingUserId,
-            members = mutableSetOf(commonExistingUserId)
+            members = mutableSetOf(commonExistingUserId),
         )
 
         workspaceStoreR2dbcRepository.create(workspaceToCreate)
@@ -198,18 +196,18 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
     fun `should check if user is member of workspace`() = runBlocking {
         val isOwnerMemberOfWorkspace1 = workspaceStoreR2dbcRepository.existsByWorkspaceIdAndUserId(
             workspace1.id.value,
-            ownerId.value
+            ownerId.value,
         )
         val isMember1MemberOfWorkspace1 =
             workspaceStoreR2dbcRepository.existsByWorkspaceIdAndUserId(
                 workspace1.id.value,
-                memberId1.value
+                memberId1.value,
             )
 
         val nonMemberUUID = UUID.randomUUID()
         val isNonMemberInWorkspace1 = workspaceStoreR2dbcRepository.existsByWorkspaceIdAndUserId(
             workspace1.id.value,
-            nonMemberUUID
+            nonMemberUUID,
         )
 
         assertTrue(isOwnerMemberOfWorkspace1)
@@ -223,8 +221,8 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
         assertTrue(
             workspaceStoreR2dbcRepository.existsByWorkspaceIdAndUserId(
                 workspace1.id.value,
-                existingMemberId.value
-            )
+                existingMemberId.value,
+            ),
         )
 
         val membersBeforeDelete =
@@ -233,15 +231,15 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
 
         val deleteResult = workspaceStoreR2dbcRepository.deleteByWorkspaceIdAndUserId(
             workspace1.id.value,
-            existingMemberId.value
+            existingMemberId.value,
         )
         assertEquals(1, deleteResult)
 
         assertFalse(
             workspaceStoreR2dbcRepository.existsByWorkspaceIdAndUserId(
                 workspace1.id.value,
-                existingMemberId.value
-            )
+                existingMemberId.value,
+            ),
         )
         val membersAfterDelete =
             workspaceStoreR2dbcRepository.findByWorkspaceId(workspace1.id.value)
@@ -250,14 +248,14 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
         val insertResult = workspaceStoreR2dbcRepository.insertWorkspaceMember(
             workspace1.id.value,
             existingMemberId.value,
-            WorkspaceRole.VIEWER.name
+            WorkspaceRole.VIEWER.name,
         )
         assertEquals(1, insertResult)
         assertTrue(
             workspaceStoreR2dbcRepository.existsByWorkspaceIdAndUserId(
                 workspace1.id.value,
-                existingMemberId.value
-            )
+                existingMemberId.value,
+            ),
         )
         val membersAfterReInsert =
             workspaceStoreR2dbcRepository.findByWorkspaceId(workspace1.id.value)

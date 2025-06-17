@@ -33,7 +33,7 @@ internal class CountByTagsQueryHandlerTest {
         coEvery {
             workspaceMemberRepository.existsByWorkspaceIdAndUserId(
                 eq(workspaceId.value),
-                eq(userId.value)
+                eq(userId.value),
             )
         } returns true
         coEvery { repository.countByTag(workspaceId) } returns tags

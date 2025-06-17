@@ -7,8 +7,8 @@ import com.hatchgrid.thryve.newsletter.tag.domain.SubscriberTag
 import com.hatchgrid.thryve.newsletter.tag.domain.SubscriberTagId
 import com.hatchgrid.thryve.newsletter.tag.domain.SubscriberTagRepository
 import com.hatchgrid.thryve.newsletter.tag.domain.event.SubscriberTaggedEvent
-import org.slf4j.LoggerFactory
 import java.util.UUID
+import org.slf4j.LoggerFactory
 
 @Service
 class SubscriberTagCreator(

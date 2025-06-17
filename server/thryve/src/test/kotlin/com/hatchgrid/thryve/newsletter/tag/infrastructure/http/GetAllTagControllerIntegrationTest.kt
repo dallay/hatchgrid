@@ -13,14 +13,14 @@ internal class GetAllTagControllerIntegrationTest : ControllerIntegrationTest() 
         "/db/user/users.sql",
         "/db/workspace/workspace.sql",
         "/db/subscriber/subscriber.sql",
-        "/db/tag/tag.sql"
+        "/db/tag/tag.sql",
     )
     @Sql(
         "/db/subscriber/clean.sql",
         "/db/tag/clean.sql",
         "/db/workspace/clean.sql",
         "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     fun `should get all tags for a specific workspace`() {
         webTestClient.get()
@@ -73,15 +73,15 @@ internal class GetAllTagControllerIntegrationTest : ControllerIntegrationTest() 
     @Sql(
         "/db/user/users.sql",
         "/db/workspace/all-workspaces.sql",
-      "/db/subscriber/subscriber.sql",
-        "/db/tag/tag.sql"
+        "/db/subscriber/subscriber.sql",
+        "/db/tag/tag.sql",
     )
     @Sql(
-       "/db/subscriber/clean.sql",
+        "/db/subscriber/clean.sql",
         "/db/tag/clean.sql",
         "/db/workspace/clean.sql",
         "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     fun `should return empty list when there are no tags for a specific workspace`() {
         val workspaceWithoutTags = "894812b3-deb9-469f-b988-d8dfa5a1cf52"
@@ -95,4 +95,3 @@ internal class GetAllTagControllerIntegrationTest : ControllerIntegrationTest() 
             .consumeWith(::println)
     }
 }
-

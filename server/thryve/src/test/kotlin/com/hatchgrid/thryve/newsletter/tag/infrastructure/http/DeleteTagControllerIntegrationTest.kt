@@ -14,14 +14,14 @@ internal class DeleteTagControllerIntegrationTest : ControllerIntegrationTest() 
         "/db/user/users.sql",
         "/db/workspace/workspace.sql",
         "/db/subscriber/subscriber.sql",
-        "/db/tag/tag.sql"
+        "/db/tag/tag.sql",
     )
     @Sql(
         "/db/subscriber/clean.sql",
         "/db/tag/clean.sql",
         "/db/workspace/clean.sql",
         "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     fun `should delete tag when tag is found`(): Unit = runBlocking {
         val tagId = "d667bf8b-69d7-4e32-9488-8ad9865fc644"

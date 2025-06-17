@@ -1,12 +1,12 @@
 package com.hatchgrid.thryve.newsletter.tag.infrastructure.http
 
+import com.hatchgrid.common.domain.bus.Mediator
+import com.hatchgrid.spring.boot.ApiController
 import com.hatchgrid.thryve.AppConstants.Paths.API
+import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
 import com.hatchgrid.thryve.newsletter.tag.application.create.CreateTagCommand
 import com.hatchgrid.thryve.newsletter.tag.domain.TagColor
 import com.hatchgrid.thryve.newsletter.tag.infrastructure.http.request.CreateTagRequest
-import com.hatchgrid.common.domain.bus.Mediator
-import com.hatchgrid.spring.boot.ApiController
-import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
@@ -52,21 +52,21 @@ class CreateTagController(
         @Parameter(
             description = "ID of the workspace to be found",
             required = true,
-            schema = Schema(type = "string", format = "uuid")
+            schema = Schema(type = "string", format = "uuid"),
         )
         @PathVariable
         @Pattern(
             regexp = UUID_PATTERN,
-            message = "Invalid UUID format"
-        )  workspaceId: String,
-         @Parameter(
+            message = "Invalid UUID format",
+        ) workspaceId: String,
+        @Parameter(
             description = "ID of the tag to be found",
             required = true,
-            schema = Schema(type = "string", format = "uuid")
+            schema = Schema(type = "string", format = "uuid"),
         )
         @Pattern(
             regexp = UUID_PATTERN,
-            message = "Invalid UUID format"
+            message = "Invalid UUID format",
         )
         @PathVariable tagId: String,
         @Validated @RequestBody request: CreateTagRequest

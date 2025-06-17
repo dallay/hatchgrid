@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.newsletter.subscriber.application.search.email
 
-import com.hatchgrid.thryve.newsletter.subscriber.application.SubscribersResponse
 import com.hatchgrid.common.domain.bus.query.Query
+import com.hatchgrid.thryve.newsletter.subscriber.application.SubscribersResponse
 
 /**
  * Query for retrieving all subscribers by their email addresses.

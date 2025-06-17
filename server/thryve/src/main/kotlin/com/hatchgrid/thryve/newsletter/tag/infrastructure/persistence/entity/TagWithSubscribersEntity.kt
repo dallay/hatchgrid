@@ -29,4 +29,4 @@ data class TagWithSubscribersEntity(
     @LastModifiedBy
     @Column("updated_by")
     override var updatedBy: String? = null,
-) : AuditableEntity(createdAt, createdBy,updatedAt, updatedBy)
+) : AuditableEntity(createdAt, createdBy, updatedAt, updatedBy)

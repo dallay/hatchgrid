@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve.newsletter.subscriber.application
 
+import com.hatchgrid.common.domain.bus.query.Response
 import com.hatchgrid.thryve.newsletter.subscriber.domain.Attributes
 import com.hatchgrid.thryve.newsletter.subscriber.domain.Subscriber
-import com.hatchgrid.common.domain.bus.query.Response
 
 data class SubscribersResponse(val subscribers: List<SubscriberResponse>) : Response
 

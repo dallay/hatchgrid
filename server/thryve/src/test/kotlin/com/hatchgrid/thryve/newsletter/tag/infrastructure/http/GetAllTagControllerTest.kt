@@ -1,10 +1,10 @@
 package com.hatchgrid.thryve.newsletter.tag.infrastructure.http
 
 import com.hatchgrid.ControllerTest
+import com.hatchgrid.common.domain.presentation.PageResponse
 import com.hatchgrid.thryve.newsletter.tag.TagStub
 import com.hatchgrid.thryve.newsletter.tag.application.TagResponse
 import com.hatchgrid.thryve.newsletter.tag.application.list.GetAllTagsQuery
-import com.hatchgrid.common.domain.presentation.PageResponse
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.jupiter.api.Assertions.assertEquals

@@ -1,9 +1,9 @@
 package com.hatchgrid.thryve.newsletter.tag.application.list
 
-import com.hatchgrid.thryve.newsletter.tag.application.TagResponse
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.query.QueryHandler
 import com.hatchgrid.common.domain.presentation.PageResponse
+import com.hatchgrid.thryve.newsletter.tag.application.TagResponse
 import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import org.slf4j.LoggerFactory
 

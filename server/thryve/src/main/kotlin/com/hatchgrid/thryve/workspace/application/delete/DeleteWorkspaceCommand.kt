@@ -14,7 +14,7 @@ data class DeleteWorkspaceCommand(
     @field:NotBlank(message = "Workspace ID cannot be blank")
     @field:Pattern(
         regexp = UUID_PATTERN,
-        message = "Workspace ID must be a valid UUID"
+        message = "Workspace ID must be a valid UUID",
     )
     val id: String
 ) : Command

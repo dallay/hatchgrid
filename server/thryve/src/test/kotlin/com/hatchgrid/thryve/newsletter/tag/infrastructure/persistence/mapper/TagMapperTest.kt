@@ -1,6 +1,7 @@
 package com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.mapper
 
 import com.hatchgrid.UnitTest
+import com.hatchgrid.common.domain.vo.email.Email
 import com.hatchgrid.thryve.newsletter.tag.domain.Tag
 import com.hatchgrid.thryve.newsletter.tag.domain.TagColor
 import com.hatchgrid.thryve.newsletter.tag.domain.TagId
@@ -10,7 +11,6 @@ import com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.mapper.Tag
 import com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.mapper.TagMapper.toEntity
 import com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.mapper.TagMapper.toEntityWithSubscribers
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
-import com.hatchgrid.common.domain.vo.email.Email
 import java.time.LocalDateTime
 import java.util.UUID
 import org.junit.jupiter.api.Assertions.assertEquals
