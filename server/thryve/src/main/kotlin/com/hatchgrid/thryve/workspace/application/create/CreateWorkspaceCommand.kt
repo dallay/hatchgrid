@@ -1,6 +1,7 @@
 package com.hatchgrid.thryve.workspace.application.create
 
 import com.hatchgrid.common.domain.bus.command.Command
+import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 
@@ -15,7 +16,7 @@ import jakarta.validation.constraints.Pattern
 data class CreateWorkspaceCommand(
     @field:NotBlank(message = "Workspace ID cannot be blank")
     @field:Pattern(
-        regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+        regexp = UUID_PATTERN,
         message = "Workspace ID must be a valid UUID",
     )
     val id: String,
@@ -24,7 +25,7 @@ data class CreateWorkspaceCommand(
     val description: String? = null,
     @field:NotBlank(message = "Owner ID cannot be blank")
     @field:Pattern(
-        regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+        regexp = UUID_PATTERN,
         message = "Owner ID must be a valid UUID",
     )
     val ownerId: String,

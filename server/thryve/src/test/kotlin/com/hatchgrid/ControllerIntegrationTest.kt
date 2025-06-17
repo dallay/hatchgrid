@@ -27,7 +27,7 @@ abstract class ControllerIntegrationTest : InfrastructureTestContainers() {
 
     @BeforeEach
     protected fun setUp() {
-        configureCsrfAndJwt(webTestClient)
+        this.webTestClient = configureCsrfAndJwt(this.webTestClient)
     }
 
     protected fun configureCsrfAndJwt(webTestClient: WebTestClient = this.webTestClient) =

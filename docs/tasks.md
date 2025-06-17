@@ -97,6 +97,21 @@ This document contains a comprehensive list of actionable improvement tasks for 
 ## DevOps and Infrastructure
 
 1. [ ] Enhance CI/CD pipeline
+   - [ ] Integrate `actions/labeler` for auto-labeling PRs based on changed file paths
+   - [ ] Configure `github/issue-labeler` for automatic issue labeling using title/content patterns
+   - [ ] (Optional) Evaluate `srvaroa/labeler` for unified PR/issue advanced labeling
+   - [ ] Add GitHub Super-Linter to enforce consistent code style across frontend and backend
+   - [ ] Configure `reviewdog` for inline lint feedback on PRs using existing linters (e.g. ktlint, eslint)
+   - [ ] (Optional) Integrate `villesau/ai-code-review-action` for AI-based PR feedback using OpenAI
+   - [ ] Enable `github/codeql-action` for static security analysis of Kotlin and JavaScript code
+   - [ ] Add `actions/dependency-review-action` to prevent insecure dependencies in PRs
+   - [ ] Integrate `dependency-check-action` (OWASP) to scan dependencies for known CVEs
+   - [ ] Run `aquasecurity/trivy-action` to scan Docker images before publishing
+   - [ ] Setup `codecov/codecov-action` to report test coverage metrics to Codecov
+   - [ ] (Optional) Use `coverallsapp/github-action` as alternative for coverage reporting
+   - [ ] Use `docker/login-action` to authenticate with Docker Hub and GHCR during CI
+   - [ ] Add `docker/metadata-action` to dynamically generate image tags and labels
+   - [ ] Implement `docker/build-push-action` to build and publish Docker images from CI
    - [ ] Implement automated testing in CI
    - [ ] Add code quality checks
    - [ ] Implement automated deployments

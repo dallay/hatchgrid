@@ -1,6 +1,7 @@
 package com.hatchgrid.thryve.workspace.application.find
 
 import com.hatchgrid.common.domain.bus.query.Query
+import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
 import com.hatchgrid.thryve.workspace.application.WorkspaceResponse
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
@@ -13,7 +14,7 @@ import jakarta.validation.constraints.Pattern
 data class FindWorkspaceQuery(
     @field:NotBlank(message = "Workspace ID cannot be blank")
     @field:Pattern(
-        regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+        regexp = UUID_PATTERN,
         message = "Workspace ID must be a valid UUID",
     )
     val id: String

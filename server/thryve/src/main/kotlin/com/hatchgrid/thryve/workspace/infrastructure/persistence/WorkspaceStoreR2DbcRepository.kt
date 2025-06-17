@@ -5,15 +5,20 @@ import com.hatchgrid.thryve.workspace.domain.Workspace
 import com.hatchgrid.thryve.workspace.domain.WorkspaceException
 import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
+import com.hatchgrid.thryve.workspace.domain.WorkspaceMember
+import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
 import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
-import com.hatchgrid.thryve.workspace.infrastructure.persistence.entity.WorkspaceRole
+import com.hatchgrid.thryve.workspace.domain.WorkspaceRole
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toDomain
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toEntity
+import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.toDomain
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceMemberR2dbcRepository
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceR2dbcRepository
+import java.util.UUID
 import kotlinx.coroutines.flow.toList
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DuplicateKeyException
+import org.springframework.dao.PessimisticLockingFailureException
 import org.springframework.dao.TransientDataAccessResourceException
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -23,7 +28,8 @@ class WorkspaceStoreR2DbcRepository(
     private val workspaceRepository: WorkspaceR2dbcRepository,
     private val workspaceMemberRepository: WorkspaceMemberR2dbcRepository
 ) : WorkspaceRepository,
-    WorkspaceFinderRepository {
+    WorkspaceFinderRepository,
+    WorkspaceMemberRepository {
 
     /**
      * Create a new workspace.
@@ -45,8 +51,14 @@ class WorkspaceStoreR2DbcRepository(
                 )
             }
         } catch (e: DuplicateKeyException) {
-            log.error("Error creating workspace with id: {}", workspace.id, e)
+            log.error("Error creating workspace with id: {} -> DKE", workspace.id, e)
             throw WorkspaceException("Error creating workspace", e)
+        } catch (e: PessimisticLockingFailureException) {
+            log.error("Error creating workspace with id: {} -> PLFE", workspace.id, e)
+            throw WorkspaceException("Error creating workspace due to a locking issue", e)
+        } catch (e: TransientDataAccessResourceException) {
+            log.error("Error creating workspace with id: {} -> TDARE", workspace.id, e)
+            throw WorkspaceException("Error creating workspace because it already exists", e)
         }
     }
 
@@ -59,8 +71,20 @@ class WorkspaceStoreR2DbcRepository(
     override suspend fun update(workspace: Workspace) {
         log.debug("Updating workspace with id: {}", workspace.id)
         try {
+            // First, check if the workspace exists
+            val existingEntity = workspaceRepository.findById(workspace.id.value)
+                ?: throw WorkspaceException("Workspace with id ${workspace.id} does not exist")
+
+            // Create entity with proper timestamps for update
+            val entityToUpdate = workspace.toEntity().copy(
+                createdAt = existingEntity.createdAt,
+                createdBy = existingEntity.createdBy,
+                updatedAt = java.time.LocalDateTime.now(),
+                updatedBy = "system",
+            )
+
             // Update workspace
-            workspaceRepository.save(workspace.toEntity())
+            workspaceRepository.save(entityToUpdate)
         } catch (e: DuplicateKeyException) {
             log.error("Error updating workspace with id: {}", workspace.id, e)
             throw WorkspaceException("Error updating workspace", e)
@@ -121,6 +145,77 @@ class WorkspaceStoreR2DbcRepository(
     override suspend fun delete(id: WorkspaceId) {
         log.debug("Deleting workspace with id: {}", id)
         workspaceRepository.deleteById(id.value)
+    }
+
+    /**
+     * Finds all workspace members for a workspace.
+     *
+     * @param workspaceId The ID of the workspace.
+     * @return A flux of workspace member entities.
+     */
+    override suspend fun findByWorkspaceId(workspaceId: UUID): List<WorkspaceMember> {
+        log.debug("Finding workspace members by workspace id: {}", workspaceId)
+        return workspaceMemberRepository.findByWorkspaceId(workspaceId).map { it.toDomain() }
+    }
+
+    /**
+     * Finds all workspaces for a user.
+     *
+     * @param userId The ID of the user.
+     * @return A flux of workspace member entities.
+     */
+    override suspend fun findByUserId(userId: UUID): List<WorkspaceMember> {
+        log.debug("Finding workspace members by user id: {}", userId)
+        return workspaceMemberRepository.findByUserId(userId).map { it.toDomain() }
+    }
+
+    /**
+     * Checks if a user is a member of a workspace.
+     *
+     * @param workspaceId The ID of the workspace.
+     * @param userId The ID of the user.
+     * @return True if the user is a member of the workspace, false otherwise.
+     */
+    override suspend fun existsByWorkspaceIdAndUserId(
+        workspaceId: UUID,
+        userId: UUID
+    ): Boolean {
+        log.debug("Checking if user {} is a member of workspace {}", userId, workspaceId)
+        return workspaceMemberRepository.existsByWorkspaceIdAndUserId(workspaceId, userId)
+    }
+
+    /**
+     * Inserts a workspace member using a custom query.
+     * This is needed due to composite key limitations in Spring Data R2DBC.
+     *
+     * @param workspaceId The ID of the workspace.
+     * @param userId The ID of the user.
+     * @param role The role of the user in the workspace.
+     * @return The number of affected rows.
+     */
+    override suspend fun insertWorkspaceMember(
+        workspaceId: UUID,
+        userId: UUID,
+        role: String
+    ): Int {
+        log.debug("Inserting workspace member with workspaceId: {}, userId: {}, role: {}", workspaceId, userId, role)
+        return workspaceMemberRepository.insertWorkspaceMember(workspaceId, userId, role)
+    }
+
+    /**
+     * Deletes a workspace member using a custom query.
+     * This is needed due to composite key limitations in Spring Data R2DBC.
+     *
+     * @param workspaceId The ID of the workspace.
+     * @param userId The ID of the user.
+     * @return The number of affected rows.
+     */
+    override suspend fun deleteByWorkspaceIdAndUserId(
+        workspaceId: UUID,
+        userId: UUID
+    ): Int {
+        log.debug("Deleting workspace member with workspaceId: {} and userId: {}", workspaceId, userId)
+        return workspaceMemberRepository.deleteByWorkspaceIdAndUserId(workspaceId, userId)
     }
 
     companion object {

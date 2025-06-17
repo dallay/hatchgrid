@@ -99,10 +99,23 @@ object ApplicationStartupTraces {
         environment.getProperty("server.port")?.isBlank() ?: true
 
     private fun protocol(environment: Environment): String {
-        return if (environment.getProperty("server.ssl.key-store")?.isBlank() != false) {
-            "http"
-        } else {
+        // If server.ssl.enabled is explicitly "false", protocol is HTTP.
+        if (environment.getProperty("server.ssl.enabled") == "false") {
+            return "http"
+        }
+
+        // Otherwise, if SSL is not explicitly disabled, check for actual SSL configuration (key-store or bundle).
+        // Presence of key-store or bundle implies HTTPS.
+        val keyStore = environment.getProperty("server.ssl.key-store")
+        val sslBundle = environment.getProperty("server.ssl.bundle")
+
+        return if (keyStore?.isNotBlank() == true || sslBundle?.isNotBlank() == true) {
             "https"
+        } else {
+            // If not explicitly disabled, but no key-store/bundle, it's HTTP.
+            // This covers cases like server.ssl.enabled=true (or default) without proper SSL setup,
+            // or no SSL configuration at all.
+            "http"
         }
     }
 

@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 99900001-data-dev-test-users
+      author: hatchgrid
+      context: dev
+      preConditions:
+        - onFail: MARK_RAN
+        - tableExists:
+            tableName: users
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              INSERT INTO users (id, email, full_name)
+              VALUES
+                ('4c973896-5761-41fc-8217-07c5d13a004b', 'admin@hatchgrid.com', 'Admin Hatchgrid'),
+                ('c4af4e2f-b432-4c3b-8405-cca86cd5b97b', 'user@hatchgrid.com', 'Basic User Hatchgrid'),
+                ('956cc148-2335-442b-96ee-e42646de10e8', 'john.doe@hatchgrid.com', 'John Doe');
+        - sql:
+            splitStatements: false
+            sql: |
+              INSERT INTO user_authority (user_id, authority_name)
+              VALUES
+                ('4c973896-5761-41fc-8217-07c5d13a004b', 'ROLE_ADMIN'),
+                ('4c973896-5761-41fc-8217-07c5d13a004b', 'ROLE_USER'),
+                ('c4af4e2f-b432-4c3b-8405-cca86cd5b97b', 'ROLE_USER'),
+                ('956cc148-2335-442b-96ee-e42646de10e8', 'ROLE_USER');

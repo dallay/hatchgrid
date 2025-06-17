@@ -1,19 +1,12 @@
 package com.hatchgrid.thryve.workspace.infrastructure.persistence.entity
 
+import com.hatchgrid.thryve.workspace.domain.WorkspaceRole
 import java.time.LocalDateTime
 import java.util.UUID
-import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
-
-enum class WorkspaceRole {
-    OWNER,
-    ADMIN,
-    EDITOR,
-    VIEWER
-}
 
 /**
  * R2DBC entity for workspace members.
@@ -26,10 +19,6 @@ data class WorkspaceMemberEntity(
 
     @Column("role")
     val role: WorkspaceRole = WorkspaceRole.EDITOR,
-
-    @CreatedBy
-    @Column("created_by")
-    val createdBy: String? = null,
 
     @CreatedDate
     @Column("created_at")

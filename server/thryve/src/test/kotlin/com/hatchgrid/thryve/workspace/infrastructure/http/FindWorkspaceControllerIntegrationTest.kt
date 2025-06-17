@@ -3,9 +3,6 @@ package com.hatchgrid.thryve.workspace.infrastructure.http
 import com.hatchgrid.ControllerIntegrationTest
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
-import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers
-import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf
-import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockAuthentication
 import org.springframework.test.context.jdbc.Sql
 
 internal class FindWorkspaceControllerIntegrationTest : ControllerIntegrationTest() {
@@ -23,8 +20,6 @@ internal class FindWorkspaceControllerIntegrationTest : ControllerIntegrationTes
     fun `should return workspace when workspace is found`(): Unit = runBlocking {
         val id = "a0654720-35dc-49d0-b508-1f7df5d915f1"
         webTestClient
-            .mutateWith(csrf())
-            .mutateWith(mockAuthentication<SecurityMockServerConfigurers.JwtMutator>(jwt()))
             .get()
             .uri("/api/workspace/$id")
             .exchange()

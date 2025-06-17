@@ -6,7 +6,6 @@ import com.hatchgrid.thryve.authentication.infrastructure.csrf.SpaCsrfTokenReque
 import com.hatchgrid.thryve.authentication.infrastructure.filter.CookieCsrfFilter
 import java.time.Duration
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientSsl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
@@ -268,8 +267,7 @@ class SecurityConfiguration(
     @Bean
     @Generated(reason = "Only called with a valid client registration repository")
     fun jwtDecoder(
-        clientRegistrationRepository: ReactiveClientRegistrationRepository,
-        ssl: WebClientSsl
+        clientRegistrationRepository: ReactiveClientRegistrationRepository
     ): ReactiveJwtDecoder {
         val jwtDecoder = NimbusReactiveJwtDecoder.withIssuerLocation(issuerUri).build()
         val audienceValidator: OAuth2TokenValidator<Jwt> =
@@ -279,7 +277,6 @@ class SecurityConfiguration(
             DelegatingOAuth2TokenValidator(withIssuer, audienceValidator)
         jwtDecoder.setJwtValidator(withAudience)
 
-        val sslCertificate = ssl.fromBundle("keycloak")
         return ReactiveJwtDecoder { token ->
             jwtDecoder.decode(token)
                 .flatMap { jwt ->
@@ -294,7 +291,6 @@ class SecurityConfiguration(
                                     ),
                                 )
                                 .baseUrl(it!!.providerDetails.issuerUri)
-                                .apply(sslCertificate)
                                 .build()
                             jwtDecoder.setClaimSetConverter(
                                 CustomClaimConverter(

@@ -19,6 +19,7 @@ jsonwebtoken = "0.12.6"
 cucumber = "7.20.0"
 apacheCommon = "1.12.0"
 jackson = "2.18.0"
+springSecurity = "6.3.1"
 
 [libraries]
 # Gradle Plugins
@@ -55,8 +56,13 @@ spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools
 spring-boot-docker-compose = { module = "org.springframework.boot:spring-boot-docker-compose", version.ref = "springBoot" }
 # Spring Boot Database
 spring-boot-starter-data-r2dbc = { module = "org.springframework.boot:spring-boot-starter-data-r2dbc", version.ref = "springBoot" }
+spring-boot-starter-oauth2-resource-server = { module = "org.springframework.boot:spring-boot-starter-oauth2-resource-server", version.ref = "springBoot" }
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBoot" }
 # SSO & Keycloak
 keycloak-admin-client = { module = "org.keycloak:keycloak-admin-client", version.ref = "keycloak-admin-client" }
+spring-security-core = { module = "org.springframework.security:spring-security-core", version.ref = "springSecurity" }
+spring-security-oauth2-client = { module = "org.springframework.security:spring-security-oauth2-client", version.ref = "springSecurity" }
+spring-security-oauth2-jose = { module = "org.springframework.security:spring-security-oauth2-jose", version.ref = "springSecurity" }
 # Kotlin Libraries
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
 jackson-core = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
@@ -110,6 +116,17 @@ spring-boot = [
 ]
 spring-boot-dev = ["spring-boot-devtools", "spring-boot-docker-compose"]
 spring-boot-test = ["spring-boot-starter-test", "spring-security-test", "reactor-test", "cucumber-java"]
+spring-boot-database = [
+  "spring-boot-starter-data-r2dbc",
+  "spring-boot-starter-oauth2-resource-server",
+  "spring-boot-starter-security",
+]
+spring-boot-sso = [
+  "keycloak-admin-client",
+  "spring-security-core",
+  "spring-security-oauth2-client",
+  "spring-security-oauth2-jose",
+]
 jackson = ["jackson-annotations", "jackson-core", "jackson-databind", "jackson-module-kotlin"]
 kotlin-jvm = ["kotlin-reflect", "kotlinx-coroutines-reactor", "reactor-kotlin-extensions", "reflections"]
 keycloak = [ "keycloak-admin-client"]

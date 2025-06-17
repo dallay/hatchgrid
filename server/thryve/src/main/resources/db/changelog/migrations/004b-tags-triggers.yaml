@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 016-create-tags-updated-at-trigger
+      author: hatchgrid
+      changes:
+        - sql:
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE TRIGGER trg_tags_updated_at
+              BEFORE UPDATE ON tags
+              FOR EACH ROW
+              EXECUTE FUNCTION set_updated_at_column();
+
+  - changeSet:
+      id: 017-create-subscriber-tags-updated-at-trigger
+      author: hatchgrid
+      changes:
+        - sql:
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE TRIGGER trg_subscriber_tags_updated_at
+              BEFORE UPDATE ON subscriber_tags
+              FOR EACH ROW
+              EXECUTE FUNCTION set_updated_at_column();

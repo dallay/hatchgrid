@@ -3,6 +3,7 @@ package com.hatchgrid.thryve.workspace.infrastructure.http
 import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.common.domain.bus.query.Response
 import com.hatchgrid.spring.boot.ApiController
+import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
 import com.hatchgrid.thryve.workspace.application.find.FindWorkspaceQuery
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -50,7 +51,7 @@ class FindWorkspaceController(
         )
         @PathVariable
         @Pattern(
-            regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            regexp = UUID_PATTERN,
             message = "Invalid UUID format",
         )
         id: String

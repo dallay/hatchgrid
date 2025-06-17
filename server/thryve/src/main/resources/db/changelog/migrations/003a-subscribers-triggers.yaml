@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 012-create-subscriber-updated-at-trigger
+      author: hatchgrid
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              CREATE TRIGGER trg_subscribers_updated_at
+              BEFORE UPDATE ON subscribers
+              FOR EACH ROW
+              EXECUTE FUNCTION set_updated_at_column();

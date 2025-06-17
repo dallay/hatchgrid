@@ -11,12 +11,9 @@ object AppConstants {
     const val SPRING_PROFILE_SWAGGER = "swagger"
     const val SPRING_PROFILE_NO_LIQUIBASE = "no-liquibase"
 
+    const val UUID_PATTERN = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+
     object Paths {
         const val API = "/api"
-        const val WORKSPACE = "/workspace"
-        const val FORMS = "$WORKSPACE/{workspaceId}/form"
-        const val FORMS_ID = "$WORKSPACE/{workspaceId}/form/{formId}"
-        const val SUBSCRIBER = "$WORKSPACE/{workspaceId}/newsletter/subscriber"
-        const val TAG = "$WORKSPACE/{workspaceId}/tag"
     }
 }

@@ -1,0 +1,105 @@
+databaseChangeLog:
+  - changeSet:
+      id: 010-create-subscriber-status-enum
+      author: hatchgrid
+      changes:
+        - sql:
+            splitStatements: false
+            sql: CREATE TYPE subscriber_status AS ENUM ('ENABLED', 'DISABLED', 'BLOCKLISTED');
+
+  - changeSet:
+      id: 011-create-subscribers
+      author: hatchgrid
+      changes:
+        - createTable:
+            tableName: subscribers
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: firstname
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lastname
+                  type: text
+              - column:
+                  name: status
+                  type: subscriber_status
+                  defaultValue: ENABLED
+                  constraints:
+                    nullable: false
+              - column:
+                  name: attributes
+                  type: jsonb
+              - column:
+                  name: workspace_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: varchar(50)
+                  defaultValue: 'system'
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_by
+                  type: varchar(50)
+                  defaultValue: 'system'
+        - addForeignKeyConstraint:
+            baseTableName: subscribers
+            baseColumnNames: workspace_id
+            constraintName: fk_workspace_subscriber
+            referencedTableName: workspaces
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - createIndex:
+            tableName: subscribers
+            columns:
+              - column:
+                  name: status
+            indexName: idx_subs_status
+        - createIndex:
+            tableName: subscribers
+            columns:
+              - column:
+                  name: created_at
+            indexName: idx_subs_created_at
+        - createIndex:
+            tableName: subscribers
+            columns:
+              - column:
+                  name: email
+            indexName: idx_subs_email
+            unique: true
+        - createIndex:
+            tableName: subscribers
+            columns:
+              - column:
+                  name: email
+              - column:
+                  name: workspace_id
+            indexName: idx_subs_email_workspace
+            unique: true

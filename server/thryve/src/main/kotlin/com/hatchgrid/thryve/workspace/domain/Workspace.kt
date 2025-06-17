@@ -82,7 +82,10 @@ data class Workspace(
      */
     fun update(name: String, description: String? = this.description) {
         this.name = name
-        this.description = description
+        // Update description only if it's not null
+        if (description != null) {
+            this.description = description
+        }
         this.updatedAt = LocalDateTime.now()
 
         // Record the workspace updated event
