@@ -14,6 +14,9 @@ import com.hatchgrid.thryve.newsletter.tag.domain.event.TagSubscriberUpdatedEven
 import com.hatchgrid.thryve.newsletter.tag.domain.event.TagUpdatedEvent
 import com.hatchgrid.thryve.newsletter.tag.domain.exceptions.TagNotFoundException
 import com.hatchgrid.common.domain.bus.event.EventPublisher
+import com.hatchgrid.thryve.users.domain.UserId
+import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
+import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -40,13 +43,23 @@ internal class UpdateTagCommandHandlerTest {
         subscriberTagRepository,
         eventPublisher,
     )
-    private val updateTagCommandHandler = UpdateTagCommandHandler(tagUpdater)
+    private val workspaceMemberRepository: WorkspaceMemberRepository = mockk()
+    private val workspaceAuthorizationService: WorkspaceAuthorizationService =
+        WorkspaceAuthorizationService(workspaceMemberRepository)
+    private val updateTagCommandHandler = UpdateTagCommandHandler(workspaceAuthorizationService,tagUpdater)
     private val tag = TagStub.create()
     private val tagId = tag.id
     private val workspaceId = tag.workspaceId
+    private val userId = UserId("17140d5a-3879-4708-b7ca-097095a085fe")
 
     @BeforeEach
     fun setUp() {
+        coEvery {
+            workspaceMemberRepository.existsByWorkspaceIdAndUserId(
+                eq(workspaceId.value),
+                eq(userId.value)
+            )
+        } returns true
         coEvery { tagSearchRepository.findById(workspaceId, tagId) } returns tag
         coEvery { eventPublisher.publish(any(TagUpdatedEvent::class)) } returns Unit
         coEvery { tagRepository.update(tag) } returns Unit
@@ -69,6 +82,7 @@ internal class UpdateTagCommandHandlerTest {
             name = "new name",
             color = "red",
             workspaceId = workspaceId.value.toString(),
+            userId = userId.value.toString(),
             subscribers = null,
         )
 
@@ -98,6 +112,7 @@ internal class UpdateTagCommandHandlerTest {
             name = "new name",
             color = "blue",
             workspaceId = workspaceId.value.toString(),
+            userId = userId.value.toString(),
             subscribers = subscribers,
         )
 
@@ -130,6 +145,7 @@ internal class UpdateTagCommandHandlerTest {
             name = "new name",
             color = null,
             workspaceId = workspaceId.value.toString(),
+            userId = userId.value.toString(),
             subscribers = remainingSubscribers.map { it.value }.toSet(),
         )
 
@@ -151,6 +167,7 @@ internal class UpdateTagCommandHandlerTest {
             name = null,
             color = null,
             workspaceId = workspaceId.value.toString(),
+            userId = userId.value.toString(),
             subscribers = null,
         )
 
@@ -171,6 +188,7 @@ internal class UpdateTagCommandHandlerTest {
             name = "new name",
             color = "yellow",
             workspaceId = workspaceId.value.toString(),
+            userId = userId.value.toString(),
             subscribers = setOf("test.email1@example.com"),
         )
 

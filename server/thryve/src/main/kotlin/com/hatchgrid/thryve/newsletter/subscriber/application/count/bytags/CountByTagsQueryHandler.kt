@@ -33,7 +33,7 @@ class CountByTagsQueryHandler(
      */
     override suspend fun handle(query: CountByTagsQuery): SubscriberCountByTagsResponse {
         log.debug("Counting subscribers by tag for workspace {}", query.workspaceId)
-        // Authorization: ensure current user has access to this workspace
+
         workspaceAuthorizationService.ensureAccess(query.workspaceId, query.userId)
         return SubscriberCountByTagsResponse(counter.count(query.workspaceId))
     }

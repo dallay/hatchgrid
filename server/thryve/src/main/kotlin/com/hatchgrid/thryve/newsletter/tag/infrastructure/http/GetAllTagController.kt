@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.constraints.Pattern
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -55,7 +56,9 @@ class GetAllTagController(
         ) @PathVariable workspaceId: String,
     ): ResponseEntity<PageResponse<TagResponse>> {
         log.debug("Getting all tags for workspace with id: {}", sanitizePathVariable(workspaceId))
-        val query = GetAllTagsQuery(workspaceId)
+
+        val userId = userId() ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+        val query = GetAllTagsQuery(workspaceId, userId)
         val response = ask(query)
         return ResponseEntity.ok(response)
     }

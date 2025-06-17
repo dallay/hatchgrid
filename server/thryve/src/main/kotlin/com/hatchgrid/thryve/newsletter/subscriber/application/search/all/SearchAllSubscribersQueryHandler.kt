@@ -26,7 +26,7 @@ class SearchAllSubscribersQueryHandler(
      */
     override suspend fun handle(query: SearchAllSubscribersQuery): CursorPageResponse<SubscriberResponse> {
         log.debug("Searching all subscribers")
-        // Authorization: ensure current user has access to this workspace
+
         workspaceAuthorizationService.ensureAccess(query.workspaceId, query.userId)
         return searcher.search(query.criteria, query.size, query.cursor, query.sort)
     }

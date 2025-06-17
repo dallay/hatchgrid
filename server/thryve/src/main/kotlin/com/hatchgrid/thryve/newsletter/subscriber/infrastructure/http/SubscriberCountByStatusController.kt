@@ -47,7 +47,7 @@ class SubscriberCountByStatusController(
         @PathVariable workspaceId: String
     ): ResponseEntity<SubscriberCountByStatusResponse> {
         log.debug("Counting subscribers by status: {}", sanitizeAndJoinPathVariables(workspaceId))
-        // Authorization: ensure current user has access to this workspace
+
         val userId = userId() ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
         val response = ask(
             CountByStatusQuery(workspaceId, userId),

@@ -29,6 +29,7 @@ internal class UpdateTagControllerTest : ControllerTest() {
             name = tag.name,
             color = tag.color.value,
             workspaceId = tag.workspaceId.value.toString(),
+            userId = userId.toString(),
             subscribers = subscriberEmails,
         )
         coEvery { mediator.send(command) } returns Unit

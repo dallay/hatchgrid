@@ -5,6 +5,7 @@ import com.hatchgrid.thryve.newsletter.tag.application.delete.DeleteTagCommand
 import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.spring.boot.ApiController
 import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
+import com.hatchgrid.thryve.workspace.domain.WorkspaceAuthorizationException
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.constraints.Pattern
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -54,7 +56,9 @@ class DeleteTagController(
         @PathVariable tagId: String
     ) {
         log.debug("Deleting tag with id: {}", sanitizeAndJoinPathVariables(workspaceId, tagId))
-        dispatch(DeleteTagCommand(workspaceId, tagId))
+
+        val userId = userId() ?: throw WorkspaceAuthorizationException("User has no access to workspace $workspaceId")
+        dispatch(DeleteTagCommand(workspaceId, userId, tagId))
     }
 
     companion object {

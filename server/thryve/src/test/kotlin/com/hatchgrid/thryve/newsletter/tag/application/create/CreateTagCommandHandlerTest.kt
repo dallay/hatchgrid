@@ -11,7 +11,10 @@ import com.hatchgrid.thryve.newsletter.tag.domain.Tag
 import com.hatchgrid.thryve.newsletter.tag.domain.TagRepository
 import com.hatchgrid.thryve.newsletter.tag.domain.event.SubscriberTaggedEvent
 import com.hatchgrid.thryve.newsletter.tag.domain.event.TagCreatedEvent
+import com.hatchgrid.thryve.users.domain.UserId
+import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
+import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -38,12 +41,16 @@ internal class CreateTagCommandHandlerTest {
         subscriberTagCreator,
         eventPublisher,
     )
-    private val createTagCommandHandler = CreateTagCommandHandler(tagCreator)
+    private val workspaceMemberRepository: WorkspaceMemberRepository = mockk()
+    private val workspaceAuthorizationService: WorkspaceAuthorizationService =
+        WorkspaceAuthorizationService(workspaceMemberRepository)
+    private val createTagCommandHandler = CreateTagCommandHandler(workspaceAuthorizationService,tagCreator)
     private val faker = Faker()
     private val name = faker.lorem().word()
     private val allColorSupported = listOf("default", "purple", "pink", "red", "blue", "yellow")
     private val tagId = UUID.randomUUID().toString()
     private val workspaceId = WorkspaceId(UUID.randomUUID())
+    private val userId = UserId(UUID.randomUUID())
     private lateinit var color: String
     private lateinit var subscribers: List<Subscriber>
     private lateinit var emails: Set<String>
@@ -54,6 +61,12 @@ internal class CreateTagCommandHandlerTest {
         subscribers = SubscriberStub.dummyRandomSubscribersList(20)
         emails = subscribers.map { it.email.value }.toSet()
 
+        coEvery {
+            workspaceMemberRepository.existsByWorkspaceIdAndUserId(
+                eq(workspaceId.value),
+                eq(userId.value)
+            )
+        } returns true
         coEvery { tagRepository.create(any(Tag::class)) } returns Unit
         coEvery { subscriberTagRepository.create(any()) } returns Unit
         coEvery {
@@ -74,6 +87,7 @@ internal class CreateTagCommandHandlerTest {
             name = name,
             color = color,
             workspaceId = workspaceId.value.toString(),
+            userId = userId.value.toString(),
             subscribers = emails,
         )
 

@@ -66,7 +66,7 @@ class GetAllSubscriberController(
             "Get all subscribers with cursor: {}",
             sanitizeAndJoinPathVariables(workspaceId, cursorRequestPageable.toString()),
         )
-        // Authorization: ensure current user has access to this workspace
+
         val userId = userId() ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
 
         val criteria: Criteria =

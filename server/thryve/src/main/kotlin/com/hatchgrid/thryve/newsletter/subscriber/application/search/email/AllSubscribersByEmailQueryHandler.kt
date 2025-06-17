@@ -32,7 +32,7 @@ class AllSubscribersByEmailQueryHandler(
             query.workspaceId,
             query.emails
         )
-        // Authorization: ensure current user has access to this workspace
+
         workspaceAuthorizationService.ensureAccess(query.workspaceId, query.userId)
         return searcher.searchAllByEmails(query.workspaceId, query.emails)
     }

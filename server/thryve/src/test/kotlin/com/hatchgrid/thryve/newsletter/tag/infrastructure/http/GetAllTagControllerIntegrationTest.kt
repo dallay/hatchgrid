@@ -1,7 +1,6 @@
 package com.hatchgrid.thryve.newsletter.tag.infrastructure.http
 
 import com.hatchgrid.ControllerIntegrationTest
-import java.util.UUID
 import org.junit.jupiter.api.Test
 import org.springframework.test.context.jdbc.Sql
 
@@ -10,8 +9,19 @@ internal class GetAllTagControllerIntegrationTest : ControllerIntegrationTest() 
     private val uri = "/api/workspace/$workspaceId/tag"
 
     @Test
-    @Sql("/db/subscriber/subscriber.sql", "/db/tag/tag.sql")
-    @Sql("/db/subscriber/clean.sql", "/db/tag/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(
+        "/db/user/users.sql",
+        "/db/workspace/workspace.sql",
+        "/db/subscriber/subscriber.sql",
+        "/db/tag/tag.sql"
+    )
+    @Sql(
+        "/db/subscriber/clean.sql",
+        "/db/tag/clean.sql",
+        "/db/workspace/clean.sql",
+        "/db/user/clean.sql",
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+    )
     fun `should get all tags for a specific workspace`() {
         webTestClient.get()
             .uri(uri)
@@ -60,11 +70,23 @@ internal class GetAllTagControllerIntegrationTest : ControllerIntegrationTest() 
     }
 
     @Test
-    @Sql("/db/subscriber/subscriber.sql", "/db/tag/tag.sql")
-    @Sql("/db/subscriber/clean.sql", "/db/tag/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(
+        "/db/user/users.sql",
+        "/db/workspace/all-workspaces.sql",
+      "/db/subscriber/subscriber.sql",
+        "/db/tag/tag.sql"
+    )
+    @Sql(
+       "/db/subscriber/clean.sql",
+        "/db/tag/clean.sql",
+        "/db/workspace/clean.sql",
+        "/db/user/clean.sql",
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+    )
     fun `should return empty list when there are no tags for a specific workspace`() {
+        val workspaceWithoutTags = "894812b3-deb9-469f-b988-d8dfa5a1cf52"
         webTestClient.get()
-            .uri("/api/workspace/${UUID.randomUUID()}/tag")
+            .uri("/api/workspace/$workspaceWithoutTags/tag")
             .exchange()
             .expectStatus().isOk
             .expectBody()
@@ -73,3 +95,4 @@ internal class GetAllTagControllerIntegrationTest : ControllerIntegrationTest() 
             .consumeWith(::println)
     }
 }
+

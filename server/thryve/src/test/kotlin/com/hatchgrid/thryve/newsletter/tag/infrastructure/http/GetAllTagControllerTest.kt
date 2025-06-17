@@ -27,8 +27,9 @@ internal class GetAllTagControllerTest : ControllerTest() {
 
     @BeforeEach
     override fun setUp() {
+        super.setUp()
         tagResponses = tags.map { TagResponse.from(it) }
-        coEvery { mediator.send(GetAllTagsQuery(workspaceId)) } returns PageResponse(tagResponses)
+        coEvery { mediator.send(GetAllTagsQuery(workspaceId, userId.toString())) } returns PageResponse(tagResponses)
         controller = GetAllTagController(mediator)
         webTestClient = WebTestClient.bindToController(controller).build()
     }
@@ -45,12 +46,12 @@ internal class GetAllTagControllerTest : ControllerTest() {
                 assertEquals(tagResponses, actualPageResponse.data)
             }
 
-        coVerify(exactly = 1) { mediator.send(GetAllTagsQuery(workspaceId)) }
+        coVerify(exactly = 1) { mediator.send(GetAllTagsQuery(workspaceId, userId.toString())) }
     }
 
     @Test
     fun `should return empty list when there are no tags for a specific workspace`() {
-        coEvery { mediator.send(GetAllTagsQuery(workspaceId)) } returns PageResponse(emptyList())
+        coEvery { mediator.send(GetAllTagsQuery(workspaceId, userId.toString())) } returns PageResponse(emptyList())
 
         webTestClient.get()
             .uri(uri)
@@ -62,6 +63,6 @@ internal class GetAllTagControllerTest : ControllerTest() {
                 assertEquals(emptyList<TagResponse>(), actualPageResponse.data)
             }
 
-        coVerify(exactly = 1) { mediator.send(GetAllTagsQuery(workspaceId)) }
+        coVerify(exactly = 1) { mediator.send(GetAllTagsQuery(workspaceId, userId.toString())) }
     }
 }

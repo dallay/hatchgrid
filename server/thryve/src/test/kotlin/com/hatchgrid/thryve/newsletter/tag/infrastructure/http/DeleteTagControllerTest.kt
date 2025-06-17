@@ -25,7 +25,7 @@ internal class DeleteTagControllerTest : ControllerTest() {
 
     @Test
     fun `should delete tag when tag is found`() {
-        val command = DeleteTagCommand(workspaceId = workspaceId, tagId = tagId)
+        val command = DeleteTagCommand(workspaceId = workspaceId, userId = userId.toString(), tagId = tagId)
         coEvery { mediator.send(command) } returns Unit
 
         webTestClient.delete()

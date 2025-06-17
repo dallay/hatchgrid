@@ -53,7 +53,7 @@ class GetAllSubscribersByEmailController(
         workspaceId: String,
         @RequestParam @Valid emails: Set<@Email(message = "Invalid email format") String>
     ): ResponseEntity<SubscribersResponse> {
-        // Authorization: ensure current user has access to this workspace
+
         val userId = userId() ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
 
 

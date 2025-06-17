@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 
 /**
- *
+ * Repository implementation for managing subscriber tags using R2DBC.
+ * This class provides methods to create and delete tags in a reactive manner.
+ * It uses the [SubscriberTagReactiveR2dbcRepository] for database operations.
  * @created 20/9/24
  */
 @Repository

@@ -28,6 +28,6 @@ internal class GetAllWorkspaceControllerIntegrationTest : ControllerIntegrationT
             .expectStatus().isOk
             .expectBody()
             .jsonPath("$.data").isArray
-            .jsonPath("$.data.length()").isEqualTo(2)
+            .jsonPath("$.data.length()").isEqualTo(3)
     }
 }

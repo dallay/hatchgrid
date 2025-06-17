@@ -14,10 +14,12 @@ internal class CreateTagControllerIntegrationTest : ControllerIntegrationTest() 
     private val url = "/api/workspace/$workspaceId/tag/$tagId"
 
     @Sql(
+        "/db/user/users.sql",
         "/db/workspace/workspace.sql",
     )
     @Sql(
         "/db/workspace/clean.sql",
+        "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     @Test
@@ -33,10 +35,12 @@ internal class CreateTagControllerIntegrationTest : ControllerIntegrationTest() 
     }
 
     @Sql(
+        "/db/user/users.sql",
         "/db/workspace/workspace.sql",
     )
     @Sql(
         "/db/workspace/clean.sql",
+        "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     @Test
@@ -50,10 +54,12 @@ internal class CreateTagControllerIntegrationTest : ControllerIntegrationTest() 
             .expectBody().isEmpty
     }
     @Sql(
+        "/db/user/users.sql",
         "/db/workspace/workspace.sql",
     )
     @Sql(
         "/db/workspace/clean.sql",
+        "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
     @Test

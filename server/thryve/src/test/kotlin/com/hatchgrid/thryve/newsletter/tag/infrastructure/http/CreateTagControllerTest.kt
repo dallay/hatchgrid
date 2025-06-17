@@ -19,12 +19,15 @@ internal class CreateTagControllerTest : ControllerTest() {
     private val subscriberEmails = setOf("newSubscriber@example.com")
 
     private val tag: Tag = TagStub.create()
-    private val uri = "/api/workspace/${tag.workspaceId.value}/tag/${tag.id.value}"
+    val workspaceId = tag.workspaceId.value
+    val tagId = tag.id.value
+    private val uri = "/api/workspace/$workspaceId/tag/$tagId"
     private val command = CreateTagCommand(
-        id = tag.id.value.toString(),
+        id = tagId.toString(),
         name = tag.name,
         color = tag.color.value,
-        workspaceId = tag.workspaceId.value.toString(),
+        workspaceId = workspaceId.toString(),
+        userId = userId.toString(),
         subscribers = subscriberEmails,
     )
 

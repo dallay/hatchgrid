@@ -33,7 +33,7 @@ class CountByStatusQueryHandler(
      */
     override suspend fun handle(query: CountByStatusQuery): SubscriberCountByStatusResponse {
         log.debug("Counting subscribers by status for workspace {}", query.workspaceId)
-        // Authorization: ensure current user has access to this workspace
+
         workspaceAuthorizationService.ensureAccess(query.workspaceId, query.userId)
         return SubscriberCountByStatusResponse(counter.count(query.workspaceId))
     }

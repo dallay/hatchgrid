@@ -13,11 +13,18 @@ internal class UpdateTagControllerIntegrationTest : ControllerIntegrationTest() 
     private val url = "/api/workspace/$workspaceId/tag/$tagId/update"
 
     @Test
-    @Sql("/db/subscriber/subscriber.sql", "/db/tag/tag.sql")
+    @Sql(
+        "/db/user/users.sql",
+        "/db/workspace/workspace.sql",
+        "/db/subscriber/subscriber.sql",
+        "/db/tag/tag.sql"
+    )
     @Sql(
         "/db/subscriber/clean.sql",
         "/db/tag/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
+        "/db/workspace/clean.sql",
+        "/db/user/clean.sql",
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
     fun `should update a tag`() {
         val request = TagStub.generateTagRequest(isUpdate = true)
@@ -32,11 +39,18 @@ internal class UpdateTagControllerIntegrationTest : ControllerIntegrationTest() 
             .consumeWith(::println)
     }
 
-    @Sql("/db/subscriber/subscriber.sql", "/db/tag/tag.sql")
+    @Sql(
+        "/db/user/users.sql",
+        "/db/workspace/workspace.sql",
+        "/db/subscriber/subscriber.sql",
+        "/db/tag/tag.sql"
+    )
     @Sql(
         "/db/subscriber/clean.sql",
         "/db/tag/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
+        "/db/workspace/clean.sql",
+        "/db/user/clean.sql",
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
     @Test
     fun `should not update a tag if not found`() {
