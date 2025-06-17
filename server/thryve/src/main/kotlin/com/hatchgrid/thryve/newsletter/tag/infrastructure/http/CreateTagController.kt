@@ -87,9 +87,10 @@ class CreateTagController(
                 request.subscribers,
             ),
         )
-
+        val sanitizedWorkspaceId = sanitizePathVariable(workspaceId)
+        val sanitizedTagId = sanitizePathVariable(tagId)
         return ResponseEntity.created(
-            URI.create("/workspace/$workspaceId/tag/$tagId"),
+            URI.create("/workspace/$sanitizedWorkspaceId/tag/$sanitizedTagId"),
         ).build()
     }
 

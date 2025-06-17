@@ -7,6 +7,7 @@ import com.hatchgrid.common.domain.bus.query.Query
 import com.hatchgrid.common.domain.bus.query.QueryHandlerExecutionError
 import com.hatchgrid.common.domain.bus.query.Response
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import java.net.URLEncoder
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -91,7 +92,7 @@ abstract class ApiController(
         require(pathVariable.matches(regex)) {
             "Invalid path variable. Only alphanumeric characters, underscores, and hyphens are allowed."
         }
-        return pathVariable
+        return URLEncoder.encode(pathVariable, "UTF-8")
     }
 
     /**
