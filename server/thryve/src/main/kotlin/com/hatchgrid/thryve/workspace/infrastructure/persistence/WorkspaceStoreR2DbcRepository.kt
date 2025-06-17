@@ -80,7 +80,7 @@ class WorkspaceStoreR2DbcRepository(
                 createdAt = existingEntity.createdAt,
                 createdBy = existingEntity.createdBy,
                 updatedAt = java.time.LocalDateTime.now(),
-                updatedBy = "system", // TODO: Get from security context
+                updatedBy = "system",
             )
 
             // Update workspace
