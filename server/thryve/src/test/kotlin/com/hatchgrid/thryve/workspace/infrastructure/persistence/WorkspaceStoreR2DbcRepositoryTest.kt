@@ -260,6 +260,11 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
         val membersAfterReInsert =
             workspaceStoreR2dbcRepository.findByWorkspaceId(workspace1.id.value)
         assertEquals(initialCount, membersAfterReInsert.size)
-        assertTrue(membersAfterReInsert.any { it.id.userId == existingMemberId.value && it.role == WorkspaceRole.VIEWER })
+        assertTrue(
+            membersAfterReInsert.any {
+                it.id.userId == existingMemberId.value &&
+                    it.role == WorkspaceRole.VIEWER
+            },
+        )
     }
 }

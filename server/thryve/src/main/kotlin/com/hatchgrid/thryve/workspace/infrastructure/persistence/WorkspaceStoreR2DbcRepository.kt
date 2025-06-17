@@ -11,7 +11,7 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
 import com.hatchgrid.thryve.workspace.domain.WorkspaceRole
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toDomain
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMapper.toEntity
-import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.toDomain // Added import for WorkspaceMemberMapper
+import com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.toDomain
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceMemberR2dbcRepository
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceR2dbcRepository
 import java.util.UUID
@@ -51,13 +51,13 @@ class WorkspaceStoreR2DbcRepository(
                 )
             }
         } catch (e: DuplicateKeyException) {
-            log.error("Error creating workspace with id: {}", workspace.id, e)
+            log.error("Error creating workspace with id: {} -> DKE", workspace.id, e)
             throw WorkspaceException("Error creating workspace", e)
         } catch (e: PessimisticLockingFailureException) {
-            log.error("Error creating workspace with id: {}", workspace.id, e)
+            log.error("Error creating workspace with id: {} -> PLFE", workspace.id, e)
             throw WorkspaceException("Error creating workspace due to a locking issue", e)
         } catch (e: TransientDataAccessResourceException) {
-            log.error("Error creating workspace with id: {}", workspace.id, e)
+            log.error("Error creating workspace with id: {} -> TDARE", workspace.id, e)
             throw WorkspaceException("Error creating workspace because it already exists", e)
         }
     }
