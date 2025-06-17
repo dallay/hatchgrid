@@ -55,7 +55,8 @@ class GetAllTagController(
             message = "Invalid UUID format",
         ) @PathVariable workspaceId: String,
     ): ResponseEntity<PageResponse<TagResponse>> {
-        log.debug("Getting all tags for workspace with id: {}", sanitizePathVariable(workspaceId))
+        val sanitizeWorkspaceId = sanitizePathVariable(workspaceId)
+        log.debug("Getting all tags for workspace with id: {}", sanitizeWorkspaceId)
 
         val userId = userId() ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
         val query = GetAllTagsQuery(workspaceId, userId)
