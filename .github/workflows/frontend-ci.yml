@@ -44,6 +44,7 @@ jobs:
         uses: mongolyy/reviewdog-action-biome@bf7dffa9b14e8904941a18a28782b74fc40104f0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          workdir: ./client
           reporter: github-pr-review
           fail_on_error: true
 
