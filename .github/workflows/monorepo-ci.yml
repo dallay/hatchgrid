@@ -7,11 +7,15 @@ on:
       - '**.md'
       - '.github/workflows/backend-ci.yml'
       - '.github/workflows/frontend-ci.yml'
+      - '.github/workflows/issue-labeler.yml'
+      - '.github/issue-labeler-config.yml'
   pull_request:
     paths-ignore:
       - '**.md'
       - '.github/workflows/backend-ci.yml'
       - '.github/workflows/frontend-ci.yml'
+      - '.github/workflows/issue-labeler.yml'
+      - '.github/issue-labeler-config.yml'
   workflow_dispatch:
     inputs:
       environment:
@@ -31,8 +35,119 @@ permissions:
   contents: read
   checks: write
   pull-requests: write
+  security-events: write # Required for CodeQL to upload results
 
 jobs:
+  labeler:
+    name: Label PRs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run Labeler
+        uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+  codeql-analysis:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write # Required to upload CodeQL results
+      actions: read # Required for running CodeQL analysis
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript', 'kotlin' ] # Add other languages as needed
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          # queries: +security-extended,security-and-quality
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
+  super-linter:
+    name: Super Linter
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      statuses: write # Required to report status checks
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+      - name: Lint Code Base
+        uses: github/super-linter@v5 # Use the latest version
+        env:
+          VALIDATE_ALL_CODEBASE: false # Only lint changed files
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Configure specific linters if necessary, for example:
+          # VALIDATE_JAVASCRIPT_ES: true
+          # VALIDATE_KOTLIN: true
+          # VALIDATE_YAML: true
+          # VALIDATE_MARKDOWN: true
+          # VALIDATE_JSON: true
+          # VALIDATE_GITLEAKS: true
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # Required to read dependency files
+      pull-requests: write # Required to comment on PRs
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          # You can specify configuration options here, e.g.:
+          # fail-on-severity: critical
+          # allow-licenses: Apache-2.0, MIT
+          # deny-licenses: GPL-3.0
+          comment-summary-in-pr: always # Add a summary comment to PRs
+
+  owasp-dependency-check:
+    name: OWASP Dependency Check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # To read dependency files
+      # issues: write # If you want to create issues for vulnerabilities (optional)
+      # pull-requests: write # If you want to comment on PRs (optional)
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@75ba02d6183445fe0761d26e836bde58b1560600
+        with:
+          project: 'hatchgrid-monorepo'
+          path: '.'
+          format: 'HTML' # You can choose other formats like XML, JSON, CSV
+          # Optional: specify suppression file if you have one
+          # suppressionPath: 'config/owasp/owasp-suppression.xml'
+          # Optional: fail the build if vulnerabilities are found
+          # failOnCVSS: '7' # Fail if CVSS score is 7 or higher
+        # Optional: Upload the report as an artifact
+      - name: Upload OWASP Dependency Check Report
+        if: always() # Ensure report is uploaded even if previous steps fail
+        uses: actions/upload-artifact@v4
+        with:
+          name: owasp-dependency-check-report
+          path: reports/dependency-check-report.html # Default path for HTML report
+          retention-days: 7
+
   backend:
     name: Backend
     uses: ./.github/workflows/backend-ci.yml

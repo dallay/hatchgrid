@@ -1,12 +1,12 @@
 package com.hatchgrid.thryve.authentication.application
 
+import com.hatchgrid.common.domain.vo.credential.Credential
 import com.hatchgrid.thryve.authentication.domain.AccessToken
 import com.hatchgrid.thryve.authentication.domain.RefreshToken
 import com.hatchgrid.thryve.authentication.domain.RefreshTokenManager
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticationException
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticator
 import com.hatchgrid.thryve.authentication.domain.Username
-import com.hatchgrid.common.domain.vo.credential.Credential
 
 /**
  * InMemoryUserAuthenticator is a class that implements the [UserAuthenticator] and [RefreshTokenManager] interfaces.

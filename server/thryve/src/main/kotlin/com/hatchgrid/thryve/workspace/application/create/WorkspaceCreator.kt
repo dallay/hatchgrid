@@ -1,11 +1,11 @@
 package com.hatchgrid.thryve.workspace.application.create
 
-import com.hatchgrid.thryve.workspace.domain.Workspace
-import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
-import com.hatchgrid.thryve.workspace.domain.event.WorkspaceCreatedEvent
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.event.EventBroadcaster
 import com.hatchgrid.common.domain.bus.event.EventPublisher
+import com.hatchgrid.thryve.workspace.domain.Workspace
+import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
+import com.hatchgrid.thryve.workspace.domain.event.WorkspaceCreatedEvent
 import org.slf4j.LoggerFactory
 
 /**

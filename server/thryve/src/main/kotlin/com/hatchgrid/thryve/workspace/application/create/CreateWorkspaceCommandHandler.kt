@@ -1,8 +1,8 @@
 package com.hatchgrid.thryve.workspace.application.create
 
-import com.hatchgrid.thryve.workspace.domain.Workspace
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.command.CommandHandler
+import com.hatchgrid.thryve.workspace.domain.Workspace
 import com.hatchgrid.thryve.workspace.domain.WorkspaceException
 import java.util.*
 import org.slf4j.LoggerFactory

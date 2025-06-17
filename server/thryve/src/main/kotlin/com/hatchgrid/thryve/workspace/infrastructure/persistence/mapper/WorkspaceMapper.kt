@@ -1,9 +1,9 @@
 package com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper
 
+import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.workspace.domain.Workspace
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.entity.WorkspaceEntity
-import com.hatchgrid.thryve.users.domain.UserId
 
 /**
  * This object provides mapping functions to convert between domain and entity objects.

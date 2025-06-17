@@ -30,9 +30,9 @@ permissions:
 
 jobs:
   lint:
-    name: Lint
+    name: Lint with Biome # Renamed
     runs-on: ubuntu-latest
-
+    # Permissions are inherited from workflow level
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -40,8 +40,12 @@ jobs:
       - name: Setup Node.js and pnpm
         uses: ./.github/actions/setup-node
 
-      - name: Lint
-        run: pnpm lint
+      - name: Run Biome with Reviewdog
+        uses: mongolyy/reviewdog-action-biome@bf7dffa9b14e8904941a18a28782b74fc40104f0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          fail_on_error: true
 
   build:
     name: Build
@@ -79,3 +83,13 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4
+        with:
+          files: ./coverage/lcov.info # Adjust path if necessary, common for JS projects
+          # flags: frontend # Optional
+          # name: codecov-frontend # Optional
+          # fail_ci_if_error: true # Optional
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

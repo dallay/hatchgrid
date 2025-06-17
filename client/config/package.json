@@ -14,7 +14,7 @@
     "node": ">=22.0.0",
     "pnpm": ">=10.0.0"
   },
-  "packageManager": "pnpm@10.10.0",
+  "packageManager": "pnpm@10.11.1",
   "files": [
     "stylelint.config.cjs",
     "styles/**/*",
@@ -38,14 +38,14 @@
   "devDependencies": {
     "@codecov/vite-plugin": "1.9.1",
     "@hatchgrid/tsconfig": "workspace:*",
-    "postcss": "^8.5.3",
-    "stylelint": "^16.19.1",
+    "@tailwindcss/typography": "^0.5.16",
+    "postcss": "^8.5.4",
+    "stylelint": "^16.20.0",
     "stylelint-config-standard-scss": "^15.0.0",
     "stylelint-order": "^7.0.0",
-    "tailwindcss": "^4.1.6",
-    "@tailwindcss/typography": "^0.5.16",
+    "tailwindcss": "^4.1.8",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.0"
+    "vitest": "^3.2.2"
   },
   "publishConfig": {
     "access": "public"

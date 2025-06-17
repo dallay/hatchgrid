@@ -10,7 +10,9 @@ import java.util.*
  */
 data class WorkspaceId(private val id: UUID) : BaseId<UUID>(id) {
     constructor(id: String) : this(UUID.fromString(id))
+
     companion object {
+        private const val serialVersionUID: Long = 1L
         fun create() = WorkspaceId(UUID.randomUUID())
     }
 }

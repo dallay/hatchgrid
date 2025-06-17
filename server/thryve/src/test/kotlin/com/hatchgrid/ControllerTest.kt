@@ -1,8 +1,8 @@
 package com.hatchgrid
 
-import com.hatchgrid.thryve.controllers.GlobalExceptionHandler
 import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.spring.boot.ApiController
+import com.hatchgrid.thryve.controllers.GlobalExceptionHandler
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic

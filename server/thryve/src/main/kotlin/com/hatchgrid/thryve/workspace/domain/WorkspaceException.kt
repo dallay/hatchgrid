@@ -15,7 +15,6 @@ class WorkspaceException(
     override val cause: Throwable? = null
 ) : BusinessRuleValidationException(message, cause)
 
-
 /**
  * This class represents a specific exception that is thrown when a Workspace is not found.
  * It extends the EntityNotFoundException class.

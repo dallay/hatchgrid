@@ -49,7 +49,7 @@ class DeleteWorkspaceController(
         @Parameter(
             description = "ID of the workspace to be found",
             required = true,
-            schema = Schema(type = "string", format = "uuid")
+            schema = Schema(type = "string", format = "uuid"),
         )
         @PathVariable
         @Pattern(

@@ -52,10 +52,12 @@ interface WorkspaceMemberR2dbcRepository : CoroutineCrudRepository<WorkspaceMemb
      * @return The number of affected rows.
      */
     @Modifying
-    @Query("""
+    @Query(
+        """
         INSERT INTO workspace_members (workspace_id, user_id, role, created_at, updated_at)
         VALUES (:workspaceId, :userId, :role::role_type, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    """)
+    """,
+    )
     suspend fun insertWorkspaceMember(
         workspaceId: UUID,
         userId: UUID,
