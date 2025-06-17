@@ -5,6 +5,7 @@ import com.hatchgrid.thryve.workspace.infrastructure.http.request.CreateWorkspac
 import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.common.domain.bus.command.CommandHandlerExecutionError
 import com.hatchgrid.spring.boot.ApiController
+import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
