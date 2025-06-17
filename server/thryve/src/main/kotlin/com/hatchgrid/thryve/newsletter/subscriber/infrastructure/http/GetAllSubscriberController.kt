@@ -64,7 +64,7 @@ class GetAllSubscriberController(
     ): ResponseEntity<CursorPageResponse<SubscriberResponse>> {
         log.debug(
             "Get all subscribers with cursor: {}",
-            sanitizeAndJoinPathVariables(workspaceId, cursorRequestPageable.toString()),
+            sanitizeAndJoinPathVariables(workspaceId),
         )
 
         val userId = userId() ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()

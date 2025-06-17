@@ -57,7 +57,7 @@ class NewsletterSubscriberController(
     ): ResponseEntity<String> {
         log.debug(
             "Subscribing to newsletter with data: {}",
-            sanitizeAndJoinPathVariables(subscriberId, request.toString()),
+            sanitizeAndJoinPathVariables(subscriberId),
         )
         dispatch(
             SubscribeNewsletterCommand(
@@ -70,8 +70,10 @@ class NewsletterSubscriberController(
             ),
         )
 
+        val sanitizedWorkspaceId = sanitizePathVariable(workspaceId)
+        val sanitizedSubscriberId = sanitizePathVariable(subscriberId)
         return ResponseEntity.created(
-            URI.create("/workspace/$workspaceId/newsletter/subscriber/$subscriberId"),
+            URI.create("/workspace/$sanitizedWorkspaceId/newsletter/subscriber/$sanitizedSubscriberId"),
         ).build()
     }
 

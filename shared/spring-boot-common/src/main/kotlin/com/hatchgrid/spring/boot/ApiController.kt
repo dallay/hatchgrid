@@ -80,18 +80,28 @@ abstract class ApiController(
     }
 
     /**
-     * Sanitizes a path variable to prevent injection attacks.
+     * Validates a path variable against an allow-list regex (^[a-zA-Z0-9_-]+$)
+     * to prevent path traversal and other injection attacks.
      *
-     * @param pathVariable The path variable to sanitize.
-     * @return The sanitized path variable.
+     * @param pathVariable The path variable to validate.
+     * @return The validated path variable.
+     * @throws IllegalArgumentException if the pathVariable contains invalid characters.
      */
-    protected fun sanitizePathVariable(pathVariable: String): String = StringEscapeUtils.escapeJava(pathVariable)
+    protected fun sanitizePathVariable(pathVariable: String): String {
+        val regex = "^[a-zA-Z0-9_-]+$".toRegex()
+        require(pathVariable.matches(regex)) {
+            "Invalid path variable. Only alphanumeric characters, underscores, and hyphens are allowed."
+        }
+        return pathVariable
+    }
 
     /**
-     * Sanitizes and joins multiple path variables into a single string.
+     * Validates and joins multiple path variables into a single string for logging or other safe display.
+     * Each path variable is validated using an allow-list regex (^[a-zA-Z0-9_-]+$).
      *
-     * @param pathVariables The path variables to sanitize and join.
-     * @return A JSON string containing the sanitized and joined path variables.
+     * @param pathVariables The path variables to validate and join.
+     * @return A string representation of the validated path variables, typically for logging.
+     * @throws IllegalArgumentException if any pathVariable contains invalid characters.
      */
     protected fun sanitizeAndJoinPathVariables(vararg pathVariables: String): String {
         val sanitizedVariables = pathVariables.map { sanitizePathVariable(it) }

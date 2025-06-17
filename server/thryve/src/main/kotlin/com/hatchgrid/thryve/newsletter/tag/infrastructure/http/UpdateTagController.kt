@@ -61,7 +61,7 @@ class UpdateTagController(
     ): ResponseEntity<String> {
         log.debug(
             "Updating tag with data: {}",
-            sanitizeAndJoinPathVariables(workspaceId, tagId, request.toString()),
+            sanitizeAndJoinPathVariables(workspaceId, tagId),
         )
         val userId = userId() ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
         dispatch(

@@ -73,7 +73,7 @@ class CreateTagController(
     ): ResponseEntity<String> {
         log.debug(
             "Creating tag with data: {}",
-            sanitizeAndJoinPathVariables(workspaceId, tagId, request.toString()),
+            sanitizeAndJoinPathVariables(workspaceId, tagId),
         )
 
         val userId = userId() ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
