@@ -127,7 +127,7 @@ Custom labels to segment subscribers.
 |--------------|----------------|----------------------------------------------|
 | id           | uuid           | PK, NOT NULL                                 |
 | name         | text           | NOT NULL                                     |
-| color        | text           | CHECK (`color IN (...)`), NOT NULL           |
+| color        | text           | CHECK (`color IN ('default', 'purple', 'pink', 'red', 'blue', 'yellow')`), NOT NULL           |
 | workspace_id | uuid           | FK → `workspaces(id)`, NOT NULL              |
 | created_at   | timestamptz    | DEFAULT now()                                |
 | updated_at   | timestamptz    | DEFAULT now()                                |
