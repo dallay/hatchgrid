@@ -150,6 +150,7 @@ M:N relation between `subscribers` and `tags`.
 
 ```sql
 CREATE TYPE role_type AS ENUM ('OWNER', 'ADMIN', 'EDITOR', 'VIEWER');
+CREATE TYPE subscriber_status AS ENUM ('ENABLED', 'DISABLED', 'BLOCKLISTED');
 ```
 
 ---
