@@ -39,13 +39,13 @@
     "@codecov/vite-plugin": "1.9.1",
     "@hatchgrid/tsconfig": "workspace:*",
     "@tailwindcss/typography": "^0.5.16",
-    "postcss": "^8.5.4",
+    "postcss": "^8.5.6",
     "stylelint": "^16.20.0",
     "stylelint-config-standard-scss": "^15.0.0",
     "stylelint-order": "^7.0.0",
-    "tailwindcss": "^4.1.8",
+    "tailwindcss": "^4.1.10",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.2"
+    "vitest": "^3.2.4"
   },
   "publishConfig": {
     "access": "public"
