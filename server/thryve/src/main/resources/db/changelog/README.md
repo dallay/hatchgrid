@@ -108,7 +108,7 @@ Contacts managed per workspace.
 | Field        | Type              | Constraints                                 |
 |--------------|-------------------|---------------------------------------------|
 | id           | uuid              | PK, NOT NULL                                |
-| email        | varchar(255)      | UNIQUE (per workspace), NOT NULL            |
+| email        | varchar(320)      | UNIQUE (per workspace), NOT NULL            |
 | firstname    | text              | NOT NULL                                    |
 | lastname     | text              |                                             |
 | status       | subscriber_status | ENUM, NOT NULL (default: ENABLED)           |
