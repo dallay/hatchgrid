@@ -58,9 +58,9 @@ Unit of multi-tenant isolation.
 | description | varchar(500)    |                                    |
 | owner_id    | uuid            | FK → `users(id)`, NOT NULL         |
 | created_by  | varchar(50)     | DEFAULT 'system', NOT NULL         |
-| created_at  | timestamp       | DEFAULT now(), NOT NULL            |
+| created_at  | timestamptz     | DEFAULT now(), NOT NULL            |
 | updated_by  | varchar(50)     |                                    |
-| updated_at  | timestamp       |                                    |
+| updated_at  | timestamptz     |                                    |
 
 ---
 
@@ -102,7 +102,7 @@ Contacts managed per workspace.
 | Field        | Type              | Constraints                                 |
 |--------------|-------------------|---------------------------------------------|
 | id           | uuid              | PK, NOT NULL                                |
-| email        | text              | UNIQUE (per workspace), NOT NULL            |
+| email        | varchar(255)      | UNIQUE (per workspace), NOT NULL            |
 | firstname    | text              | NOT NULL                                    |
 | lastname     | text              |                                             |
 | status       | subscriber_status | ENUM, NOT NULL (default: ENABLED)           |

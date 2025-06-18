@@ -35,14 +35,14 @@ internal class GetAllSubscribersByEmailControllerIntegrationTest : ControllerInt
             .expectStatus().isOk
             .expectBody()
             .jsonPath("$.subscribers").isArray
-            .jsonPath("$.subscribers[0].id").isEqualTo("d73e2961-ec29-4f19-b5c4-b9c2dc7f1def")
-            .jsonPath("$.subscribers[0].email").isEqualTo("jana.doe@test.com")
-            .jsonPath("$.subscribers[0].name").isEqualTo("Jana Doe")
+            .jsonPath("$.subscribers[0].id").isEqualTo("d73e2961-ec29-4f19-b5c4-b9c2dc7f1dee")
+            .jsonPath("$.subscribers[0].email").isEqualTo("john.doe@test.com")
+            .jsonPath("$.subscribers[0].name").isEqualTo("John Doe")
             .jsonPath("$.subscribers[0].status").isEqualTo("ENABLED")
             .jsonPath("$.subscribers[0].workspaceId").isEqualTo("a0654720-35dc-49d0-b508-1f7df5d915f1")
-            .jsonPath("$.subscribers[1].id").isEqualTo("d73e2961-ec29-4f19-b5c4-b9c2dc7f1dee")
-            .jsonPath("$.subscribers[1].email").isEqualTo("john.doe@test.com")
-            .jsonPath("$.subscribers[1].name").isEqualTo("John Doe")
+            .jsonPath("$.subscribers[1].id").isEqualTo("d73e2961-ec29-4f19-b5c4-b9c2dc7f1def")
+            .jsonPath("$.subscribers[1].email").isEqualTo("jana.doe@test.com")
+            .jsonPath("$.subscribers[1].name").isEqualTo("Jana Doe")
             .jsonPath("$.subscribers[1].status").isEqualTo("ENABLED")
             .jsonPath("$.subscribers[1].workspaceId").isEqualTo("a0654720-35dc-49d0-b508-1f7df5d915f1")
             .consumeWith {
