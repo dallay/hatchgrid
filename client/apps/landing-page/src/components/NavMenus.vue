@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Menu } from "lucide-vue-next"; // Assuming lucide-vue-next is installed
+import { ref } from "vue";
 import { Button } from "@/components/ui/button";
 import {
 	NavigationMenu,
@@ -15,8 +17,6 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
-import { Menu } from "lucide-vue-next"; // Assuming lucide-vue-next is installed
-import { ref } from "vue";
 
 import { type Lang, useTranslatedPath, useTranslations } from "@/i18n";
 import type { MenuItem } from "@/models/menu/menu.type";

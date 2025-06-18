@@ -19,7 +19,11 @@
 	"bugs": {
 		"url": "https://github.com/dallay/hatchgrid/issues"
 	},
-	"keywords": ["hatchgrid", "landing-page", "astro"],
+	"keywords": [
+		"hatchgrid",
+		"landing-page",
+		"astro"
+	],
 	"author": "Hatchgrid Team",
 	"scripts": {
 		"update": "pnpm update",
@@ -62,7 +66,6 @@
 		"zod": "^3.25.67"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.0.0",
 		"@hatchgrid/config": "workspace:*",
 		"@tailwindcss/typography": "^0.5.16",
 		"happy-dom": "^18.0.1",
