@@ -119,7 +119,7 @@ export function setupMockApi(config?: MockApiConfig) {
 						status: mockResponseData.status,
 						headers: { "Content-Type": "application/json" },
 					});
-				} catch (error) {
+				} catch (_error) {
 					const errorResponse = { error: "Invalid request body" };
 					return new Response(JSON.stringify(errorResponse), {
 						status: 500,
