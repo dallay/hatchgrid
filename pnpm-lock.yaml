@@ -112,7 +112,7 @@ importers:
         specifier: ^18.0.1
         version: 18.0.1
       sharp:
-        specifier: ^0.34.1
+        specifier: ^0.34.2
         version: 0.34.2
       tailwind-merge:
         specifier: ^3.3.1
