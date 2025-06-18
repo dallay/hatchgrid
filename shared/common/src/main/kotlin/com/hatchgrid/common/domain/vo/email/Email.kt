@@ -3,7 +3,7 @@ package com.hatchgrid.common.domain.vo.email
 import com.hatchgrid.common.domain.BaseValidateValueObject
 import com.hatchgrid.common.domain.error.EmailNotValidException
 
-private const val EMAIL_LEN = 255
+private const val EMAIL_LEN = 320
 
 /**
  * Email value object
