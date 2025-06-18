@@ -36,6 +36,7 @@ databaseChangeLog:
 ## 📐 Base Schema
 
 ### `users`
+
 Local table representing users authenticated via Keycloak.
 
 | Field       | Type           | Constraints                     |
@@ -49,6 +50,7 @@ Local table representing users authenticated via Keycloak.
 ---
 
 ### `workspaces`
+
 Unit of multi-tenant isolation.
 
 | Field       | Type            | Constraints                        |
@@ -65,6 +67,7 @@ Unit of multi-tenant isolation.
 ---
 
 ### `workspace_members`
+
 User–workspace relationship with role.
 
 | Field        | Type         | Constraints                             |
@@ -78,6 +81,7 @@ User–workspace relationship with role.
 ---
 
 ### `authority`
+
 Global roles mapped from Keycloak or used for cross-workspace permissions.
 
 | Field | Type         | Constraints          |
@@ -87,6 +91,7 @@ Global roles mapped from Keycloak or used for cross-workspace permissions.
 ---
 
 ### `user_authority`
+
 Many-to-many relationship between users and global authorities.
 
 | Field         | Type         | Constraints                                  |
@@ -97,6 +102,7 @@ Many-to-many relationship between users and global authorities.
 ---
 
 ### `subscribers`
+
 Contacts managed per workspace.
 
 | Field        | Type              | Constraints                                 |
@@ -110,11 +116,11 @@ Contacts managed per workspace.
 | workspace_id | uuid              | FK → `workspaces(id)`, NOT NULL             |
 | created_at   | timestamptz       | DEFAULT now()                               |
 | updated_at   | timestamptz       | DEFAULT now()                               |
-| deleted_at   | timestamptz       |                                             |
 
 ---
 
 ### `tags`
+
 Custom labels to segment subscribers.
 
 | Field        | Type           | Constraints                                  |
@@ -130,6 +136,7 @@ Custom labels to segment subscribers.
 ---
 
 ### `subscriber_tags`
+
 M:N relation between `subscribers` and `tags`.
 
 | Field         | Type        | Constraints                                   |

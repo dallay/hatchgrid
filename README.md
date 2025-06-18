@@ -113,7 +113,7 @@ The project uses Testcontainers for integration tests, which automatically spin 
 
 API documentation is generated using Spring REST Docs and is available at:
 
-```
+```shell
 build/generated-snippets
 ```
 
