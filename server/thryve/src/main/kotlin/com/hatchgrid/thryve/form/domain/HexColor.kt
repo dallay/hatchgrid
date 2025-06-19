@@ -23,7 +23,7 @@ data class HexColor(var hex: String) : BaseValidateValueObject<String>(hex) {
      * String representation of the value object
      * @return the string representation of the value object
      */
-    override fun toString(): String = if (value.startsWith("#")) value else "#$value"
+    override fun toString(): String = value
     companion object {
 companion object {
     /**
