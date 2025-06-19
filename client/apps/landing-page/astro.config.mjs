@@ -1,13 +1,11 @@
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
-import icon from "astro-icon";
+import vue from "@astrojs/vue";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
+import icon from "astro-icon";
 import { BASE_URL } from "./src/consts.ts";
 import { DEFAULT_LOCALE_SETTING, LOCALES_SETTING } from "./src/i18n/locales";
-
-import tailwindcss from "@tailwindcss/vite";
-
-import vue from "@astrojs/vue";
 
 import { remarkReadingTime } from "./src/utils/remark-reading-time.mjs";
 

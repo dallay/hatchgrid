@@ -1,9 +1,9 @@
 ---
+import { Icon } from "astro-icon/components";
 import Link from "@/components/Link.astro";
 import { Card } from "@/components/ui/card";
 import { type Lang, useTranslations } from "@/i18n";
 import { getPricingPlans } from "@/models/pricing/pricing.service";
-import { Icon } from "astro-icon/components";
 
 const lang = Astro.currentLocale as Lang;
 const t = useTranslations(lang);

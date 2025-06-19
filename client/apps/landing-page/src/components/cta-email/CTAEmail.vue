@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
-import { computed } from "vue";
 import type { HTMLAttributes } from "vue";
+import { computed } from "vue";
 
 import {
 	type CTAEmailButtonVariants,
