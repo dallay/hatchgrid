@@ -25,6 +25,13 @@ data class HexColor(var hex: String) : BaseValidateValueObject<String>(hex) {
      */
     override fun toString(): String = if (value.startsWith("#")) value else "#$value"
     companion object {
-        val regex = Regex("^#?([0-9a-f]{6}|[0-9a-f]{3})$", RegexOption.IGNORE_CASE)
+companion object {
+    /**
+     * Regex pattern that matches hex colors:
+     * - Optional # prefix
+     * - Either 3 or 6 hexadecimal digits (case-insensitive)
+     */
+    val regex = Regex("^#?([0-9a-f]{6}|[0-9a-f]{3})$", RegexOption.IGNORE_CASE)
+}
     }
 }
