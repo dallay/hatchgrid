@@ -46,6 +46,8 @@ data class Form(
      * @param styleConfiguration The [FormStyleConfiguration] containing the new form data.
      */
     fun update(styleConfiguration: FormStyleConfiguration) {
+        // Validate all color formats before processing
+        styleConfiguration.validateColors()
         var modified = false
 
         if (name != styleConfiguration.name) {
@@ -127,6 +129,8 @@ data class Form(
         fun create(
             id: UUID,
             styleConfiguration: FormStyleConfiguration,
+            // Validate colors when creating a new form
+            _ : Unit = styleConfiguration.validateColors(),
             workspaceId: UUID,
             createdAt: LocalDateTime = LocalDateTime.now(),
             updatedAt: LocalDateTime? = createdAt
