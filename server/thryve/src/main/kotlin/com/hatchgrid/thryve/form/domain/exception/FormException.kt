@@ -15,12 +15,12 @@ class FormException(
 ) : BusinessRuleValidationException(message, cause)
 
 /**
- * Represents an exception that is thrown when a specific form is not found in the Hatchgrid application.
+ * Represents an exception thrown when a specific form cannot be located.
  *
- * @property message The detailed error message describing the exception.
- * @property cause The underlying cause of the exception, if any.
+ * @param message detailed error message describing the exception.
+ * @param cause optional underlying cause of the exception.
  */
-data class FormNotFoundException(
-    override val message: String, // Detailed error message
-    override val cause: Throwable? = null // Optional cause of the exception
+class FormNotFoundException(
+    override val message: String,
+    override val cause: Throwable? = null
 ) : EntityNotFoundException(message, cause)
