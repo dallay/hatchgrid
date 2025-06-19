@@ -129,12 +129,12 @@ data class Form(
         fun create(
             id: UUID,
             styleConfiguration: FormStyleConfiguration,
-            // Validate colors when creating a new form
-            _ : Unit = styleConfiguration.validateColors(),
             workspaceId: UUID,
             createdAt: LocalDateTime = LocalDateTime.now(),
             updatedAt: LocalDateTime? = createdAt
         ): Form {
+            // Validate colors when creating a new form
+            styleConfiguration.validateColors()
             val formId = FormId(id)
             val formWorkspaceId = WorkspaceId(workspaceId)
             val form = Form(

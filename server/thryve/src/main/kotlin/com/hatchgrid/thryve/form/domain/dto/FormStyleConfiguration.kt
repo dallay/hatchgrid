@@ -45,7 +45,7 @@ data class FormStyleConfiguration(
         "buttonColor" to HexColor(buttonColor),
         "backgroundColor" to HexColor(backgroundColor),
         "textColor" to HexColor(textColor),
-        "buttonTextColor" to HexColor(buttonTextColor)
+        "buttonTextColor" to HexColor(buttonTextColor),
     )
 
     private fun validateHexColor(color: String, propertyName: String) {
