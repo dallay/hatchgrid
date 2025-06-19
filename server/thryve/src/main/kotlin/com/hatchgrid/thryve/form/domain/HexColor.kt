@@ -5,11 +5,8 @@ import com.hatchgrid.common.domain.BaseValidateValueObject
 /**
  * Value object for hexadecimal color codes that are validated when created
  */
-data class HexColor(hex: String) : BaseValidateValueObject<String>(
-    if (hex.startsWith("#")) hex else "#$hex"
-) {
-    // …rest of class (validate(), toString(), companion object, etc.) remains unchanged
-}
+data class HexColor(val hex: String) : BaseValidateValueObject<String>(if (hex.startsWith("#")) hex else "#$hex") {
+
     /**
      * Validates the value of the value object
      * @param value the value to validate
@@ -24,14 +21,13 @@ data class HexColor(hex: String) : BaseValidateValueObject<String>(
      * @return the string representation of the value object
      */
     override fun toString(): String = value
+
     companion object {
-companion object {
-    /**
-     * Regex pattern that matches hex colors:
-     * - Optional # prefix
-     * - Either 3 or 6 hexadecimal digits (case-insensitive)
-     */
-    val regex = Regex("^#?([0-9a-f]{6}|[0-9a-f]{3})$", RegexOption.IGNORE_CASE)
-}
+        /**
+         * Regex pattern that matches hex colors:
+         * - Optional # prefix
+         * - Either 3 or 6 hexadecimal digits (case-insensitive)
+         */
+        val regex = Regex("^#?([0-9a-f]{6}|[0-9a-f]{3})$", RegexOption.IGNORE_CASE)
     }
 }
