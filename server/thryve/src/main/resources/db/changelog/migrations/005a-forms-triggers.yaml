@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 020-create-forms-updated-at-trigger
+      author: hatchgrid
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              CREATE TRIGGER trg_forms_updated_at
+              BEFORE UPDATE ON forms
+              FOR EACH ROW
+              EXECUTE FUNCTION set_updated_at_column();
