@@ -1,9 +1,9 @@
 package com.hatchgrid.thryve.form.domain
 
+import com.hatchgrid.common.domain.BaseEntity
 import com.hatchgrid.thryve.form.domain.dto.FormStyleConfiguration
 import com.hatchgrid.thryve.form.domain.event.FormCreatedEvent
 import com.hatchgrid.thryve.form.domain.event.FormUpdatedEvent
-import com.hatchgrid.common.domain.BaseEntity
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import java.time.LocalDateTime
 import java.util.UUID
