@@ -5,11 +5,11 @@ import com.hatchgrid.common.domain.BaseValidateValueObject
 /**
  * Value object for hexadecimal color codes that are validated when created
  */
-data class HexColor(var hex: String) : BaseValidateValueObject<String>(hex) {
-
-    init {
-        hex = if (hex.startsWith("#")) hex else "#$hex"
-    }
+data class HexColor(hex: String) : BaseValidateValueObject<String>(
+    if (hex.startsWith("#")) hex else "#$hex"
+) {
+    // …rest of class (validate(), toString(), companion object, etc.) remains unchanged
+}
     /**
      * Validates the value of the value object
      * @param value the value to validate
