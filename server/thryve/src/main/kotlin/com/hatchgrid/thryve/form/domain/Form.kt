@@ -46,8 +46,8 @@ data class Form(
      * @param styleConfiguration The [FormStyleConfiguration] containing the new form data.
      */
     fun update(styleConfiguration: FormStyleConfiguration) {
-        // Validate all color formats before processing
-        styleConfiguration.validateColors()
+        // Get validated HexColor objects (validation happens internally in toHexColors())
+        val validatedColors = styleConfiguration.toHexColors()
         var modified = false
 
         if (name != styleConfiguration.name) {
@@ -76,22 +76,22 @@ data class Form(
         }
 
         if (buttonColor.value != styleConfiguration.buttonColor) {
-            buttonColor = HexColor(styleConfiguration.buttonColor)
+            buttonColor = validatedColors["buttonColor"]!!
             modified = true
         }
 
         if (backgroundColor.value != styleConfiguration.backgroundColor) {
-            backgroundColor = HexColor(styleConfiguration.backgroundColor)
+            backgroundColor = validatedColors["backgroundColor"]!!
             modified = true
         }
 
         if (textColor.value != styleConfiguration.textColor) {
-            textColor = HexColor(styleConfiguration.textColor)
+            textColor = validatedColors["textColor"]!!
             modified = true
         }
 
         if (buttonTextColor.value != styleConfiguration.buttonTextColor) {
-            buttonTextColor = HexColor(styleConfiguration.buttonTextColor)
+            buttonTextColor = validatedColors["buttonTextColor"]!!
             modified = true
         }
 
@@ -133,10 +133,12 @@ data class Form(
             createdAt: LocalDateTime = LocalDateTime.now(),
             updatedAt: LocalDateTime? = createdAt
         ): Form {
-            // Validate colors when creating a new form
-            styleConfiguration.validateColors()
             val formId = FormId(id)
             val formWorkspaceId = WorkspaceId(workspaceId)
+
+            // Get validated HexColor objects (validation happens internally in toHexColors())
+            val validatedColors = styleConfiguration.toHexColors()
+
             val form = Form(
                 id = formId,
                 name = styleConfiguration.name,
@@ -144,10 +146,10 @@ data class Form(
                 description = styleConfiguration.description,
                 inputPlaceholder = styleConfiguration.inputPlaceholder,
                 buttonText = styleConfiguration.buttonText,
-                buttonColor = HexColor(styleConfiguration.buttonColor),
-                backgroundColor = HexColor(styleConfiguration.backgroundColor),
-                textColor = HexColor(styleConfiguration.textColor),
-                buttonTextColor = HexColor(styleConfiguration.buttonTextColor),
+                buttonColor = validatedColors["buttonColor"]!!,
+                backgroundColor = validatedColors["backgroundColor"]!!,
+                textColor = validatedColors["textColor"]!!,
+                buttonTextColor = validatedColors["buttonTextColor"]!!,
                 workspaceId = formWorkspaceId,
                 createdAt = createdAt,
                 updatedAt = updatedAt,

@@ -27,29 +27,42 @@ data class FormStyleConfiguration(
     val buttonTextColor: String
 ) {
     /**
+     * Cached HexColor objects that are lazily initialized when needed
+     */
+    private val validatedColors: Map<String, HexColor> by lazy {
+        mapOf(
+            "buttonColor" to validateHexColor(buttonColor, "buttonColor"),
+            "backgroundColor" to validateHexColor(backgroundColor, "backgroundColor"),
+            "textColor" to validateHexColor(textColor, "textColor"),
+            "buttonTextColor" to validateHexColor(buttonTextColor, "buttonTextColor"),
+        )
+    }
+
+    /**
      * Validates that all color properties conform to valid hex color format.
      * This method throws an IllegalArgumentException if any color is invalid.
      */
     fun validateColors() {
-        validateHexColor(buttonColor, "buttonColor")
-        validateHexColor(backgroundColor, "backgroundColor")
-        validateHexColor(textColor, "textColor")
-        validateHexColor(buttonTextColor, "buttonTextColor")
+        // Accessing the validatedColors property triggers validation
+        validatedColors
     }
 
     /**
-     * Converts properties to HexColor objects after validating them.
+     * Returns the map of validated HexColor objects for each color property.
+     * Colors are validated on first access and cached.
      * @return A map of HexColor objects for each color property
      */
-    fun toHexColors(): Map<String, HexColor> = mapOf(
-        "buttonColor" to HexColor(buttonColor),
-        "backgroundColor" to HexColor(backgroundColor),
-        "textColor" to HexColor(textColor),
-        "buttonTextColor" to HexColor(buttonTextColor),
-    )
+    fun toHexColors(): Map<String, HexColor> = validatedColors
 
-    private fun validateHexColor(color: String, propertyName: String) {
-        try {
+    /**
+     * Validates a hex color and returns the created HexColor object
+     * @param color The hex color string to validate
+     * @param propertyName The name of the property being validated (for error messages)
+     * @return The validated HexColor object
+     * @throws IllegalArgumentException if the color is invalid
+     */
+    private fun validateHexColor(color: String, propertyName: String): HexColor {
+        return try {
             HexColor(color)
         } catch (e: IllegalArgumentException) {
             throw IllegalArgumentException("Invalid hex color format for $propertyName: $color", e)
