@@ -4,6 +4,7 @@ plugins {
     kotlin("plugin.spring").version(libs.versions.kotlin)
     alias(libs.plugins.gradle.git.properties)
     id("org.asciidoctor.jvm.convert") version "4.0.4"
+    id("io.gatling.gradle") version "3.9.5"
 }
 
 group = "com.hatchgrid"
@@ -94,6 +95,12 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation("com.tngtech.archunit:archunit:1.3.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // Gatling
+    "gatlingImplementation"("io.gatling:gatling-core")
+    "gatlingImplementation"("io.gatling:gatling-http")
+    "gatlingImplementation"("io.gatling:gatling-jsonpath")
+    "gatlingImplementation"("io.gatling:gatling-charts")
 }
 
 dependencyManagement {
@@ -120,4 +127,22 @@ tasks.test {
 tasks.asciidoctor {
     inputs.dir(project.extra["snippetsDir"]!!)
     dependsOn(tasks.test)
+}
+
+sourceSets {
+    create("gatling") {
+        compileClasspath += sourceSets.main.get().output + configurations.testRuntimeClasspath
+        runtimeClasspath += sourceSets.main.get().output + configurations.testRuntimeClasspath
+    }
+}
+
+tasks.register<JavaExec>("performanceTest") {
+    group = "verification"
+    description = "Runs Gatling performance tests."
+    classpath = sourceSets["gatling"].runtimeClasspath
+    mainClass.set("io.gatling.app.Gatling")
+    args(
+        "--simulation", "com.hatchgrid.thryve.simulation.BasicSimulation",
+        "--results-folder", "build/reports/gatling"
+    )
 }
