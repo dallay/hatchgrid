@@ -6,12 +6,12 @@ import com.hatchgrid.common.domain.error.EntityNotFoundException
 /**
  * Represents a general exception related to forms in the Hatchgrid application.
  *
- * @property message The detailed error message describing the exception.
- * @property cause The underlying cause of the exception, if any.
+ * @param message the detailed error message describing the exception.
+ * @param cause optional underlying cause of the exception.
  */
-data class FormException(
-    override val message: String, // Detailed error message
-    override val cause: Throwable? = null // Optional cause of the exception
+class FormException(
+    override val message: String,
+    override val cause: Throwable? = null
 ) : BusinessRuleValidationException(message, cause)
 
 /**
