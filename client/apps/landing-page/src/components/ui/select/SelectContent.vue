@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { cn } from "@/lib/utils";
 import { reactiveOmit } from "@vueuse/core";
 import {
 	SelectContent,
@@ -10,6 +9,7 @@ import {
 	useForwardPropsEmits,
 } from "reka-ui";
 import type { HTMLAttributes } from "vue";
+import { cn } from "@/lib/utils";
 import { SelectScrollDownButton, SelectScrollUpButton } from ".";
 
 defineOptions({

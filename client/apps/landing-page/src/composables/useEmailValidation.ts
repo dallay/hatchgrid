@@ -1,6 +1,6 @@
-import { type Lang, useTranslations } from "@/i18n";
 import { computed, ref } from "vue";
 import * as z from "zod";
+import { type Lang, useTranslations } from "@/i18n";
 
 export interface EmailValidationOptions {
 	lang?: Lang;
