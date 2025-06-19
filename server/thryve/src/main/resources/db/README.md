@@ -146,6 +146,30 @@ M:N relation between `subscribers` and `tags`.
 | created_at    | timestamptz | DEFAULT now()                                 |
 | updated_at    | timestamptz | DEFAULT now()                                 |
 
+---
+
+### `forms`
+
+Embeddable forms used to collect subscribers. Scoped per workspace.
+
+| Field              | Type             | Constraints                                    |
+|-------------------|------------------|------------------------------------------------|
+| id                | uuid             | PK, NOT NULL                                   |
+| name              | varchar(150)     | NOT NULL                                       |
+| header            | text             |                                                |
+| description       | text             |                                                |
+| input_placeholder | varchar(100)     |                                                |
+| button_text       | varchar(50)      |                                                |
+| button_color      | varchar(30)      |                                                |
+| background_color  | varchar(30)      |                                                |
+| text_color        | varchar(30)      |                                                |
+| button_text_color | varchar(30)      |                                                |
+| workspace_id      | uuid             | FK → `workspaces(id)`, NOT NULL                |
+| created_by        | varchar(50)      | DEFAULT 'system', NOT NULL                     |
+| created_at        | timestamptz      | DEFAULT now(), NOT NULL                        |
+| updated_by        | varchar(50)      |                                                |
+| updated_at        | timestamptz      |                                                |
+
 ## 🔁 Enums
 
 ```sql
@@ -183,6 +207,9 @@ CREATE TYPE subscriber_status AS ENUM ('ENABLED', 'DISABLED', 'BLOCKLISTED');
 10. `004b-tags-triggers.yaml`: triggers for tags and subscriber_tags
 11. `004c-tags-rls.yaml`: RLS for tags
 12. `99900001-data-dev-test-users.yaml`: dev-only test users and roles
+13. `005-forms.yaml`: forms table
+14. `005a-forms-triggers.yaml`: trigger for `updated_at`
+15. `005b-forms-rls.yaml`: RLS policy for forms
 
 ---
 
