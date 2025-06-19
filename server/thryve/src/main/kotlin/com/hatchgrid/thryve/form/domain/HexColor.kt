@@ -15,7 +15,8 @@ data class HexColor(var hex: String) : BaseValidateValueObject<String>(hex) {
      * @param value the value to validate
      */
     override fun validate(value: String) {
-        require(regex.matches(value)) { "Invalid hexadecimal color code: $value" }
+        val normalizedHex = if (value.startsWith("#")) value else "#$value"
+        require(regex.matches(normalizedHex)) { "Invalid hexadecimal color code: $value" }
     }
 
     /**
