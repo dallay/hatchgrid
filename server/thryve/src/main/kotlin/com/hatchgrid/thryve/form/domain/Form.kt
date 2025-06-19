@@ -46,31 +46,71 @@ data class Form(
      * @param styleConfiguration The [FormStyleConfiguration] containing the new form data.
      */
     fun update(styleConfiguration: FormStyleConfiguration) {
-        name = styleConfiguration.name
-        header = styleConfiguration.header
-        description = styleConfiguration.description
-        inputPlaceholder = styleConfiguration.inputPlaceholder
-        buttonText = styleConfiguration.buttonText
-        buttonColor = HexColor(styleConfiguration.buttonColor)
-        backgroundColor = HexColor(styleConfiguration.backgroundColor)
-        textColor = HexColor(styleConfiguration.textColor)
-        buttonTextColor = HexColor(styleConfiguration.buttonTextColor)
-        updatedAt = LocalDateTime.now()
+        var modified = false
 
-        record(
-            FormUpdatedEvent(
-                id.toString(),
-                styleConfiguration.name,
-                styleConfiguration.header,
-                styleConfiguration.description,
-                styleConfiguration.inputPlaceholder,
-                styleConfiguration.buttonText,
-                styleConfiguration.buttonColor,
-                styleConfiguration.backgroundColor,
-                styleConfiguration.textColor,
-                styleConfiguration.buttonTextColor,
-            ),
-        )
+        if (name != styleConfiguration.name) {
+            name = styleConfiguration.name
+            modified = true
+        }
+
+        if (header != styleConfiguration.header) {
+            header = styleConfiguration.header
+            modified = true
+        }
+
+        if (description != styleConfiguration.description) {
+            description = styleConfiguration.description
+            modified = true
+        }
+
+        if (inputPlaceholder != styleConfiguration.inputPlaceholder) {
+            inputPlaceholder = styleConfiguration.inputPlaceholder
+            modified = true
+        }
+
+        if (buttonText != styleConfiguration.buttonText) {
+            buttonText = styleConfiguration.buttonText
+            modified = true
+        }
+
+        if (buttonColor.value != styleConfiguration.buttonColor) {
+            buttonColor = HexColor(styleConfiguration.buttonColor)
+            modified = true
+        }
+
+        if (backgroundColor.value != styleConfiguration.backgroundColor) {
+            backgroundColor = HexColor(styleConfiguration.backgroundColor)
+            modified = true
+        }
+
+        if (textColor.value != styleConfiguration.textColor) {
+            textColor = HexColor(styleConfiguration.textColor)
+            modified = true
+        }
+
+        if (buttonTextColor.value != styleConfiguration.buttonTextColor) {
+            buttonTextColor = HexColor(styleConfiguration.buttonTextColor)
+            modified = true
+        }
+
+        if (modified) {
+            updatedAt = LocalDateTime.now()
+
+            record(
+                FormUpdatedEvent(
+                    id.toString(),
+                    name,
+                    header,
+                    description,
+                    inputPlaceholder,
+                    buttonText,
+                    buttonColor.value,
+                    backgroundColor.value,
+                    textColor.value,
+                    buttonTextColor.value,
+                ),
+            )
+        }
     }
 
     companion object {
