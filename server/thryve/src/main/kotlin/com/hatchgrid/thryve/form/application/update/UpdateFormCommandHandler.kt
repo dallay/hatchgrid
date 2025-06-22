@@ -12,12 +12,12 @@ import org.slf4j.LoggerFactory
  * Service class responsible for handling form update commands.
  *
  * @property workspaceAuthorizationService The service for checking workspace access permissions.
- * @property formCreator The service for updating forms.
+ * @property formUpdater The service for updating forms.
  */
 @Service
 class UpdateFormCommandHandler(
     private val workspaceAuthorizationService: WorkspaceAuthorizationService,
-    private val formCreator: FormUpdater
+    private val formUpdater: FormUpdater
 ) : CommandHandler<UpdateFormCommand> {
 
     /**
@@ -40,7 +40,7 @@ class UpdateFormCommandHandler(
             buttonTextColor = command.buttonTextColor,
         )
         workspaceAuthorizationService.ensureAccess(command.workspaceId, command.userId)
-        formCreator.update(
+        formUpdater.update(
             WorkspaceId(command.workspaceId),
             FormId(command.id), formStyleConfiguration,
         )
