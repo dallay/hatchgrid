@@ -1,4 +1,6 @@
 -- This file is part of the Thryve project.
+-- Seeds a single test form for detail-fetch scenarios. This form represents a newsletter
+-- subscription with customized styling and text content for testing purposes.
 INSERT INTO forms (id, name, header, description, input_placeholder, button_text,
                    button_color, background_color, text_color, button_text_color,
                    workspace_id, created_at, updated_at)
