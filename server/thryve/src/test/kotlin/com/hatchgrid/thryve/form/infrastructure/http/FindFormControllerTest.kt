@@ -46,4 +46,15 @@ internal class FindFormControllerTest {
         coVerify(exactly = 1) { mediator.send(capture(querySlot)) }
         assertEquals(query, querySlot.captured)
     }
+
+    @Test
+    fun `should return 404 when form is not found`() {
+        val query = FindFormQuery(workspaceId = workspaceId, formId = formId)
+        coEvery { mediator.send(query) } throws FormNotFoundException("Form not found")
+
+        webTestClient.get()
+            .uri("/api/workspace/$workspaceId/form/$formId")
+            .exchange()
+            .expectStatus().isNotFound
+    }
 }
