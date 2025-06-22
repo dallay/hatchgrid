@@ -65,6 +65,5 @@ internal class UpdateFormControllerIntegrationTest : ControllerIntegrationTest()
             .jsonPath("$.instance").isEqualTo("/api/workspace/$workspaceId/form/$id/update")
             .jsonPath("$.errorCategory").isEqualTo("NOT_FOUND")
             .jsonPath("$.timestamp").isNotEmpty
-
     }
 }

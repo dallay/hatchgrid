@@ -39,7 +39,6 @@ internal class FetchDetailFormControllerIntegrationTest : ControllerIntegrationT
             .jsonPath("$.buttonTextColor").isEqualTo("#FFFFFF")
             .jsonPath("$.createdAt").isNotEmpty
             .jsonPath("$.updatedAt").isNotEmpty
-
     }
 
     @Test
@@ -66,6 +65,5 @@ internal class FetchDetailFormControllerIntegrationTest : ControllerIntegrationT
             .jsonPath("$.instance").isEqualTo("/api/form/$formId")
             .jsonPath("$.errorCategory").isEqualTo("NOT_FOUND")
             .jsonPath("$.timestamp").isNotEmpty
-
     }
 }
