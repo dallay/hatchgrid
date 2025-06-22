@@ -7,9 +7,10 @@ import com.hatchgrid.common.domain.BaseValidateValueObject
  */
 data class HexColor(val hex: String) :
     BaseValidateValueObject<String>(
-        require(hex.isNotBlank()) { "Color code cannot be empty" }.let {
-            if (hex.startsWith("#")) hex else "#$hex"
-        },
+        hex.takeIf {
+            it.isNotBlank()
+        }?.let { if (it.startsWith("#")) it else "#$it" }
+            ?: throw IllegalArgumentException("Color code cannot be empty"),
     ) {
 
     /**
@@ -19,7 +20,7 @@ data class HexColor(val hex: String) :
     override fun validate(value: String) {
         require(value.isNotBlank()) { "Color code cannot be empty" }
         val normalizedHex = if (value.startsWith("#")) value else "#$value"
-        require(regex.matches(normalizedHex)) { "Invalid hexadecimal color code: $value" }
+        require(regex.matches(normalizedHex)) { "Invalid hexadecimal color code: $normalizedHex" }
     }
 
     /**
