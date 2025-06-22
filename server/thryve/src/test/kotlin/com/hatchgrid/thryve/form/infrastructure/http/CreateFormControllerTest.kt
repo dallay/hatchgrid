@@ -29,6 +29,7 @@ internal class CreateFormControllerTest : ControllerTest() {
         textColor = form.textColor.hex,
         buttonTextColor = form.buttonTextColor.hex,
         workspaceId = form.workspaceId.value.toString(),
+        userId = userId.toString(),
     )
     private val controller = CreateFormController(mediator)
     override val webTestClient: WebTestClient = buildWebTestClient(controller)

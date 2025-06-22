@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.constraints.Pattern
 import java.net.URI
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PathVariable
@@ -74,6 +75,9 @@ class CreateFormController(
         val sanitizedWorkspaceId = sanitizePathVariable(workspaceId)
         val sanitizedFormId = sanitizePathVariable(formId)
         log.debug("Creating form with id: $sanitizedFormId in workspace: $sanitizedWorkspaceId")
+
+        val userId = userId() ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+
         dispatch(
             CreateFormCommand(
                 formId,
@@ -87,6 +91,7 @@ class CreateFormController(
                 request.textColor,
                 request.buttonTextColor,
                 workspaceId,
+                userId,
             ),
         )
         return ResponseEntity.created(URI.create("/workspace/$sanitizedWorkspaceId/form/$sanitizedFormId")).build()

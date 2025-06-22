@@ -6,11 +6,15 @@ import com.hatchgrid.thryve.form.FormStub
 import com.hatchgrid.thryve.form.domain.Form
 import com.hatchgrid.thryve.form.domain.FormRepository
 import com.hatchgrid.thryve.form.domain.event.FormCreatedEvent
+import com.hatchgrid.thryve.users.domain.UserId
+import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
+import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import java.util.UUID
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -19,16 +23,27 @@ internal class CreateFormCommandHandlerTest {
     private lateinit var eventPublisher: EventPublisher<FormCreatedEvent>
     private lateinit var formRepository: FormRepository
     private lateinit var formCreator: FormCreator
+    private val workspaceMemberRepository: WorkspaceMemberRepository = mockk()
+    private val workspaceAuthorizationService: WorkspaceAuthorizationService =
+        WorkspaceAuthorizationService(workspaceMemberRepository)
     private lateinit var createFormCommandHandler: CreateFormCommandHandler
     private lateinit var form: Form
+    private val userId = UserId(UUID.randomUUID())
 
     @BeforeEach
     fun setUp() {
         eventPublisher = mockk()
         formRepository = mockk()
         formCreator = FormCreator(formRepository, eventPublisher)
-        createFormCommandHandler = CreateFormCommandHandler(formCreator)
+        createFormCommandHandler = CreateFormCommandHandler(workspaceAuthorizationService, formCreator)
         form = FormStub.generateRandomForm()
+
+        coEvery {
+            workspaceMemberRepository.existsByWorkspaceIdAndUserId(
+                eq(form.workspaceId.value),
+                eq(userId.value),
+            )
+        } returns true
 
         coEvery { formRepository.create(any()) } returns Unit
         coEvery { eventPublisher.publish(any(FormCreatedEvent::class)) } returns Unit
@@ -50,6 +65,7 @@ internal class CreateFormCommandHandlerTest {
             textColor = form.textColor.hex,
             buttonTextColor = form.buttonTextColor.hex,
             workspaceId = form.workspaceId.value.toString(),
+            userId = userId.value.toString(),
         )
 
         // When
@@ -59,17 +75,17 @@ internal class CreateFormCommandHandlerTest {
         coVerify(exactly = 1) {
             formRepository.create(
                 withArg {
-                    assert(it.id.value.toString() == formId)
-                    assert(it.name == form.name)
-                    assert(it.header == form.header)
-                    assert(it.description == form.description)
-                    assert(it.inputPlaceholder == form.inputPlaceholder)
-                    assert(it.buttonText == form.buttonText)
-                    assert(it.buttonColor.hex == form.buttonColor.hex)
-                    assert(it.backgroundColor.hex == form.backgroundColor.hex)
-                    assert(it.textColor.hex == form.textColor.hex)
-                    assert(it.buttonTextColor.hex == form.buttonTextColor.hex)
-                    assert(it.workspaceId.value.toString() == form.workspaceId.value.toString())
+                    assertEquals(formId, it.id.value.toString())
+                    assertEquals(form.name, it.name)
+                    assertEquals(form.header, it.header)
+                    assertEquals(form.description, it.description)
+                    assertEquals(form.inputPlaceholder, it.inputPlaceholder)
+                    assertEquals(form.buttonText, it.buttonText)
+                    assertEquals(form.buttonColor.hex, it.buttonColor.hex)
+                    assertEquals(form.backgroundColor.hex, it.backgroundColor.hex)
+                    assertEquals(form.textColor.hex, it.textColor.hex)
+                    assertEquals(form.buttonTextColor.hex, it.buttonTextColor.hex)
+                    assertEquals(form.workspaceId.value.toString(), it.workspaceId.value.toString())
                 },
             )
         }

@@ -4,16 +4,19 @@ import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.command.CommandHandler
 import com.hatchgrid.thryve.form.domain.Form
 import com.hatchgrid.thryve.form.domain.dto.FormConfiguration
+import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import java.util.*
 import org.slf4j.LoggerFactory
 
 /**
  * Handles the creation of forms.
  *
+ * @property workspaceAuthorizationService Service for checking workspace access permissions.
  * @property formCreator Service responsible for creating forms.
  */
 @Service
 class CreateFormCommandHandler(
+    private val workspaceAuthorizationService: WorkspaceAuthorizationService,
     private val formCreator: FormCreator
 ) : CommandHandler<CreateFormCommand> {
 
@@ -28,6 +31,8 @@ class CreateFormCommandHandler(
         log.debug("Creating form with name: ${command.name}")
         val formId = UUID.fromString(command.id)
         val workspaceId = UUID.fromString(command.workspaceId)
+
+        workspaceAuthorizationService.ensureAccess(command.workspaceId, command.userId)
 
         val formConfiguration = FormConfiguration(
             name = command.name,

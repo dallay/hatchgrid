@@ -86,11 +86,30 @@ class UserAuthenticatorControllerTest {
 
     private fun createLoginRequest(
         username: String = faker.internet().emailAddress(),
-        password: String = faker.internet().password(8, 80, true, true, true)
-    ): LoginRequest = LoginRequest(
-        username = username,
-        password = password,
-    )
+        password: String? = null,
+    ): LoginRequest {
+        val finalPassword = password ?: generateValidPassword()
+        return LoginRequest(
+            username = username,
+            password = finalPassword,
+        )
+    }
+
+    private fun generateValidPassword(): String {
+        var password: String
+        do {
+            password = faker.internet().password(8, 80, true, true, true)
+        } while (!isPasswordValid(password))
+        return password
+    }
+
+    private fun isPasswordValid(password: String): Boolean {
+        val hasLowercase = password.any { it.isLowerCase() }
+        val hasUppercase = password.any { it.isUpperCase() }
+        val hasDigit = password.any { it.isDigit() }
+        val hasSpecial = password.any { !it.isLetterOrDigit() }
+        return hasLowercase && hasUppercase && hasDigit && hasSpecial
+    }
 
     private fun createAccessToken(): AccessToken = AccessToken(
         token = "token",
