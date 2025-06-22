@@ -40,9 +40,7 @@ internal class FindFormControllerIntegrationTest : ControllerIntegrationTest() {
             .jsonPath("$.buttonTextColor").isEqualTo("#FFFFFF")
             .jsonPath("$.createdAt").isNotEmpty
             .jsonPath("$.updatedAt").isNotEmpty
-            .consumeWith { response ->
-                println(response)
-            }
+
     }
 
     @Test
@@ -69,8 +67,6 @@ internal class FindFormControllerIntegrationTest : ControllerIntegrationTest() {
             .jsonPath("$.instance").isEqualTo("/api/workspace/$workspaceId/form/$formId")
             .jsonPath("$.errorCategory").isEqualTo("NOT_FOUND")
             .jsonPath("$.timestamp").isNotEmpty
-            .consumeWith { response ->
-                println(response)
-            }
+
     }
 }
