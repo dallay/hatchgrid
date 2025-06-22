@@ -8,11 +8,12 @@ import com.hatchgrid.thryve.form.domain.FormRepository
 import com.hatchgrid.thryve.form.domain.event.FormCreatedEvent
 import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
+import com.hatchgrid.thryve.workspace.domain.WorkspaceAuthorizationException
 import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import java.util.UUID
+import java.util.*
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -35,7 +36,8 @@ internal class CreateFormCommandHandlerTest {
         eventPublisher = mockk()
         formRepository = mockk()
         formCreator = FormCreator(formRepository, eventPublisher)
-        createFormCommandHandler = CreateFormCommandHandler(workspaceAuthorizationService, formCreator)
+        createFormCommandHandler =
+            CreateFormCommandHandler(workspaceAuthorizationService, formCreator)
         form = FormStub.generateRandomForm()
 
         coEvery {
@@ -45,8 +47,8 @@ internal class CreateFormCommandHandlerTest {
             )
         } returns true
 
-        coEvery { formRepository.create(any()) } returns Unit
-        coEvery { eventPublisher.publish(any(FormCreatedEvent::class)) } returns Unit
+        coEvery { formRepository.create(any<Form>()) } returns Unit
+        coEvery { eventPublisher.publish(any<FormCreatedEvent>()) } returns Unit
     }
 
     @Test
@@ -91,5 +93,95 @@ internal class CreateFormCommandHandlerTest {
         }
 
         coVerify(exactly = 1) { eventPublisher.publish(ofType<FormCreatedEvent>()) }
+    }
+
+    @Test
+    fun `should throw exception when workspace authorization fails`() = runBlocking {
+        // Given
+        coEvery {
+            workspaceMemberRepository.existsByWorkspaceIdAndUserId(
+                eq(form.workspaceId.value),
+                eq(userId.value),
+            )
+        } returns false
+
+        val command = CreateFormCommand(
+            id = UUID.randomUUID().toString(),
+            name = form.name,
+            header = form.header,
+            description = form.description,
+            inputPlaceholder = form.inputPlaceholder,
+            buttonText = form.buttonText,
+            buttonColor = form.buttonColor.hex,
+            backgroundColor = form.backgroundColor.hex,
+            textColor = form.textColor.hex,
+            buttonTextColor = form.buttonTextColor.hex,
+            workspaceId = form.workspaceId.value.toString(),
+            userId = userId.value.toString(),
+        )
+
+        // When & Then
+        org.junit.jupiter.api.assertThrows<WorkspaceAuthorizationException> {
+            createFormCommandHandler.handle(command)
+        }
+
+        coVerify(exactly = 0) { formRepository.create(any<Form>()) }
+        coVerify(exactly = 0) { eventPublisher.publish(any<FormCreatedEvent>()) }
+    }
+
+    @Test
+    fun `should throw exception when form repository creation throws an error`() = runBlocking {
+        // Given
+        val command = CreateFormCommand(
+            id = UUID.randomUUID().toString(),
+            name = form.name,
+            header = form.header,
+            description = form.description,
+            inputPlaceholder = form.inputPlaceholder,
+            buttonText = form.buttonText,
+            buttonColor = form.buttonColor.hex,
+            backgroundColor = form.backgroundColor.hex,
+            textColor = form.textColor.hex,
+            buttonTextColor = form.buttonTextColor.hex,
+            workspaceId = form.workspaceId.value.toString(),
+            userId = userId.value.toString(),
+        )
+        coEvery { formRepository.create(any<Form>()) } throws RuntimeException("Error creating form")
+
+        // When & Then
+        org.junit.jupiter.api.assertThrows<RuntimeException> {
+            createFormCommandHandler.handle(command)
+        }
+
+        coVerify(exactly = 1) { formRepository.create(any<Form>()) }
+        coVerify(exactly = 0) { eventPublisher.publish(any<FormCreatedEvent>()) }
+    }
+
+    @Test
+    fun `should throw exception when event publishing fails`() = runBlocking {
+        // Given
+        val command = CreateFormCommand(
+            id = UUID.randomUUID().toString(),
+            name = form.name,
+            header = form.header,
+            description = form.description,
+            inputPlaceholder = form.inputPlaceholder,
+            buttonText = form.buttonText,
+            buttonColor = form.buttonColor.hex,
+            backgroundColor = form.backgroundColor.hex,
+            textColor = form.textColor.hex,
+            buttonTextColor = form.buttonTextColor.hex,
+            workspaceId = form.workspaceId.value.toString(),
+            userId = userId.value.toString(),
+        )
+        coEvery { eventPublisher.publish(any<FormCreatedEvent>()) } throws RuntimeException("Error publishing event")
+
+        // When & Then
+        org.junit.jupiter.api.assertThrows<RuntimeException> {
+            createFormCommandHandler.handle(command)
+        }
+
+        coVerify(exactly = 1) { formRepository.create(any<Form>()) }
+        coVerify(exactly = 1) { eventPublisher.publish(any<FormCreatedEvent>()) }
     }
 }
