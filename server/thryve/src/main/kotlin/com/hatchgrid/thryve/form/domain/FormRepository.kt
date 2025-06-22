@@ -1,9 +1,10 @@
 package com.hatchgrid.thryve.form.domain
 
 /**
- * This is an interface for a repository that handles form creation and updates.
- * It has two functions, create and update, which are both suspending functions.
- * The functions take a Form object as a parameter.
+ * Repository interface that handles form lifecycle operations: creation, updates, and deletion.
+ * All operations are implemented as suspending functions for reactive processing.
+ * The create and update operations take a Form object as a parameter, while delete
+ * typically operates on a form identifier.
  */
 interface FormRepository {
     /**
