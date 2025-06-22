@@ -7,6 +7,7 @@ import com.hatchgrid.thryve.form.domain.exception.FormException
 import com.hatchgrid.thryve.form.infrastructure.persistence.mapper.FormMapper.toEntity
 import com.hatchgrid.thryve.form.infrastructure.persistence.repository.FormR2dbcRepository
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
@@ -30,7 +31,7 @@ internal class FormStoreR2DbcRepositoryTest {
     @Test
     fun `should create form`(): Unit = runBlocking {
         formStoreR2dbcRepository.create(form)
-        coEvery { formR2dbcRepository.save(any()) }
+        coVerify(exactly = 1) { formR2dbcRepository.save(any()) }
     }
 
     @Test
@@ -52,7 +53,7 @@ internal class FormStoreR2DbcRepositoryTest {
     @Test
     fun `should update form`(): Unit = runBlocking {
         formStoreR2dbcRepository.update(form)
-        coEvery { formR2dbcRepository.save(any()) }
+        coVerify(exactly = 1) { formR2dbcRepository.save(any()) }
     }
 
     @Test
