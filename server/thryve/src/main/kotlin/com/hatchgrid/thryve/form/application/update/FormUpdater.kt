@@ -50,8 +50,8 @@ class FormUpdater(
         }
         formRepository.update(updatedForm)
         val domainEvents = updatedForm.pullDomainEvents()
-        domainEvents.forEach {
-            eventPublisher.publish(it as FormUpdatedEvent)
+        domainEvents.filterIsInstance<FormUpdatedEvent>().forEach {
+            eventPublisher.publish(it)
         }
     }
 

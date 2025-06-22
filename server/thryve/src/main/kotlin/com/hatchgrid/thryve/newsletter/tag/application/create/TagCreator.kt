@@ -61,7 +61,7 @@ class TagCreator(
         val tag = Tag.create(id, name, color, workspaceId)
         tagRepository.create(tag)
         val domainEvents = tag.pullDomainEvents()
-        domainEvents.forEach { eventPublisher.publish(it as TagCreatedEvent) }
+        domainEvents.filterIsInstance<TagCreatedEvent>().forEach { eventPublisher.publish(it) }
         val subscriberTags = toSubscriberTags(subscriberByEmails, id)
         subscriberTags?.forEach {
             subscriberTagCreator.create(it.id.value.first, it.id.value.second)

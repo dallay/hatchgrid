@@ -35,8 +35,8 @@ class FormCreator(
         formRepository.create(form)
         val domainEvents = form.pullDomainEvents()
         log.debug("Pulling {} events from form", domainEvents.size)
-        domainEvents.forEach {
-            eventPublisher.publish(it as FormCreatedEvent)
+        domainEvents.filterIsInstance<FormCreatedEvent>().forEach {
+            eventPublisher.publish(it)
         }
     }
 
