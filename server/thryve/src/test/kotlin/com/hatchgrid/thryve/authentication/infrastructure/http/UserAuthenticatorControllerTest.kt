@@ -1,6 +1,7 @@
 package com.hatchgrid.thryve.authentication.infrastructure.http
 
 import com.hatchgrid.UnitTest
+import com.hatchgrid.thryve.CredentialGenerator.generateValidPassword
 import com.hatchgrid.thryve.authentication.application.AuthenticateUserQueryHandler
 import com.hatchgrid.thryve.authentication.application.UserAuthenticatorService
 import com.hatchgrid.thryve.authentication.domain.AccessToken
@@ -93,22 +94,6 @@ class UserAuthenticatorControllerTest {
             username = username,
             password = finalPassword,
         )
-    }
-
-    private fun generateValidPassword(): String {
-        var password: String
-        do {
-            password = faker.internet().password(8, 80, true, true, true)
-        } while (!isPasswordValid(password))
-        return password
-    }
-
-    private fun isPasswordValid(password: String): Boolean {
-        val hasLowercase = password.any { it.isLowerCase() }
-        val hasUppercase = password.any { it.isUpperCase() }
-        val hasDigit = password.any { it.isDigit() }
-        val hasSpecial = password.any { !it.isLetterOrDigit() }
-        return hasLowercase && hasUppercase && hasDigit && hasSpecial
     }
 
     private fun createAccessToken(): AccessToken = AccessToken(

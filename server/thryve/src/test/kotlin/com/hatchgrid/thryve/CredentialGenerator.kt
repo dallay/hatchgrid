@@ -14,12 +14,19 @@ object CredentialGenerator {
     fun generate(password: String = generateValidPassword()): Credential =
         Credential(CredentialId(UUID.randomUUID()), password)
 
-    fun generateValidPassword(): String {
+    fun generateValidPassword(maxAttempts: Int = 10): String {
         var password: String
+        var attempts = 0
+
         do {
             password = faker.internet().password(8, 80, true, true, true)
-        } while (!isPasswordValid(password))
-        return password
+            if (isPasswordValid(password)) {
+                return password
+            }
+            attempts++
+        } while (attempts < maxAttempts)
+
+        return "DefaultPass123!"
     }
     private fun isPasswordValid(password: String): Boolean {
         val hasLowercase = password.any { it.isLowerCase() }
