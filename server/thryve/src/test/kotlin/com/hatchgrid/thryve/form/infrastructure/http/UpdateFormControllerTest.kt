@@ -1,13 +1,12 @@
 package com.hatchgrid.thryve.form.infrastructure.http
 
+import com.hatchgrid.ControllerTest
 import com.hatchgrid.UnitTest
-import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.thryve.form.FormStub
 import com.hatchgrid.thryve.form.application.update.UpdateFormCommand
 import com.hatchgrid.thryve.form.infrastructure.http.request.UpdateFormRequest
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.mockk
 import io.mockk.slot
 import java.util.*
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -16,8 +15,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.test.web.reactive.server.WebTestClient
 
 @UnitTest
-internal class UpdateFormControllerTest {
-    private val mediator = mockk<Mediator>()
+internal class UpdateFormControllerTest : ControllerTest() {
     private val formId = UUID.randomUUID().toString()
     private val workspaceId = UUID.randomUUID().toString()
     private val form = FormStub.create(id = formId, workspaceId = workspaceId)
@@ -33,12 +31,14 @@ internal class UpdateFormControllerTest {
         textColor = form.textColor.hex,
         buttonTextColor = form.buttonTextColor.hex,
         workspaceId = form.workspaceId.value.toString(),
+        userId = userId.toString(),
     )
     private val controller = UpdateFormController(mediator)
-    private val webTestClient = WebTestClient.bindToController(controller).build()
+    override val webTestClient: WebTestClient = buildWebTestClient(controller)
 
     @BeforeEach
-    fun setUp() {
+    override fun setUp() {
+        super.setUp()
         coEvery { mediator.send(eq(command)) } returns Unit
     }
 

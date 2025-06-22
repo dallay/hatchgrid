@@ -9,12 +9,17 @@ import com.hatchgrid.thryve.form.domain.FormId
 import com.hatchgrid.thryve.form.domain.FormRepository
 import com.hatchgrid.thryve.form.domain.event.FormUpdatedEvent
 import com.hatchgrid.thryve.form.domain.exception.FormNotFoundException
+import com.hatchgrid.thryve.users.domain.UserId
+import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
+import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import java.util.UUID
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -24,8 +29,13 @@ internal class UpdateFormCommandHandlerTest {
     private lateinit var formRepository: FormRepository
     private lateinit var formFinderRepository: FormFinderRepository
     private lateinit var formUpdater: FormUpdater
+    private val workspaceMemberRepository: WorkspaceMemberRepository = mockk()
+    private val workspaceAuthorizationService: WorkspaceAuthorizationService =
+        WorkspaceAuthorizationService(workspaceMemberRepository)
     private lateinit var updateFormCommandHandler: UpdateFormCommandHandler
     private lateinit var form: Form
+    private lateinit var workspaceId: WorkspaceId
+    private val userId = UserId("17140d5a-3879-4708-b7ca-097095a085fe")
 
     @BeforeEach
     fun setUp() {
@@ -33,10 +43,16 @@ internal class UpdateFormCommandHandlerTest {
         formRepository = mockk(relaxed = true)
         formFinderRepository = mockk(relaxed = true)
         formUpdater = FormUpdater(formRepository, formFinderRepository, eventPublisher)
-        updateFormCommandHandler = UpdateFormCommandHandler(formUpdater)
+        updateFormCommandHandler = UpdateFormCommandHandler(workspaceAuthorizationService, formUpdater)
         form = FormStub.generateRandomForm()
+        workspaceId = form.workspaceId
         form.pullDomainEvents()
-
+        coEvery {
+            workspaceMemberRepository.existsByWorkspaceIdAndUserId(
+                eq(workspaceId.value),
+                eq(userId.value),
+            )
+        } returns true
         coEvery {
             formFinderRepository.findByFormIdAndWorkspaceId(
                 any(),
@@ -49,7 +65,6 @@ internal class UpdateFormCommandHandlerTest {
     fun `should update a form`() = runBlocking {
         val command = UpdateFormCommand(
             id = form.id.value.toString(),
-            workspaceId = form.workspaceId.value.toString(),
             name = "Updated Form Name",
             header = "Updated Form Header",
             description = "Updated Form Description",
@@ -59,6 +74,8 @@ internal class UpdateFormCommandHandlerTest {
             backgroundColor = "#FFFFFF",
             textColor = "#000000",
             buttonTextColor = "#FFFFFF",
+            workspaceId = form.workspaceId.value.toString(),
+            userId = userId.value.toString(),
         )
 
         updateFormCommandHandler.handle(command)
@@ -70,7 +87,6 @@ internal class UpdateFormCommandHandlerTest {
     fun `should do nothing when the form has no changes`() = runBlocking {
         val command = UpdateFormCommand(
             id = form.id.value.toString(),
-            workspaceId = form.workspaceId.value.toString(),
             name = form.name,
             header = form.header,
             description = form.description,
@@ -80,6 +96,8 @@ internal class UpdateFormCommandHandlerTest {
             backgroundColor = form.backgroundColor.value,
             textColor = form.textColor.value,
             buttonTextColor = form.buttonTextColor.value,
+            workspaceId = form.workspaceId.value.toString(),
+            userId = userId.value.toString(),
         )
 
         updateFormCommandHandler.handle(command)
@@ -90,10 +108,8 @@ internal class UpdateFormCommandHandlerTest {
     @Test
     fun `should throw an exception when the form is not found`() {
         val formId = FormId(UUID.randomUUID())
-        val workspaceId = WorkspaceId(UUID.randomUUID())
         val command = UpdateFormCommand(
             id = formId.value.toString(),
-            workspaceId = workspaceId.value.toString(),
             name = "Updated Form Name",
             header = "Updated Form Header",
             description = "Updated Form Description",
@@ -103,6 +119,8 @@ internal class UpdateFormCommandHandlerTest {
             backgroundColor = "#FFFFFF",
             textColor = "#000000",
             buttonTextColor = "#FFFFFF",
+            workspaceId = workspaceId.value.toString(),
+            userId = userId.value.toString(),
         )
         coEvery {
             formFinderRepository.findByFormIdAndWorkspaceId(
@@ -115,8 +133,8 @@ internal class UpdateFormCommandHandlerTest {
             try {
                 updateFormCommandHandler.handle(command)
             } catch (e: Exception) {
-                assert(e is FormNotFoundException)
-                assert(e.message == "Form not found")
+                assertTrue(e is FormNotFoundException)
+                assertEquals("Form not found", e.message)
             }
         }
     }

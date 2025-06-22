@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.constraints.Pattern
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PathVariable
@@ -75,6 +76,7 @@ class UpdateFormController(
         val sanitizedWorkspaceId = sanitizePathVariable(workspaceId)
         val sanitizedFormId = sanitizePathVariable(formId)
         log.debug("Updating form with id: $sanitizedFormId in workspace: $sanitizedWorkspaceId")
+        val userId = userId() ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
         dispatch(
             UpdateFormCommand(
                 formId,
@@ -88,6 +90,7 @@ class UpdateFormController(
                 request.textColor,
                 request.buttonTextColor,
                 workspaceId,
+                userId,
             ),
         )
 

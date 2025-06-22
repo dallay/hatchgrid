@@ -16,6 +16,7 @@ import com.hatchgrid.common.domain.bus.command.Command
  * @property textColor The color of the text in the form.
  * @property buttonTextColor The color of the text on the button.
  * @property workspaceId The unique identifier of the workspace associated with the form.
+ * @property userId The unique identifier of the user making the update, used for authorization.
  */
 data class UpdateFormCommand(
     val id: String,
@@ -28,5 +29,6 @@ data class UpdateFormCommand(
     val backgroundColor: String,
     val textColor: String,
     val buttonTextColor: String,
-    val workspaceId: String
+    val workspaceId: String,
+    val userId: String
 ) : Command
