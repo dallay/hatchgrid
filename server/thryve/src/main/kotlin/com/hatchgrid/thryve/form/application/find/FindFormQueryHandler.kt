@@ -24,7 +24,7 @@ class FindFormQueryHandler(
      * If the form is not found, a [FormNotFoundException] is thrown.
      *
      * @param query The form find query to handle.
-     * @return The [FormResponse] for the xfound form.
+     * @return The [FormResponse] for the found form.
      * @throws [FormNotFoundException] If the form is not found.
      */
     override suspend fun handle(query: FindFormQuery): FormResponse {
