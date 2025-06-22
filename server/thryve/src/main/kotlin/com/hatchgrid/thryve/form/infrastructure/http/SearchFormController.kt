@@ -1,10 +1,10 @@
 package com.hatchgrid.thryve.form.infrastructure.http
 
 import com.hatchgrid.common.domain.bus.Mediator
-import com.hatchgrid.common.domain.bus.query.Response
 import com.hatchgrid.common.domain.criteria.Criteria
 import com.hatchgrid.common.domain.criteria.and
 import com.hatchgrid.common.domain.error.InvalidFilterOperator
+import com.hatchgrid.common.domain.presentation.pagination.CursorPageResponse
 import com.hatchgrid.common.domain.presentation.pagination.CursorRequestPageable
 import com.hatchgrid.common.domain.presentation.pagination.FilterCondition
 import com.hatchgrid.common.domain.presentation.pagination.LogicalOperator
@@ -13,6 +13,7 @@ import com.hatchgrid.spring.boot.presentation.filter.RHSFilterParserFactory
 import com.hatchgrid.spring.boot.presentation.sort.SortParserFactory
 import com.hatchgrid.thryve.AppConstants.Paths.API
 import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
+import com.hatchgrid.thryve.form.application.FormResponse
 import com.hatchgrid.thryve.form.application.search.SearchFormsQuery
 import com.hatchgrid.thryve.form.infrastructure.persistence.entity.FormEntity
 import io.swagger.v3.oas.annotations.Operation
@@ -24,6 +25,8 @@ import jakarta.validation.constraints.Pattern
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -69,20 +72,23 @@ class SearchFormController(
             schema = Schema(implementation = CursorRequestPageable::class),
         )
         @Validated cursorRequestPageable: CursorRequestPageable
-    ): Response {
+    ): ResponseEntity<CursorPageResponse<FormResponse>> {
         val sanitizedWorkspaceId = sanitizePathVariable(workspaceId)
         log.debug("Searching forms in workspace with id: {}", sanitizedWorkspaceId)
+        val userId = userId() ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
         val criteria: Criteria = criteria(cursorRequestPageable).and(Criteria.Equals("workspaceId", workspaceId))
 
         val response = ask(
             SearchFormsQuery(
+                workspaceId,
+                userId,
                 criteria,
                 cursorRequestPageable.size,
                 cursorRequestPageable.cursor,
                 cursorRequestPageable.sort?.let { if (it.isEmpty()) null else sortParser.parse(it) },
             ),
         )
-        return response
+        return ResponseEntity.ok(response)
     }
 
     /**

@@ -84,7 +84,7 @@ internal class SearchFormControllerTest : ControllerTest() {
                 Criteria.Like("buttonText", search),
             ),
         )
-        val query = SearchFormsQuery(criteria)
+        val query = SearchFormsQuery(workspaceId, userId.toString(), criteria)
         coEvery { mediator.send(query) } returns response
         every { rhsFilterParserFactory.create(FormEntity::class) } returns rhsFilterParser
         every { rhsFilterParser.parse(any(), eq(true)) } returns criteria
@@ -150,7 +150,11 @@ internal class SearchFormControllerTest : ControllerTest() {
     fun `should paginate forms using nextCursor from response`() {
         val pageSize = 5
         val firstResponse = FormStub.dummyRandomFormPageResponse(pageSize)
-        val firstQuery = SearchFormsQuery(size = pageSize)
+        val firstQuery = SearchFormsQuery(
+            workspaceId = workspaceId,
+            userId = userId.toString(),
+            size = pageSize,
+        )
         coEvery { mediator.send(firstQuery) } returns firstResponse
 
         val firstRequest = webTestClient.get()
@@ -167,7 +171,12 @@ internal class SearchFormControllerTest : ControllerTest() {
             .responseBody
 
         val secondResponse = FormStub.dummyRandomFormPageResponse(pageSize - 2)
-        val secondQuery = SearchFormsQuery(size = pageSize, cursor = firstRequest?.nextPageCursor)
+        val secondQuery = SearchFormsQuery(
+            workspaceId = workspaceId,
+            userId = userId.toString(),
+            size = pageSize,
+            cursor = firstRequest?.nextPageCursor,
+        )
         coEvery { mediator.send(secondQuery) } returns secondResponse
 
         if (firstRequest != null) {

@@ -5,10 +5,13 @@ import com.hatchgrid.common.domain.presentation.sort.Sort
 import com.hatchgrid.thryve.GeneralStub.getTimestampCursorPage
 import com.hatchgrid.thryve.form.FormStub
 import com.hatchgrid.thryve.form.domain.FormFinderRepository
+import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
+import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import java.time.LocalDateTime
+import java.util.UUID
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -20,14 +23,26 @@ private const val NUM_FORMS = 100
 internal class SearchFormsQueryHandlerTest {
     private lateinit var repository: FormFinderRepository
     private lateinit var searcher: FormsSearcher
+    private lateinit var workspaceMemberRepository: WorkspaceMemberRepository
+    private lateinit var workspaceAuthorizationService: WorkspaceAuthorizationService
     private lateinit var searchFormsQueryHandler: SearchFormsQueryHandler
+    private lateinit var workspaceId: UUID
+    private lateinit var userId: UUID
 
     @BeforeEach
     fun setUp() {
+        workspaceId = UUID.randomUUID()
+        userId = UUID.randomUUID()
         repository = mockk()
+        workspaceMemberRepository = mockk()
         searcher = FormsSearcher(repository)
-        searchFormsQueryHandler = SearchFormsQueryHandler(searcher)
+        workspaceAuthorizationService = WorkspaceAuthorizationService(workspaceMemberRepository)
+        searchFormsQueryHandler = SearchFormsQueryHandler(workspaceAuthorizationService, searcher)
         val cursorPageResponse = FormStub.dummyRandomFormsPageResponse(NUM_FORMS)
+
+        coEvery {
+            workspaceMemberRepository.existsByWorkspaceIdAndUserId(eq(workspaceId), eq(userId))
+        } returns true
 
         coEvery {
             repository.search(
@@ -41,7 +56,11 @@ internal class SearchFormsQueryHandlerTest {
     @Test
     fun `should search all forms`() = runBlocking {
         // Given
-        val query = SearchFormsQuery(criteria = Criteria.Empty)
+        val query = SearchFormsQuery(
+            workspaceId = workspaceId.toString(),
+            userId = userId.toString(),
+            criteria = Criteria.Empty,
+        )
 
         // When
         val response = searchFormsQueryHandler.handle(query)
@@ -72,7 +91,11 @@ internal class SearchFormsQueryHandlerTest {
             repository.search(any(Criteria::class), any(Int::class), any(Sort::class))
         } returns dummyRandomFormsPageResponse
 
-        val query = SearchFormsQuery(criteria = criteria)
+        val query = SearchFormsQuery(
+            workspaceId = workspaceId.toString(),
+            userId = userId.toString(),
+            criteria = criteria,
+        )
 
         // When
         val response = searchFormsQueryHandler.handle(query)
