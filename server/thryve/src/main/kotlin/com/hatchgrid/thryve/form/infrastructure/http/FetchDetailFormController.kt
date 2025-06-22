@@ -44,7 +44,7 @@ class FetchDetailFormController(
     @GetMapping("/form/{formId}")
     suspend fun find(
         @Parameter(
-            description = "ID of the form to be created",
+            description = "ID of the form to be fetched",
             required = true,
             schema = Schema(type = "string", format = "uuid"),
         )
