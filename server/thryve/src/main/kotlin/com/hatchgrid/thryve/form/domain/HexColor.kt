@@ -34,6 +34,6 @@ data class HexColor(val hex: String) :
          * - Optional # prefix
          * - Either 3 or 6 hexadecimal digits (case-insensitive)
          */
-        val regex = Regex("^#?([0-9a-f]{6}|[0-9a-f]{3})$", RegexOption.IGNORE_CASE)
+        val regex = Regex("^#([0-9a-f]{6}|[0-9a-f]{3})$", RegexOption.IGNORE_CASE)
     }
 }
