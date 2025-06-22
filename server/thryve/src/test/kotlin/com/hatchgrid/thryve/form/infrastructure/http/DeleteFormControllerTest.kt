@@ -27,7 +27,7 @@ internal class DeleteFormControllerTest : ControllerTest() {
 
     @Test
     fun `should delete form when form is found`() {
-        val command = DeleteFormCommand(workspaceId = workspaceId, formId = formId)
+        val command = DeleteFormCommand(workspaceId = workspaceId, formId = formId, userId = userId.toString())
         coEvery { mediator.send(command) } returns Unit
 
         webTestClient.delete()

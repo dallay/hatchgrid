@@ -9,7 +9,10 @@ import com.hatchgrid.thryve.form.domain.FormFinderRepository
 import com.hatchgrid.thryve.form.domain.FormId
 import com.hatchgrid.thryve.form.domain.FormRepository
 import com.hatchgrid.thryve.form.domain.event.FormDeletedEvent
+import com.hatchgrid.thryve.users.domain.UserId
+import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
+import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -26,9 +29,13 @@ internal class DeleteFormCommandHandlerTest {
     private lateinit var formFinderRepository: FormFinderRepository
     private lateinit var formFinder: FormFinder
     private lateinit var formDestroyer: FormDestroyer
+    private val workspaceMemberRepository: WorkspaceMemberRepository = mockk()
+    private val workspaceAuthorizationService: WorkspaceAuthorizationService =
+        WorkspaceAuthorizationService(workspaceMemberRepository)
     private lateinit var deleteFormCommandHandler: DeleteFormCommandHandler
     private lateinit var workspaceId: WorkspaceId
     private lateinit var formId: FormId
+    private lateinit var userId: UserId
     private lateinit var form: Form
 
     @BeforeEach
@@ -38,12 +45,19 @@ internal class DeleteFormCommandHandlerTest {
         formFinderRepository = mockkClass(FormFinderRepository::class)
         formFinder = FormFinder(formFinderRepository)
         formDestroyer = FormDestroyer(formRepository, formFinder, eventPublisher)
-        deleteFormCommandHandler = DeleteFormCommandHandler(formDestroyer)
+        deleteFormCommandHandler = DeleteFormCommandHandler(workspaceAuthorizationService, formDestroyer)
 
         workspaceId = WorkspaceId(UUID.randomUUID())
         formId = FormId(UUID.randomUUID())
+        userId = UserId(UUID.randomUUID())
         form = FormStub.create(id = formId.value.toString(), workspaceId = workspaceId.value.toString())
 
+        coEvery {
+            workspaceMemberRepository.existsByWorkspaceIdAndUserId(
+                eq(workspaceId.value),
+                eq(userId.value),
+            )
+        } returns true
         coEvery { formFinderRepository.findByFormIdAndWorkspaceId(eq(formId), eq(workspaceId)) } returns form
         coEvery { formRepository.delete(any()) } returns Unit
         coEvery { eventPublisher.publish(any(FormDeletedEvent::class)) } returns Unit
@@ -55,6 +69,7 @@ internal class DeleteFormCommandHandlerTest {
         val command = DeleteFormCommand(
             workspaceId = workspaceId.value.toString(),
             formId = formId.value.toString(),
+            userId = userId.value.toString(),
         )
 
         // When

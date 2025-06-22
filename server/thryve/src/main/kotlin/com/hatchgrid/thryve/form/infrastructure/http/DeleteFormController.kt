@@ -5,6 +5,7 @@ import com.hatchgrid.spring.boot.ApiController
 import com.hatchgrid.thryve.AppConstants.Paths.API
 import com.hatchgrid.thryve.AppConstants.UUID_PATTERN
 import com.hatchgrid.thryve.form.application.delete.DeleteFormCommand
+import com.hatchgrid.thryve.workspace.domain.WorkspaceAuthorizationException
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
@@ -71,7 +72,8 @@ class DeleteFormController(
         val sanitizedWorkspaceId = sanitizePathVariable(workspaceId)
         val sanitizedFormId = sanitizePathVariable(formId)
         log.debug("Deleting form with id: $sanitizedFormId in workspace: $sanitizedWorkspaceId")
-        dispatch(DeleteFormCommand(workspaceId, formId))
+        val userId = userId() ?: throw WorkspaceAuthorizationException("User has no access to workspace $workspaceId")
+        dispatch(DeleteFormCommand(workspaceId, formId, userId))
     }
 
     companion object {
