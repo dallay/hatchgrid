@@ -9,8 +9,10 @@ import com.hatchgrid.thryve.form.domain.FormFinderRepository
 import com.hatchgrid.thryve.form.domain.FormId
 import com.hatchgrid.thryve.form.domain.FormRepository
 import com.hatchgrid.thryve.form.domain.event.FormDeletedEvent
+import com.hatchgrid.thryve.form.domain.exception.FormNotFoundException
 import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
+import com.hatchgrid.thryve.workspace.domain.WorkspaceAuthorizationException
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
 import io.mockk.coEvery
@@ -21,6 +23,7 @@ import java.util.UUID
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 @UnitTest
 internal class DeleteFormCommandHandlerTest {
@@ -84,5 +87,43 @@ internal class DeleteFormCommandHandlerTest {
             )
         }
         coVerify(exactly = 1) { eventPublisher.publish(ofType<FormDeletedEvent>()) }
+    }
+
+    @Test
+    fun `should throw exception when user not authorized`(): Unit = runBlocking {
+        // Given
+        coEvery {
+            workspaceMemberRepository.existsByWorkspaceIdAndUserId(any(), any())
+        } returns false
+
+        val command = DeleteFormCommand(
+            workspaceId = workspaceId.value.toString(),
+            formId = formId.value.toString(),
+            userId = userId.value.toString(),
+        )
+
+        // When & Then
+        assertThrows<WorkspaceAuthorizationException> {
+            deleteFormCommandHandler.handle(command)
+        }
+    }
+
+    @Test
+    fun `should throw exception when form not found`(): Unit = runBlocking {
+        // Given
+        coEvery {
+            formFinderRepository.findByFormIdAndWorkspaceId(any(), any())
+        } returns null
+
+        val command = DeleteFormCommand(
+            workspaceId = workspaceId.value.toString(),
+            formId = formId.value.toString(),
+            userId = userId.value.toString(),
+        )
+
+        // When & Then
+        assertThrows<FormNotFoundException> {
+            deleteFormCommandHandler.handle(command)
+        }
     }
 }
