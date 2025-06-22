@@ -31,7 +31,11 @@ class FindFormQueryHandler(
         log.debug("Finding form with ids: ${query.workspaceId}, ${query.formId}")
         val formId = FormId(query.formId)
         val workspaceId = WorkspaceId(query.workspaceId)
-        val form = finder.find(workspaceId, formId) ?: throw FormNotFoundException("Form not found")
+        val form = finder.find(workspaceId, formId)
+            ?: run {
+                log.warn("Form not found. formId=$formId, workspaceId=$workspaceId")
+                throw FormNotFoundException("Form not found")
+            }
         return FormResponse.from(form)
     }
 
