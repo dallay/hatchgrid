@@ -37,12 +37,10 @@ data class FormResponse(
 ) : Response {
     companion object {
         /**
-        /**
          * Creates a new FormResponse from a given Form.
          *
          * @param form The form to create the response from.
          * @return The newly created FormResponse.
-         */
          */
         fun from(form: Form) = FormResponse(
             id = form.id.value.toString(),

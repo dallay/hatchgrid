@@ -59,7 +59,7 @@ class DeleteFormController(
         )
         @PathVariable workspaceId: String,
         @Parameter(
-            description = "ID of the form to be created",
+            description = "ID of the form to be deleted",
             required = true,
             schema = Schema(type = "string", format = "uuid"),
         )
