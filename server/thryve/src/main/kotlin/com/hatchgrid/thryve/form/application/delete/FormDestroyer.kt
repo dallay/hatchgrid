@@ -14,12 +14,12 @@ import org.slf4j.LoggerFactory
 /**
  * This service class is responsible for deleting forms.
  *
- * @property destroyer The repository that handles the deletion of forms.
+ * @property formRepository The repository that handles the deletion of forms.
  * @property eventPublisher The publisher that handles the broadcasting of form deletion events.
  */
 @Service
 class FormDestroyer(
-    private val destroyer: FormRepository,
+    private val formRepository: FormRepository,
     private val finder: FormFinder,
     eventPublisher: EventPublisher<FormDeletedEvent>
 ) {
@@ -39,7 +39,7 @@ class FormDestroyer(
         log.debug("Deleting form with ids: {}, {}", workspaceId, formId)
         val form =
             finder.find(workspaceId, formId) ?: throw FormNotFoundException("Form not found")
-        destroyer.delete(form.id)
+        formRepository.delete(form.id)
         eventPublisher.publish(FormDeletedEvent(formId.value.toString()))
     }
 
