@@ -19,9 +19,9 @@ import io.mockk.mockk
 import java.util.UUID
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 @UnitTest
 internal class UpdateFormCommandHandlerTest {
@@ -130,12 +130,10 @@ internal class UpdateFormCommandHandlerTest {
         } returns null
 
         runBlocking {
-            try {
+            val exception = assertThrows<FormNotFoundException> {
                 updateFormCommandHandler.handle(command)
-            } catch (e: Exception) {
-                assertTrue(e is FormNotFoundException)
-                assertEquals("Form not found", e.message)
             }
+            assertEquals("Form not found", exception.message)
         }
     }
 }
