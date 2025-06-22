@@ -17,12 +17,13 @@ import org.slf4j.LoggerFactory
 @Service
 class FormFinder(private val finder: FormFinderRepository) {
     /**
-     * This function is used to find a form by its ID.
-     *
-     * @param workspaceId The workspace ID of the form to find.
-     * @param formId The ID of the form to find.
-     * @return The form if found, or throws a [FormNotFoundException] if not found.
-     */
+     /**
+      * This function is used to find a form by its ID.
+      *
+      * @param workspaceId The workspace ID of the form to find.
+      * @param formId The ID of the form to find.
+      * @return The form if found, or null if not found.
+      */
     suspend fun find(workspaceId: WorkspaceId, formId: FormId): Form? {
         log.debug("Finding form with ids: {}, {}", workspaceId, formId)
         return finder.findByFormIdAndWorkspaceId(workspaceId = workspaceId, formId = formId)
