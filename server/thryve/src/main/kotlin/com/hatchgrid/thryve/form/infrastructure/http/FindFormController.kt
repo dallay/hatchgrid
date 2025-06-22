@@ -42,7 +42,7 @@ class FindFormController(
         )
         @PathVariable workspaceId: String,
         @Parameter(
-            description = "ID of the form to be created",
+            description = "ID of the form to be found",
             required = true,
             schema = Schema(type = "string", format = "uuid"),
         )
