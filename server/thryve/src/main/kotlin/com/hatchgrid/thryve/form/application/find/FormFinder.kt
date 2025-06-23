@@ -26,7 +26,7 @@ class FormFinder(private val finder: FormFinderRepository) {
         log.debug("Finding form with ids: {}, {}", workspaceId, formId)
         val form = finder.findByFormIdAndWorkspaceId(
             workspaceId = workspaceId,
-            formId = formId
+            formId = formId,
         )
         if (form == null) {
             log.debug("Form not found with ids: {}, {}", workspaceId, formId)
