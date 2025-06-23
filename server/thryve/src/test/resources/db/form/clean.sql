@@ -1,2 +1,2 @@
--- Clean All Data After run tests
+-- Clean all data after running tests
 DELETE FROM forms;
