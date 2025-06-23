@@ -28,6 +28,7 @@ class UpdateFormCommandHandler(
      */
     override suspend fun handle(command: UpdateFormCommand) {
         log.debug("Updating form with name: ${command.name}")
+        workspaceAuthorizationService.ensureAccess(command.workspaceId, command.userId)
         val formStyleConfiguration = FormConfiguration(
             name = command.name,
             header = command.header,
@@ -39,7 +40,6 @@ class UpdateFormCommandHandler(
             textColor = command.textColor,
             buttonTextColor = command.buttonTextColor,
         )
-        workspaceAuthorizationService.ensureAccess(command.workspaceId, command.userId)
         formUpdater.update(
             WorkspaceId(command.workspaceId),
             FormId(command.id), formStyleConfiguration,
