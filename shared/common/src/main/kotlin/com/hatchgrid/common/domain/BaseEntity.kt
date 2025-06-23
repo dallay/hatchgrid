@@ -14,8 +14,8 @@ abstract class BaseEntity<ID> : Serializable {
     abstract val id: ID
     open val createdAt: LocalDateTime = LocalDateTime.now()
     open val createdBy: String = "system"
-    open var updatedAt: LocalDateTime? = null
-    open var updatedBy: String? = null
+    open val updatedAt: LocalDateTime? = null
+    open val updatedBy: String? = null
     private val domainEvents: MutableList<DomainEvent> = mutableListOf()
 
     /**

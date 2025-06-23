@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.form.domain
 
 import com.hatchgrid.UnitTest
-import com.hatchgrid.thryve.form.domain.dto.FormStyleConfiguration
+import com.hatchgrid.thryve.form.domain.dto.FormConfiguration
 import com.hatchgrid.thryve.form.domain.event.FormCreatedEvent
 import com.hatchgrid.thryve.form.domain.event.FormUpdatedEvent
 import java.time.LocalDateTime
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.assertThrows
 @UnitTest
 internal class FormTest {
 
-    private val validStyleConfig = FormStyleConfiguration(
+    private val validStyleConfig = FormConfiguration(
         name = "Test Form",
         header = "Test Header",
         description = "Test Description",
@@ -34,9 +34,9 @@ internal class FormTest {
 
         val form = Form.create(
             id = id,
-            styleConfiguration = validStyleConfig,
+            formConfiguration = validStyleConfig,
             workspaceId = workspaceId,
-            createdAt = now,
+            now = now,
         )
 
         assertEquals(id, form.id.value)
@@ -52,7 +52,7 @@ internal class FormTest {
     fun `should update form with new style configuration`() {
         val form = Form.create(
             id = UUID.randomUUID(),
-            styleConfiguration = validStyleConfig,
+            formConfiguration = validStyleConfig,
             workspaceId = UUID.randomUUID(),
         )
 
@@ -61,11 +61,11 @@ internal class FormTest {
             name = "Updated Form",
         )
 
-        form.update(updatedConfig)
+        val updateForm = form.update(updatedConfig)
 
-        assertEquals(updatedConfig.buttonColor, form.buttonColor.value)
-        assertEquals(updatedConfig.name, form.name)
-        assertNotNull(form.pullDomainEvents().find { it is FormUpdatedEvent })
+        assertEquals(updatedConfig.buttonColor, updateForm.buttonColor.value)
+        assertEquals(updatedConfig.name, updateForm.name)
+        assertNotNull(updateForm.pullDomainEvents().find { it is FormUpdatedEvent })
     }
 
     @Test
@@ -77,7 +77,7 @@ internal class FormTest {
         assertThrows<IllegalArgumentException> {
             Form.create(
                 id = UUID.randomUUID(),
-                styleConfiguration = invalidConfig,
+                formConfiguration = invalidConfig,
                 workspaceId = UUID.randomUUID(),
             )
         }

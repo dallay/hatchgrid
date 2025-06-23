@@ -7,7 +7,7 @@ import com.hatchgrid.common.domain.presentation.sort.Sort
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 
 /**
- * This is an interface for a repository that finds or search forms.
+ * This is an interface for a repository that finds or searches forms.
  */
 interface FormFinderRepository {
     /**

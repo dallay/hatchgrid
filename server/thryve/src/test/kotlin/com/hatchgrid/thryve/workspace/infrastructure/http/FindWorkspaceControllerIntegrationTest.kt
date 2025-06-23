@@ -30,9 +30,6 @@ internal class FindWorkspaceControllerIntegrationTest : ControllerIntegrationTes
             .jsonPath("$.ownerId").isEqualTo("efc4b2b8-08be-4020-93d5-f795762bf5c9")
             .jsonPath("$.createdAt").isNotEmpty
             .jsonPath("$.updatedAt").isNotEmpty
-            .consumeWith { response ->
-                println(response)
-            }
     }
 
     @Test
@@ -51,8 +48,5 @@ internal class FindWorkspaceControllerIntegrationTest : ControllerIntegrationTes
             .isEqualTo("/api/workspace/$id")
             .jsonPath("$.errorCategory").isEqualTo("NOT_FOUND")
             .jsonPath("$.timestamp").isNotEmpty
-            .consumeWith { response ->
-                println(response)
-            }
     }
 }

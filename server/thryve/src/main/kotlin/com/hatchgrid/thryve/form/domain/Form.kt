@@ -1,161 +1,149 @@
 package com.hatchgrid.thryve.form.domain
 
 import com.hatchgrid.common.domain.BaseEntity
-import com.hatchgrid.thryve.form.domain.dto.FormStyleConfiguration
+import com.hatchgrid.thryve.form.domain.dto.FormConfiguration
 import com.hatchgrid.thryve.form.domain.event.FormCreatedEvent
 import com.hatchgrid.thryve.form.domain.event.FormUpdatedEvent
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 /**
- * Data class representing a form.
+ * Represents a Form entity in the system.
  *
- * @property id The unique identifier of the form.
- * @property name The name of the form.
- * @property header The header of the form.
- * @property description The description of the form.
- * @property inputPlaceholder The input placeholder of the form.
- * @property buttonText The text of the button.
- * @property buttonColor The color of the button.
- * @property backgroundColor The background color of the form.
- * @property textColor The text color of the form.
- * @property buttonTextColor The text color of the button.
- * @property createdAt The creation time of the form.
- * @property updatedAt The last update time of the form.
+ * @property id Unique identifier for the form.
+ * @property name Name of the form.
+ * @property header Header text displayed on the form.
+ * @property description Description of the form.
+ * @property inputPlaceholder Placeholder text for input fields.
+ * @property buttonText Text displayed on the form's button.
+ * @property buttonColor Hex color code for the button.
+ * @property backgroundColor Hex color code for the form's background.
+ * @property textColor Hex color code for the text.
+ * @property buttonTextColor Hex color code for the button text.
+ * @property workspaceId Identifier for the workspace associated with the form.
+ * @property createdAt Timestamp when the form was created.
+ * @property updatedAt Timestamp when the form was last updated.
  */
 data class Form(
     override val id: FormId,
-    var name: String,
-    var header: String,
-    var description: String,
-    var inputPlaceholder: String,
-    var buttonText: String,
-    var buttonColor: HexColor,
-    var backgroundColor: HexColor,
-    var textColor: HexColor,
-    var buttonTextColor: HexColor,
+    val name: String,
+    val header: String,
+    val description: String,
+    val inputPlaceholder: String,
+    val buttonText: String,
+    val buttonColor: HexColor,
+    val backgroundColor: HexColor,
+    val textColor: HexColor,
+    val buttonTextColor: HexColor,
     val workspaceId: WorkspaceId,
-    override val createdAt: LocalDateTime = LocalDateTime.now(),
-    override var updatedAt: LocalDateTime? = createdAt,
+    override val createdAt: LocalDateTime,
+    override val updatedAt: LocalDateTime?,
 ) : BaseEntity<FormId>() {
 
     /**
-     * Updates the form with the given Style Configuration and records a FormUpdatedEvent.
+     * Updates the form with new configuration values.
      *
-     * @param styleConfiguration The [FormStyleConfiguration] containing the new form data.
+     * @param formConfiguration The new configuration values for the form.
+     * @return A new immutable instance of the form with updated values,
+     * or the current instance if no changes are detected.
      */
-    fun update(styleConfiguration: FormStyleConfiguration) {
-        // Get validated HexColor objects (validation happens internally in toHexColors())
-        val validatedColors = styleConfiguration.toHexColors()
-        var modified = false
+    fun update(formConfiguration: FormConfiguration): Form {
+        val candidate = fromConfiguration(
+            id = this.id,
+            workspaceId = this.workspaceId,
+            createdAt = this.createdAt,
+            formConfiguration = formConfiguration,
+            updatedAt = LocalDateTime.now(),
+        )
 
-        if (name != styleConfiguration.name) {
-            name = styleConfiguration.name
-            modified = true
+        // If no changes are detected, return the current instance.
+        if (candidate.copy(updatedAt = this.updatedAt) == this) {
+            return this
         }
 
-        if (header != styleConfiguration.header) {
-            header = styleConfiguration.header
-            modified = true
-        }
-
-        if (description != styleConfiguration.description) {
-            description = styleConfiguration.description
-            modified = true
-        }
-
-        if (inputPlaceholder != styleConfiguration.inputPlaceholder) {
-            inputPlaceholder = styleConfiguration.inputPlaceholder
-            modified = true
-        }
-
-        if (buttonText != styleConfiguration.buttonText) {
-            buttonText = styleConfiguration.buttonText
-            modified = true
-        }
-
-        if (buttonColor.value != styleConfiguration.buttonColor) {
-            buttonColor = validatedColors["buttonColor"]!!
-            modified = true
-        }
-
-        if (backgroundColor.value != styleConfiguration.backgroundColor) {
-            backgroundColor = validatedColors["backgroundColor"]!!
-            modified = true
-        }
-
-        if (textColor.value != styleConfiguration.textColor) {
-            textColor = validatedColors["textColor"]!!
-            modified = true
-        }
-
-        if (buttonTextColor.value != styleConfiguration.buttonTextColor) {
-            buttonTextColor = validatedColors["buttonTextColor"]!!
-            modified = true
-        }
-
-        if (modified) {
-            updatedAt = LocalDateTime.now()
-
-            record(
-                FormUpdatedEvent(
-                    id.toString(),
-                    name,
-                    header,
-                    description,
-                    inputPlaceholder,
-                    buttonText,
-                    buttonColor.value,
-                    backgroundColor.value,
-                    textColor.value,
-                    buttonTextColor.value,
-                ),
-            )
-        }
+        // Record the update event and return the new instance.
+        candidate.record(
+            FormUpdatedEvent(
+                id = this.id.value.toString(),
+                name = candidate.name,
+                header = candidate.header,
+                description = candidate.description,
+                inputPlaceholder = candidate.inputPlaceholder,
+                buttonText = candidate.buttonText,
+                buttonColor = candidate.buttonColor.value,
+                backgroundColor = candidate.backgroundColor.value,
+                textColor = candidate.textColor.value,
+                buttonTextColor = candidate.buttonTextColor.value,
+            ),
+        )
+        return candidate
     }
 
     companion object {
         /**
-         * Creates a new form with the given id, Style Configuration, workspace id, and creation time.
+         * Creates a new Form instance.
          *
-         * @param id The id of the new form.
-         * @param styleConfiguration The [FormStyleConfiguration] containing the form data.
-         * @param workspaceId The id of the workspace the form belongs to.
-         * @param createdAt The creation time of the new form. Defaults to the current time.
-         * @param updatedAt The last update time of the new form. Defaults to the creation time.
-         * @return The newly created form.
+         * @param id Unique identifier for the form.
+         * @param workspaceId Unique identifier for the associated workspace.
+         * @param formConfiguration Configuration values for the form.
+         * @param now Current timestamp for creation and update.
+         * @return A new Form instance.
          */
         fun create(
             id: UUID,
-            styleConfiguration: FormStyleConfiguration,
             workspaceId: UUID,
-            createdAt: LocalDateTime = LocalDateTime.now(),
-            updatedAt: LocalDateTime? = createdAt
+            formConfiguration: FormConfiguration,
+            now: LocalDateTime = LocalDateTime.now()
         ): Form {
-            val formId = FormId(id)
-            val formWorkspaceId = WorkspaceId(workspaceId)
-
-            // Get validated HexColor objects (validation happens internally in toHexColors())
-            val validatedColors = styleConfiguration.toHexColors()
-
-            val form = Form(
-                id = formId,
-                name = styleConfiguration.name,
-                header = styleConfiguration.header,
-                description = styleConfiguration.description,
-                inputPlaceholder = styleConfiguration.inputPlaceholder,
-                buttonText = styleConfiguration.buttonText,
-                buttonColor = validatedColors["buttonColor"]!!,
-                backgroundColor = validatedColors["backgroundColor"]!!,
-                textColor = validatedColors["textColor"]!!,
-                buttonTextColor = validatedColors["buttonTextColor"]!!,
-                workspaceId = formWorkspaceId,
-                createdAt = createdAt,
-                updatedAt = updatedAt,
+            val form = fromConfiguration(
+                id = FormId(id),
+                workspaceId = WorkspaceId(workspaceId),
+                createdAt = now,
+                updatedAt = now,
+                formConfiguration = formConfiguration,
             )
             form.record(FormCreatedEvent(id.toString()))
             return form
+        }
+
+        /**
+         * Constructs a Form instance from configuration values.
+         *
+         * @param id Unique identifier for the form.
+         * @param workspaceId Unique identifier for the associated workspace.
+         * @param createdAt Timestamp when the form was created.
+         * @param updatedAt Timestamp when the form was last updated.
+         * @param formConfiguration Configuration values for the form.
+         * @return A Form instance populated with the provided configuration values.
+         * @throws IllegalArgumentException If the configuration values are invalid.
+         */
+        private fun fromConfiguration(
+            id: FormId,
+            workspaceId: WorkspaceId,
+            createdAt: LocalDateTime,
+            updatedAt: LocalDateTime?,
+            formConfiguration: FormConfiguration
+        ): Form {
+            try {
+                return Form(
+                    id = id,
+                    workspaceId = workspaceId,
+                    name = formConfiguration.name,
+                    header = formConfiguration.header,
+                    description = formConfiguration.description,
+                    inputPlaceholder = formConfiguration.inputPlaceholder,
+                    buttonText = formConfiguration.buttonText,
+                    buttonColor = HexColor(formConfiguration.buttonColor),
+                    backgroundColor = HexColor(formConfiguration.backgroundColor),
+                    textColor = HexColor(formConfiguration.textColor),
+                    buttonTextColor = HexColor(formConfiguration.buttonTextColor),
+                    createdAt = createdAt,
+                    updatedAt = updatedAt,
+                )
+            } catch (e: IllegalArgumentException) {
+                throw IllegalArgumentException("Invalid form configuration: ${e.message}", e)
+            }
         }
     }
 }
