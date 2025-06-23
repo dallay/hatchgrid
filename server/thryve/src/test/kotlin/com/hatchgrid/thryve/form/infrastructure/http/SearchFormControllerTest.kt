@@ -68,8 +68,6 @@ internal class SearchFormControllerTest : ControllerTest() {
             .jsonPath("$.data[0].buttonTextColor").isEqualTo(data.first().buttonTextColor)
             .jsonPath("$.data[0].createdAt").exists()
             .jsonPath("$.data[0].updatedAt").exists()
-
-        coEvery { mediator.send(any(SearchFormsQuery::class)) }
     }
 
     @Test

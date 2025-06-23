@@ -6,6 +6,7 @@ import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.con
 import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.converter.SubscriberStatusWriterConverter
 import io.r2dbc.postgresql.codec.EnumCodec
 import io.r2dbc.postgresql.codec.EnumCodec.Builder.RegistrationPriority
+import io.r2dbc.spi.ConnectionFactory
 import io.r2dbc.spi.ConnectionFactoryOptions
 import io.r2dbc.spi.Option
 import org.slf4j.LoggerFactory
@@ -17,14 +18,20 @@ import org.springframework.data.r2dbc.config.EnableR2dbcAuditing
 import org.springframework.data.r2dbc.convert.R2dbcCustomConversions
 import org.springframework.data.r2dbc.dialect.DialectResolver
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
+import org.springframework.r2dbc.connection.R2dbcTransactionManager
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.transaction.annotation.EnableTransactionManagement
+import org.springframework.transaction.reactive.TransactionalOperator
 
 @Configuration
 @EnableTransactionManagement
 @EnableR2dbcRepositories(basePackages = ["com.hatchgrid.*"])
 @EnableR2dbcAuditing
 class DatabaseConfig {
+    @Bean
+    fun transactionalOperator(connectionFactory: ConnectionFactory): TransactionalOperator =
+        TransactionalOperator.create(R2dbcTransactionManager(connectionFactory))
+
     /**
      * Use the customizer to add EnumCodec to R2DBC
      */

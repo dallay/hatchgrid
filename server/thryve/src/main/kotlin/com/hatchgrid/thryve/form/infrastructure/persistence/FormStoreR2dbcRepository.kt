@@ -39,7 +39,7 @@ class FormStoreR2dbcRepository(
         try {
             formR2dbcRepository.save(form.toEntity())
         } catch (e: DuplicateKeyException) {
-            log.error("Form already exists in the database: ${form.id.value}")
+            log.error("Form already exists in the database")
             throw FormException("Error creating form", e)
         }
     }
@@ -56,7 +56,7 @@ class FormStoreR2dbcRepository(
             val entity = form.toEntity()
             formR2dbcRepository.save(entity)
         } catch (e: org.springframework.dao.TransientDataAccessResourceException) {
-            log.error("Error updating form with id: ${form.id.value}")
+            log.error("Error updating form because it does not exist")
             throw FormException("Error updating form because it does not exist", e)
         }
     }
