@@ -24,7 +24,14 @@ class FormFinder(private val finder: FormFinderRepository) {
      */
     suspend fun find(workspaceId: WorkspaceId, formId: FormId): Form? {
         log.debug("Finding form with ids: {}, {}", workspaceId, formId)
-        return finder.findByFormIdAndWorkspaceId(workspaceId = workspaceId, formId = formId)
+        val form = finder.findByFormIdAndWorkspaceId(
+            workspaceId = workspaceId,
+            formId = formId
+        )
+        if (form == null) {
+            log.debug("Form not found with ids: {}, {}", workspaceId, formId)
+        }
+        return form
     }
 
     companion object {
