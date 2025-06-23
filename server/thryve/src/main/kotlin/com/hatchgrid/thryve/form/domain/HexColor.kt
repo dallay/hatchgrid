@@ -5,16 +5,21 @@ import com.hatchgrid.common.domain.BaseValidateValueObject
 /**
  * Value object for hexadecimal color codes that are validated when created
  */
-data class HexColor(val hex: String) : BaseValidateValueObject<String>(hex) {
+data class HexColor(val hex: String) : BaseValidateValueObject<String>(
+    if (hex.startsWith("#")) hex else "#$hex",
+) {
 
     /**
      * Validates the value of the value object
      * @param value the value to validate
      */
     override fun validate(value: String) {
-        require(value.isNotBlank()) { "Color code cannot be empty" }
-        val normalizedHex = if (value.startsWith("#")) value else "#$value"
-        require(regex.matches(normalizedHex)) { "Invalid hexadecimal color code: $normalizedHex" }
+        require(value.isNotBlank() && value != "#") { "Color code cannot be empty" }
+        require(
+            regex.matches(
+                if (value.startsWith("#")) value else "#$value",
+            ),
+        ) { "Invalid hexadecimal color code: $value" }
     }
 
     /**
