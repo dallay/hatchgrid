@@ -1,6 +1,10 @@
 package com.hatchgrid.thryve.form.infrastructure.persistence.entity
 
 import com.hatchgrid.common.domain.AuditableEntity
+import com.hatchgrid.thryve.AppConstants.HEXADECIMAL_COLOR_PATTERN
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
 import java.time.LocalDateTime
 import java.util.*
 import org.springframework.data.annotation.CreatedBy
@@ -17,15 +21,29 @@ data class FormEntity(
     @Id
     @JvmField
     val id: UUID,
+    @field:NotBlank(message = "Name cannot be blank")
     val name: String,
+    @field:NotBlank(message = "Header cannot be blank")
     val header: String,
+    @field:NotBlank(message = "Description cannot be blank")
     val description: String,
+    @field:NotBlank(message = "Input placeholder cannot be blank")
     val inputPlaceholder: String,
+    @field:NotBlank(message = "Button text cannot be blank")
     val buttonText: String,
+    @field:NotBlank(message = "Button color cannot be blank")
+    @field:Pattern(regexp = HEXADECIMAL_COLOR_PATTERN, message = "Button color must be a valid hexadecimal color")
     val buttonColor: String,
+    @field:NotBlank(message = "Background color cannot be blank")
+    @field:Pattern(regexp = HEXADECIMAL_COLOR_PATTERN, message = "Background color must be a valid hexadecimal color")
     val backgroundColor: String,
+    @field:NotBlank(message = "Text color cannot be blank")
+    @field:Pattern(regexp = HEXADECIMAL_COLOR_PATTERN, message = "Text color must be a valid hexadecimal color")
     val textColor: String,
+    @field:NotBlank(message = "Button text color cannot be blank")
+    @field:Pattern(regexp = HEXADECIMAL_COLOR_PATTERN, message = "Button text color must be a valid hexadecimal color")
     val buttonTextColor: String,
+    @field:NotNull(message = "Workspace ID cannot be null")
     val workspaceId: UUID,
     @CreatedBy
     @Column("created_by")

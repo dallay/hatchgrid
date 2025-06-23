@@ -93,13 +93,12 @@ class SearchFormController(
 
     /**
      * Creates a criteria object from the cursor request pageable.
-     * The criteria object is used to filter the results. It is created from the search and filter
-     * properties of the cursor request pageable.
-     * Search is used to filter the email, firstname and lastname fields.
-     * Filter is used to filter the fields of the entity.
+     * The criteria object is used to filter the form results based on search and filter properties.
+     * Search is used to match form fields including name, header, description, input placeholder,
+     * and button text. Filter is used to apply specific filtering conditions on any form field.
      *
-     * @param cursorRequestPageable The cursor request pageable.
-     * @return The criteria object.
+     * @param cursorRequestPageable The cursor request pageable containing search and filter parameters.
+     * @return The criteria object for form filtering.
      */
     private fun criteria(cursorRequestPageable: CursorRequestPageable): Criteria {
         val search = cursorRequestPageable.search
@@ -158,12 +157,12 @@ class SearchFormController(
 
     /**
      * Creates a list of search queries from the given search string.
-     * The search query is used to filter the email, firstname and lastname fields.
-     * The search query is created from the given search string and its lowercase, uppercase and titlecase
-     * versions.
+     * The search query is used to filter form fields (name, header, description,
+     * input placeholder, and button text). It creates case-insensitive variations
+     * of the search term by generating lowercase, uppercase, and titlecase versions.
      *
-     * @param search The search string.
-     * @return The list of search queries.
+     * @param search The search string to match against form fields.
+     * @return The list of search queries in different case variations.
      */
     private fun getSearchQuery(search: String): List<String> {
         val trimQuery = search.trim()

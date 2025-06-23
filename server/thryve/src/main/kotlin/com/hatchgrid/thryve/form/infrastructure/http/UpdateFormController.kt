@@ -62,7 +62,7 @@ class UpdateFormController(
         )
         @PathVariable workspaceId: String,
         @Parameter(
-            description = "ID of the form to be created",
+            description = "ID of the form to be updated",
             required = true,
             schema = Schema(type = "string", format = "uuid"),
         )

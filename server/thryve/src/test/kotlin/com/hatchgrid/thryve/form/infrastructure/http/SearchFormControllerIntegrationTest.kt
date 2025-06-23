@@ -97,7 +97,7 @@ internal class SearchFormControllerIntegrationTest : ControllerIntegrationTest()
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should get all forms with filtter`() {
+    fun `should get all forms with filter`() {
         webTestClient.run {
             get()
                 .uri { uriBuilder ->

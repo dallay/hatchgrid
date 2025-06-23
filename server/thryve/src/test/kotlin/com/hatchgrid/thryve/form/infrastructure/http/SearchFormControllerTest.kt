@@ -113,8 +113,6 @@ internal class SearchFormControllerTest : ControllerTest() {
             .jsonPath("$.data[0].buttonTextColor").isEqualTo(firstElement.buttonTextColor)
             .jsonPath("$.data[0].createdAt").exists()
             .jsonPath("$.data[0].updatedAt").exists()
-
-        coEvery { mediator.send(query) }
     }
 
     @Test
