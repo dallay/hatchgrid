@@ -5,13 +5,7 @@ import com.hatchgrid.common.domain.BaseValidateValueObject
 /**
  * Value object for hexadecimal color codes that are validated when created
  */
-data class HexColor(val hex: String) :
-    BaseValidateValueObject<String>(
-        hex.takeIf {
-            it.isNotBlank()
-        }?.let { if (it.startsWith("#")) it else "#$it" }
-            ?: throw IllegalArgumentException("Color code cannot be empty"),
-    ) {
+data class HexColor(val hex: String) : BaseValidateValueObject<String>(hex) {
 
     /**
      * Validates the value of the value object
