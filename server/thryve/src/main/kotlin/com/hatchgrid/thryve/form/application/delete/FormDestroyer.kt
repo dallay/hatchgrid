@@ -39,8 +39,9 @@ class FormDestroyer(
         log.debug("Deleting form with ids: {}, {}", workspaceId, formId)
         val form =
             finder.find(workspaceId, formId) ?: throw FormNotFoundException("Form not found")
-        formRepository.delete(form.id)
-        eventPublisher.publish(FormDeletedEvent(formId.value.toString()))
+        formRepository.delete(form.id).also {
+            eventPublisher.publish(FormDeletedEvent(formId.value.toString()))
+        }
     }
 
     companion object {

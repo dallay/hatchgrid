@@ -2,8 +2,8 @@ package com.hatchgrid.thryve.form.application.update
 
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.command.CommandHandler
+import com.hatchgrid.thryve.form.domain.FormConfiguration
 import com.hatchgrid.thryve.form.domain.FormId
-import com.hatchgrid.thryve.form.domain.dto.FormConfiguration
 import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import org.slf4j.LoggerFactory

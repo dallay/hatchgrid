@@ -1,7 +1,6 @@
 package com.hatchgrid.thryve.form.domain
 
 import com.hatchgrid.UnitTest
-import com.hatchgrid.thryve.form.domain.dto.FormConfiguration
 import com.hatchgrid.thryve.form.domain.event.FormCreatedEvent
 import com.hatchgrid.thryve.form.domain.event.FormUpdatedEvent
 import java.time.LocalDateTime

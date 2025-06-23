@@ -1,4 +1,4 @@
-package com.hatchgrid.thryve.form.domain.dto
+package com.hatchgrid.thryve.form.domain
 
 /**
  * Represents the configuration for a form.

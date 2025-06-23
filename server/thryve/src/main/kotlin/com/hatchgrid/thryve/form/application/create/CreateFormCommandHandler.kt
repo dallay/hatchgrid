@@ -3,7 +3,7 @@ package com.hatchgrid.thryve.form.application.create
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.command.CommandHandler
 import com.hatchgrid.thryve.form.domain.Form
-import com.hatchgrid.thryve.form.domain.dto.FormConfiguration
+import com.hatchgrid.thryve.form.domain.FormConfiguration
 import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import java.util.*
 import org.slf4j.LoggerFactory

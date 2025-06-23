@@ -5,9 +5,9 @@ import com.hatchgrid.common.domain.presentation.pagination.TimestampCursor
 import com.hatchgrid.thryve.GeneralStub.getTimestampCursorPage
 import com.hatchgrid.thryve.form.application.FormResponse
 import com.hatchgrid.thryve.form.domain.Form
+import com.hatchgrid.thryve.form.domain.FormConfiguration
 import com.hatchgrid.thryve.form.domain.FormId
 import com.hatchgrid.thryve.form.domain.HexColor
-import com.hatchgrid.thryve.form.domain.dto.FormConfiguration
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import java.time.LocalDateTime
 import java.util.*

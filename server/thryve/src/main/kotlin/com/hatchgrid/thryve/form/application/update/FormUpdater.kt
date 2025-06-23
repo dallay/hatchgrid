@@ -3,10 +3,10 @@ package com.hatchgrid.thryve.form.application.update
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.event.EventBroadcaster
 import com.hatchgrid.common.domain.bus.event.EventPublisher
+import com.hatchgrid.thryve.form.domain.FormConfiguration
 import com.hatchgrid.thryve.form.domain.FormFinderRepository
 import com.hatchgrid.thryve.form.domain.FormId
 import com.hatchgrid.thryve.form.domain.FormRepository
-import com.hatchgrid.thryve.form.domain.dto.FormConfiguration
 import com.hatchgrid.thryve.form.domain.event.FormUpdatedEvent
 import com.hatchgrid.thryve.form.domain.exception.FormNotFoundException
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
