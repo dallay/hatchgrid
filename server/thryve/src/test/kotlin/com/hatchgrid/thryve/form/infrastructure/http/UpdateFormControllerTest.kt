@@ -4,6 +4,7 @@ import com.hatchgrid.ControllerTest
 import com.hatchgrid.UnitTest
 import com.hatchgrid.thryve.form.FormStub
 import com.hatchgrid.thryve.form.application.update.UpdateFormCommand
+import com.hatchgrid.thryve.form.domain.exception.FormNotFoundException
 import com.hatchgrid.thryve.form.infrastructure.http.request.UpdateFormRequest
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -39,7 +40,7 @@ internal class UpdateFormControllerTest : ControllerTest() {
     @BeforeEach
     override fun setUp() {
         super.setUp()
-        coEvery { mediator.send(eq(command)) } returns Unit
+        coEvery { mediator.send(command) } returns Unit
     }
 
     @Test
@@ -65,5 +66,54 @@ internal class UpdateFormControllerTest : ControllerTest() {
         val commandSlot = slot<UpdateFormCommand>()
         coVerify(exactly = 1) { mediator.send(capture(commandSlot)) }
         assertEquals(command, commandSlot.captured)
+    }
+
+    @Test
+    fun `should return 400 when request data is invalid`() {
+        val invalidRequest = UpdateFormRequest(
+            name = "", // Invalid: empty name
+            header = form.header,
+            description = form.description,
+            inputPlaceholder = form.inputPlaceholder,
+            buttonText = form.buttonText,
+            buttonColor = "invalid-color", // Invalid: not a hex color
+            backgroundColor = form.backgroundColor.hex,
+            textColor = form.textColor.hex,
+            buttonTextColor = form.buttonTextColor.hex,
+        )
+
+        webTestClient.put()
+            .uri("/api/workspace/$workspaceId/form/$formId/update")
+            .bodyValue(invalidRequest)
+            .exchange()
+            .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `should return 404 when form is not found`() {
+        val nonExistentFormId = UUID.randomUUID().toString()
+        val request = UpdateFormRequest(
+            name = form.name,
+            header = form.header,
+            description = form.description,
+            inputPlaceholder = form.inputPlaceholder,
+            buttonText = form.buttonText,
+            buttonColor = form.buttonColor.hex,
+            backgroundColor = form.backgroundColor.hex,
+            textColor = form.textColor.hex,
+            buttonTextColor = form.buttonTextColor.hex,
+        )
+
+        coEvery {
+            mediator.send(
+                match<UpdateFormCommand> { it.id == nonExistentFormId },
+            )
+        } throws FormNotFoundException(nonExistentFormId)
+
+        webTestClient.put()
+            .uri("/api/workspace/$workspaceId/form/$nonExistentFormId/update")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isNotFound
     }
 }
