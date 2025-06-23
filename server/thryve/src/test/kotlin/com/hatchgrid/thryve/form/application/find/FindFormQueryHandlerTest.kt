@@ -31,11 +31,11 @@ internal class FindFormQueryHandlerTest {
     @Test
     fun `should return form response when form is found`() = runBlocking {
         // Given
-        val formUuid = UUID.randomUUID().toString()
-        val organizaitionUuid = UUID.randomUUID().toString()
-        val formId = FormId(formUuid)
-        val workspaceId = WorkspaceId(organizaitionUuid)
-        val form = FormStub.create(id = formUuid, workspaceId = organizaitionUuid)
+        val fID = UUID.randomUUID().toString()
+        val wID = UUID.randomUUID().toString()
+        val formId = FormId(fID)
+        val workspaceId = WorkspaceId(wID)
+        val form = FormStub.create(id = fID, workspaceId = wID)
         val formResponse = FormResponse.from(form)
         coEvery {
             formFinder.find(
@@ -45,7 +45,7 @@ internal class FindFormQueryHandlerTest {
         } returns form
 
         // When
-        val result = findFormQueryHandler.handle(FindFormQuery(workspaceId = organizaitionUuid, formId = formUuid))
+        val result = findFormQueryHandler.handle(FindFormQuery(workspaceId = wID, formId = fID))
 
         // Then
         assertEquals(formResponse, result)

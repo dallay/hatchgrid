@@ -30,10 +30,10 @@ internal class DetailFormQueryHandlerTest {
     @Test
     fun `should return form response when form is found`() = runBlocking {
         // Given
-        val formUuid = UUID.randomUUID().toString()
-        val organizaitionUuid = UUID.randomUUID().toString()
-        val formId = FormId(formUuid)
-        val form = FormStub.create(id = formUuid, workspaceId = organizaitionUuid)
+        val fID = UUID.randomUUID().toString()
+        val wID = UUID.randomUUID().toString()
+        val formId = FormId(fID)
+        val form = FormStub.create(id = fID, workspaceId = wID)
         val formResponse = FormResponse.from(form)
         coEvery {
             detailFormFetcher.find(
@@ -42,7 +42,7 @@ internal class DetailFormQueryHandlerTest {
         } returns form
 
         // When
-        val result = findFormQueryHandler.handle(DetailFormQuery(formUuid))
+        val result = findFormQueryHandler.handle(DetailFormQuery(fID))
 
         // Then
         assertEquals(formResponse, result)
