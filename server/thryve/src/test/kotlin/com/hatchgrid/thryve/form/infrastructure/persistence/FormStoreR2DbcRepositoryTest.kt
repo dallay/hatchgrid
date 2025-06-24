@@ -10,6 +10,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -72,7 +74,6 @@ internal class FormStoreR2DbcRepositoryTest {
         }
     }
 
-    @Test
     @Test
     fun `should find form by id`(): Unit = runBlocking {
         coEvery { formR2dbcRepository.findById(any()) } returns form.toEntity()
