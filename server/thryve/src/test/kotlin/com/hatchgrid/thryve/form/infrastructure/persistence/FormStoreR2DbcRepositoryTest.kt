@@ -73,9 +73,12 @@ internal class FormStoreR2DbcRepositoryTest {
     }
 
     @Test
+    @Test
     fun `should find form by id`(): Unit = runBlocking {
         coEvery { formR2dbcRepository.findById(any()) } returns form.toEntity()
-        formStoreR2dbcRepository.findById(form.id)
+        val result = formStoreR2dbcRepository.findById(form.id)
+        assertNotNull(result)
+        assertEquals(form.id, result?.id)
     }
 
     @Test
