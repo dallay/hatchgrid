@@ -72,7 +72,7 @@ class UpdateFormController(
         )
         @PathVariable formId: String,
         @Validated @RequestBody request: UpdateFormRequest
-    ): ResponseEntity<String> {
+    ): ResponseEntity<Unit> {
         val sanitizedWorkspaceId = sanitizePathVariable(workspaceId)
         val sanitizedFormId = sanitizePathVariable(formId)
         log.debug("Updating form with id: $sanitizedFormId in workspace: $sanitizedWorkspaceId")
@@ -94,7 +94,7 @@ class UpdateFormController(
             ),
         )
 
-        return ResponseEntity.ok("Form updated successfully")
+        return ResponseEntity.ok().build()
     }
 
     companion object {

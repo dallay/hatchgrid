@@ -61,8 +61,8 @@ internal class UpdateFormControllerTest : ControllerTest() {
             .bodyValue(request)
             .exchange()
             .expectStatus().isOk
-            .expectBody(String::class.java)
-            .isEqualTo("Form updated successfully")
+            .expectBody().isEmpty
+
         val commandSlot = slot<UpdateFormCommand>()
         coVerify(exactly = 1) { mediator.send(capture(commandSlot)) }
         assertEquals(command, commandSlot.captured)

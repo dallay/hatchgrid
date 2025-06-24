@@ -32,8 +32,7 @@ internal class UpdateFormControllerIntegrationTest : ControllerIntegrationTest()
             .bodyValue(request)
             .exchange()
             .expectStatus().isOk
-            .expectBody(String::class.java)
-            .isEqualTo("Form updated successfully")
+            .expectBody().isEmpty
     }
 
     @Test
