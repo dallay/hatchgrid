@@ -72,7 +72,7 @@ class DeleteFormController(
         val sanitizedWorkspaceId = sanitizePathVariable(workspaceId)
         val sanitizedFormId = sanitizePathVariable(formId)
         log.debug("Deleting form with id: $sanitizedFormId in workspace: $sanitizedWorkspaceId")
-        val userId = userId() ?: throw WorkspaceAuthorizationException("User has no access to workspace $workspaceId")
+        val userId = userId() ?: throw WorkspaceAuthorizationException("User has no access to workspace")
         dispatch(DeleteFormCommand(workspaceId, formId, userId))
     }
 

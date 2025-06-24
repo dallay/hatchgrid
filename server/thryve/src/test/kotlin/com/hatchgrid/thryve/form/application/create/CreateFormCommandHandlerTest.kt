@@ -16,8 +16,10 @@ import io.mockk.mockk
 import java.util.*
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 @UnitTest
 internal class CreateFormCommandHandlerTest {
@@ -51,24 +53,30 @@ internal class CreateFormCommandHandlerTest {
         coEvery { eventPublisher.publish(any<FormCreatedEvent>()) } returns Unit
     }
 
+    private fun createCommand(
+        formId: String = UUID.randomUUID().toString(),
+        form: Form = this.form,
+        userId: UserId = this.userId
+    ) = CreateFormCommand(
+        id = formId,
+        name = form.name,
+        header = form.header,
+        description = form.description,
+        inputPlaceholder = form.inputPlaceholder,
+        buttonText = form.buttonText,
+        buttonColor = form.buttonColor.hex,
+        backgroundColor = form.backgroundColor.hex,
+        textColor = form.textColor.hex,
+        buttonTextColor = form.buttonTextColor.hex,
+        workspaceId = form.workspaceId.value.toString(),
+        userId = userId.value.toString(),
+    )
+
     @Test
     fun `should create a form`() = runBlocking {
         // Given
         val formId = UUID.randomUUID().toString()
-        val command = CreateFormCommand(
-            id = formId,
-            name = form.name,
-            header = form.header,
-            description = form.description,
-            inputPlaceholder = form.inputPlaceholder,
-            buttonText = form.buttonText,
-            buttonColor = form.buttonColor.hex,
-            backgroundColor = form.backgroundColor.hex,
-            textColor = form.textColor.hex,
-            buttonTextColor = form.buttonTextColor.hex,
-            workspaceId = form.workspaceId.value.toString(),
-            userId = userId.value.toString(),
-        )
+        val command = createCommand(formId = formId)
 
         // When
         createFormCommandHandler.handle(command)
@@ -96,8 +104,11 @@ internal class CreateFormCommandHandlerTest {
     }
 
     @Test
-    fun `should throw exception when workspace authorization fails`() = runBlocking {
+    fun `should fail when user is not a workspace member`() = runBlocking {
         // Given
+        val formId = UUID.randomUUID().toString()
+        val command = createCommand(formId = formId)
+
         coEvery {
             workspaceMemberRepository.existsByWorkspaceIdAndUserId(
                 eq(form.workspaceId.value),
@@ -105,24 +116,11 @@ internal class CreateFormCommandHandlerTest {
             )
         } returns false
 
-        val command = CreateFormCommand(
-            id = UUID.randomUUID().toString(),
-            name = form.name,
-            header = form.header,
-            description = form.description,
-            inputPlaceholder = form.inputPlaceholder,
-            buttonText = form.buttonText,
-            buttonColor = form.buttonColor.hex,
-            backgroundColor = form.backgroundColor.hex,
-            textColor = form.textColor.hex,
-            buttonTextColor = form.buttonTextColor.hex,
-            workspaceId = form.workspaceId.value.toString(),
-            userId = userId.value.toString(),
-        )
-
-        // When & Then
-        org.junit.jupiter.api.assertThrows<WorkspaceAuthorizationException> {
-            createFormCommandHandler.handle(command)
+        // When/Then
+        assertThrows<WorkspaceAuthorizationException> {
+            runBlocking {
+                createFormCommandHandler.handle(command)
+            }
         }
 
         coVerify(exactly = 0) { formRepository.create(any<Form>()) }
@@ -130,22 +128,60 @@ internal class CreateFormCommandHandlerTest {
     }
 
     @Test
-    fun `should throw exception when form repository creation throws an error`() = runBlocking {
+    fun `should fail when form name is empty`(): Unit = runBlocking {
         // Given
+        val formId = UUID.randomUUID().toString()
+        val invalidForm = form.copy(name = "")
+        val command = createCommand(formId = formId, form = invalidForm)
+
+        coEvery { formRepository.create(any<Form>()) } throws jakarta.validation.ConstraintViolationException(
+            "Name cannot be blank", emptySet(),
+        )
+
+        // When/Then
+        val exception = assertThrows<jakarta.validation.ConstraintViolationException> {
+            runBlocking {
+                createFormCommandHandler.handle(command)
+            }
+        }
+
+        // Verify the exception message contains information about the name field
+        assertTrue(exception.message?.contains("Name cannot be blank") == true)
+    }
+
+    @Test
+    fun `should fail when buttonColor is not a valid hex color`(): Unit = runBlocking {
+        // Given
+        val formId = UUID.randomUUID().toString()
         val command = CreateFormCommand(
-            id = UUID.randomUUID().toString(),
-            name = form.name,
-            header = form.header,
-            description = form.description,
-            inputPlaceholder = form.inputPlaceholder,
-            buttonText = form.buttonText,
-            buttonColor = form.buttonColor.hex,
-            backgroundColor = form.backgroundColor.hex,
-            textColor = form.textColor.hex,
-            buttonTextColor = form.buttonTextColor.hex,
+            id = formId,
+            name = "Test Form",
+            header = "Test Header",
+            description = "Test Description",
+            inputPlaceholder = "Enter your input",
+            buttonText = "Submit",
+            buttonColor = "#invalid-color", // Invalid hex color
+            backgroundColor = "#ffffff",
+            textColor = "#000000",
+            buttonTextColor = "#ffffff",
             workspaceId = form.workspaceId.value.toString(),
             userId = userId.value.toString(),
         )
+
+        // When/Then
+        val exception = assertThrows<IllegalArgumentException> {
+            runBlocking {
+                createFormCommandHandler.handle(command)
+            }
+        }
+        // Verify the exception message contains information about the invalid color
+        assertTrue(exception.message?.contains("Invalid hexadecimal color code: #invalid-color") == true)
+    }
+
+    @Test
+    fun `should throw exception when form repository creation throws an error`() = runBlocking {
+        // Given
+        val command = createCommand()
         coEvery { formRepository.create(any<Form>()) } throws RuntimeException("Error creating form")
 
         // When & Then
@@ -160,20 +196,7 @@ internal class CreateFormCommandHandlerTest {
     @Test
     fun `should throw exception when event publishing fails`() = runBlocking {
         // Given
-        val command = CreateFormCommand(
-            id = UUID.randomUUID().toString(),
-            name = form.name,
-            header = form.header,
-            description = form.description,
-            inputPlaceholder = form.inputPlaceholder,
-            buttonText = form.buttonText,
-            buttonColor = form.buttonColor.hex,
-            backgroundColor = form.backgroundColor.hex,
-            textColor = form.textColor.hex,
-            buttonTextColor = form.buttonTextColor.hex,
-            workspaceId = form.workspaceId.value.toString(),
-            userId = userId.value.toString(),
-        )
+        val command = createCommand()
         coEvery { eventPublisher.publish(any<FormCreatedEvent>()) } throws RuntimeException("Error publishing event")
 
         // When & Then
