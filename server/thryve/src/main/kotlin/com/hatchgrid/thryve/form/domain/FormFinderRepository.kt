@@ -30,7 +30,7 @@ interface FormFinderRepository {
      * This function is used to search all [Form] by cursor.
      *
      * @param criteria The criteria to use for the search.
-     * @param size The size of the page to return.
+     * @param size The size of the page to return (max: 100, default: 20).
      * @param sort The sort order to use for the results.
      * @param cursor The cursor to use for the search.
      * @return A CursorPageResponse containing the search results.
