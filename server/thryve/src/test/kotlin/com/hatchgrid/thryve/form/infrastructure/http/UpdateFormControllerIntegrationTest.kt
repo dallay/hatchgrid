@@ -23,7 +23,7 @@ internal class UpdateFormControllerIntegrationTest : ControllerIntegrationTest()
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should update a new form`(): Unit = runBlocking {
+    fun `should update an existing form`(): Unit = runBlocking {
         val formId = "1659d4ae-402a-4172-bf8b-0a5c54255587"
         val request = FormStub.generateRequest()
         webTestClient.mutateWith(csrf()).put()
