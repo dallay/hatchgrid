@@ -65,4 +65,88 @@ internal class CreateFormControllerTest : ControllerTest() {
         coVerify(exactly = 1) { mediator.send(capture(commandSlot)) }
         assertEquals(command, commandSlot.captured)
     }
+
+    @Test
+    fun `should return bad request when required fields are blank`() {
+        val request = CreateFormRequest(
+            name = "",
+            header = "",
+            description = "",
+            inputPlaceholder = "",
+            buttonText = "",
+            buttonColor = "",
+            backgroundColor = "",
+            textColor = "",
+            buttonTextColor = "",
+        )
+
+        webTestClient.put()
+            .uri("/api/workspace/$workspaceId/form/$formId")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `should return bad request for invalid hex color format`() {
+        val request = CreateFormRequest(
+            name = form.name,
+            header = form.header,
+            description = form.description,
+            inputPlaceholder = form.inputPlaceholder,
+            buttonText = form.buttonText,
+            buttonColor = "invalid-color",
+            backgroundColor = form.backgroundColor.hex,
+            textColor = form.textColor.hex,
+            buttonTextColor = form.buttonTextColor.hex,
+        )
+
+        webTestClient.put()
+            .uri("/api/workspace/$workspaceId/form/$formId")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `should return bad request for invalid workspaceId format`() {
+        val request = CreateFormRequest(
+            name = form.name,
+            header = form.header,
+            description = form.description,
+            inputPlaceholder = form.inputPlaceholder,
+            buttonText = form.buttonText,
+            buttonColor = form.buttonColor.hex,
+            backgroundColor = form.backgroundColor.hex,
+            textColor = form.textColor.hex,
+            buttonTextColor = form.buttonTextColor.hex,
+        )
+
+        webTestClient.put()
+            .uri("/api/workspace/invalid-uuid/form/$formId")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `should return bad request for invalid formId format`() {
+        val request = CreateFormRequest(
+            name = form.name,
+            header = form.header,
+            description = form.description,
+            inputPlaceholder = form.inputPlaceholder,
+            buttonText = form.buttonText,
+            buttonColor = form.buttonColor.hex,
+            backgroundColor = form.backgroundColor.hex,
+            textColor = form.textColor.hex,
+            buttonTextColor = form.buttonTextColor.hex,
+        )
+
+        webTestClient.put()
+            .uri("/api/workspace/$workspaceId/form/invalid-uuid")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isBadRequest
+    }
 }
