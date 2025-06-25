@@ -31,13 +31,13 @@ class DeleteFormController(
 ) : ApiController(mediator) {
 
     /**
-     * This function handles the DELETE HTTP request for deleting a form.
-     * It uses the path variable 'id' to identify the form to be deleted.
+     * This function handles the DELETE HTTP request for deleting a form within a workspace.
+     * It uses path variables 'workspaceId' and 'formId' to identify the form to be deleted.
      * The function is a suspend function, meaning it is designed to be used with Kotlin coroutines.
-     * It dispatches a DeleteFormCommand with the provided id.
+     * It dispatches a DeleteFormCommand with the provided workspace ID, form ID, and user ID.
      *
-     * @param id The id of the form to be deleted.
-     * @return The result of the DeleteFormCommand dispatch.
+     * @param workspaceId The ID of the workspace containing the form.
+     * @param formId The ID of the form to be deleted.
      */
     @Operation(summary = "Delete a form")
     @ApiResponses(
