@@ -104,6 +104,7 @@ object FormStub {
     }
 
     private fun getStartAndEndTimestampCursorPage(data: List<FormResponse>): Pair<String, String> {
+        require(data.isNotEmpty()) { "Data list cannot be empty for cursor generation" }
         val startCreatedAt = data.first().createdAt
         val startCursor = startCreatedAt?.let { getTimestampCursorPage(it) }
             ?: TimestampCursor.DEFAULT_CURSOR.serialize()
