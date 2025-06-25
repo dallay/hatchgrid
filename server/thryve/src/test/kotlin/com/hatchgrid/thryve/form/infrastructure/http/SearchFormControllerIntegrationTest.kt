@@ -53,7 +53,6 @@ internal class SearchFormControllerIntegrationTest : ControllerIntegrationTest()
                 .jsonPath("$.data[0].buttonTextColor").isEqualTo("#FFFFFF")
                 .jsonPath("$.data[0].createdAt").isEqualTo("2024-04-21T19:56:07.632")
                 .jsonPath("$.data[0].updatedAt").isEqualTo("2024-04-21T19:56:07.711")
-                .consumeWith { println(it) }
         }
     }
 
