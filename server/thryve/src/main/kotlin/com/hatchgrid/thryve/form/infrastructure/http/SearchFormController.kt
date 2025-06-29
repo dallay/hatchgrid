@@ -166,10 +166,7 @@ class SearchFormController(
      */
     private fun getSearchQuery(search: String): List<String> {
         val trimQuery = search.trim()
-        val searchQuery = listOf(
-            "ilk:%$trimQuery%",
-        )
-        return searchQuery
+        return listOf("ilk:%$trimQuery%")
     }
 
     companion object {
