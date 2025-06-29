@@ -83,6 +83,13 @@ internal class FormStoreR2dbcRepositoryTest {
     }
 
     @Test
+    fun `should return null when form not found by id`(): Unit = runBlocking {
+        coEvery { formR2dbcRepository.findById(any()) } returns null
+        val result = formStoreR2dbcRepository.findById(form.id)
+        assertEquals(null, result)
+    }
+
+    @Test
     fun `should delete form`(): Unit = runBlocking {
         coEvery { formR2dbcRepository.deleteById(any()) } returns Unit
         formStoreR2dbcRepository.delete(form.id)
