@@ -86,5 +86,6 @@ internal class FormStoreR2dbcRepositoryTest {
     fun `should delete form`(): Unit = runBlocking {
         coEvery { formR2dbcRepository.deleteById(any()) } returns Unit
         formStoreR2dbcRepository.delete(form.id)
+        coVerify(exactly = 1) { formR2dbcRepository.deleteById(form.id.value) }
     }
 }
