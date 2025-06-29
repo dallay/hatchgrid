@@ -115,7 +115,7 @@ object FormStub {
     }
 
     fun dummyRandomFormsPageResponse(size: Int): CursorPageResponse<Form> {
-+       require(size > 0) { "Size must be positive" }
+        require(size > 0) { "Size must be positive" }
         val data = (1..size).map { generateRandomForm() }
         val nextCursor = TimestampCursor(data.last().createdAt).serialize()
         val prevCursor = TimestampCursor(data.first().createdAt).serialize()
