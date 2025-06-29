@@ -15,11 +15,7 @@ data class HexColor(val hex: String) : BaseValidateValueObject<String>(
      */
     override fun validate(value: String) {
         require(value.isNotBlank() && value != "#") { "Color code cannot be empty" }
-        require(
-            regex.matches(
-                if (value.startsWith("#")) value else "#$value",
-            ),
-        ) { "Invalid hexadecimal color code: $value" }
+        require(regex.matches(value)) { "Invalid hexadecimal color code: $value" }
     }
 
     /**
