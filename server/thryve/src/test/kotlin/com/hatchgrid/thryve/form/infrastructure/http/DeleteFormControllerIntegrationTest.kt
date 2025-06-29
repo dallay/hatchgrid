@@ -26,8 +26,7 @@ internal class DeleteFormControllerIntegrationTest : ControllerIntegrationTest()
         webTestClient.mutateWith(csrf()).delete()
             .uri("/api/workspace/$workspaceId/form/$formId")
             .exchange()
-            .expectStatus().isOk
-            .expectBody().isEmpty
+            .expectStatus().isNoContent
     }
 
     @Test

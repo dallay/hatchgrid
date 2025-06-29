@@ -33,8 +33,7 @@ internal class DeleteFormControllerTest : ControllerTest() {
         webTestClient.delete()
             .uri("/api/workspace/$workspaceId/form/$formId")
             .exchange()
-            .expectStatus().isOk
-            .expectBody().isEmpty()
+            .expectStatus().isNoContent
 
         val commandSlot = slot<DeleteFormCommand>()
         coVerify(exactly = 1) { mediator.send(capture(commandSlot)) }
