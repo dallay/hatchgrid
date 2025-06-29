@@ -43,19 +43,21 @@ internal class UpdateFormControllerTest : ControllerTest() {
         coEvery { mediator.send(command) } returns Unit
     }
 
+    private fun createUpdateRequest(): UpdateFormRequest = UpdateFormRequest(
+        name = form.name,
+        header = form.header,
+        description = form.description,
+        inputPlaceholder = form.inputPlaceholder,
+        buttonText = form.buttonText,
+        buttonColor = form.buttonColor.hex,
+        backgroundColor = form.backgroundColor.hex,
+        textColor = form.textColor.hex,
+        buttonTextColor = form.buttonTextColor.hex,
+    )
+
     @Test
     fun `should return 200 when form is updated successfully`() {
-        val request = UpdateFormRequest(
-            name = form.name,
-            header = form.header,
-            description = form.description,
-            inputPlaceholder = form.inputPlaceholder,
-            buttonText = form.buttonText,
-            buttonColor = form.buttonColor.hex,
-            backgroundColor = form.backgroundColor.hex,
-            textColor = form.textColor.hex,
-            buttonTextColor = form.buttonTextColor.hex,
-        )
+        val request = createUpdateRequest()
         webTestClient.put()
             .uri("/api/workspace/$workspaceId/form/$formId/update")
             .bodyValue(request)
@@ -92,17 +94,7 @@ internal class UpdateFormControllerTest : ControllerTest() {
     @Test
     fun `should return 404 when form is not found`() {
         val nonExistentFormId = UUID.randomUUID().toString()
-        val request = UpdateFormRequest(
-            name = form.name,
-            header = form.header,
-            description = form.description,
-            inputPlaceholder = form.inputPlaceholder,
-            buttonText = form.buttonText,
-            buttonColor = form.buttonColor.hex,
-            backgroundColor = form.backgroundColor.hex,
-            textColor = form.textColor.hex,
-            buttonTextColor = form.buttonTextColor.hex,
-        )
+        val request = createUpdateRequest()
 
         coEvery {
             mediator.send(
