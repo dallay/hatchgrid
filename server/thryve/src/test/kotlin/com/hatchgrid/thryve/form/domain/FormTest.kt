@@ -73,12 +73,13 @@ internal class FormTest {
             buttonColor = "invalid-color",
         )
 
-        assertThrows<IllegalArgumentException> {
+        val exception = assertThrows<IllegalArgumentException> {
             Form.create(
                 id = UUID.randomUUID(),
                 formConfiguration = invalidConfig,
                 workspaceId = UUID.randomUUID(),
             )
         }
+        assertTrue(exception.message?.contains("Invalid hexadecimal color code") == true)
     }
 }
