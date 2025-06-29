@@ -42,17 +42,7 @@ internal class CreateFormControllerTest : ControllerTest() {
 
     @Test
     fun `should create a new form`() {
-        val request = CreateFormRequest(
-            name = form.name,
-            header = form.header,
-            description = form.description,
-            inputPlaceholder = form.inputPlaceholder,
-            buttonText = form.buttonText,
-            buttonColor = form.buttonColor.hex,
-            backgroundColor = form.backgroundColor.hex,
-            textColor = form.textColor.hex,
-            buttonTextColor = form.buttonTextColor.hex,
-        )
+        val request = createValidRequest()
 
         webTestClient.put()
             .uri("/api/workspace/$workspaceId/form/$formId")
@@ -67,18 +57,96 @@ internal class CreateFormControllerTest : ControllerTest() {
     }
 
     @Test
-    fun `should return bad request when required fields are blank`() {
-        val request = CreateFormRequest(
-            name = "",
-            header = "",
-            description = "",
-            inputPlaceholder = "",
-            buttonText = "",
-            buttonColor = "",
-            backgroundColor = "",
-            textColor = "",
-            buttonTextColor = "",
-        )
+    fun `should return bad request when name is blank`() {
+        val request = createValidRequest().copy(name = "")
+
+        webTestClient.put()
+            .uri("/api/workspace/$workspaceId/form/$formId")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `should return bad request when header is blank`() {
+        val request = createValidRequest().copy(header = "")
+
+        webTestClient.put()
+            .uri("/api/workspace/$workspaceId/form/$formId")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `should return bad request when description is blank`() {
+        val request = createValidRequest().copy(description = "")
+
+        webTestClient.put()
+            .uri("/api/workspace/$workspaceId/form/$formId")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `should return bad request when inputPlaceholder is blank`() {
+        val request = createValidRequest().copy(inputPlaceholder = "")
+
+        webTestClient.put()
+            .uri("/api/workspace/$workspaceId/form/$formId")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `should return bad request when buttonText is blank`() {
+        val request = createValidRequest().copy(buttonText = "")
+
+        webTestClient.put()
+            .uri("/api/workspace/$workspaceId/form/$formId")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `should return bad request when buttonColor is blank`() {
+        val request = createValidRequest().copy(buttonColor = "")
+
+        webTestClient.put()
+            .uri("/api/workspace/$workspaceId/form/$formId")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `should return bad request when backgroundColor is blank`() {
+        val request = createValidRequest().copy(backgroundColor = "")
+
+        webTestClient.put()
+            .uri("/api/workspace/$workspaceId/form/$formId")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `should return bad request when textColor is blank`() {
+        val request = createValidRequest().copy(textColor = "")
+
+        webTestClient.put()
+            .uri("/api/workspace/$workspaceId/form/$formId")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `should return bad request when buttonTextColor is blank`() {
+        val request = createValidRequest().copy(buttonTextColor = "")
 
         webTestClient.put()
             .uri("/api/workspace/$workspaceId/form/$formId")
@@ -89,17 +157,7 @@ internal class CreateFormControllerTest : ControllerTest() {
 
     @Test
     fun `should return bad request for invalid hex color format`() {
-        val request = CreateFormRequest(
-            name = form.name,
-            header = form.header,
-            description = form.description,
-            inputPlaceholder = form.inputPlaceholder,
-            buttonText = form.buttonText,
-            buttonColor = "invalid-color",
-            backgroundColor = form.backgroundColor.hex,
-            textColor = form.textColor.hex,
-            buttonTextColor = form.buttonTextColor.hex,
-        )
+        val request = createValidRequest().copy(buttonColor = "invalid-color")
 
         webTestClient.put()
             .uri("/api/workspace/$workspaceId/form/$formId")
@@ -110,17 +168,7 @@ internal class CreateFormControllerTest : ControllerTest() {
 
     @Test
     fun `should return bad request for invalid workspaceId format`() {
-        val request = CreateFormRequest(
-            name = form.name,
-            header = form.header,
-            description = form.description,
-            inputPlaceholder = form.inputPlaceholder,
-            buttonText = form.buttonText,
-            buttonColor = form.buttonColor.hex,
-            backgroundColor = form.backgroundColor.hex,
-            textColor = form.textColor.hex,
-            buttonTextColor = form.buttonTextColor.hex,
-        )
+        val request = createValidRequest()
 
         webTestClient.put()
             .uri("/api/workspace/invalid-uuid/form/$formId")
@@ -131,17 +179,7 @@ internal class CreateFormControllerTest : ControllerTest() {
 
     @Test
     fun `should return bad request for invalid formId format`() {
-        val request = CreateFormRequest(
-            name = form.name,
-            header = form.header,
-            description = form.description,
-            inputPlaceholder = form.inputPlaceholder,
-            buttonText = form.buttonText,
-            buttonColor = form.buttonColor.hex,
-            backgroundColor = form.backgroundColor.hex,
-            textColor = form.textColor.hex,
-            buttonTextColor = form.buttonTextColor.hex,
-        )
+        val request = createValidRequest()
 
         webTestClient.put()
             .uri("/api/workspace/$workspaceId/form/invalid-uuid")
@@ -149,4 +187,16 @@ internal class CreateFormControllerTest : ControllerTest() {
             .exchange()
             .expectStatus().isBadRequest
     }
+
+    private fun createValidRequest(): CreateFormRequest = CreateFormRequest(
+        name = form.name,
+        header = form.header,
+        description = form.description,
+        inputPlaceholder = form.inputPlaceholder,
+        buttonText = form.buttonText,
+        buttonColor = form.buttonColor.hex,
+        backgroundColor = form.backgroundColor.hex,
+        textColor = form.textColor.hex,
+        buttonTextColor = form.buttonTextColor.hex,
+    )
 }
