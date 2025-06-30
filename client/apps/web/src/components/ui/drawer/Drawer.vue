@@ -9,7 +9,8 @@ const props = withDefaults(defineProps<DrawerRootProps>(), {
 
 const emits = defineEmits<DrawerRootEmits>()
 
-const forwarded = useForwardPropsEmits(props, emits)
+// Workaround for type compatibility between vaul-vue and reka-ui
+const forwarded = useForwardPropsEmits(props, emits) as unknown as Record<string, unknown>
 </script>
 
 <template>
