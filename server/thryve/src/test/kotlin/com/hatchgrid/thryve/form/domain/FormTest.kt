@@ -65,6 +65,7 @@ internal class FormTest {
 
         assertEquals(updatedConfig.buttonColor, updateForm.buttonColor.value)
         assertEquals(updatedConfig.name, updateForm.name)
+        assertTrue(updateForm.updatedAt?.isAfter(form.updatedAt) ?: false)
         assertNotNull(updateForm.pullDomainEvents().find { it is FormUpdatedEvent })
     }
 
