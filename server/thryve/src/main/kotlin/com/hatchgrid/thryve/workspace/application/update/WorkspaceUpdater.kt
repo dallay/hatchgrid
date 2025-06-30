@@ -45,10 +45,7 @@ class WorkspaceUpdater(
         workspace.update(name, description)
         workspaceRepository.update(workspace)
         val domainEvents = workspace.pullDomainEvents()
-        domainEvents.forEach {
-            require(it is WorkspaceUpdatedEvent) {
-                "Unexpected domain event type: ${it::class.simpleName}"
-            }
+        domainEvents.filterIsInstance<WorkspaceUpdatedEvent>().forEach {
             eventBroadcaster.publish(it)
         }
     }

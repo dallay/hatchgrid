@@ -31,7 +31,7 @@ class SubscriberTagCreator(
         )
         subscriberTagRepository.create(subscriberTag)
         val domainEvents = subscriberTag.pullDomainEvents()
-        domainEvents.forEach { eventPublisher.publish(it as SubscriberTaggedEvent) }
+        domainEvents.filterIsInstance<SubscriberTaggedEvent>().forEach { eventPublisher.publish(it) }
     }
 
     companion object {

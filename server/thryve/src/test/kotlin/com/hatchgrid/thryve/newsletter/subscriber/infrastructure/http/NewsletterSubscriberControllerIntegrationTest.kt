@@ -57,8 +57,5 @@ internal class NewsletterSubscriberControllerIntegrationTest : ControllerIntegra
             .jsonPath("$.status")
             .isEqualTo(400)
             .jsonPath("$.instance").isNotEmpty
-            .consumeWith { response ->
-                println(response)
-            }
     }
 }
