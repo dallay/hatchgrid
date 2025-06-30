@@ -18,19 +18,18 @@ object AuthCookieBuilder {
      * Adds the access token, refresh token, and session state cookies to the response.
      * @param response The ServerHttpResponse to which the cookies are added.
      * @param accessToken The access token containing the token, refresh token, and session state.
-     * @return Unit
      */
     fun buildCookies(
         response: ServerHttpResponse,
         accessToken: AccessToken
     ) {
-        // Add the cookie to the response
         response.addCookie(
             ResponseCookie.from(ACCESS_TOKEN, accessToken.token)
                 .path("/")
                 .maxAge(accessToken.expiresIn)
                 .httpOnly(true)
                 .secure(true)
+                .sameSite("Lax")
                 .build(),
         )
         response.addCookie(
@@ -39,6 +38,7 @@ object AuthCookieBuilder {
                 .maxAge(accessToken.expiresIn)
                 .httpOnly(true)
                 .secure(true)
+                .sameSite("Lax")
                 .build(),
         )
         if (accessToken.sessionState != null) {
@@ -48,6 +48,7 @@ object AuthCookieBuilder {
                     .maxAge(accessToken.expiresIn)
                     .httpOnly(true)
                     .secure(true)
+                    .sameSite("Lax")
                     .build(),
             )
         }
@@ -60,6 +61,7 @@ object AuthCookieBuilder {
                 .maxAge(0)
                 .httpOnly(true)
                 .secure(true)
+                .sameSite("Lax")
                 .build(),
         )
         response.addCookie(
@@ -68,6 +70,7 @@ object AuthCookieBuilder {
                 .maxAge(0)
                 .httpOnly(true)
                 .secure(true)
+                .sameSite("Lax")
                 .build(),
         )
         response.addCookie(
@@ -76,6 +79,7 @@ object AuthCookieBuilder {
                 .maxAge(0)
                 .httpOnly(true)
                 .secure(true)
+                .sameSite("Lax")
                 .build(),
         )
     }
