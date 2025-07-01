@@ -58,8 +58,8 @@ class SubscriberRegistrator(
         subscriberRepository.create(subscriber)
         val domainEvents = subscriber.pullDomainEvents()
 
-        domainEvents.filterIsInstance<SubscriberCreatedEvent>().forEach {
-            eventPublisher.publish(it)
+        domainEvents.forEach {
+            eventPublisher.publish(it as SubscriberCreatedEvent)
         }
     }
 

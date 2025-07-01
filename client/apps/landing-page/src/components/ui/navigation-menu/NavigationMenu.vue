@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { cn } from "@/lib/utils";
 import { reactiveOmit } from "@vueuse/core";
 import {
 	NavigationMenuRoot,
@@ -7,7 +8,6 @@ import {
 	useForwardPropsEmits,
 } from "reka-ui";
 import type { HTMLAttributes } from "vue";
-import { cn } from "@/lib/utils";
 import NavigationMenuViewport from "./NavigationMenuViewport.vue";
 
 const props = withDefaults(

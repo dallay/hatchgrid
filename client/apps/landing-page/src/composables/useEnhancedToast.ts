@@ -1,6 +1,6 @@
+import { type Lang, useTranslations } from "@/i18n";
 import { h } from "vue";
 import { toast } from "vue-sonner";
-import { type Lang, useTranslations } from "@/i18n";
 
 export interface ToastOptions {
 	lang?: Lang;

@@ -17,7 +17,6 @@ internal class ArchTest {
         "workspace",
         "newsletter.subscriber",
         "newsletter.tag",
-        "form",
     )
 
     @BeforeEach

@@ -1,7 +1,6 @@
 package com.hatchgrid.thryve.authentication.infrastructure.http
 
 import com.hatchgrid.UnitTest
-import com.hatchgrid.thryve.CredentialGenerator.generateValidPassword
 import com.hatchgrid.thryve.authentication.application.AuthenticateUserQueryHandler
 import com.hatchgrid.thryve.authentication.application.UserAuthenticatorService
 import com.hatchgrid.thryve.authentication.domain.AccessToken
@@ -87,14 +86,11 @@ class UserAuthenticatorControllerTest {
 
     private fun createLoginRequest(
         username: String = faker.internet().emailAddress(),
-        password: String? = null,
-    ): LoginRequest {
-        val finalPassword = password ?: generateValidPassword()
-        return LoginRequest(
-            username = username,
-            password = finalPassword,
-        )
-    }
+        password: String = faker.internet().password(8, 80, true, true, true)
+    ): LoginRequest = LoginRequest(
+        username = username,
+        password = password,
+    )
 
     private fun createAccessToken(): AccessToken = AccessToken(
         token = "token",

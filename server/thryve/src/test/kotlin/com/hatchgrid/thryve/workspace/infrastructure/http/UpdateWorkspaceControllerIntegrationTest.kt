@@ -61,5 +61,8 @@ internal class UpdateWorkspaceControllerIntegrationTest : ControllerIntegrationT
             .isEqualTo("/api/workspace/$id/update")
             .jsonPath("$.errorCategory").isEqualTo("NOT_FOUND")
             .jsonPath("$.timestamp").isNotEmpty
+            .consumeWith { response ->
+                println(response)
+            }
     }
 }

@@ -1,0 +1,33 @@
+package com.hatchgrid.thryve.simulation
+
+import io.gatling.javaapi.core.*
+// import io.gatling.javaapi.core.CoreDsl.* // Avoid wildcard to be very explicit
+import io.gatling.javaapi.http.HttpDsl // Required for http protocol
+
+class MinimalFeederTest : Simulation() {
+    // Test 1: Basic map feeder - original attempt, now with CoreDsl prefix
+    val myMapFeeder1 = io.gatling.javaapi.core.CoreDsl.feeder(mapOf<String, Any>("testKey1" to "testValue1"))
+
+    // Test 2: Basic map feeder - Java HashMap
+    val javaMap = java.util.HashMap<String, Any>()
+    init {
+        javaMap["testKey2"] = "testValue2"
+    }
+    val myMapFeeder2 = io.gatling.javaapi.core.CoreDsl.feeder(javaMap)
+
+    // Test 3: CSV feeder - this seemed to work or fail differently before, good control
+    val myCsvFeeder = io.gatling.javaapi.core.CoreDsl.csv("users.csv").circular()
+
+    val scn = io.gatling.javaapi.core.CoreDsl.scenario("Minimal Feeder Scenario")
+        .feed(myMapFeeder1) // This will also fail if myMapFeeder1 is unresolved
+        // .feed(myMapFeeder2) // Comment out to reduce variables if first feed fails
+        // .feed(myCsvFeeder)
+        .exec { session ->
+            session
+        }
+
+    init {
+         setUp(scn.injectOpen(io.gatling.javaapi.core.CoreDsl.atOnceUsers(1)))
+            .protocols(HttpDsl.http.baseUrl("http://localhost"))
+    }
+}

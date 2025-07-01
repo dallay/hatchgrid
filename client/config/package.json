@@ -1,53 +1,53 @@
 {
-	"name": "@hatchgrid/config",
-	"description": "Hatchgrid shared configuration",
-	"version": "0.0.1",
-	"type": "module",
-	"license": "Hatchgrid Custom License",
-	"homepage": "https://hatchgrid.tech",
-	"author": "Hatchgrid Team",
-	"keywords": [
-		"hatchgrid",
-		"config"
-	],
-	"engines": {
-		"node": ">=22.0.0",
-		"pnpm": ">=10.0.0"
-	},
-	"packageManager": "pnpm@10.12.1",
-	"files": [
-		"stylelint.config.cjs",
-		"styles/**/*",
-		"vite.config.shared.mjs",
-		"vite.config.shared.d.ts",
-		"vitest.config.shared.mjs",
-		"vitest.config.shared.d.ts"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/dallay/hatchgrid.git",
-		"directory": "client/config",
-		"branch": "main"
-	},
-	"bugs": {
-		"url": "https://github.com/dallay/hatchgrid/issues"
-	},
-	"scripts": {
-		"test": "echo No test specified 😎 && exit 0"
-	},
-	"devDependencies": {
-		"@codecov/vite-plugin": "1.9.1",
-		"@hatchgrid/tsconfig": "workspace:*",
-		"@tailwindcss/typography": "^0.5.16",
-		"postcss": "^8.5.6",
-		"stylelint": "^16.20.0",
-		"stylelint-config-standard-scss": "^15.0.1",
-		"stylelint-order": "^7.0.0",
-		"tailwindcss": "^4.1.10",
-		"vite-tsconfig-paths": "^5.1.4",
-		"vitest": "^3.2.4"
-	},
-	"publishConfig": {
-		"access": "public"
-	}
+  "name": "@hatchgrid/config",
+  "description": "Hatchgrid shared configuration",
+  "version": "0.0.1",
+  "type": "module",
+  "license": "Hatchgrid Custom License",
+  "homepage": "https://hatchgrid.tech",
+  "author": "Hatchgrid Team",
+  "keywords": [
+    "hatchgrid",
+    "config"
+  ],
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "packageManager": "pnpm@10.11.1",
+  "files": [
+    "stylelint.config.cjs",
+    "styles/**/*",
+    "vite.config.shared.mjs",
+    "vite.config.shared.d.ts",
+    "vitest.config.shared.mjs",
+    "vitest.config.shared.d.ts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dallay/hatchgrid.git",
+    "directory": "client/config",
+    "branch": "main"
+  },
+  "bugs": {
+    "url": "https://github.com/dallay/hatchgrid/issues"
+  },
+  "scripts": {
+    "test": "echo No test specified 😎 && exit 0"
+  },
+  "devDependencies": {
+    "@codecov/vite-plugin": "1.9.1",
+    "@hatchgrid/tsconfig": "workspace:*",
+    "@tailwindcss/typography": "^0.5.16",
+    "postcss": "^8.5.4",
+    "stylelint": "^16.20.0",
+    "stylelint-config-standard-scss": "^15.0.0",
+    "stylelint-order": "^7.0.0",
+    "tailwindcss": "^4.1.8",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

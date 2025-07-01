@@ -129,13 +129,6 @@ tasks.asciidoctor {
     dependsOn(tasks.test)
 }
 
-sourceSets {
-    create("gatling") {
-        compileClasspath += sourceSets.main.get().output + configurations.testRuntimeClasspath
-        runtimeClasspath += sourceSets.main.get().output + configurations.testRuntimeClasspath
-    }
-}
-
 tasks.register<JavaExec>("performanceTest") {
     group = "verification"
     description = "Runs Gatling performance tests."
@@ -143,6 +136,14 @@ tasks.register<JavaExec>("performanceTest") {
     mainClass.set("io.gatling.app.Gatling")
     args(
         "--simulation", "com.hatchgrid.thryve.simulation.BasicSimulation",
-        "--results-folder", "build/reports/gatling"
+        "--results-folder", "build/reports/gatling",
     )
+}
+
+tasks.register("allGatlingSimulations") {
+    group = "performance"
+    description = "Runs all Gatling performance simulations for Thryve (by depending on the main gatlingRun task)."
+    dependsOn("gatlingRun") // Depends on the main task provided by the Gatling plugin
+    // This task now serves as an alias or a way to group the run under a specific name/description.
+    // The actual execution of simulations is handled by 'gatlingRun'.
 }

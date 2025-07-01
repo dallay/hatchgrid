@@ -1,0 +1,334 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.14/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+Configuration on demand is an incubating feature.
+🟣 Loading projects from 📂  /app/server
+📦 Loading submodule: thryve
+🟢 Project name: server:thryve
+🟣 Loading projects from 📂  /app/server/thryve
+🟣 Loading projects from 📂  /app/shared
+📦 Loading submodule: common
+🟢 Project name: shared:common
+📦 Loading submodule: spring-boot-common
+🟢 Project name: shared:spring-boot-common
+🟣 Loading projects from 📂  /app/shared/spring-boot-common
+🟣 Loading projects from 📂  /app/shared/common
+Type-safe project accessors is an incubating feature.
+> Task :build-logic:common:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :build-logic:gradle-convention:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :build-logic:analysis-convention:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :build-logic:gradle-convention:pluginDescriptors UP-TO-DATE
+> Task :build-logic:analysis-convention:pluginDescriptors UP-TO-DATE
+> Task :build-logic:analysis-convention:processResources UP-TO-DATE
+> Task :build-logic:gradle-convention:processResources UP-TO-DATE
+> Task :build-logic:common:compileKotlin UP-TO-DATE
+> Task :build-logic:common:compileJava NO-SOURCE
+> Task :build-logic:common:pluginDescriptors UP-TO-DATE
+> Task :build-logic:common:processResources NO-SOURCE
+> Task :build-logic:common:classes UP-TO-DATE
+> Task :build-logic:common:jar UP-TO-DATE
+> Task :build-logic:gradle-convention:compileKotlin UP-TO-DATE
+> Task :build-logic:gradle-convention:compileJava NO-SOURCE
+> Task :build-logic:gradle-convention:classes UP-TO-DATE
+> Task :build-logic:gradle-convention:jar UP-TO-DATE
+> Task :build-logic:analysis-convention:compileKotlin UP-TO-DATE
+> Task :build-logic:analysis-convention:compileJava NO-SOURCE
+> Task :build-logic:analysis-convention:classes UP-TO-DATE
+> Task :build-logic:analysis-convention:jar UP-TO-DATE
+
+> Configure project :
+ ⚠️  [NVD_API_KEY] was not found in the environment. Please set it to avoid rate limiting.
+ ⚠️  [NVD_API_DELAY] was not found in the environment. Defaulting to 1000ms.
+
+> Task :build-logic:spring-boot-convention:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :build-logic:spring-boot-convention:compileKotlin UP-TO-DATE
+> Task :build-logic:spring-boot-convention:compileJava NO-SOURCE
+> Task :build-logic:spring-boot-convention:pluginDescriptors UP-TO-DATE
+> Task :build-logic:spring-boot-convention:processResources UP-TO-DATE
+> Task :build-logic:spring-boot-convention:classes UP-TO-DATE
+> Task :build-logic:spring-boot-convention:jar UP-TO-DATE
+
+> Task :server:thryve:dependencies
+
+------------------------------------------------------------
+Project ':server:thryve'
+------------------------------------------------------------
+
+gatlingCompileClasspath - Compile classpath for 'gatling'.
++--- io.gatling.highcharts:gatling-charts-highcharts:3.9.5
+|    +--- org.scala-lang:scala-library:2.13.10
+|    +--- io.gatling:gatling-app:3.9.5
+|    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    +--- io.gatling:gatling-core:3.9.5
+|    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    +--- io.gatling:gatling-netty-util:3.9.5
+|    |    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    |    +--- io.gatling:gatling-jdk-util:3.9.5
+|    |    |    |    |    \--- org.scala-lang:scala-library:2.13.10
+|    |    |    |    +--- io.netty:netty-buffer:4.1.92.Final -> 4.1.113.Final
+|    |    |    |    |    \--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    +--- io.netty:netty-transport-native-epoll:4.1.92.Final -> 4.1.113.Final
+|    |    |    |    |    +--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    |    +--- io.netty:netty-buffer:4.1.113.Final (*)
+|    |    |    |    |    +--- io.netty:netty-transport:4.1.113.Final
+|    |    |    |    |    |    +--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    |    |    +--- io.netty:netty-buffer:4.1.113.Final (*)
+|    |    |    |    |    |    \--- io.netty:netty-resolver:4.1.113.Final
+|    |    |    |    |    |         \--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    |    +--- io.netty:netty-transport-native-unix-common:4.1.113.Final
+|    |    |    |    |    |    +--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    |    |    +--- io.netty:netty-buffer:4.1.113.Final (*)
+|    |    |    |    |    |    \--- io.netty:netty-transport:4.1.113.Final (*)
+|    |    |    |    |    \--- io.netty:netty-transport-classes-epoll:4.1.113.Final
+|    |    |    |    |         +--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    |         +--- io.netty:netty-buffer:4.1.113.Final (*)
+|    |    |    |    |         +--- io.netty:netty-transport:4.1.113.Final (*)
+|    |    |    |    |         \--- io.netty:netty-transport-native-unix-common:4.1.113.Final (*)
+|    |    |    |    \--- io.netty.incubator:netty-incubator-transport-native-io_uring:0.0.21.Final
+|    |    |    |         \--- io.netty.incubator:netty-incubator-transport-classes-io_uring:0.0.21.Final
+|    |    |    |              +--- io.netty:netty-common:4.1.92.Final -> 4.1.113.Final
+|    |    |    |              +--- io.netty:netty-buffer:4.1.92.Final -> 4.1.113.Final (*)
+|    |    |    |              +--- io.netty:netty-transport:4.1.92.Final -> 4.1.113.Final (*)
+|    |    |    |              \--- io.netty:netty-transport-native-unix-common:4.1.92.Final -> 4.1.113.Final (*)
+|    |    |    +--- io.gatling:gatling-commons:3.9.5
+|    |    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    |    +--- io.gatling:gatling-commons-shared:3.9.5
+|    |    |    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    |    |    +--- io.gatling:gatling-jdk-util:3.9.5 (*)
+|    |    |    |    |    +--- org.scala-lang:scala-reflect:2.13.10
+|    |    |    |    |    |    \--- org.scala-lang:scala-library:2.13.10
+|    |    |    |    |    \--- io.suzaku:boopickle_2.13:1.3.3
+|    |    |    |    |         \--- org.scala-lang:scala-library:2.13.2 -> 2.13.10
+|    |    |    |    +--- io.gatling:gatling-commons-shared-unstable:3.9.5
+|    |    |    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    |    |    \--- io.gatling:gatling-commons-shared:3.9.5 (*)
+|    |    |    |    +--- com.typesafe:config:1.4.2
+|    |    |    |    +--- org.typelevel:spire-macros_2.13:0.17.0
+|    |    |    |    |    \--- org.scala-lang:scala-library:2.13.1 -> 2.13.10
+|    |    |    |    +--- org.slf4j:slf4j-api:1.7.36 -> 2.0.16
+|    |    |    |    +--- com.typesafe.scala-logging:scala-logging_2.13:3.9.5
+|    |    |    |    |    +--- org.scala-lang:scala-library:2.13.8 -> 2.13.10
+|    |    |    |    |    +--- org.scala-lang:scala-reflect:2.13.8 -> 2.13.10 (*)
+|    |    |    |    |    \--- org.slf4j:slf4j-api:1.7.36 -> 2.0.16
+|    |    |    |    \--- ch.qos.logback:logback-classic:1.2.12 -> 1.5.8
+|    |    |    |         +--- ch.qos.logback:logback-core:1.5.8
+|    |    |    |         \--- org.slf4j:slf4j-api:2.0.15 -> 2.0.16
+|    |    |    +--- io.gatling:gatling-jsonpath:3.9.5
+|    |    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    |    +--- io.gatling:gatling-jdk-util:3.9.5 (*)
+|    |    |    |    +--- org.scala-lang.modules:scala-parser-combinators_2.13:2.3.0
+|    |    |    |    |    \--- org.scala-lang:scala-library:2.13.10
+|    |    |    |    \--- com.fasterxml.jackson.core:jackson-databind:2.15.0 -> 2.17.2
+|    |    |    |         +--- com.fasterxml.jackson.core:jackson-annotations:2.17.2
+|    |    |    |         |    \--- com.fasterxml.jackson:jackson-bom:2.17.2
+|    |    |    |         |         +--- com.fasterxml.jackson.core:jackson-annotations:2.17.2 (c)
+|    |    |    |         |         +--- com.fasterxml.jackson.core:jackson-core:2.17.2 (c)
+|    |    |    |         |         \--- com.fasterxml.jackson.core:jackson-databind:2.17.2 (c)
+|    |    |    |         +--- com.fasterxml.jackson.core:jackson-core:2.17.2
+|    |    |    |         |    \--- com.fasterxml.jackson:jackson-bom:2.17.2 (*)
+|    |    |    |         \--- com.fasterxml.jackson:jackson-bom:2.17.2 (*)
+|    |    |    +--- com.typesafe.akka:akka-actor_2.13:2.6.20
+|    |    |    |    +--- org.scala-lang:scala-library:2.13.8 -> 2.13.10
+|    |    |    |    +--- com.typesafe:config:1.4.2
+|    |    |    |    \--- org.scala-lang.modules:scala-java8-compat_2.13:1.0.0
+|    |    |    |         \--- org.scala-lang:scala-library:2.13.5 -> 2.13.10
+|    |    |    +--- com.typesafe.akka:akka-slf4j_2.13:2.6.20
+|    |    |    |    +--- org.scala-lang:scala-library:2.13.8 -> 2.13.10
+|    |    |    |    +--- com.typesafe.akka:akka-actor_2.13:2.6.20 (*)
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.36 -> 2.0.16
+|    |    |    +--- org.simpleflatmapper:lightning-csv:8.2.3
+|    |    |    |    \--- org.simpleflatmapper:sfm-util:8.2.3
+|    |    |    +--- com.github.ben-manes.caffeine:caffeine:2.9.3 -> 3.1.8
+|    |    |    |    +--- org.checkerframework:checker-qual:3.37.0
+|    |    |    |    \--- com.google.errorprone:error_prone_annotations:2.21.1
+|    |    |    +--- io.pebbletemplates:pebble:3.2.1
+|    |    |    |    +--- org.unbescape:unbescape:1.1.6.RELEASE
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.25 -> 2.0.16
+|    |    |    +--- org.scala-lang.modules:scala-parser-combinators_2.13:2.3.0 (*)
+|    |    |    +--- com.github.scopt:scopt_2.13:3.7.1
+|    |    |    |    \--- org.scala-lang:scala-library:2.13.0 -> 2.13.10
+|    |    |    +--- io.netty:netty-handler:4.1.92.Final -> 4.1.113.Final
+|    |    |    |    +--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    +--- io.netty:netty-resolver:4.1.113.Final (*)
+|    |    |    |    +--- io.netty:netty-buffer:4.1.113.Final (*)
+|    |    |    |    +--- io.netty:netty-transport:4.1.113.Final (*)
+|    |    |    |    +--- io.netty:netty-transport-native-unix-common:4.1.113.Final (*)
+|    |    |    |    \--- io.netty:netty-codec:4.1.113.Final
+|    |    |    |         +--- io.netty:netty-common:4.1.113.Final
+|    |    |    |         +--- io.netty:netty-buffer:4.1.113.Final (*)
+|    |    |    |         \--- io.netty:netty-transport:4.1.113.Final (*)
+|    |    |    +--- io.netty:netty-tcnative-classes:2.0.61.Final -> 2.0.66.Final
+|    |    |    +--- com.softwaremill.quicklens:quicklens_2.13:1.9.3
+|    |    |    |    \--- org.scala-lang:scala-library:2.13.10
+|    |    |    +--- com.fasterxml.jackson.core:jackson-databind:2.15.0 -> 2.17.2 (*)
+|    |    |    +--- net.sf.saxon:Saxon-HE:10.6
+|    |    |    +--- org.jodd:jodd-lagarto:6.0.6
+|    |    |    |    +--- org.slf4j:slf4j-api:1.7.36 -> 2.0.16
+|    |    |    |    \--- org.jodd:jodd-util:6.1.0
+|    |    |    \--- io.burt:jmespath-jackson:0.5.1
+|    |    |         +--- io.burt:jmespath-core:0.5.1
+|    |    |         \--- com.fasterxml.jackson.core:jackson-databind:2.9.9 -> 2.17.2 (*)
+|    |    +--- io.gatling:gatling-core-java:3.9.5
+|    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    +--- io.gatling:gatling-core:3.9.5 (*)
+|    |    |    +--- net.jodah:typetools:0.6.3
+|    |    |    \--- com.google.code.findbugs:jsr305:3.0.2
+|    |    +--- io.gatling:gatling-http:3.9.5
+|    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    +--- io.gatling:gatling-core:3.9.5 (*)
+|    |    |    +--- io.gatling:gatling-http-client:3.9.5
+|    |    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    |    +--- io.gatling:gatling-netty-util:3.9.5 (*)
+|    |    |    |    +--- io.netty:netty-codec-http:4.1.92.Final -> 4.1.113.Final
+|    |    |    |    |    +--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    |    +--- io.netty:netty-buffer:4.1.113.Final (*)
+|    |    |    |    |    +--- io.netty:netty-transport:4.1.113.Final (*)
+|    |    |    |    |    +--- io.netty:netty-codec:4.1.113.Final (*)
+|    |    |    |    |    \--- io.netty:netty-handler:4.1.113.Final (*)
+|    |    |    |    +--- io.netty:netty-buffer:4.1.92.Final -> 4.1.113.Final (*)
+|    |    |    |    +--- io.netty:netty-handler:4.1.92.Final -> 4.1.113.Final (*)
+|    |    |    |    +--- io.netty:netty-handler-proxy:4.1.92.Final -> 4.1.113.Final
+|    |    |    |    |    +--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    |    +--- io.netty:netty-buffer:4.1.113.Final (*)
+|    |    |    |    |    +--- io.netty:netty-transport:4.1.113.Final (*)
+|    |    |    |    |    +--- io.netty:netty-codec:4.1.113.Final (*)
+|    |    |    |    |    +--- io.netty:netty-codec-socks:4.1.113.Final
+|    |    |    |    |    |    +--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    |    |    +--- io.netty:netty-buffer:4.1.113.Final (*)
+|    |    |    |    |    |    +--- io.netty:netty-transport:4.1.113.Final (*)
+|    |    |    |    |    |    \--- io.netty:netty-codec:4.1.113.Final (*)
+|    |    |    |    |    \--- io.netty:netty-codec-http:4.1.113.Final (*)
+|    |    |    |    +--- io.netty:netty-resolver-dns:4.1.92.Final -> 4.1.113.Final
+|    |    |    |    |    +--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    |    +--- io.netty:netty-buffer:4.1.113.Final (*)
+|    |    |    |    |    +--- io.netty:netty-resolver:4.1.113.Final (*)
+|    |    |    |    |    +--- io.netty:netty-transport:4.1.113.Final (*)
+|    |    |    |    |    +--- io.netty:netty-codec:4.1.113.Final (*)
+|    |    |    |    |    +--- io.netty:netty-codec-dns:4.1.113.Final
+|    |    |    |    |    |    +--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    |    |    +--- io.netty:netty-buffer:4.1.113.Final (*)
+|    |    |    |    |    |    +--- io.netty:netty-transport:4.1.113.Final (*)
+|    |    |    |    |    |    \--- io.netty:netty-codec:4.1.113.Final (*)
+|    |    |    |    |    \--- io.netty:netty-handler:4.1.113.Final (*)
+|    |    |    |    +--- io.netty:netty-transport-native-epoll:4.1.92.Final -> 4.1.113.Final (*)
+|    |    |    |    +--- io.netty:netty-codec-http2:4.1.92.Final -> 4.1.113.Final
+|    |    |    |    |    +--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    |    +--- io.netty:netty-buffer:4.1.113.Final (*)
+|    |    |    |    |    +--- io.netty:netty-transport:4.1.113.Final (*)
+|    |    |    |    |    +--- io.netty:netty-codec:4.1.113.Final (*)
+|    |    |    |    |    +--- io.netty:netty-handler:4.1.113.Final (*)
+|    |    |    |    |    \--- io.netty:netty-codec-http:4.1.113.Final (*)
+|    |    |    |    +--- io.netty:netty-resolver-dns-native-macos:4.1.92.Final -> 4.1.113.Final
+|    |    |    |    |    \--- io.netty:netty-resolver-dns-classes-macos:4.1.113.Final
+|    |    |    |    |         +--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    |         +--- io.netty:netty-resolver-dns:4.1.113.Final (*)
+|    |    |    |    |         \--- io.netty:netty-transport-native-unix-common:4.1.113.Final (*)
+|    |    |    |    +--- io.netty:netty-tcnative-classes:2.0.61.Final -> 2.0.66.Final
+|    |    |    |    +--- io.netty:netty-tcnative-boringssl-static:2.0.61.Final -> 2.0.66.Final
+|    |    |    |    |    \--- io.netty:netty-tcnative-classes:2.0.66.Final
+|    |    |    |    +--- com.aayushatharva.brotli4j:brotli4j:1.11.0
+|    |    |    |    |    \--- com.aayushatharva.brotli4j:service:1.11.0
+|    |    |    |    +--- com.aayushatharva.brotli4j:native-linux-x86_64:1.11.0
+|    |    |    |    +--- com.aayushatharva.brotli4j:native-linux-aarch64:1.11.0
+|    |    |    |    +--- com.aayushatharva.brotli4j:native-osx-x86_64:1.11.0
+|    |    |    |    +--- com.aayushatharva.brotli4j:native-osx-aarch64:1.11.0
+|    |    |    |    +--- com.aayushatharva.brotli4j:native-windows-x86_64:1.11.0
+|    |    |    |    +--- org.slf4j:slf4j-api:1.7.36 -> 2.0.16
+|    |    |    |    +--- com.typesafe.scala-logging:scala-logging_2.13:3.9.5 (*)
+|    |    |    |    \--- ch.qos.logback:logback-classic:1.2.12 -> 1.5.8 (*)
+|    |    |    \--- net.sf.saxon:Saxon-HE:10.6
+|    |    +--- io.gatling:gatling-http-java:3.9.5
+|    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    +--- io.gatling:gatling-core-java:3.9.5 (*)
+|    |    |    +--- io.gatling:gatling-http:3.9.5 (*)
+|    |    |    \--- com.google.code.findbugs:jsr305:3.0.2
+|    |    +--- io.gatling:gatling-jms:3.9.5
+|    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    +--- io.gatling:gatling-core:3.9.5 (*)
+|    |    |    +--- javax.jms:javax.jms-api:2.0.1
+|    |    |    \--- com.eatthepath:fast-uuid:0.2.0
+|    |    +--- io.gatling:gatling-jms-java:3.9.5
+|    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    +--- io.gatling:gatling-core-java:3.9.5 (*)
+|    |    |    +--- io.gatling:gatling-jms:3.9.5 (*)
+|    |    |    \--- com.google.code.findbugs:jsr305:3.0.2
+|    |    +--- io.gatling:gatling-mqtt:3.9.5
+|    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    +--- io.gatling:gatling-netty-util:3.9.5 (*)
+|    |    |    +--- io.gatling:gatling-core:3.9.5 (*)
+|    |    |    +--- io.netty:netty-handler:4.1.92.Final -> 4.1.113.Final (*)
+|    |    |    +--- io.netty:netty-tcnative-classes:2.0.61.Final -> 2.0.66.Final
+|    |    |    +--- io.netty:netty-codec-mqtt:4.1.92.Final -> 4.1.113.Final
+|    |    |    |    +--- io.netty:netty-common:4.1.113.Final
+|    |    |    |    +--- io.netty:netty-buffer:4.1.113.Final (*)
+|    |    |    |    +--- io.netty:netty-transport:4.1.113.Final (*)
+|    |    |    |    \--- io.netty:netty-codec:4.1.113.Final (*)
+|    |    |    \--- io.netty:netty-transport-native-epoll:4.1.92.Final -> 4.1.113.Final (*)
+|    |    +--- io.gatling:gatling-mqtt-java:3.9.5
+|    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    +--- io.gatling:gatling-core-java:3.9.5 (*)
+|    |    |    +--- io.gatling:gatling-mqtt:3.9.5 (*)
+|    |    |    \--- com.google.code.findbugs:jsr305:3.0.2
+|    |    +--- io.gatling:gatling-jdbc:3.9.5
+|    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    \--- io.gatling:gatling-core:3.9.5 (*)
+|    |    +--- io.gatling:gatling-jdbc-java:3.9.5
+|    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    +--- io.gatling:gatling-core-java:3.9.5 (*)
+|    |    |    +--- io.gatling:gatling-jdbc:3.9.5 (*)
+|    |    |    \--- com.google.code.findbugs:jsr305:3.0.2
+|    |    +--- io.gatling:gatling-redis:3.9.5
+|    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    +--- io.gatling:gatling-core:3.9.5 (*)
+|    |    |    \--- net.debasishg:redisclient_2.13:3.42
+|    |    |         +--- org.scala-lang:scala-library:2.13.7 -> 2.13.10
+|    |    |         +--- org.apache.commons:commons-pool2:2.8.0 -> 2.12.0
+|    |    |         \--- org.slf4j:slf4j-api:1.7.32 -> 2.0.16
+|    |    +--- io.gatling:gatling-redis-java:3.9.5
+|    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    +--- io.gatling:gatling-core-java:3.9.5 (*)
+|    |    |    +--- io.gatling:gatling-redis:3.9.5 (*)
+|    |    |    \--- com.google.code.findbugs:jsr305:3.0.2
+|    |    +--- io.gatling:gatling-graphite:3.9.5
+|    |    |    +--- org.scala-lang:scala-library:2.13.10
+|    |    |    +--- io.gatling:gatling-core:3.9.5 (*)
+|    |    |    \--- org.hdrhistogram:HdrHistogram:2.1.12
+|    |    \--- io.gatling:gatling-charts:3.9.5
+|    |         +--- org.scala-lang:scala-library:2.13.10
+|    |         +--- io.gatling:gatling-core:3.9.5 (*)
+|    |         \--- com.tdunning:t-digest:3.1
+|    \--- io.gatling:gatling-recorder:3.9.5
+|         +--- org.scala-lang:scala-library:2.13.10
+|         +--- io.gatling:gatling-core:3.9.5 (*)
+|         +--- io.gatling:gatling-http:3.9.5 (*)
+|         +--- org.scala-lang.modules:scala-swing_2.13:3.0.0
+|         |    \--- org.scala-lang:scala-library:2.13.3 -> 2.13.10
+|         +--- com.fasterxml.jackson.core:jackson-databind:2.15.0 -> 2.17.2 (*)
+|         +--- io.gatling:gatling-recorder-bc-shaded:1.73
+|         +--- io.netty:netty-codec-http:4.1.92.Final -> 4.1.113.Final (*)
+|         \--- com.typesafe.akka:akka-actor_2.13:2.6.20 (*)
++--- org.jetbrains.kotlin:kotlin-stdlib:2.0.20
+|    \--- org.jetbrains:annotations:13.0
++--- io.gatling:gatling-core -> 3.9.5 (*)
++--- io.gatling:gatling-http -> 3.9.5 (*)
++--- io.gatling:gatling-jsonpath -> 3.9.5 (*)
++--- io.gatling:gatling-charts -> 3.9.5 (*)
+\--- org.scala-lang:scala-library:2.13.10
+
+(c) - A dependency constraint, not a dependency. The dependency affected by the constraint occurs elsewhere in the tree.
+(*) - Indicates repeated occurrences of a transitive dependency subtree. Gradle expands transitive dependency subtrees only once per project; repeat occurrences only display the root of the subtree, followed by this annotation.
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+[Incubating] Problems report is available at: file:///app/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 25s
+16 actionable tasks: 1 executed, 15 up-to-date
+
+Publishing build scan...
+https://gradle.com/s/az2aexn6jak5o

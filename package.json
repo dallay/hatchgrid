@@ -1,61 +1,60 @@
 {
-	"name": "hatchgrid",
-	"version": "1.0.0",
-	"description": "Hatchgrid Monorepo",
-	"private": true,
-	"license": "Hatchgrid Custom License",
-	"homepage": "https://hatchgrid.tech",
-	"author": "Hatchgrid Team",
-	"keywords": [
-		"hatchgrid",
-		"monorepo"
-	],
-	"engines": {
-		"node": ">=22.0.0",
-		"pnpm": ">=10.0.0"
-	},
-	"packageManager": "pnpm@10.12.1",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/dallay/hatchgrid.git",
-		"branch": "main"
-	},
-	"bugs": {
-		"url": "https://github.com/dallay/hatchgrid/issues"
-	},
-	"workspaces": {
-		"packages": [
-			"client/apps/*",
-			"client/packages/*",
-			"client/config"
-		]
-	},
-	"scripts": {
-		"update-deps": "pnpm update -i -r --latest",
-		"preinstall": "npx only-allow pnpm",
-		"prepare": "husky install || echo 'Skipping husky install'",
-		"dev": "pnpm --recursive --parallel run dev",
-		"dev:landing": "pnpm --filter @hatchgrid/landing-page dev",
-		"build": "pnpm --recursive run build",
-		"build:landing": "pnpm --filter @hatchgrid/landing-page build",
-		"preview:landing": "pnpm --filter @hatchgrid/landing-page preview",
-		"test": "pnpm --recursive run test",
-		"lint": "pnpm --recursive run check",
-		"check": "pnpm --recursive run check",
-		"clean": "pnpm --recursive run clean",
-		"backend:build": "./gradlew build",
-		"backend:run": "./gradlew bootRun",
-		"backend:test": "./gradlew test",
-		"backend:clean": "./gradlew clean",
-		"start": "concurrently \"pnpm backend:run\" \"pnpm dev\"",
-		"check-updates": "pnpm --recursive exec -- pnpm outdated",
-		"test:all": "pnpm backend:test && pnpm test"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.0.0",
-		"concurrently": "^9.1.2",
-		"husky": "^9.1.7",
-		"vite": "^6.3.5",
-		"vitest": "^3.2.4"
-	}
+  "name": "hatchgrid",
+  "version": "1.0.0",
+  "description": "Hatchgrid Monorepo",
+  "private": true,
+  "license": "Hatchgrid Custom License",
+  "homepage": "https://hatchgrid.tech",
+  "author": "Hatchgrid Team",
+  "keywords": [
+    "hatchgrid",
+    "monorepo"
+  ],
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "packageManager": "pnpm@10.11.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dallay/hatchgrid.git",
+    "branch": "main"
+  },
+  "bugs": {
+    "url": "https://github.com/dallay/hatchgrid/issues"
+  },
+  "workspaces": {
+    "packages": [
+      "client/apps/*",
+      "client/packages/*",
+      "client/config"
+    ]
+  },
+  "scripts": {
+    "update-deps": "pnpm update -i -r --latest",
+    "preinstall": "npx only-allow pnpm",
+    "prepare": "husky install || echo 'Skipping husky install'",
+    "dev": "pnpm --recursive --parallel run dev",
+    "dev:landing": "pnpm --filter @hatchgrid/landing-page dev",
+    "build": "pnpm --recursive run build",
+    "build:landing": "pnpm --filter @hatchgrid/landing-page build",
+    "preview:landing": "pnpm --filter @hatchgrid/landing-page preview",
+    "test": "pnpm --recursive run test",
+    "lint": "pnpm --recursive run check",
+    "check": "pnpm --recursive run check",
+    "clean": "pnpm --recursive run clean",
+    "backend:build": "./gradlew build",
+    "backend:run": "./gradlew bootRun",
+    "backend:test": "./gradlew test",
+    "backend:clean": "./gradlew clean",
+    "start": "concurrently \"pnpm backend:run\" \"pnpm dev\"",
+    "check-updates": "pnpm --recursive exec -- pnpm outdated",
+    "test:all": "pnpm backend:test && pnpm test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "husky": "^9.1.7",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.2"
+  }
 }

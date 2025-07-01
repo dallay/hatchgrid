@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
-import type { HTMLAttributes } from "vue";
 import { h } from "vue";
-import { toast } from "vue-sonner";
+import type { HTMLAttributes } from "vue";
 import * as z from "zod";
+
 import { Button } from "@/components/ui/button";
 import {
 	type CTAEmailButtonVariants,
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { toast } from "vue-sonner";
 
 // Define props interface
 interface Props {

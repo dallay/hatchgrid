@@ -39,7 +39,7 @@ export default function formatDate(
 
 	try {
 		return df.format(dateToFormat);
-	} catch (_error) {
+	} catch (error) {
 		// Fallback to default locale if formatting fails
 		if (userLocale !== "en-US") {
 			const fallbackFormatter = new DateFormatter("en-US", {

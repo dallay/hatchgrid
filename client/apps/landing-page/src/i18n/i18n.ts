@@ -1,8 +1,8 @@
 import { getRelativeLocaleUrl } from "astro:i18n";
 import {
 	DEFAULT_LOCALE,
-	type Lang,
 	LOCALES,
+	type Lang,
 	type Multilingual,
 	SHOW_DEFAULT_LANG_IN_URL,
 } from "./types";

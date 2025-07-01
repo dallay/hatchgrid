@@ -1,5 +1,5 @@
 -- This script depends on the following scripts:
---  - db/subscriber/subscriber.sql (Create the workspace and the subscriber)
+--  - db/subscriber/subscriber.sql (Create the organization and the subscriber)
 
 -- Insert tags
 INSERT INTO tags

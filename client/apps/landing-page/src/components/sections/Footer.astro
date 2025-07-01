@@ -1,9 +1,9 @@
 ---
-import { Icon } from "astro-icon/components";
 import Brand from "@/components/Brand.astro";
 import { type Lang, useTranslatedPath, useTranslations } from "@/i18n";
 import { footerNavLinks } from "@/models/menu/menu.constants";
 import { filterMenuItems } from "@/models/menu/menu.service";
+import { Icon } from "astro-icon/components";
 
 // Get the current language from Astro context
 const lang = (Astro.currentLocale as Lang) || "en";
