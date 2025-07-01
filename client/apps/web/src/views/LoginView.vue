@@ -4,7 +4,17 @@
     <form @submit.prevent="handleLogin">
       <div class="form-group">
         <label for="username">Username:</label>
-        <input type="text" id="username" v-model="username" required />
+        <input 
+          type="text" 
+          id="username" 
+          v-model="username" 
+          required 
+          aria-label="Enter your username"
+          aria-describedby="username-help error-message"
+          :aria-invalid="error ? 'true' : 'false'"
+          autocomplete="username"
+        />
+        <span id="username-help" class="sr-only">Enter your username to log into your account</span>
       </div>
       <div class="form-group">
         <label for="password">Password:</label>
@@ -12,7 +22,7 @@
       </div>
       <button type="submit">Login</button>
     </form>
-    <p v-if="error" class="error-message">{{ error }}</p>
+    <p v-if="error" id="error-message" class="error-message" role="alert" aria-live="polite">{{ error }}</p>
   </div>
 </template>
 
@@ -102,5 +112,18 @@ button:hover {
 .error-message {
   color: red;
   margin-top: 10px;
+}
+
+/* Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 </style>
