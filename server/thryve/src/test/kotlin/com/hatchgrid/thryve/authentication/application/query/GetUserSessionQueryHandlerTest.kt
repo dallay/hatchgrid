@@ -84,6 +84,6 @@ internal class GetUserSessionQueryHandlerTest {
             handler.handle(GetUserSessionQuery(invalidAccessToken))
         }
 
-        assertEquals("Invalid access token", exception.message)
+        assertEquals("JWT decoding failed", exception.message)
     }
 }
