@@ -36,7 +36,7 @@ router.beforeEach(async (to, from, next) => {
 			next({ name: "login", query: { redirect: originalPath } });
 		}
 	} else if (to.name === "login" && authStore.isAuthenticated) {
-		// Si ya está autenticado y trata de ir a login, redirige a home
+		// If already authenticated and trying to access login, redirect to home
 		next({ name: "home" });
 	} else {
 		next();
