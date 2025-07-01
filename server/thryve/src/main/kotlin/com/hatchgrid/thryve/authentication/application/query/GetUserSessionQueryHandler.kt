@@ -2,7 +2,6 @@ package com.hatchgrid.thryve.authentication.application.query
 
 import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.query.QueryHandler
-import com.hatchgrid.thryve.authentication.application.AuthenticatedUser
 import com.hatchgrid.thryve.authentication.domain.UserSession
 import com.hatchgrid.thryve.authentication.domain.error.InvalidTokenException
 import java.util.*
@@ -19,7 +18,6 @@ class GetUserSessionQueryHandler(
             ?: throw InvalidTokenException("Invalid access token - decoder returned null")
         val userId = UUID.fromString(jwt.subject)
         val email = jwt.claims["email"] as String
-        val realmAccess = jwt.claims["realm_access"] as? Map<String, Any>
         val roles = jwt.getClaimAsStringList("roles") ?: emptyList()
         UserSession(userId, email, roles)
     } catch (e: Exception) {
