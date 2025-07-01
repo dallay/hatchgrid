@@ -17,7 +17,10 @@ export const useAuthStore = defineStore("auth", {
 				return true;
 			} catch (error) {
 				this.isAuthenticated = false;
-				console.error("Login failed:", error);
+				// Only log errors in non-production environments
+				if (process.env.NODE_ENV !== 'production') {
+					console.error("Login failed:", error);
+				}
 				throw error;
 			}
 		},
@@ -29,7 +32,10 @@ export const useAuthStore = defineStore("auth", {
 				return true;
 			} catch (error) {
 				this.isAuthenticated = false;
-				console.error("Session check failed:", error);
+				// Only log errors in non-production environments
+				if (process.env.NODE_ENV !== 'production') {
+					console.error("Session check failed:", error);
+				}
 				return false;
 			}
 		},
@@ -40,7 +46,10 @@ export const useAuthStore = defineStore("auth", {
 				this.isAuthenticated = false;
 				return true;
 			} catch (error) {
-				console.error("Logout failed:", error);
+				// Only log errors in non-production environments
+				if (process.env.NODE_ENV !== 'production') {
+					console.error("Logout failed:", error);
+				}
 				throw error;
 			}
 		},
