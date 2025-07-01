@@ -32,21 +32,14 @@ internal class SessionControllerTest {
     @Test
     @DisplayName("should return session data when access token is valid")
     fun `should return session data when access token is valid`(): Unit = runBlocking {
-        val accessToken = "valid-access-token"
-        val expectedUserSession = UserSession(
-            userId = UUID.randomUUID(),
-            email = "test@example.com",
-            roles = listOf("USER"),
-        )
-
-        coEvery { mediator.send(GetUserSessionQuery(accessToken)) } returns expectedUserSession
+        coEvery { mediator.send(GetUserSessionQuery(VALID_ACCESS_TOKEN)) } returns EXPECTED_USER_SESSION
 
         webTestClient.get().uri("/api/session")
-            .cookie(AuthCookieBuilder.ACCESS_TOKEN, accessToken)
+            .cookie(AuthCookieBuilder.ACCESS_TOKEN, VALID_ACCESS_TOKEN)
             .exchange()
             .expectStatus().isOk
             .expectBody(UserSession::class.java)
-            .isEqualTo(expectedUserSession)
+            .isEqualTo(EXPECTED_USER_SESSION)
     }
 
     @Test
@@ -59,18 +52,30 @@ internal class SessionControllerTest {
 
     @Test
     @DisplayName("should return 401 when access token is invalid")
-    @Suppress("MaxLineLength", "MaximumLineLength")
     fun `should return 401 when access token is invalid`(): Unit = runBlocking {
-        val invalidAccessToken =
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
-
         coEvery {
-            mediator.send(GetUserSessionQuery(invalidAccessToken))
+            mediator.send(GetUserSessionQuery(INVALID_ACCESS_TOKEN))
         } throws InvalidTokenException("Invalid access token")
 
         webTestClient.get().uri("/api/session")
-            .cookie(AuthCookieBuilder.ACCESS_TOKEN, invalidAccessToken)
+            .cookie(AuthCookieBuilder.ACCESS_TOKEN, INVALID_ACCESS_TOKEN)
             .exchange()
             .expectStatus().isUnauthorized
+    }
+
+    companion object {
+        private const val VALID_ACCESS_TOKEN = "valid-access-token"
+        @Suppress("MaxLineLength", "MaximumLineLength")
+        private const val INVALID_ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+
+        private val TEST_USER_ID = UUID.fromString("550e8400-e29b-41d4-a716-446655440000")
+        private const val TEST_EMAIL = "test@example.com"
+        private val TEST_ROLES = listOf("USER")
+
+        private val EXPECTED_USER_SESSION = UserSession(
+            userId = TEST_USER_ID,
+            email = TEST_EMAIL,
+            roles = TEST_ROLES,
+        )
     }
 }

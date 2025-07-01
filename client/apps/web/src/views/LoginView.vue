@@ -4,11 +4,11 @@
     <form @submit.prevent="handleLogin">
       <div class="form-group">
         <label for="username">Username:</label>
-        <input 
-          type="text" 
-          id="username" 
-          v-model="username" 
-          required 
+        <input
+          type="text"
+          id="username"
+          v-model="username"
+          required
           aria-label="Enter your username"
           aria-describedby="username-help error-message"
           :aria-invalid="error ? 'true' : 'false'"
