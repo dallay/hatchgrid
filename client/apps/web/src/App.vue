@@ -2,7 +2,7 @@
   <header>
     <nav>
       <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/login">Login</RouterLink>
+      <RouterLink v-if="!authStore.isAuthenticated" to="/login">Login</RouterLink>
       <button v-if="authStore.isAuthenticated" @click="handleLogout">Logout</button>
     </nav>
   </header>
