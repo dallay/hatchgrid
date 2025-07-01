@@ -20,8 +20,10 @@ const handleLogout = async () => {
 	try {
 		await authStore.logout();
 		router.push("/login");
+		// Consider adding success notification/toast
 	} catch (error) {
 		console.error("Error during logout:", error);
+		// Consider showing user-friendly error message
 	}
 };
 </script>
