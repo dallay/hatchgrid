@@ -1,52 +1,106 @@
 <template>
-  <div class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-      <h2 class="text-2xl font-bold text-center text-gray-900">Login</h2>
-      <form class="space-y-6" @submit.prevent="login">
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-          <input
-            id="email"
-            v-model="email"
-            type="email"
-            required
-            class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
-        </div>
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-          <input
-            id="password"
-            v-model="password"
-            type="password"
-            required
-            class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
-        </div>
-        <div>
-          <button
-            type="submit"
-            class="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Login
-          </button>
-        </div>
-      </form>
-    </div>
+  <div class="login-container">
+    <h2>Login</h2>
+    <form @submit.prevent="handleLogin">
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" v-model="username" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" v-model="password" required />
+      </div>
+      <button type="submit">Login</button>
+    </form>
+    <p v-if="error" class="error-message">{{ error }}</p>
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useAuthStore } from "../stores/auth";
 
-const email = ref("");
+const username = ref("");
 const password = ref("");
+const error = ref(null);
+const authStore = useAuthStore();
+const router = useRouter();
+const route = useRoute();
 
-const login = () => {
-	// Handle login logic here
+const handleLogin = async () => {
+	error.value = null;
+	try {
+		await authStore.login(username.value, password.value);
+		const redirectPath = route.query.redirect || "/";
+		router.push(redirectPath);
+	} catch (err) {
+		error.value = "Invalid credentials. Please try again.";
+	}
 };
 </script>
 
 <style scoped>
-/* Add any additional styles here */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+form {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
 </style>
