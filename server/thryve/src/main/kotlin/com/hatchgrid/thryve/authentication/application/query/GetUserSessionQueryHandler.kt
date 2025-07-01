@@ -20,7 +20,13 @@ class GetUserSessionQueryHandler(
         val email = jwt.claims["email"] as String
         val roles = jwt.getClaimAsStringList("roles") ?: emptyList()
         UserSession(userId, email, roles)
+    } catch (e: IllegalArgumentException) {
+        throw InvalidTokenException("Invalid UUID format in token subject", e)
+    } catch (e: ClassCastException) {
+        throw InvalidTokenException("Invalid claim format in token", e)
+    } catch (e: org.springframework.security.oauth2.jwt.JwtException) {
+        throw InvalidTokenException("JWT decoding failed", e)
     } catch (e: Exception) {
-        throw InvalidTokenException("Invalid access token", e)
+        throw InvalidTokenException("Unexpected error during token processing", e)
     }
 }

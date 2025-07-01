@@ -42,11 +42,19 @@ const handleLogin = async () => {
 	error.value = null;
 	try {
 		await authStore.login(username.value, password.value);
-		const redirectPath = route.query.redirect || "/";
+		const redirectPath = validateRedirectPath(route.query.redirect as string) || "/";
 		router.push(redirectPath);
 	} catch (err) {
 		error.value = "Invalid credentials. Please try again.";
 	}
+};
+
+const validateRedirectPath = (path: string): string | null => {
+	// Only allow relative paths that start with '/' and don't contain '..'
+	if (!path || !path.startsWith('/') || path.includes('..')) {
+		return null;
+	}
+	return path;
 };
 </script>
 

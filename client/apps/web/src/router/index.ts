@@ -10,7 +10,7 @@ const router = createRouter({
 			path: "/",
 			name: "home",
 			component: HomeView,
-			meta: { requiresAuth: true }, // Ejemplo de ruta protegida
+			meta: { requiresAuth: true }, // Protected route example
 		},
 		{
 			path: "/login",
