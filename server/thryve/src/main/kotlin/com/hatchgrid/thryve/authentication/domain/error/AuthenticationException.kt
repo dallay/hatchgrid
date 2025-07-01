@@ -9,7 +9,7 @@ package com.hatchgrid.thryve.authentication.domain.error
  * @param message A detailed message describing the authentication error.
  * @param cause The underlying exception that caused this authentication error.
  */
-sealed class AuthenticationException(
+sealed class AuthenticationException @JvmOverloads constructor(
     message: String? = null,
     cause: Throwable? = null
 ) : RuntimeException(message, cause)
