@@ -1,3 +1,17 @@
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+
+const revenueData = ref({
+  amount: '$0.00',
+  change: '+0.0% from last month'
+})
+
+onMounted(async () => {
+  // Fetch actual revenue data from API
+  // revenueData.value = await fetchRevenueData()
+})
+</script>
+
 <template>
   <div class="flex-col md:flex">
     <div class="border-b">
@@ -15,8 +29,10 @@
             </svg>
           </div>
           <div class="p-6 pt-0">
-            <div class="text-2xl font-bold">$45,231.89</div>
-            <p class="text-xs text-muted-foreground">+20.1% from last month</p>
+-            <div class="text-2xl font-bold">$45,231.89</div>
+-            <p class="text-xs text-muted-foreground">+20.1% from last month</p>
++            <div class="text-2xl font-bold">{{ revenueData.amount }}</div>
++            <p class="text-xs text-muted-foreground">{{ revenueData.change }}</p>
           </div>
         </div>
       </div>
