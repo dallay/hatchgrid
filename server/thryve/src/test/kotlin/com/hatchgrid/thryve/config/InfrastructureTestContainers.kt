@@ -118,7 +118,7 @@ abstract class InfrastructureTestContainers {
         }
 
         private fun registerKeycloakProperties(registry: DynamicPropertyRegistry) {
-            log.info("Registering Keycloak Properties \uD83D\uDC77\uD83C\uDFFB\u200D♂\uFE0F")
+            log.info("Registering Keycloak Properties 🚧👨‍💻")
             startInfrastructure()
             val authServerUrl = removeLastSlash(keycloakContainer.authServerUrl)
             registry.add(

@@ -181,6 +181,7 @@ class SecurityConfiguration(
             .pathMatchers(
                 "/", "/api/health-check", "/api/register",
                 "/api/refresh-token", "/api/login", "/api/logout",
+                "/api/session",
             ).permitAll()
             .pathMatchers(
                 "/swagger-ui/**", "/webjars/**", "/api-docs/**", "/swagger-ui.html",
