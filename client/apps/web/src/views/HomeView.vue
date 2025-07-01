@@ -40,5 +40,3 @@ onMounted(async () => {
   </div>
 </template>
 
-<script setup lang="ts">
-</script>
