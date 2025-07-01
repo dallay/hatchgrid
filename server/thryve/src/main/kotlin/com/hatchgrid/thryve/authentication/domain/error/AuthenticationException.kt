@@ -44,7 +44,7 @@ class UnknownAuthenticationException(
 class LogoutFailedException(
     message: String? = null,
     cause: Throwable? = null
-) : RuntimeException(message, cause)
+) : AuthenticationException(message, cause)
 
 /**
  * An exception that is thrown when a token is invalid, expired, or malformed.
