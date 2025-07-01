@@ -13,9 +13,12 @@
 import { RouterLink, RouterView, useRouter } from "vue-router";
 import { useAuthStore } from "./stores/auth";
 
-const authStore = useAuthStore();
-const router = useRouter();
+import { useAuthStore } from "./stores/auth";
+import { storeToRefs } from "pinia";
 
+const authStore = useAuthStore();
+const { isAuthenticated } = storeToRefs(authStore);
+const router = useRouter();
 const handleLogout = async () => {
 	try {
 		await authStore.logout();
