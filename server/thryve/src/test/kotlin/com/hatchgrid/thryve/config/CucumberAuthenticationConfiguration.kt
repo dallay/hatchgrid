@@ -26,7 +26,7 @@ class CucumberAuthenticationConfiguration {
                     Instant.now().plusSeconds(120),
                     mapOf("issuer" to "http://dev"),
                     decoder.parseSignedClaims(token).payload,
-                )
+                ),
             )
         }
     }

@@ -4,6 +4,8 @@ import com.hatchgrid.ControllerIntegrationTest
 import com.hatchgrid.thryve.authentication.domain.AccessToken
 import com.hatchgrid.thryve.authentication.domain.UserSession
 import com.hatchgrid.thryve.authentication.infrastructure.cookie.AuthCookieBuilder
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -11,8 +13,7 @@ import org.springframework.security.test.web.reactive.server.SecurityMockServerC
 
 private const val ENDPOINT = "/api/session"
 
-internal class SessionControllerIntegrationTest : ControllerIntegrationTest()  {
-
+internal class SessionControllerIntegrationTest : ControllerIntegrationTest() {
 
     private var accessToken: AccessToken? = null
 
@@ -38,9 +39,9 @@ internal class SessionControllerIntegrationTest : ControllerIntegrationTest()  {
             .expectBody(UserSession::class.java)
             .consumeWith { result ->
                 val userSession = result.responseBody!!
-                assert(userSession.email == testUsername)
-                assert(userSession.userId != null)
-                assert(userSession.roles.isNotEmpty())
+                assertEquals(testUsername, userSession.email)
+                assertTrue(userSession.roles.isNotEmpty())
+                assertTrue(userSession.roles.contains("ROLE_USER"))
             }
     }
 
@@ -92,8 +93,10 @@ internal class SessionControllerIntegrationTest : ControllerIntegrationTest()  {
 
     @Test
     @DisplayName("should return 401 when access token is expired")
+    @Suppress("MaxLineLength", "MaximumLineLength")
     fun `should return 401 when access token is expired`() {
-        val expiredToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJyUEk2Qkl5Y2lpMV9EUFVocGdSTGFnQWF1RlhXTkhFZmZQbDdFZV9DUVhFIn0.eyJleHAiOjE2MDk0NTk4MDAsImlhdCI6MTYwOTQ1OTIwMCwianRpIjoiY2E5NzM3ZTUtNzY5My00Mzk4LWFiYjItOGUzOTNlNzJlMTY1IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2F1dGgvcmVhbG1zL2hhdGNoZ3JpZCIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiIxMjM0NTY3OC0xMjM0LTEyMzQtMTIzNC0xMjM0NTY3ODkwMTIiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ3ZWJfYXBwIiwic2Vzc2lvbl9zdGF0ZSI6IjEyMzQ1Njc4LTEyMzQtMTIzNC0xMjM0LTEyMzQ1Njc4OTAxMiIsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSJ9.invalid-signature"
+        val expiredToken =
+            "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJyUEk2Qkl5Y2lpMV9EUFVocGdSTGFnQWF1RlhXTkhFZmZQbDdFZV9DUVhFIn0.eyJleHAiOjE2MDk0NTk4MDAsImlhdCI6MTYwOTQ1OTIwMCwianRpIjoiY2E5NzM3ZTUtNzY5My00Mzk4LWFiYjItOGUzOTNlNzJlMTY1IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2F1dGgvcmVhbG1zL2hhdGNoZ3JpZCIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiIxMjM0NTY3OC0xMjM0LTEyMzQtMTIzNC0xMjM0NTY3ODkwMTIiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ3ZWJfYXBwIiwic2Vzc2lvbl9zdGF0ZSI6IjEyMzQ1Njc4LTEyMzQtMTIzNC0xMjM0LTEyMzQ1Njc4OTAxMiIsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSJ9.invalid-signature"
 
         webTestClient
             .mutateWith(csrf())
