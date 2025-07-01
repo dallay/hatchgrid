@@ -112,13 +112,13 @@ abstract class InfrastructureTestContainers {
         }
 
         private fun registerMailProperties(registry: DynamicPropertyRegistry) {
-            log.info("Registering Mail Properties \uD83D\uDCE8")
+            log.info("Registering Mail Properties")
             registry.add("spring.mail.host") { greenMailContainer.host }
             registry.add("spring.mail.port") { greenMailContainer.firstMappedPort }
         }
 
         private fun registerKeycloakProperties(registry: DynamicPropertyRegistry) {
-            log.info("Registering Keycloak Properties 🚧👨‍💻")
+            log.info("Registering Keycloak Properties")
             startInfrastructure()
             val authServerUrl = removeLastSlash(keycloakContainer.authServerUrl)
             registry.add(

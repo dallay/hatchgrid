@@ -12,6 +12,7 @@ object AuthCookieBuilder {
     const val ACCESS_TOKEN = "ACCESS_TOKEN"
     const val REFRESH_TOKEN = "REFRESH_TOKEN"
     private const val SESSION = "SESSION"
+    private const val SAME_SITE_LAX = "Lax"
 
     /**
      * Builds cookies for the access token.
@@ -29,7 +30,7 @@ object AuthCookieBuilder {
                 .maxAge(accessToken.expiresIn)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Lax")
+                .sameSite(SAME_SITE_LAX)
                 .build(),
         )
         response.addCookie(
@@ -38,7 +39,7 @@ object AuthCookieBuilder {
                 .maxAge(accessToken.expiresIn)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Lax")
+                .sameSite(SAME_SITE_LAX)
                 .build(),
         )
         if (accessToken.sessionState != null) {
@@ -48,7 +49,7 @@ object AuthCookieBuilder {
                     .maxAge(accessToken.expiresIn)
                     .httpOnly(true)
                     .secure(true)
-                    .sameSite("Lax")
+                    .sameSite(SAME_SITE_LAX)
                     .build(),
             )
         }
@@ -61,7 +62,7 @@ object AuthCookieBuilder {
                 .maxAge(0)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Lax")
+                .sameSite(SAME_SITE_LAX)
                 .build(),
         )
         response.addCookie(
@@ -70,7 +71,7 @@ object AuthCookieBuilder {
                 .maxAge(0)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Lax")
+                .sameSite(SAME_SITE_LAX)
                 .build(),
         )
         response.addCookie(
@@ -79,7 +80,7 @@ object AuthCookieBuilder {
                 .maxAge(0)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Lax")
+                .sameSite(SAME_SITE_LAX)
                 .build(),
         )
     }
