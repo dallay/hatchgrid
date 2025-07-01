@@ -6,7 +6,7 @@ export const useAuthStore = defineStore("auth", {
 		isAuthenticated: false,
 	}),
 	actions: {
-		async login(username, password) {
+		async login(username: string, password: string): Promise<boolean> {
 			try {
 				await axios.post(
 					"/api/login",
