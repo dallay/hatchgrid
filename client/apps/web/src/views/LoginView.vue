@@ -49,7 +49,7 @@ const handleLogin = async () => {
 	error.value = null;
 	try {
 		await authStore.login(username.value, password.value);
-		const redirectPath = validateRedirectPath(route.query.redirect as string) || "/";
+		const redirectPath = validateRedirectPath(route.query.redirect) || "/";
 		router.push(redirectPath);
 	} catch (err) {
 		error.value = "Invalid credentials. Please try again.";
