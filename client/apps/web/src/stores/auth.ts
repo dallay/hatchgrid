@@ -25,7 +25,7 @@ export const useAuthStore = defineStore("auth", {
 			}
 		},
 
-		async checkSession() {
+		async checkSession(): Promise<boolean> {
 			try {
 				await axios.post("/api/refresh-token", {}, { withCredentials: true });
 				this.isAuthenticated = true;

@@ -18,7 +18,14 @@
       </div>
       <div class="form-group">
         <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required />
+        <input 
+          type="password" 
+          id="password" 
+          v-model="password" 
+          required 
+          aria-label="Enter your password"
+          autocomplete="current-password"
+        />
       </div>
       <button type="submit">Login</button>
     </form>
@@ -42,7 +49,7 @@ const handleLogin = async () => {
 	error.value = null;
 	try {
 		await authStore.login(username.value, password.value);
-		const redirectPath = validateRedirectPath(route.query.redirect as string) || "/";
+		const redirectPath = validateRedirectPath(route.query.redirect) || "/";
 		router.push(redirectPath);
 	} catch (err) {
 		error.value = "Invalid credentials. Please try again.";
