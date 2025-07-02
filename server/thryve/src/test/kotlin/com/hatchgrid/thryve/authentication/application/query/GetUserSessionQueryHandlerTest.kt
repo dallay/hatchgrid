@@ -1,17 +1,13 @@
 package com.hatchgrid.thryve.authentication.application.query
 
 import com.hatchgrid.UnitTest
-import com.hatchgrid.thryve.authentication.application.AuthenticatedUser
 import com.hatchgrid.thryve.authentication.domain.Role
 import com.hatchgrid.thryve.authentication.domain.error.InvalidTokenException
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkObject
-import io.mockk.unmockkObject
 import java.time.Instant
 import java.util.UUID
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
@@ -33,12 +29,6 @@ internal class GetUserSessionQueryHandlerTest {
     fun setUp() {
         reactiveJwtDecoder = mockk()
         handler = GetUserSessionQueryHandler(reactiveJwtDecoder)
-        mockkObject(AuthenticatedUser)
-    }
-
-    @AfterEach
-    fun tearDown() {
-        unmockkObject(AuthenticatedUser)
     }
 
     @Test
@@ -63,7 +53,6 @@ internal class GetUserSessionQueryHandlerTest {
         )
 
         every { reactiveJwtDecoder.decode(accessToken) } returns Mono.just(jwt)
-        every { AuthenticatedUser.roles().roles } returns roles
 
         val result = handler.handle(GetUserSessionQuery(accessToken))
 
