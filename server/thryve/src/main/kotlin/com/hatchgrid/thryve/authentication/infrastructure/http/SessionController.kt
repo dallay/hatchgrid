@@ -27,7 +27,7 @@ class SessionController(private val mediator: Mediator) {
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "OK"),
         ApiResponse(responseCode = "401", description = "Unauthorized"),
-        ApiResponse(responseCode = "500", description = "Internal server error")
+        ApiResponse(responseCode = "500", description = "Internal server error"),
     )
     @GetMapping("/session")
     suspend fun session(request: ServerHttpRequest): ResponseEntity<UserSession> {

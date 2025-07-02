@@ -17,7 +17,8 @@ class GetUserSessionQueryHandler(
         val jwt = reactiveJwtDecoder.decode(query.accessToken)?.awaitSingle()
             ?: throw InvalidTokenException("Invalid access token - decoder returned null")
         val userId = UUID.fromString(jwt.subject)
-        val email = jwt.claims["email"] as String
+        val email = jwt.claims["email"] as? String
+            ?: throw InvalidTokenException("Missing or invalid email claim in token")
         val roles = jwt.getClaimAsStringList("roles") ?: emptyList()
         UserSession(userId, email, roles)
     } catch (e: IllegalArgumentException) {
