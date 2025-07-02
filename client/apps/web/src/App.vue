@@ -2,8 +2,8 @@
   <header>
     <nav>
       <RouterLink to="/">Home</RouterLink>
-      <RouterLink v-if="!authStore.isAuthenticated" to="/login">Login</RouterLink>
-      <button v-if="authStore.isAuthenticated" @click="handleLogout">Logout</button>
+      <RouterLink v-if="!isAuthenticated" to="/login">Login</RouterLink>
+      <button v-if="isAuthenticated" @click="handleLogout">Logout</button>
     </nav>
   </header>
   <RouterView />
@@ -11,8 +11,6 @@
 
 <script setup>
 import { RouterLink, RouterView, useRouter } from "vue-router";
-import { useAuthStore } from "./stores/auth";
-
 import { useAuthStore } from "./stores/auth";
 import { storeToRefs } from "pinia";
 

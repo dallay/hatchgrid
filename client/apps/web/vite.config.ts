@@ -10,4 +10,21 @@ export default defineConfig({
 			"@": path.resolve(__dirname, "./src"),
 		},
 	},
+    define: {
+    I18N_HASH: '"generated_hash"',
+    SERVER_API_URL: '"/"',
+    APP_VERSION: `"${process.env.APP_VERSION ? process.env.APP_VERSION : 'DEV'}"`,
+  },
+  server: {
+    host: true,
+    port: 9876,
+    proxy: Object.fromEntries(
+      ['/api', '/management', '/v3/api-docs', '/h2-console'].map(res => [
+        res,
+        {
+          target: 'http://localhost:8080',
+        },
+      ]),
+    ),
+  },
 });

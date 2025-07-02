@@ -18,12 +18,14 @@
       </div>
       <div class="form-group">
         <label for="password">Password:</label>
-        <input 
-          type="password" 
-          id="password" 
-          v-model="password" 
-          required 
+        <input
+          type="password"
+          id="password"
+          v-model="password"
+          required
           aria-label="Enter your password"
+          aria-describedby="error-message"
+          :aria-invalid="error ? 'true' : 'false'"
           autocomplete="current-password"
         />
       </div>
@@ -33,35 +35,42 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "../stores/auth";
 
 const username = ref("");
 const password = ref("");
-const error = ref(null);
+const error = ref<string | null>(null);
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 
+// @ts-ignore - function is used in template but TS doesn't detect Vue template usage
 const handleLogin = async () => {
-	error.value = null;
-	try {
-		await authStore.login(username.value, password.value);
-		const redirectPath = validateRedirectPath(route.query.redirect) || "/";
-		router.push(redirectPath);
-	} catch (err) {
-		error.value = "Invalid credentials. Please try again.";
-	}
+  error.value = null;
+  try {
+    await authStore.login(username.value, password.value);
+    const redirectPath = validateRedirectPath(
+      typeof route.query.redirect === 'string' ? route.query.redirect : undefined
+    ) || "/";
+    router.push(redirectPath);
+  } catch {
+    error.value = "Invalid credentials. Please try again.";
+  }
 };
 
-const validateRedirectPath = (path: string): string | null => {
-	// Only allow relative paths that start with '/' and don't contain '..'
-	if (!path || !path.startsWith('/') || path.includes('..')) {
-		return null;
-	}
-	return path;
+// Expose function to suppress TypeScript warning
+defineExpose({ handleLogin });
+
+const validateRedirectPath = (path: string | string[] | undefined): string | null => {
+  if (Array.isArray(path)) path = path[0];
+  // Only allow relative paths that start with '/' and don't contain '..'
+  if (!path || typeof path !== 'string' || !path.startsWith('/') || path.includes('..')) {
+    return null;
+  }
+  return path;
 };
 </script>
 

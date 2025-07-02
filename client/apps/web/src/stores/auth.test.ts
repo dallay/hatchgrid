@@ -5,7 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { useAuthStore } from './auth';
 
 describe('Auth Store', () => {
-  let mock;
+  let mock: MockAdapter;
 
   beforeEach(() => {
     setActivePinia(createPinia());
