@@ -21,39 +21,40 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api", produces = ["application/vnd.api.v1+json"])
-class SessionController(
-    private val mediator: Mediator,
-) {
+class SessionController(private val mediator: Mediator) {
 
     @Operation(summary = "Get user session information")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "OK"),
         ApiResponse(responseCode = "401", description = "Unauthorized"),
-        ApiResponse(responseCode = "500", description = "Internal server error"),
+        ApiResponse(responseCode = "500", description = "Internal server error")
     )
     @GetMapping("/session")
     suspend fun session(request: ServerHttpRequest): ResponseEntity<UserSession> {
         log.debug("Getting user session")
         return try {
             val accessToken = request.getCookie(AuthCookieBuilder.ACCESS_TOKEN).value
-            val sessionResponse = mediator.send(GetUserSessionQuery(accessToken))
-            ResponseEntity.ok(sessionResponse)
+            ResponseEntity.ok(mediator.send(GetUserSessionQuery(accessToken)))
         } catch (e: InvalidTokenException) {
-            log.warn("Invalid token provided for session request", e)
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+            handleException("Invalid token provided", HttpStatus.UNAUTHORIZED, e)
         } catch (e: AuthenticationException) {
-            log.warn("Authentication error during session request", e)
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+            handleException("Authentication error", HttpStatus.UNAUTHORIZED, e)
         } catch (_: NoSuchElementException) {
-            log.warn("Missing access token cookie in session request")
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+            handleException("Missing access token cookie", HttpStatus.UNAUTHORIZED)
         } catch (e: IllegalArgumentException) {
-            log.warn("Invalid request data in session request", e)
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+            handleException("Invalid request data", HttpStatus.BAD_REQUEST, e)
         } catch (e: MissingCookieException) {
-            log.warn("Missing cookie in session request", e)
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+            handleException("Missing cookie", HttpStatus.UNAUTHORIZED, e)
         }
+    }
+
+    private fun handleException(
+        message: String,
+        status: HttpStatus,
+        exception: Exception? = null
+    ): ResponseEntity<UserSession> {
+        exception?.let { log.warn(message, it) } ?: log.warn(message)
+        return ResponseEntity.status(status).build()
     }
 
     companion object {
