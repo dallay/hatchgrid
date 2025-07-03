@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from "vue";
 
 const revenueData = ref({
-  amount: '$0.00',
-  change: '+0.0% from last month'
-})
+	amount: "$0.00",
+	change: "+0.0% from last month",
+});
 
 onMounted(async () => {
-  // Fetch actual revenue data from API
-  // revenueData.value = await fetchRevenueData()
-})
+	// Fetch actual revenue data from API
+	// revenueData.value = await fetchRevenueData()
+});
 </script>
 
 <template>
