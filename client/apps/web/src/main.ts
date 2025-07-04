@@ -1,6 +1,6 @@
 import { createPinia } from "pinia";
 import { createApp } from "vue";
-import { setupAxiosInterceptors } from '@/config/axios-interceptor';
+import { setupAxiosInterceptors } from "@/config/axios-interceptor";
 import "./style.css";
 import App from "./App.vue";
 import router from "./router";
@@ -10,5 +10,7 @@ const pinia = createPinia();
 
 app.use(pinia);
 app.use(router);
+
+setupAxiosInterceptors(router);
 
 app.mount("#app");

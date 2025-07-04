@@ -14,7 +14,7 @@
 
 <script setup>
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { RouterLink, RouterView, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import { Toaster } from "./components/ui/sonner";
@@ -24,6 +24,19 @@ const authStore = useAuthStore();
 const { isAuthenticated } = storeToRefs(authStore);
 const router = useRouter();
 const isLoggingOut = ref(false);
+
+// Initialize CSRF token on app mount
+onMounted(async () => {
+	try {
+		await fetch("/api/health-check", {
+			method: "GET",
+			credentials: "include",
+		});
+		console.log("CSRF token initialized successfully");
+	} catch (error) {
+		console.error("Failed to initialize CSRF token:", error);
+	}
+});
 
 const handleLogout = async () => {
 	if (isLoggingOut.value) return; // Prevent multiple simultaneous logout attempts

@@ -1,43 +1,39 @@
-import type { AxiosError, InternalAxiosRequestConfig } from "axios";
-import axios from "axios";
+import axios, { type AxiosError } from "axios";
+import type { Router } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
-declare const SERVER_API_URL: string;
+function getCookie(name: string): string | undefined {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[2]) : undefined;
+}
 
-const TIMEOUT = 30000; // 30 seconds
+export function setupAxiosInterceptors(router: Router) {
+  axios.interceptors.request.use((config) => {
+    console.log('Intercepting request:', config.url);
+    const xsrfToken = getCookie("XSRF-TOKEN");
+    if (xsrfToken) {
+      console.log('Found XSRF token:', xsrfToken);
+      config.headers["X-XSRF-TOKEN"] = xsrfToken;
+    } else {
+      console.log('No XSRF token found');
+    }
+    return config;
+  });
 
-const onRequestSuccess = (
-	config: InternalAxiosRequestConfig,
-): InternalAxiosRequestConfig => {
-	const token =
-		localStorage.getItem("jhi-authenticationToken") ||
-		sessionStorage.getItem("jhi-authenticationToken");
-	if (token) {
-		config.headers.Authorization = `Bearer ${token}`;
-	}
-	config.timeout = TIMEOUT;
-	config.url = `${SERVER_API_URL}${config.url}`;
-	return config;
-};
+	axios.interceptors.response.use(
+		(response) => response,
+		(error: AxiosError) => {
+			const store = useAuthStore();
+			const status = error.response?.status;
 
-const setupAxiosInterceptors = (
-	onUnauthenticated: (err: AxiosError) => Promise<never>,
-	onServerError: (err: AxiosError) => Promise<never>,
-): void => {
-	const onResponseError = (err: AxiosError): Promise<never> => {
-		const status = err.status || err.response?.status;
-		if (status === 403 || status === 401) {
-			return onUnauthenticated(err);
-		}
-		if (status && status >= 500) {
-			return onServerError(err);
-		}
-		return Promise.reject(err);
-	};
+			if (status === 401) {
+				store.logout();
+				router.push({ name: "Login" });
+			} else if (status === 403) {
+				router.push({ name: "Forbidden" });
+			}
 
-	if (axios.interceptors) {
-		axios.interceptors.request.use(onRequestSuccess);
-		axios.interceptors.response.use((res) => res, onResponseError);
-	}
-};
-
-export { onRequestSuccess, setupAxiosInterceptors };
+			return Promise.reject(error);
+		},
+	);
+}

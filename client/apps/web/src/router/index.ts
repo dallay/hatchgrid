@@ -68,7 +68,8 @@ const validateSessionWithCache = async (
 	isValidatingSession.value = true;
 
 	try {
-		const success = await authStore.checkSession();
+		await authStore.getAccount();
+		const success = authStore.isAuthenticated;
 
 		// Update cache with result
 		sessionValidationCache.value = {
