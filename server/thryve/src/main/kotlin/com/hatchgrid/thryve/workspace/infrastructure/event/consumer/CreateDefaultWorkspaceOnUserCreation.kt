@@ -61,6 +61,10 @@ class CreateDefaultWorkspaceOnUserCreation(
                 ownerId = event.userId
             )
             
+            // TODO: Add isPrimary field support when it's available in the domain model
+            // The requirements mention flagging the workspace as primary, but this field
+            // doesn't exist in the current Workspace entity or database schema
+            
             mediator.send(createWorkspaceCommand)
             log.info(
                 "Successfully created default workspace '{}' with id {} for user: {}",
