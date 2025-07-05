@@ -109,7 +109,6 @@ kotlin {
     }
 }
 
-// --- START OF MODIFICATIONS ---
 val unitTest = tasks.register<Test>("unitTest") {
     group = "verification"
     description = "Runs unit tests."
@@ -138,13 +137,12 @@ tasks.named("check") {
     dependsOn(unitTest)
     dependsOn(integrationTest)
 }
-// --- END OF MODIFICATIONS ---
 
 tasks.withType<Test> {
-    useJUnitPlatform() // This general configuration remains
+    useJUnitPlatform()
 }
 
-// Modified tasks.test block
+
 tasks.test {
     description = "Runs unit tests (as part of the default 'test' task)."
     useJUnitPlatform {
