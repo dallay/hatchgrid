@@ -80,14 +80,14 @@ jobs:
         run: ./gradlew test
 
       - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@afb2984f4d89672b2f9d9c13ae23d53779671984 # v2.19.0
+        uses: EnricoMi/publish-unit-test-result-action@3a74b2957438d0b6e2e61d67b05318aa25c9e6c6 # v2.20.0
         if: always()
         with:
           files: |
             **/build/test-results/**/*.xml
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4
+        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v4
         with:
           files: ./server/thryve/build/reports/kover/report.xml # Updated path for Kover
           # flags: backend # Optional: add flags to distinguish reports
