@@ -1,0 +1,49 @@
+---
+import ArticleCard from "@components/ArticleCard.astro";
+import { type Lang, useTranslations } from "@/i18n";
+import { getArticles } from "@/models/article";
+import { getSelectionStrategy } from "@/models/article/article-selection.strategy";
+
+const currentLanguage = Astro.currentLocale as Lang;
+const t = useTranslations(currentLanguage);
+const strategy = getSelectionStrategy("featured");
+const featuredArticles = await getArticles({
+	includeDrafts: false,
+	lang: currentLanguage,
+}).then((articles) => strategy.select(articles, 3));
+---
+
+{featuredArticles && featuredArticles.length > 0 && (
+  <section class="py-12 md:py-16 lg:py-20 bg-muted/30">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+        <h2 class="text-xl font-bold mb-2 uppercase tracking-wide text-muted-foreground">
+          {t('blog.featured.title')}
+        </h2>
+        <h3 class="text-3xl md:text-4xl lg:text-[42px] font-bold text-foreground leading-tight">
+          {t('blog.featured.subtitle')}
+        </h3>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {featuredArticles.map((article) => (
+          <div class="relative">
+            <div class="absolute -top-2 -left-2 z-10">
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary text-primary-foreground">
+                Featured
+              </span>
+            </div>
+            <ArticleCard article={article} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  /* Additional styling for featured section */
+  .container {
+    max-width: 1200px;
+  }
+</style>
