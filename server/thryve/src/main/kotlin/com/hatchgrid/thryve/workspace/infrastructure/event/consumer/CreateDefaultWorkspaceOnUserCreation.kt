@@ -7,7 +7,7 @@ import com.hatchgrid.common.domain.bus.event.Subscribe
 import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.users.domain.event.UserCreatedEvent
 import com.hatchgrid.thryve.workspace.application.create.CreateWorkspaceCommand
-import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
+import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.util.*
@@ -19,13 +19,13 @@ import java.util.*
  * if they don't already have any workspaces. This ensures that every user has a workspace
  * to work with from the moment they register.
  *
- * @property workspaceRepository Repository to check for existing workspaces
+ * @property workspaceFinderRepository Repository to check for existing workspaces
  * @property mediator Mediator to dispatch CreateWorkspaceCommand
  */
 @Component
 @Subscribe(filterBy = UserCreatedEvent::class)
 class CreateDefaultWorkspaceOnUserCreation(
-    private val workspaceRepository: WorkspaceRepository,
+    private val workspaceFinderRepository: WorkspaceFinderRepository,
     private val mediator: Mediator
 ) : EventConsumer<UserCreatedEvent> {
 
@@ -39,7 +39,7 @@ class CreateDefaultWorkspaceOnUserCreation(
         
         try {
             val userId = UserId(event.userId)
-            val existingWorkspaces = workspaceRepository.findByOwnerId(userId)
+            val existingWorkspaces = workspaceFinderRepository.findByOwnerId(userId)
             
             if (existingWorkspaces.isNotEmpty()) {
                 log.info(

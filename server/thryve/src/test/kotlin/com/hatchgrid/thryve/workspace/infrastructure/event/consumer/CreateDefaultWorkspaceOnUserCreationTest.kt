@@ -7,7 +7,7 @@ import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.users.domain.event.UserCreatedEvent
 import com.hatchgrid.thryve.workspace.WorkspaceStub
 import com.hatchgrid.thryve.workspace.application.create.CreateWorkspaceCommand
-import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
+import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
 import io.kotest.common.runBlocking
 import io.mockk.*
 import net.datafaker.Faker
@@ -19,9 +19,9 @@ import java.util.*
 @UnitTest
 class CreateDefaultWorkspaceOnUserCreationTest {
 
-    private val workspaceRepository: WorkspaceRepository = mockk()
+    private val workspaceFinderRepository: WorkspaceFinderRepository = mockk()
     private val mediator: Mediator = mockk()
-    private val consumer = CreateDefaultWorkspaceOnUserCreation(workspaceRepository, mediator)
+    private val consumer = CreateDefaultWorkspaceOnUserCreation(workspaceFinderRepository, mediator)
     private val faker = Faker()
 
     @BeforeEach
@@ -43,14 +43,14 @@ class CreateDefaultWorkspaceOnUserCreationTest {
             lastname = lastname
         )
 
-        coEvery { workspaceRepository.findByOwnerId(UserId(userId)) } returns emptyList()
+        coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
         coEvery { mediator.send(any<CreateWorkspaceCommand>()) } just Runs
 
         // When
         consumer.consume(userCreatedEvent)
 
         // Then
-        coVerify(exactly = 1) { workspaceRepository.findByOwnerId(UserId(userId)) }
+        coVerify(exactly = 1) { workspaceFinderRepository.findByOwnerId(UserId(userId)) }
         coVerify(exactly = 1) { 
             mediator.send(match<CreateWorkspaceCommand> { command ->
                 command.ownerId == userId &&
@@ -73,7 +73,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
             lastname = null
         )
 
-        coEvery { workspaceRepository.findByOwnerId(UserId(userId)) } returns emptyList()
+        coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
         coEvery { mediator.send(any<CreateWorkspaceCommand>()) } just Runs
 
         // When
@@ -100,7 +100,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
             lastname = lastname
         )
 
-        coEvery { workspaceRepository.findByOwnerId(UserId(userId)) } returns emptyList()
+        coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
         coEvery { mediator.send(any<CreateWorkspaceCommand>()) } just Runs
 
         // When
@@ -126,7 +126,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
             lastname = null
         )
 
-        coEvery { workspaceRepository.findByOwnerId(UserId(userId)) } returns emptyList()
+        coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
         coEvery { mediator.send(any<CreateWorkspaceCommand>()) } just Runs
 
         // When
@@ -153,13 +153,13 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         )
 
         val existingWorkspaces = WorkspaceStub.dummyRandomWorkspaces(2, UUID.fromString(userId))
-        coEvery { workspaceRepository.findByOwnerId(UserId(userId)) } returns existingWorkspaces
+        coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns existingWorkspaces
 
         // When
         consumer.consume(userCreatedEvent)
 
         // Then
-        coVerify(exactly = 1) { workspaceRepository.findByOwnerId(UserId(userId)) }
+        coVerify(exactly = 1) { workspaceFinderRepository.findByOwnerId(UserId(userId)) }
         coVerify(exactly = 0) { mediator.send(any<CreateWorkspaceCommand>()) }
     }
 
@@ -175,7 +175,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
             lastname = faker.name().lastName()
         )
 
-        coEvery { workspaceRepository.findByOwnerId(UserId(userId)) } returns emptyList()
+        coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
         coEvery { mediator.send(any<CreateWorkspaceCommand>()) } throws CommandHandlerExecutionError("Test error")
 
         // When & Then - should not throw exception
@@ -185,7 +185,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
             }
         }
 
-        coVerify(exactly = 1) { workspaceRepository.findByOwnerId(UserId(userId)) }
+        coVerify(exactly = 1) { workspaceFinderRepository.findByOwnerId(UserId(userId)) }
         coVerify(exactly = 1) { mediator.send(any<CreateWorkspaceCommand>()) }
     }
 
@@ -201,7 +201,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
             lastname = faker.name().lastName()
         )
 
-        coEvery { workspaceRepository.findByOwnerId(UserId(userId)) } returns emptyList()
+        coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
         coEvery { mediator.send(any<CreateWorkspaceCommand>()) } throws RuntimeException("Unexpected error")
 
         // When & Then - should not throw exception
@@ -211,7 +211,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
             }
         }
 
-        coVerify(exactly = 1) { workspaceRepository.findByOwnerId(UserId(userId)) }
+        coVerify(exactly = 1) { workspaceFinderRepository.findByOwnerId(UserId(userId)) }
         coVerify(exactly = 1) { mediator.send(any<CreateWorkspaceCommand>()) }
     }
 
@@ -227,7 +227,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
             lastname = faker.name().lastName()
         )
 
-        coEvery { workspaceRepository.findByOwnerId(UserId(userId)) } throws RuntimeException("Repository error")
+        coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } throws RuntimeException("Repository error")
 
         // When & Then - should not throw exception
         assertDoesNotThrow {
@@ -236,7 +236,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
             }
         }
 
-        coVerify(exactly = 1) { workspaceRepository.findByOwnerId(UserId(userId)) }
+        coVerify(exactly = 1) { workspaceFinderRepository.findByOwnerId(UserId(userId)) }
         coVerify(exactly = 0) { mediator.send(any<CreateWorkspaceCommand>()) }
     }
 
@@ -254,7 +254,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
             lastname = lastname
         )
 
-        coEvery { workspaceRepository.findByOwnerId(UserId(userId)) } returns emptyList()
+        coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
         coEvery { mediator.send(any<CreateWorkspaceCommand>()) } just Runs
 
         // When
