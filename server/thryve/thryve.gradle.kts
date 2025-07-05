@@ -109,11 +109,49 @@ kotlin {
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+// --- START OF MODIFICATIONS ---
+val unitTest = tasks.register<Test>("unitTest") {
+    group = "verification"
+    description = "Runs unit tests."
+    useJUnitPlatform {
+        includeTags("unit")
+    }
+    reports {
+        html.outputLocation.set(layout.buildDirectory.dir("reports/tests/unitTest/html"))
+        junitXml.outputLocation.set(layout.buildDirectory.dir("reports/tests/unitTest/xml"))
+    }
 }
 
+val integrationTest = tasks.register<Test>("integrationTest") {
+    group = "verification"
+    description = "Runs integration tests."
+    useJUnitPlatform {
+        includeTags("integration")
+    }
+    reports {
+        html.outputLocation.set(layout.buildDirectory.dir("reports/tests/integrationTest/html"))
+        junitXml.outputLocation.set(layout.buildDirectory.dir("reports/tests/integrationTest/xml"))
+    }
+}
+
+tasks.named("check") {
+    dependsOn(unitTest)
+    dependsOn(integrationTest)
+}
+// --- END OF MODIFICATIONS ---
+
+tasks.withType<Test> {
+    useJUnitPlatform() // This general configuration remains
+}
+
+// Modified tasks.test block
 tasks.test {
+    description = "Runs unit tests (as part of the default 'test' task)."
+    useJUnitPlatform {
+        includeTags("unit")
+    }
+    finalizedBy(tasks.named("integrationTest")) // references the already registered integrationTest task
+
     outputs.dir(project.extra["snippetsDir"]!!)
 }
 
