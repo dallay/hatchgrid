@@ -1,9 +1,9 @@
 ---
 import { Image } from "astro:assets";
 import { getCollection, getEntries, getEntry, render } from "astro:content";
+import { CTAEmail } from "@/components/cta-email";
 import { type Lang, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Article.astro";
-import { CTAEmail } from "@/components/cta-email";
 
 export async function getStaticPaths() {
 	const posts = await getCollection("articles", ({ data }) => !data.draft);
