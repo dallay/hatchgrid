@@ -58,13 +58,13 @@ export class FeaturedSelectionStrategy implements ArticleSelectionStrategy {
 	select(articles: Article[], count: number): Article[] {
 		// Filter featured articles first, then sort by date (newest first)
 		const featuredArticles = articles
-			.filter(article => article.featured)
+			.filter((article) => article.featured)
 			.sort((a, b) => {
 				const dateA = a.date ? new Date(a.date) : new Date(0);
 				const dateB = b.date ? new Date(b.date) : new Date(0);
 				return dateB.getTime() - dateA.getTime();
 			});
-			
+
 		return featuredArticles.slice(0, count);
 	}
 }

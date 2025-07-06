@@ -42,59 +42,71 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Icon } from 'astro-icon/components'
-import { type Lang, useTranslations } from '@/i18n'
+import { Icon } from "astro-icon/components";
+import { ref } from "vue";
+import { type Lang, useTranslations } from "@/i18n";
 
 interface Props {
-  title: string
-  url: string
-  lang: Lang
+	title: string;
+	url: string;
+	lang: Lang;
 }
 
-const props = defineProps<Props>()
-const t = useTranslations(props.lang)
+const props = defineProps<Props>();
+const t = useTranslations(props.lang);
 
-const copied = ref(false)
+const copied = ref(false);
 
 const shareOnTwitter = () => {
-  const text = encodeURIComponent(props.title)
-  const url = encodeURIComponent(props.url)
-  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=550,height=420')
-}
+	const text = encodeURIComponent(props.title);
+	const url = encodeURIComponent(props.url);
+	window.open(
+		`https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+		"_blank",
+		"width=550,height=420",
+	);
+};
 
 const shareOnLinkedIn = () => {
-  const url = encodeURIComponent(props.url)
-  const title = encodeURIComponent(props.title)
-  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'width=550,height=420')
-}
+	const url = encodeURIComponent(props.url);
+	const title = encodeURIComponent(props.title);
+	window.open(
+		`https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+		"_blank",
+		"width=550,height=420",
+	);
+};
 
 const shareOnFacebook = () => {
-  const url = encodeURIComponent(props.url)
-  window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=550,height=420')
-}
+	const url = encodeURIComponent(props.url);
+	window.open(
+		`https://www.facebook.com/sharer/sharer.php?u=${url}`,
+		"_blank",
+		"width=550,height=420",
+	);
+};
 
 const copyLink = async () => {
-  try {
-    await navigator.clipboard.writeText(props.url)
-    copied.value = true
-    setTimeout(() => {
-      copied.value = false
-    }, 2000)
-  } catch (err) {
-    // Fallback for older browsers
-    const textArea = document.createElement('textarea')
-    textArea.value = props.url
-    document.body.appendChild(textArea)
-    textArea.select()
-    document.execCommand('copy')
-    document.body.removeChild(textArea)
-    copied.value = true
-    setTimeout(() => {
-      copied.value = false
-    }, 2000)
-  }
-}
+	try {
+		await navigator.clipboard.writeText(props.url);
+		copied.value = true;
+		setTimeout(() => {
+			copied.value = false;
+		}, 2000);
+	} catch (err) {
+		// Fallback for older browsers
+		const textArea = document.createElement("textarea");
+		textArea.value = props.url;
+		document.body.appendChild(textArea);
+		textArea.select();
+		document.execCommand("copy");
+		document.body.removeChild(textArea);
+		copied.value = true;
+		setTimeout(() => {
+			copied.value = false;
+		}, 2000);
+	}
+};
 </script>
 
 <script lang="ts">

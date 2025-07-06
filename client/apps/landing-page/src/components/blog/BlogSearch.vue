@@ -32,59 +32,61 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
-import { Icon } from 'astro-icon/components'
-import { type Lang, useTranslations } from '@/i18n'
-import type Article from '@/models/article/article.model'
+import { Icon } from "astro-icon/components";
+import { computed, ref, watch } from "vue";
+import { type Lang, useTranslations } from "@/i18n";
+import type Article from "@/models/article/article.model";
 
 interface Props {
-  articles: Article[]
-  lang: Lang
+	articles: Article[];
+	lang: Lang;
 }
 
-interface Emits {
-  (e: 'search', results: Article[]): void
-}
+type Emits = (e: "search", results: Article[]) => void;
 
-const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
+const props = defineProps<Props>();
+const emit = defineEmits<Emits>();
 
-const t = useTranslations(props.lang)
+const t = useTranslations(props.lang);
 
-const searchQuery = ref('')
-const searchResults = ref<Article[] | null>(null)
+const searchQuery = ref("");
+const searchResults = ref<Article[] | null>(null);
 
 const handleSearch = () => {
-  if (!searchQuery.value.trim()) {
-    searchResults.value = null
-    emit('search', props.articles)
-    return
-  }
+	if (!searchQuery.value.trim()) {
+		searchResults.value = null;
+		emit("search", props.articles);
+		return;
+	}
 
-  const query = searchQuery.value.toLowerCase()
-  const results = props.articles.filter(article => 
-    article.title.toLowerCase().includes(query) ||
-    article.description?.toLowerCase().includes(query) ||
-    article.category?.title?.toLowerCase().includes(query) ||
-    article.tags?.some(tag => tag.title?.toLowerCase().includes(query))
-  )
-  
-  searchResults.value = results
-  emit('search', results)
-}
+	const query = searchQuery.value.toLowerCase();
+	const results = props.articles.filter(
+		(article) =>
+			article.title.toLowerCase().includes(query) ||
+			article.description?.toLowerCase().includes(query) ||
+			article.category?.title?.toLowerCase().includes(query) ||
+			article.tags?.some((tag) => tag.title?.toLowerCase().includes(query)),
+	);
+
+	searchResults.value = results;
+	emit("search", results);
+};
 
 const clearSearch = () => {
-  searchQuery.value = ''
-  searchResults.value = null
-  emit('search', props.articles)
-}
+	searchQuery.value = "";
+	searchResults.value = null;
+	emit("search", props.articles);
+};
 
 // Watch for external changes to articles
-watch(() => props.articles, () => {
-  if (searchQuery.value) {
-    handleSearch()
-  }
-})
+watch(
+	() => props.articles,
+	() => {
+		if (searchQuery.value) {
+			handleSearch();
+		}
+	},
+);
 </script>
 </template>
 
