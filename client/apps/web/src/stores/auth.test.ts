@@ -37,10 +37,11 @@ describe("Auth Store", () => {
 	it("should clear account on successful logout", async () => {
 		const authStore = useAuthStore();
 		// Simulate being logged in
-		authStore.account = { login: "testuser", authorities: ["ROLE_USER"] };
+		authStore.userIdentity = { login: "testuser", authorities: ["ROLE_USER"] };
+		authStore.authenticated = true;
 		mock.onPost("/api/logout").reply(200);
 
-		await authStore.logout();
+		await authStore.logoutAsync();
 		expect(authStore.isAuthenticated).toBe(false);
 		expect(authStore.account).toBeNull();
 	});
@@ -48,13 +49,14 @@ describe("Auth Store", () => {
 	it("should clear account even if logout fails on the server", async () => {
 		const authStore = useAuthStore();
 		// Simulate being logged in
-		authStore.account = { login: "testuser", authorities: ["ROLE_USER"] };
+		authStore.userIdentity = { login: "testuser", authorities: ["ROLE_USER"] };
+		authStore.authenticated = true;
 		mock.onPost("/api/logout").reply(500);
 
-		// The action is expected to reject because the API call fails
-		await expect(authStore.logout()).rejects.toThrow();
+		// The action should not reject because logoutAsync handles the error
+		await authStore.logoutAsync();
 
-		// But the account should be cleared on the client-side regardless
+		// The account should be cleared on the client-side regardless
 		expect(authStore.isAuthenticated).toBe(false);
 		expect(authStore.account).toBeNull();
 	});

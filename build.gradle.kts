@@ -1,5 +1,6 @@
 plugins {
     idea
+    eclipse
     alias(libs.plugins.spring.boot).apply(false)
     alias(libs.plugins.spring.dependency.management).apply(false)
     kotlin("jvm").version(libs.versions.kotlin).apply(false)
@@ -22,6 +23,24 @@ idea {
     module.excludeDirs.add(file("**/node_modules"))
 }
 
+eclipse {
+    classpath {
+        file {
+            whenMerged {
+                val cp = this as org.gradle.plugins.ide.eclipse.model.Classpath
+                cp.entries.add(
+                    org.gradle.plugins.ide.eclipse.model.SourceFolder(
+                        "build/generated/sources/annotationProcessor/java/main",
+                        null
+                    )
+                )
+            }
+        }
+    }
+}
+
 tasks.withType<Test>().configureEach {
     maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
 }
+
+defaultTasks("bootRun")

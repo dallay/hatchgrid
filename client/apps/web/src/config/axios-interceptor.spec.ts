@@ -24,9 +24,17 @@ describe("Axios Interceptor", () => {
 	beforeEach(() => {
 		setActivePinia(createPinia());
 		mock = new MockAdapter(axios);
+		// Patch: Provide a mock currentRoute for router
+		// Provide only the methods/properties needed for the test, cast as unknown as Router
+		// Use a minimal mock type to avoid 'any' and type errors
+		type MinimalRoute = { name?: string; fullPath?: string };
+		type MinimalRouter = Router & { currentRoute: { value: MinimalRoute } };
 		router = {
 			push: vi.fn(),
-		} as unknown as Router;
+			currentRoute: {
+				value: { name: undefined, fullPath: undefined },
+			},
+		} as unknown as MinimalRouter;
 		setupAxiosInterceptors(router);
 	});
 
@@ -37,15 +45,30 @@ describe("Axios Interceptor", () => {
 
 	it("should redirect to /login on 401 error", async () => {
 		mock.onGet("/api/test").reply(401);
+		// Set current route to something other than Login
+		(
+			router as {
+				currentRoute: { value: { name?: string; fullPath?: string } };
+			}
+		).currentRoute.value = { name: "Home", fullPath: "/" };
 
 		await expect(axios.get("/api/test")).rejects.toThrow();
 
 		expect(mockLogout).toHaveBeenCalled();
-		expect(router.push).toHaveBeenCalledWith({ name: "Login" });
+		expect(router.push).toHaveBeenCalledWith({
+			name: "Login",
+			query: { redirect: "/" },
+		});
 	});
 
 	it("should redirect to /forbidden on 403 error", async () => {
 		mock.onGet("/api/test").reply(403);
+		// Set current route to something other than Forbidden
+		(
+			router as {
+				currentRoute: { value: { name?: string; fullPath?: string } };
+			}
+		).currentRoute.value = { name: "Home", fullPath: "/" };
 
 		await expect(axios.get("/api/test")).rejects.toThrow();
 

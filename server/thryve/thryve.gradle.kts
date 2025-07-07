@@ -121,3 +121,20 @@ tasks.asciidoctor {
     inputs.dir(project.extra["snippetsDir"]!!)
     dependsOn(tasks.test)
 }
+
+// --- Spring Profiles Logic ---
+ext {
+    var springProfiles = "dev"
+    if (project.hasProperty("tls")) {
+        springProfiles += ",tls"
+    }
+    if (project.hasProperty("e2e")) {
+        springProfiles += ",e2e"
+    }
+    set("springProfiles", springProfiles)
+}
+
+// Pass springProfiles to bootRun
+tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+    args("--spring.profiles.active=${extra["springProfiles"]}")
+}

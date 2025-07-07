@@ -1,68 +1,104 @@
 import axios, { type AxiosError } from "axios";
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
 import type { Account } from "../security/account.model";
 
-export const useAuthStore = defineStore("auth", () => {
-	const account = ref<Account | null>(null);
-	const isAuthenticated = computed(() => !!account.value);
+export interface AuthStateStorable {
+	logon: Promise<unknown> | null;
+	userIdentity: Account | null;
+	authenticated: boolean;
+	profilesLoaded: boolean;
+	ribbonOnProfiles: string | null;
+	activeProfiles: string[];
+}
 
-	function setAccount(data: Account | null) {
-		account.value = data;
-	}
+export const defaultAuthState: AuthStateStorable = {
+	logon: null,
+	userIdentity: null,
+	authenticated: false,
+	profilesLoaded: false,
+	ribbonOnProfiles: null,
+	activeProfiles: [],
+};
 
-	function clearAuth() {
-		account.value = null;
-	}
+export const useAuthStore = defineStore("auth", {
+	state: (): AuthStateStorable => ({ ...defaultAuthState }),
+	getters: {
+		account: (state) => state.userIdentity,
+		isAuthenticated: (state) => state.authenticated,
+	},
+	actions: {
+		authenticate(promise: Promise<unknown>) {
+			this.logon = promise;
+		},
+		setAuthentication(identity: Account) {
+			this.userIdentity = identity;
+			this.authenticated = true;
+			this.logon = null;
+		},
+		logout() {
+			this.userIdentity = null;
+			this.authenticated = false;
+			this.logon = null;
+		},
+		setProfilesLoaded() {
+			this.profilesLoaded = true;
+		},
+		setActiveProfiles(profile: string[]) {
+			this.activeProfiles = profile;
+		},
+		setRibbonOnProfiles(ribbon: string | null) {
+			this.ribbonOnProfiles = ribbon;
+		},
+		clearAuth() {
+			this.userIdentity = null;
+			this.authenticated = false;
+			this.logon = null;
+		},
 
-	async function getAccount(): Promise<void> {
-		try {
-			const { data } = await axios.get<Account>("/api/account");
-			setAccount(data);
-		} catch (error) {
-			clearAuth();
-			throw new Error("Failed to fetch account information.");
-		}
-	}
-
-	async function login(username: string, password: string): Promise<boolean> {
-		try {
-			await axios.post("/api/login", { username, password });
-			await getAccount();
-			return true;
-		} catch (error) {
-			clearAuth();
-			const axiosError = error as AxiosError;
-			if (axiosError.response?.status === 401) {
-				throw new Error("Invalid credentials.");
+		async getAccount(): Promise<void> {
+			try {
+				const { data } = await axios.get<Account>("/api/account");
+				this.setAuthentication(data);
+			} catch (_error) {
+				this.clearAuth();
+				throw new Error("Failed to fetch account information.");
 			}
-			throw new Error("Login failed.");
-		}
-	}
+		},
 
-	async function logout(): Promise<void> {
-		try {
-			await axios.post("/api/logout");
-		} finally {
-			clearAuth();
-		}
-	}
+		async login(username: string, password: string): Promise<boolean> {
+			try {
+				const loginPromise = axios.post("/api/login", { username, password });
+				this.authenticate(loginPromise);
 
-	function hasAuthority(authority: string): boolean {
-		return account.value?.authorities?.includes(authority) ?? false;
-	}
+				await loginPromise;
+				await this.getAccount();
+				return true;
+			} catch (error) {
+				this.clearAuth();
+				const axiosError = error as AxiosError;
+				if (axiosError.response?.status === 401) {
+					throw new Error("Invalid credentials.");
+				}
+				throw new Error("Login failed.");
+			}
+		},
 
-	function hasAnyAuthority(authorities: string[]): boolean {
-		return authorities.some((auth) => hasAuthority(auth));
-	}
+		async logoutAsync(): Promise<void> {
+			try {
+				await axios.post("/api/logout");
+			} catch (_error) {
+				// handle logout error silently
+			} finally {
+				this.logout();
+			}
+		},
 
-	return {
-		account,
-		isAuthenticated,
-		login,
-		logout,
-		getAccount,
-		hasAuthority,
-		hasAnyAuthority,
-	};
+		hasAuthority(authority: string): boolean {
+			return this.userIdentity?.authorities?.includes(authority) ?? false;
+		},
+
+		hasAnyAuthority(authorities: string[]): boolean {
+			return authorities.some((auth) => this.hasAuthority(auth));
+		},
+	},
 });

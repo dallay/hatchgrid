@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-screen flex items-center justify-center px-4">
-    <Card class="w-full max-w-sm">
+    <Card class="w-full max-w-md">
       <CardHeader>
         <CardTitle class="text-2xl">
           Login
@@ -38,7 +38,7 @@
             {{ error }}
           </p>
         </CardContent>
-        <CardFooter>
+        <CardFooter class="flex flex-col gap-2 mt-4">
           <Button type="submit" class="w-full">
             Sign in
           </Button>
@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { Button } from "../components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -59,10 +59,10 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "../components/ui/card";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
-import { useAuthStore } from "../stores/auth";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuthStore } from "@/stores/auth";
 
 const username = ref("");
 const password = ref("");
@@ -72,7 +72,6 @@ const router = useRouter();
 const route = useRoute();
 
 const validateRedirectPath = (path: string | undefined): string | null => {
-	// Only allow relative paths that start with '/' and don't contain '..'
 	if (
 		!path ||
 		typeof path !== "string" ||

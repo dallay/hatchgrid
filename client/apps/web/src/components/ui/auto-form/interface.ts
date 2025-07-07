@@ -12,7 +12,7 @@ export interface FieldProps {
 
 export interface Shape {
 	type: string;
-	default?: any;
+	default?: unknown;
 	required?: boolean;
 	options?: string[];
 	schema?: ZodAny;
@@ -49,7 +49,7 @@ type UnwrapArray<T> = T extends (infer U)[] ? U : never;
 
 export type Config<SchemaType extends object> = {
 	// If SchemaType.key is an object, create a nested Config, otherwise ConfigItem
-	[Key in keyof SchemaType]?: SchemaType[Key] extends any[]
+	[Key in keyof SchemaType]?: SchemaType[Key] extends unknown[]
 		? UnwrapArray<Config<SchemaType[Key]>>
 		: SchemaType[Key] extends object
 			? Config<SchemaType[Key]>

@@ -11,8 +11,8 @@ const props = defineProps<{
 	config?: ConfigItem | Config<U>;
 }>();
 
-function isValidConfig(config: any): config is ConfigItem {
-	return !!config?.component;
+function isValidConfig(config: unknown): config is ConfigItem {
+	return !!(config as ConfigItem)?.component;
 }
 
 const delegatedProps = computed(() => {
