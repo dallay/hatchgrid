@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
 			vue(),
 			tailwindcss(),
 			Components({
-        dts: true,
+				dts: true,
 				resolvers: [IconsResolver({ prefix: "" })],
 			}),
 			Icons({

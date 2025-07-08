@@ -66,10 +66,24 @@ export default class AccountService {
 	 */
 	async retrieveAccount(): Promise<boolean> {
 		try {
-			const response: AxiosResponse<Account> = await axios.get("/api/account", { withCredentials: true });
-      console.log("Account retrieved:", response.data);
-      if (response.status === 200 && response.data?.login) {
-				this.authStore.setAuthentication(response.data);
+			const response: AxiosResponse<Account | string> = await axios.get(
+				"/api/account",
+				{ withCredentials: true },
+			);
+
+			if (
+				typeof response.data === "string" &&
+				response.data.includes("<!doctype html>")
+			) {
+				console.warn(
+					"Received HTML instead of JSON – treating as unauthenticated.",
+				);
+				throw new Error("Unauthenticated: invalid session or missing cookies.");
+			}
+
+			console.log("Account retrieved:", response.data);
+			if (response.status === 200 && (response.data as Account)?.login) {
+				this.authStore.setAuthentication(response.data as Account);
 				return true;
 			}
 		} catch (error) {
@@ -89,7 +103,6 @@ export default class AccountService {
 			await this.authStore.logon;
 			return;
 		}
-
 
 		// If already authenticated with valid token and authorities, skip
 		if (this.authenticated && this.userAuthorities.length > 0) {
@@ -139,8 +152,6 @@ export default class AccountService {
 	hasAnyAuthority(authorities: string[]): boolean {
 		return authorities.some((authority) => this.hasAuthority(authority));
 	}
-
-
 
 	/**
 	 * Check if user has required authorities

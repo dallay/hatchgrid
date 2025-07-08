@@ -57,8 +57,16 @@ export const useAuthStore = defineStore("auth", {
 
 		async getAccount(): Promise<void> {
 			try {
-				const { data } = await axios.get<Account>("/api/account");
-				this.setAuthentication(data);
+				const { data } = await axios.get<Account | string>("/api/account");
+
+				if (typeof data === "string" && data.includes("<!doctype html>")) {
+					console.warn(
+						"Received HTML instead of JSON – treating as unauthenticated.",
+					);
+					throw new Error("Unauthenticated: invalid session or missing cookies.");
+				}
+
+				this.setAuthentication(data as Account);
 			} catch (_error) {
 				this.clearAuth();
 				throw new Error("Failed to fetch account information.");
@@ -71,6 +79,7 @@ export const useAuthStore = defineStore("auth", {
 				this.authenticate(loginPromise);
 
 				await loginPromise;
+				await this.getAccount();
 				return true;
 			} catch (error) {
 				this.clearAuth();
