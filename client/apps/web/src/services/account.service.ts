@@ -66,9 +66,9 @@ export default class AccountService {
 	 */
 	async retrieveAccount(): Promise<boolean> {
 		try {
-			const response: AxiosResponse<Account> = await axios.get("/api/account");
+			const response: AxiosResponse<Account> = await axios.get("/api/account", { withCredentials: true });
       console.log("Account retrieved:", response.data);
-			if (response.status === 200 && response.data?.login) {
+      if (response.status === 200 && response.data?.login) {
 				this.authStore.setAuthentication(response.data);
 				return true;
 			}
