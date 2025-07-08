@@ -67,20 +67,21 @@ data class Credential(
          * @see List.toMutableList to convert the list into a mutable list
          */
         fun generateRandomCredentialPassword(): String {
-            val length = MIN_LENGTH + Random().nextInt(MIN_LENGTH)
-            // Must have at least one number, one uppercase, one lowercase and one special character
-            val password = (1..length)
-                .map { charset.random() }
-                .toMutableList()
-                .apply {
-                    add(charNumbers.random())
-                    add(charUppercase.random())
-                    add(charLowercase.random())
-                    add(charSpecial.random())
-                }
-                .shuffled()
-                .joinToString("")
-            return password
+            val passwordChars = mutableListOf<Char>()
+
+            // Ensure at least one of each required character type
+            passwordChars.add(charNumbers.random())
+            passwordChars.add(charUppercase.random())
+            passwordChars.add(charLowercase.random())
+            passwordChars.add(charSpecial.random())
+
+            // Fill the rest of the password with random characters from the full charset
+            val remainingLength = MIN_LENGTH + Random().nextInt(MIN_LENGTH) - passwordChars.size
+            repeat(remainingLength) {
+                passwordChars.add(charset.random())
+            }
+
+            return passwordChars.shuffled().joinToString("")
         }
 
         /**

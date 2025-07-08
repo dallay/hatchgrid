@@ -71,7 +71,6 @@ export const useAuthStore = defineStore("auth", {
 				this.authenticate(loginPromise);
 
 				await loginPromise;
-				await this.getAccount();
 				return true;
 			} catch (error) {
 				this.clearAuth();

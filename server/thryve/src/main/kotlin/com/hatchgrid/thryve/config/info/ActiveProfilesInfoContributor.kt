@@ -27,4 +27,3 @@ class ActiveProfilesInfoContributor(
         private const val ACTIVE_PROFILES = "activeProfiles"
     }
 }
-

@@ -31,8 +31,8 @@ eclipse {
                 cp.entries.add(
                     org.gradle.plugins.ide.eclipse.model.SourceFolder(
                         "build/generated/sources/annotationProcessor/java/main",
-                        null
-                    )
+                        null,
+                    ),
                 )
             }
         }

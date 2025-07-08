@@ -141,6 +141,33 @@ Each action uses a clear command/query split:
 - After logout:
   - Clear state and redirect to `/login`
 
+## 6.1. 🤝 Coexisting Authentication Methods (HttpOnly Cookies & Bearer Tokens)
+
+Hatchgrid's backend supports two primary authentication mechanisms to cater to different client needs while maintaining security:
+
+1.  **HttpOnly Cookies (Primary for Web Frontend):**
+    *   **Mechanism:** Access tokens and refresh tokens are stored in `HttpOnly` and `Secure` cookies. This prevents client-side JavaScript from accessing them, significantly mitigating XSS risks.
+    *   **Use Case:** Ideal for web browser-based Single Page Applications (SPAs) like the Vue.js frontend, where the browser automatically sends these cookies with every request to the same domain.
+    *   **Backend Handling:** The backend is configured to read these cookies directly from incoming requests.
+
+2.  **Bearer Tokens (Secondary for APIs, Mobile, CLI, etc.):**
+    *   **Mechanism:** Access tokens are sent in the `Authorization` header as `Bearer <token>`.
+    *   **Use Case:** Necessary for non-browser clients such as mobile applications, command-line interfaces (CLIs), Postman/Insomnia for API testing, or public APIs consumed by other services. These clients cannot typically manage `HttpOnly` cookies.
+    *   **Backend Handling:** Standard Spring Security OAuth2 Resource Server configuration handles this.
+
+### 🔄 How They Coexist: The `JwtCookieOrHeaderFilter`
+
+To ensure seamless authentication regardless of the client, a custom `WebFilter`, `JwtCookieOrHeaderFilter`, is implemented in the backend. This filter operates early in the Spring Security filter chain:
+
+-   **Prioritization:** It first checks if an `Authorization: Bearer` header is already present in the incoming request. If it is, the filter does nothing, allowing Spring Security's default JWT processing to take over.
+-   **Cookie Injection:** If no `Authorization: Bearer` header is found, but an `ACCESS_TOKEN` cookie (which is `HttpOnly`) is present, the filter reads the token from this cookie and *injects* it into a new `Authorization: Bearer` header for the request.
+-   **Security Benefit:** This approach allows the frontend to leverage the security benefits of `HttpOnly` cookies (protection against XSS) while still enabling other clients to authenticate using standard Bearer tokens. The backend's core JWT validation logic remains unified.
+
+This ensures that:
+-   The web frontend (Vue.js) can securely authenticate without JavaScript ever touching the sensitive tokens.
+-   Other clients (mobile, CLI, etc.) can authenticate using the widely accepted Bearer token standard.
+-   The backend consistently receives a `Bearer` token in the `Authorization` header for JWT validation, simplifying the security configuration downstream.
+
 ## 7. 🧩 Extensibility Guidelines
 
 When adding new features:

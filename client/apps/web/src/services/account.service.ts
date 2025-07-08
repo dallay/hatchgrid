@@ -67,7 +67,7 @@ export default class AccountService {
 	async retrieveAccount(): Promise<boolean> {
 		try {
 			const response: AxiosResponse<Account> = await axios.get("/api/account");
-
+      console.log("Account retrieved:", response.data);
 			if (response.status === 200 && response.data?.login) {
 				this.authStore.setAuthentication(response.data);
 				return true;
@@ -90,11 +90,9 @@ export default class AccountService {
 			return;
 		}
 
-		// Check if we have authentication tokens
-		const token = this.getAuthToken();
 
 		// If already authenticated with valid token and authorities, skip
-		if (this.authenticated && this.userAuthorities.length > 0 && token) {
+		if (this.authenticated && this.userAuthorities.length > 0) {
 			return;
 		}
 
@@ -142,17 +140,7 @@ export default class AccountService {
 		return authorities.some((authority) => this.hasAuthority(authority));
 	}
 
-	/**
-	 * Get authentication token from storage
-	 */
-	private getAuthToken(): string | null {
-		return (
-			localStorage.getItem("jhi-authenticationToken") ||
-			sessionStorage.getItem("jhi-authenticationToken") ||
-			localStorage.getItem("authToken") ||
-			sessionStorage.getItem("authToken")
-		);
-	}
+
 
 	/**
 	 * Check if user has required authorities
