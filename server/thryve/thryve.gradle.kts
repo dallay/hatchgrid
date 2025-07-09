@@ -122,16 +122,19 @@ tasks.asciidoctor {
     dependsOn(tasks.test)
 }
 
+// --- Spring Profiles Logic ---
+ext {
+    var springProfiles = "dev"
+    if (project.hasProperty("tls")) {
+        springProfiles += ",tls"
+    }
+    if (project.hasProperty("e2e")) {
+        springProfiles += ",e2e"
+    }
+    set("springProfiles", springProfiles)
+}
+
 // Pass springProfiles to bootRun
 tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
-    val profiles = buildString {
-        append("dev")
-        if (project.hasProperty("tls")) {
-            append(",tls")
-        }
-        if (project.hasProperty("e2e")) {
-            append(",e2e")
-        }
-    }
-    args("--spring.profiles.active=${profiles}")
+    args("--spring.profiles.active=${extra["springProfiles"]}")
 }

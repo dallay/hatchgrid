@@ -8,22 +8,22 @@ const mode = ref<"light" | "dark">("light");
 
 // Load theme from localStorage or system preference
 onMounted(() => {
-	const saved = localStorage.getItem("theme");
-	if (saved === "dark" || saved === "light") {
-		mode.value = saved;
-	} else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-		mode.value = "dark";
-	}
+  const saved = localStorage.getItem("theme");
+  if (saved === "dark" || saved === "light") {
+    mode.value = saved;
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    mode.value = "dark";
+  }
 });
 
 // Watch and apply theme
 watchEffect(() => {
-	document.documentElement.classList.toggle("dark", mode.value === "dark");
-	localStorage.setItem("theme", mode.value);
+  document.documentElement.classList.toggle("dark", mode.value === "dark");
+  localStorage.setItem("theme", mode.value);
 });
 
 const toggleDark = () => {
-	mode.value = mode.value === "dark" ? "light" : "dark";
+  mode.value = mode.value === "dark" ? "light" : "dark";
 };
 </script>
 
