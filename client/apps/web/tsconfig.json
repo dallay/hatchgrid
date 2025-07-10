@@ -9,9 +9,7 @@
 		"paths": {
 			"@/*": ["./src/*"]
 		},
-		"types": [
-			"unplugin-icons/types/vue"
-		],
+		"types": ["unplugin-icons/types/vue"],
 		"strict": true,
 		"forceConsistentCasingInFileNames": true
 	}

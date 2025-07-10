@@ -126,6 +126,9 @@ importers:
 
   client/apps/web:
     dependencies:
+      '@hatchgrid/utilities':
+        specifier: workspace:*
+        version: link:../../packages/utilities
       '@internationalized/date':
         specifier: ^3.8.2
         version: 3.8.2

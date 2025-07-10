@@ -1,6 +1,8 @@
 import axios, { type AxiosResponse } from "axios";
 import type { Account } from "@/security/account.model";
 import type { useAuthStore } from "@/stores/auth";
+import type {UserResponse} from "@/services/response/user.response.ts";
+import { avatar } from "@hatchgrid/utilities"
 
 export interface ProfileInfo {
 	activeProfiles: string[];
@@ -19,7 +21,7 @@ export interface ProfileInfo {
 }
 
 export default class AccountService {
-	private authStore: ReturnType<typeof useAuthStore>;
+	private readonly authStore: ReturnType<typeof useAuthStore>;
 
 	constructor(authStore: ReturnType<typeof useAuthStore>) {
 		this.authStore = authStore;
@@ -66,13 +68,30 @@ export default class AccountService {
 	 */
 	async retrieveAccount(): Promise<boolean> {
 		try {
-			const response: AxiosResponse<Account> = await axios.get("/api/account", { withCredentials: true });
-      console.log("Account retrieved:", response.data);
-      if (response.status === 200 && response.data?.login) {
-				this.authStore.setAuthentication(response.data);
+			const response: AxiosResponse<UserResponse> = await axios.get("/api/account", { withCredentials: true });
+
+      const data = response.data;
+      const account: Account = {
+        ...data,
+        fullname: [data.firstname, data.lastname].filter(Boolean).join(" ") || undefined,
+        langKey: "en", // in the future, this could be dynamic from user settings
+        activated: true, // assuming the account is always activated
+        imageUrl: avatar(data.email, 100)
+      };
+
+			if (response.status === 200 && account?.username) {
+				this.authStore.setAuthentication(account);
 				return true;
 			}
-		} catch (error) {
+		} catch (error: any) {
+			const status = error?.response?.status;
+			if (status === 401 || status === 403) {
+				this.authStore.clearAuth();
+				if (window.location.pathname !== "/login") {
+					window.location.href = "/login";
+				}
+				return false;
+			}
 			console.error("Failed to retrieve account:", error);
 		}
 
@@ -89,7 +108,6 @@ export default class AccountService {
 			await this.authStore.logon;
 			return;
 		}
-
 
 		// If already authenticated with valid token and authorities, skip
 		if (this.authenticated && this.userAuthorities.length > 0) {
@@ -140,8 +158,6 @@ export default class AccountService {
 		return authorities.some((authority) => this.hasAuthority(authority));
 	}
 
-
-
 	/**
 	 * Check if user has required authorities
 	 */
@@ -166,14 +182,14 @@ export default class AccountService {
 	 * Get current user authorities
 	 */
 	get userAuthorities(): string[] {
-		return this.authStore.account?.authorities || [];
+		return Array.from(this.authStore.userIdentity?.authorities ?? []);
 	}
 
 	/**
 	 * Get current user account
 	 */
 	get account(): Account | null {
-		return this.authStore.account;
+		return this.authStore.userIdentity;
 	}
 
 	/**
@@ -210,7 +226,11 @@ export default class AccountService {
 
 			// Update local account data
 			if (this.authStore.userIdentity) {
-				this.authStore.userIdentity.langKey = langKey;
+				// Clone and update to ensure reactivity in Pinia/Vue
+				this.authStore.setAuthentication({
+					...this.authStore.userIdentity,
+					langKey,
+				});
 			}
 
 			return true;

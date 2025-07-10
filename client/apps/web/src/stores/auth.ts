@@ -1,6 +1,7 @@
 import axios, { type AxiosError } from "axios";
 import { defineStore } from "pinia";
 import type { Account } from "../security/account.model";
+import { avatar } from "@hatchgrid/utilities"
 
 export interface AuthStateStorable {
 	logon: Promise<unknown> | null;
@@ -31,6 +32,10 @@ export const useAuthStore = defineStore("auth", {
 			this.logon = promise;
 		},
 		setAuthentication(identity: Account) {
+      // if identity.imageUrl is not set, generate it using the avatar utility
+      if (!identity.imageUrl) {
+        identity.imageUrl = avatar(identity.email, 100);
+      }
 			this.userIdentity = identity;
 			this.authenticated = true;
 			this.logon = null;
@@ -65,22 +70,26 @@ export const useAuthStore = defineStore("auth", {
 			}
 		},
 
-		async login(username: string, password: string): Promise<boolean> {
-			try {
-				const loginPromise = axios.post("/api/login", { username, password });
-				this.authenticate(loginPromise);
+	   async login(username: string, password: string): Promise<boolean> {
+		   try {
+			   const loginPromise = axios.post("/api/login", { username, password });
+			   this.authenticate(loginPromise);
 
-				await loginPromise;
-				return true;
-			} catch (error) {
-				this.clearAuth();
-				const axiosError = error as AxiosError;
-				if (axiosError.response?.status === 401) {
-					throw new Error("Invalid credentials.");
-				}
-				throw new Error("Login failed.");
-			}
-		},
+			   await loginPromise;
+
+			   // After successful login, fetch account info and set authentication state
+			   const { data } = await axios.get<Account>("/api/account");
+			   this.setAuthentication(data);
+			   return true;
+		   } catch (error) {
+			   this.clearAuth();
+			   const axiosError = error as AxiosError;
+			   if (axiosError.response?.status === 401) {
+				   throw new Error("Invalid credentials.");
+			   }
+			   throw new Error("Login failed.");
+		   }
+	   },
 
 		async logoutAsync(): Promise<void> {
 			try {

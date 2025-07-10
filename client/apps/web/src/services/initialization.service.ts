@@ -53,7 +53,16 @@ export class InitializationService {
 		this.router.beforeResolve(async (to, _from, next) => {
 			// Initialize account if not authenticated
 			if (!this.authStore.authenticated) {
-				await this.accountService.update();
+				try {
+					await this.accountService.update();
+				} catch (error) {
+					console.warn("Failed to update account in router guard:", error);
+					next({
+						path: "/login",
+						query: { redirect: to.fullPath },
+					});
+					return;
+				}
 			}
 
 			// Check route authorities
@@ -123,7 +132,8 @@ export class InitializationService {
 			await this.accountService.update();
 		} catch (error) {
 			console.warn("Failed to initialize authentication:", error);
-			// Don't throw - app should still load even if auth fails
+			// Redirect to login if authentication fails
+			this.router.push({ path: "/login" });
 		}
 	}
 

@@ -10,20 +10,34 @@ import reactor.core.publisher.Mono
 
 @Component
 class JwtCookieOrHeaderFilter : WebFilter {
-    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
+
+    private val logger = org.slf4j.LoggerFactory.getLogger(JwtCookieOrHeaderFilter::class.java)
+
+    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void?> {
         val request = exchange.request
 
-        val alreadyHasAuthHeader = request.headers[HttpHeaders.AUTHORIZATION]?.any { it.startsWith("Bearer ") } == true
-        val accessToken = request.cookies[AuthCookieBuilder.ACCESS_TOKEN]?.firstOrNull()?.value
+        val hasAuthHeader = request.headers[HttpHeaders.AUTHORIZATION]
+            ?.any { it.startsWith("Bearer ") } == true
 
-        return if (!alreadyHasAuthHeader && !accessToken.isNullOrBlank()) {
-            val mutatedRequest = request.mutate()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .build()
+        val cookieToken = request.cookies[AuthCookieBuilder.ACCESS_TOKEN]
+            ?.firstOrNull()
+            ?.value
 
-            chain.filter(exchange.mutate().request(mutatedRequest).build())
-        } else {
-            chain.filter(exchange)
+        if (hasAuthHeader || cookieToken.isNullOrBlank()) {
+            return chain.filter(exchange)
         }
+
+        logger.debug(
+            "Injecting Authorization header from ACCESS_TOKEN cookie for request to {}",
+            request.uri
+        )
+
+        val mutatedRequest = request.mutate()
+            .header(HttpHeaders.AUTHORIZATION, "Bearer $cookieToken")
+            .build()
+
+        val mutatedExchange = exchange.mutate().request(mutatedRequest).build()
+
+        return chain.filter(mutatedExchange)
     }
 }

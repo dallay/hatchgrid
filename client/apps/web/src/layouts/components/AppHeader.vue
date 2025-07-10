@@ -64,14 +64,7 @@ const handleLogout = async () => {
     <div class="ml-auto flex items-center space-x-4 px-4">
       <MainMenuNav class="mx-6" />
       <ThemeSwitcher />
-      <UserNav
-        :user="{
-          name: 'shadcn',
-          email: 'm@example.com',
-          avatar: 'https://i.pravatar.cc/300',
-        }"
-        variant="compact"
-      />
+      <UserNav variant="compact" />
     </div>
   </header>
 </template>

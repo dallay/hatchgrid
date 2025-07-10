@@ -181,6 +181,7 @@ declare module 'vue' {
     NavigationMenuTrigger: typeof import('./src/components/ui/navigation-menu/NavigationMenuTrigger.vue')['default']
     NavigationMenuViewport: typeof import('./src/components/ui/navigation-menu/NavigationMenuViewport.vue')['default']
     NavProjects: typeof import('./src/components/NavProjects.vue')['default']
+    NavUser: typeof import('./src/components/NavUser.vue')['default']
     NumberField: typeof import('./src/components/ui/number-field/NumberField.vue')['default']
     NumberFieldContent: typeof import('./src/components/ui/number-field/NumberFieldContent.vue')['default']
     NumberFieldDecrement: typeof import('./src/components/ui/number-field/NumberFieldDecrement.vue')['default']

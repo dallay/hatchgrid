@@ -24,13 +24,7 @@ export function setupAxiosInterceptors(router: Router) {
 				}
 			}
 
-			// Add authentication token if available
-			const token =
-				localStorage.getItem("jhi-authenticationToken") ||
-				sessionStorage.getItem("jhi-authenticationToken");
-			if (token) {
-				config.headers.Authorization = `Bearer ${token}`;
-			}
+			// Removed token from localStorage/sessionStorage as requested
 
 			return config;
 		},
@@ -63,19 +57,29 @@ export function setupAxiosInterceptors(router: Router) {
 			).currentRoute?.value || { name: undefined, fullPath: undefined };
 
 			if (status === 401) {
-				store.logout();
-				localStorage.removeItem("jhi-authenticationToken");
-				sessionStorage.removeItem("jhi-authenticationToken");
-				if (
-					!url?.endsWith("api/account") &&
-					!url?.endsWith("api/authenticate") &&
-					currentRoute.name !== "Login"
-				) {
-					router.push({
-						name: "Login",
-						query: { redirect: currentRoute.fullPath },
-					});
+				// If the original request was to /api/account, we've already tried to get the account and failed.
+				// Rejecting will prevent an infinite loop and allow the original caller to handle the error.
+				if (url?.endsWith("api/account")) {
+					return Promise.reject(error);
 				}
+
+				// For any other 401, try to get the account to see if the session is truly expired.
+				axios.get("/api/account").catch((innerError) => {
+					// If getting the account also results in a 401, the session is invalid.
+					if (innerError.response?.status === 401) {
+						store.logout();
+						// Redirect to login unless we are on an auth page already.
+						if (
+							!url?.endsWith("api/authenticate") &&
+							currentRoute.name !== "Login"
+						) {
+							router.push({
+								name: "Login",
+								query: { redirect: currentRoute.fullPath },
+							});
+						}
+					}
+				});
 			} else if (status === 403) {
 				if (currentRoute.name !== "Forbidden") {
 					router.push({ name: "Forbidden" });
