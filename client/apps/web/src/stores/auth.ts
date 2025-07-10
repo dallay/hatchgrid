@@ -3,6 +3,8 @@ import { defineStore } from "pinia";
 import type { Account } from "../security/account.model";
 import { avatar } from "@hatchgrid/utilities"
 
+import type { UserResponse } from "@/services/response/user.response";
+
 export interface AuthStateStorable {
 	logon: Promise<unknown> | null;
 	userIdentity: Account | null;
@@ -78,8 +80,15 @@ export const useAuthStore = defineStore("auth", {
 			   await loginPromise;
 
 			   // After successful login, fetch account info and set authentication state
-			   const { data } = await axios.get<Account>("/api/account");
-			   this.setAuthentication(data);
+			   const { data } = await axios.get<UserResponse>("/api/account");
+         const account: Account = {
+           ...data,
+           fullname: [data.firstname, data.lastname].filter(Boolean).join(" ") || undefined,
+           langKey: "en", // in the future, this could be dynamic from user settings
+           activated: true, // assuming the account is always activated
+           imageUrl: avatar(data.email, 100)
+         };
+			   this.setAuthentication(account);
 			   return true;
 		   } catch (error) {
 			   this.clearAuth();
