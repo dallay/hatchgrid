@@ -1,4 +1,5 @@
 import { sortBy } from "./sort-by";
+import { describe, it, expect } from "vitest";
 
 describe("sortBy", () => {
 	it("sorts items by string", () => {

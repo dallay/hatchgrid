@@ -1,5 +1,5 @@
-import formatDate from "~/format-date/format-date.ts";
-import offsetDate from "~/offset-date/offset-date.ts";
+import formatDate from "./format-date/format-date";
+import offsetDate from "./offset-date/offset-date";
 import avatar from "./avatar/avatar";
 import { chunk } from "./chunk/chunk";
 import { debounce } from "./debounce/debounce";

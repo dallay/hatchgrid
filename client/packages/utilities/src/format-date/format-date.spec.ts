@@ -1,4 +1,5 @@
 import formatDate from "./format-date";
+import { describe, it, expect } from "vitest";
 
 describe("formatDate", () => {
 	it("formats a valid date string correctly", () => {

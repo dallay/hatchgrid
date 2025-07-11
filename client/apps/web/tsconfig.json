@@ -2,14 +2,12 @@
 	"files": [],
 	"references": [
 		{ "path": "./tsconfig.app.json" },
-		{ "path": "./tsconfig.node.json" },
-		{ "path": "../../packages/utilities" }
+		{ "path": "./tsconfig.node.json" }
 	],
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"],
-			"@hatchgrid/utilities": ["../../packages/utilities/dist"]
+			"@/*": ["./src/*"]
 		},
 		"types": ["unplugin-icons/types/vue"],
 		"strict": true,

@@ -1,27 +1,23 @@
 {
 	"extends": "@vue/tsconfig/tsconfig.dom.json",
 	"compilerOptions": {
-		"lib": ["ESNext", "DOM", "DOM.Iterable", "dom.webbluetooth"],
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
 		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"],
-			"@hatchgrid/utilities": ["../../packages/utilities/dist"]
+			"@/*": ["./src/*"]
 		},
-		"skipLibCheck": false,
-		"moduleResolution": "node",
+		"skipLibCheck": true,
+		"moduleResolution": "bundler",
 		/* Linting */
-		"types": ["unplugin-icons/types"],
 		"strict": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedSideEffectImports": true,
 		/* Allow flexibility for UI library types */
-		"exactOptionalPropertyTypes": false,
-		"target": "ESNext",
-		"esModuleInterop": true,
-		"allowSyntheticDefaultImports": true
+		"exactOptionalPropertyTypes": false
 	},
 	"include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
 }
+

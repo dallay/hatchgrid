@@ -10,15 +10,43 @@
 
       <form @submit.prevent="handleRegister" class="space-y-6">
         <div>
-          <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Full Name
+          <label for="firstName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            First Name
           </label>
           <input
-            id="name"
-            v-model="form.name"
+            id="firstName"
+            v-model="form.firstName"
             type="text"
             required
-            placeholder="Enter your full name"
+            placeholder="Enter your first name"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div>
+          <label for="lastName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Last Name
+          </label>
+          <input
+            id="lastName"
+            v-model="form.lastName"
+            type="text"
+            required
+            placeholder="Enter your last name"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div>
+          <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Username
+          </label>
+          <input
+            id="username"
+            v-model="form.username"
+            type="text"
+            required
+            placeholder="Choose a username"
             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
@@ -72,7 +100,8 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import axios from "axios";
 import { ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
@@ -80,7 +109,9 @@ import { toast } from "vue-sonner";
 const router = useRouter();
 const isLoading = ref(false);
 const form = ref({
-	name: "",
+	firstName: "",
+	lastName: "",
+	username: "",
 	email: "",
 	password: "",
 });
@@ -90,8 +121,13 @@ const handleRegister = async () => {
 
 	isLoading.value = true;
 	try {
-		// Simulate registration API call
-		await new Promise((resolve) => setTimeout(resolve, 1000));
+		await axios.post("/api/register", {
+			login: form.value.username,
+			email: form.value.email,
+			password: form.value.password,
+			firstName: form.value.firstName,
+			lastName: form.value.lastName,
+		});
 
 		toast.success("Account created successfully!", {
 			description:
@@ -99,10 +135,12 @@ const handleRegister = async () => {
 		});
 
 		router.push("/login");
-	} catch (error) {
+	} catch (error: any) {
 		console.error("Registration error:", error);
 		toast.error("Registration failed", {
-			description: "Unable to create your account. Please try again.",
+			description:
+				error.response?.data?.detail ||
+				"Unable to create your account. Please try again.",
 		});
 	} finally {
 		isLoading.value = false;

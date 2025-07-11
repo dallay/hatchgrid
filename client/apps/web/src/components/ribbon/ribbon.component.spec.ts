@@ -1,7 +1,8 @@
+// @vitest-environment happy-dom
 import { createTestingPinia } from "@pinia/testing";
 import { shallowMount, type VueWrapper } from "@vue/test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { useAuthStore } from "@/stores/auth";
+import { useAuthStore } from "@/stores/auth.ts"
 import Ribbon from "./ribbon.vue";
 
 vi.mock("vue-i18n", () => ({
@@ -17,7 +18,12 @@ describe("Ribbon", () => {
 	beforeEach(() => {
 		wrapper = shallowMount(Ribbon, {
 			global: {
-				plugins: [createTestingPinia({ stubActions: false })],
+				plugins: [
+					createTestingPinia({
+						stubActions: false,
+						createSpy: vi.fn,
+					}),
+				],
 			},
 		});
 		store = useAuthStore();

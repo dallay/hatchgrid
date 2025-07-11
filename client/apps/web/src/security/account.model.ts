@@ -1,5 +1,4 @@
 export interface Account {
-	login: string;
 	username: string;
 	email?: string;
 	fullname?: string | null; // firstname + lastname
