@@ -34,7 +34,7 @@ export const useAuthStore = defineStore("auth", {
 		},
 		setAuthentication(identity: Account) {
 			// if identity.imageUrl is not set, generate it using the avatar utility
-      identity.imageUrl ??= avatar(identity.email ?? "", 100);
+			identity.imageUrl ??= avatar(identity.email ?? "", 100);
 			this.userIdentity = identity;
 			this.authenticated = true;
 			this.logon = null;
