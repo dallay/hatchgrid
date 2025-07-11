@@ -60,7 +60,7 @@ export function getBaseType(schema: z.ZodAny) {
 /**
  * Search for a "ZodDefault" in the Zod stack and return its value.
  */
-export function getDefaultValueInZodStack(schema: z.ZodAny): any {
+export function getDefaultValueInZodStack(schema: z.ZodAny): unknown {
 	const typedSchema = schema as unknown as z.ZodDefault<
 		z.ZodNumber | z.ZodString
 	>;
@@ -75,7 +75,7 @@ export function getDefaultValueInZodStack(schema: z.ZodAny): any {
 	}
 	if ("schema" in typedSchema._def) {
 		return getDefaultValueInZodStack(
-			(typedSchema._def as any).schema as z.ZodAny,
+			(typedSchema._def as { schema: z.ZodAny }).schema as z.ZodAny,
 		);
 	}
 

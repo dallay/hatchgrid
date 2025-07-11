@@ -23,7 +23,7 @@ spring:
                         scope: openid,profile,email
                 provider:
                     oidc:
-                        issuer-uri: http://DO_NOT_CALL:9080/realms/hatchgrid
+                        issuer-uri: ${application.security.oauth2.issuer-uri}
     ssl:
       bundle:
         pem:

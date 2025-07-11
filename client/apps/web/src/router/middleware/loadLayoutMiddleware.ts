@@ -1,0 +1,36 @@
+import type { RouteLocationNormalized } from "vue-router";
+
+/**
+ * This middleware is used to dynamically update the Layouts system.
+ *
+ * As soon as the route changes, it tries to pull the layout that we want to display from meta.
+ * Then it loads the layout component, and assigns the loaded component to the meta layoutComponent variable.
+ * And layoutComponent is used in the main layout AppLayout.vue for dynamic component switching.
+ *
+ * If the layout we want to display is not found, loads the default layout AppLayout.
+ */
+export async function loadLayoutMiddleware(route: RouteLocationNormalized) {
+	try {
+		// Get layout name from route meta, default to 'AppLayout' if not specified
+		const layout = route.meta.layout || "DashboardLayout";
+
+		// Dynamically import the layout component
+		const layoutComponent = await import(`@/layouts/${layout}.vue`);
+
+		// Store the loaded component in route meta for use in the main layout
+		route.meta.layoutComponent = layoutComponent.default;
+
+		console.log(`Loaded layout: ${layout}`);
+	} catch (error) {
+		console.error("Error occurred in processing of layouts:", error);
+		console.log("Mounted default layout AppLayout");
+
+		// Load default layout on error
+		try {
+			const defaultLayoutComponent = await import("@/layouts/AppLayout.vue");
+			route.meta.layoutComponent = defaultLayoutComponent.default;
+		} catch (defaultError) {
+			console.error("Failed to load default layout:", defaultError);
+		}
+	}
+}

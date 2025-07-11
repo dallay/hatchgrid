@@ -12,25 +12,25 @@ object AuthCookieBuilder {
     const val ACCESS_TOKEN = "ACCESS_TOKEN"
     const val REFRESH_TOKEN = "REFRESH_TOKEN"
     private const val SESSION = "SESSION"
+    private const val SAME_SITE_LAX = "Lax"
 
     /**
      * Builds cookies for the access token.
      * Adds the access token, refresh token, and session state cookies to the response.
      * @param response The ServerHttpResponse to which the cookies are added.
      * @param accessToken The access token containing the token, refresh token, and session state.
-     * @return Unit
      */
     fun buildCookies(
         response: ServerHttpResponse,
         accessToken: AccessToken
     ) {
-        // Add the cookie to the response
         response.addCookie(
             ResponseCookie.from(ACCESS_TOKEN, accessToken.token)
                 .path("/")
                 .maxAge(accessToken.expiresIn)
                 .httpOnly(true)
                 .secure(true)
+                .sameSite(SAME_SITE_LAX)
                 .build(),
         )
         response.addCookie(
@@ -39,6 +39,7 @@ object AuthCookieBuilder {
                 .maxAge(accessToken.expiresIn)
                 .httpOnly(true)
                 .secure(true)
+                .sameSite(SAME_SITE_LAX)
                 .build(),
         )
         if (accessToken.sessionState != null) {
@@ -48,6 +49,7 @@ object AuthCookieBuilder {
                     .maxAge(accessToken.expiresIn)
                     .httpOnly(true)
                     .secure(true)
+                    .sameSite(SAME_SITE_LAX)
                     .build(),
             )
         }
@@ -60,6 +62,7 @@ object AuthCookieBuilder {
                 .maxAge(0)
                 .httpOnly(true)
                 .secure(true)
+                .sameSite(SAME_SITE_LAX)
                 .build(),
         )
         response.addCookie(
@@ -68,6 +71,7 @@ object AuthCookieBuilder {
                 .maxAge(0)
                 .httpOnly(true)
                 .secure(true)
+                .sameSite(SAME_SITE_LAX)
                 .build(),
         )
         response.addCookie(
@@ -76,6 +80,7 @@ object AuthCookieBuilder {
                 .maxAge(0)
                 .httpOnly(true)
                 .secure(true)
+                .sameSite(SAME_SITE_LAX)
                 .build(),
         )
     }

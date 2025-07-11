@@ -52,3 +52,137 @@ Hatchgrid is a Spring Boot application built with Kotlin and Gradle, providing a
 - Utilize Spring Boot's auto-configuration capabilities when possible
 - Ensure proper security controls for all endpoints
 - Include monitoring endpoints via Spring Boot Actuator
+
+# AI Assistant Development Instructions for Hatchgrid
+
+These instructions serve as a guide for GitHub Copilot and any AI-powered developer assistant to contribute effectively and consistently to the Hatchgrid project.
+
+---
+
+## 🔍 Project Overview
+
+**Hatchgrid** is a modular, full-stack platform designed to automate content publishing for creators. It is built as a monorepo with a reactive Kotlin backend, a Vue 3 frontend, and Astro for static content delivery.
+
+---
+
+## 🧠 High-Level Architecture
+
+- **Monorepo** managed with `pnpm`
+- **Backend:** Kotlin + Spring Boot + R2DBC + Keycloak + Liquibase
+- **Frontend:** Vue 3 + TypeScript + Vite
+- **Static Site:** Astro + MDX + Sveltia CMS
+- **Auth:** OAuth2 via Keycloak (Authorization Server + Resource Server + Client)
+- **Database:** PostgreSQL + RLS + Liquibase for schema management
+- **CI/CD:** GitHub Actions (with coverage, build, quality gates, etc.)
+- **Infrastructure:** Docker, Prometheus, Grafana, CodeQL
+- **Documentation:** Located in `docs/`, maintained in markdown and version-controlled
+
+---
+
+## 📁 Project Structure
+
+- `apps/web/` - Vue 3 frontend
+- `apps/landing-page/` - Landing Page - Astro-based static site
+- `apps/backend/` - Spring Boot reactive backend
+- `shared/` - Shared components across applications
+- `docs/` - Project documentation (must be kept up-to-date)
+- `.github/` - CI/CD configurations
+
+---
+
+## 🧪 Required Build and Test Commands
+
+All changes must pass the following in the **project root**:
+
+```bash
+pnpm run check && pnpm run test && pnpm run build
+```
+
+For the **backend**:
+
+```bash
+./gradlew detektAll --no-daemon --stacktrace
+./gradlew build
+```
+
+If these commands fail, the pull request must not be merged.
+
+---
+
+## ✅ Development Principles
+
+- ✅ **All new features must include unit and integration tests**
+- ✅ **Documentation (`/docs`) must be updated with every relevant change**
+- ✅ **Every build must be green before merging to main**
+- ✅ **Prefer test-first or BDD-style development**
+- ✅ **Design modules for extension, not modification**
+
+---
+
+## 💡 Best Practices
+
+### Backend (Kotlin + Spring Boot)
+
+- Use `val` over `var` (immutability)
+- Follow modular design using Spring Modulith
+- Prefer coroutines for async operations
+- Use `WebFlux`, `R2DBC`, and `Liquibase` idiomatically
+- Follow `Single Responsibility Principle` in class design
+- Secure endpoints by default (Keycloak + OAuth2 scopes)
+- Follow reactive patterns consistently
+- Configure and expose metrics via Actuator + Prometheus
+
+### Frontend (Vue 3 + Vite)
+
+- Follow composition API and TypeScript best practices
+- Use `pnpm` workspaces to manage dependencies
+- Isolate logic in composables
+- Use ESLint + Prettier for consistency
+- Document components with JSDoc / TS comments
+
+---
+
+## 🧪 Testing Guidelines
+
+- **Backend:**
+  - Use JUnit 5 and Testcontainers
+  - Reactive testing: `StepVerifier`, `WebTestClient`
+  - Test class naming: `should_doSomething_when_condition`
+
+- **Frontend:**
+  - Use Vitest + Vue Test Utils
+  - Keep test coverage high, especially for components and composables
+
+---
+
+## 📚 Documentation Guidelines
+
+- Project documentation lives in `/docs`
+- Every change to behavior, APIs, architecture, or configuration **must** be reflected
+- Use markdown and commit with relevant PRs
+- Refer to this folder as the canonical reference for devs and agents
+
+---
+
+## 💬 AI Assistant Usage Guidelines
+
+All AI agents (Copilot, ChatGPT, etc.) must:
+
+- Respect the architectural choices (reactive, modular, OAuth2-secured)
+- Apply consistent coding conventions (documented above)
+- Prioritize security, performance, and testability
+- Suggest changes that **do not break existing tests or architecture**
+- Refuse to produce logic without corresponding test stubs
+- Propose changes **only** if the required checks and builds can pass
+
+---
+
+## 🧷 Summary Checklist Before Merging Code
+
+- [ ] Tests written and passing
+- [ ] Builds passing (`pnpm` and `Gradle`)
+- [ ] `docs/` updated if relevant
+- [ ] Code format and lint clean
+- [ ] Secure, modular, and extensible
+
+---

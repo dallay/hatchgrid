@@ -1,5 +1,5 @@
 import initials from "./initials";
-
+import { describe, it, expect } from "vitest";
 describe("initials", () => {
 	it("returns initials for a single name", () => {
 		const result = initials("John");

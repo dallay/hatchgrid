@@ -1,33 +1,26 @@
 package com.hatchgrid.thryve.authentication.infrastructure.http
 
-import com.hatchgrid.IntegrationTest
+import com.hatchgrid.ControllerIntegrationTest
 import com.hatchgrid.thryve.authentication.domain.AccessToken
 import com.hatchgrid.thryve.authentication.infrastructure.cookie.AuthCookieBuilder
-import com.hatchgrid.thryve.config.InfrastructureTestContainers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.http.MediaType
 import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.returnResult
 
 private const val ENDPOINT = "/api/logout"
 
 @Suppress("MultilineRawStringIndentation")
-@AutoConfigureWebTestClient
-@IntegrationTest
-internal class UserLogoutControllerIntegrationTest : InfrastructureTestContainers() {
-    @Autowired
-    private lateinit var webTestClient: WebTestClient
+internal class UserLogoutControllerIntegrationTest : ControllerIntegrationTest() {
 
     private val email = "john.doe@hatchgrid.com"
     private val password = "S3cr3tP@ssw0rd*123"
     private var accessToken: AccessToken? = null
 
     @BeforeEach
-    fun setUp() {
+    override fun setUp() {
+        super.setUp()
         startInfrastructure()
         val returnResult = webTestClient
             .mutateWith(csrf())

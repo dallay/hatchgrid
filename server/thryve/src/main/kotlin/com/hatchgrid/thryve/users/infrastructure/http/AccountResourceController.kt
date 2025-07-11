@@ -34,6 +34,7 @@ class AccountResourceController(private val accountResourceService: AccountResou
     @GetMapping("/account")
     fun getAccount(principal: Principal): Mono<UserResponse> {
         log.debug("Getting user account information")
+
         return accountResourceService.getAccount(principal as AbstractAuthenticationToken)
     }
     companion object {
