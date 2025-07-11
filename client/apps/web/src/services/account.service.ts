@@ -87,7 +87,7 @@ export default class AccountService {
 			if (response.status === 200 && account?.username) {
 				this.authStore.setAuthentication({
 					...account,
-					login: account.username,
+					username: account.username,
 				});
 				return true;
 			}

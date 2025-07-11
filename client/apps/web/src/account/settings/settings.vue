@@ -75,6 +75,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { Account } from "@/security/account.model";
 import type AccountService from "@/services/account.service";
 import { useAuthStore } from "@/stores/auth";
 
@@ -93,18 +94,20 @@ const success = ref<string | null>(null);
 
 onMounted(async () => {
 	if (authStore.account) {
-		form.value.firstName = authStore.account.firstname || "";
-		form.value.lastName = authStore.account.lastname || "";
-		form.value.email = authStore.account.email || "";
-		form.value.authorities = Array.from(authStore.account.authorities);
+		const account = authStore.account as Account;
+		form.value.firstName = account.firstname || "";
+		form.value.lastName = account.lastname || "";
+		form.value.email = account.email || "";
+		form.value.authorities = Array.from(account.authorities);
 	} else if (accountService) {
 		// Attempt to load account if not already in store
 		await accountService.loadAccount();
 		if (authStore.account) {
-			form.value.firstName = authStore.account.firstname || "";
-			form.value.lastName = authStore.account.lastname || "";
-			form.value.email = authStore.account.email || "";
-			form.value.authorities = Array.from(authStore.account.authorities);
+			const account = authStore.account as Account;
+			form.value.firstName = account.firstname || "";
+			form.value.lastName = account.lastname || "";
+			form.value.email = account.email || "";
+			form.value.authorities = Array.from(account.authorities);
 		}
 	}
 });

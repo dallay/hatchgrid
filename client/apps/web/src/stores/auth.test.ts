@@ -12,11 +12,11 @@ describe("Auth Store", () => {
 		mock = new MockAdapter(axios);
 	});
 
-	it("should set isAuthenticated to true on successful login", async () => {
+	it("should set isAuthenticated to true on successful username", async () => {
 		const authStore = useAuthStore();
 		mock.onPost("/api/login").reply(200);
 		mock.onGet("/api/account").reply(200, {
-			login: "testuser",
+			username: "testuser",
 			authorities: ["ROLE_USER"],
 			firstname: "Test",
 			lastname: "User",
@@ -26,11 +26,11 @@ describe("Auth Store", () => {
 		await authStore.login("testuser", "password");
 
 		expect(authStore.isAuthenticated).toBe(true);
-		expect(authStore.account?.login).toBe("testuser");
+		expect(authStore.account?.username).toBe("testuser");
 		expect(authStore.account?.fullname).toBe("Test User");
 	});
 
-	it("should set isAuthenticated to false on failed login", async () => {
+	it("should set isAuthenticated to false on failed username", async () => {
 		const authStore = useAuthStore();
 		mock.onPost("/api/login").reply(401);
 
@@ -43,7 +43,10 @@ describe("Auth Store", () => {
 	it("should clear account on successful logout", async () => {
 		const authStore = useAuthStore();
 		// Simulate being logged in
-		authStore.userIdentity = { login: "testuser", authorities: ["ROLE_USER"] };
+		authStore.userIdentity = {
+			username: "testuser",
+			authorities: new Set(["ROLE_USER"]),
+		};
 		authStore.authenticated = true;
 		mock.onPost("/api/logout").reply(200);
 
@@ -55,7 +58,10 @@ describe("Auth Store", () => {
 	it("should clear account even if logout fails on the server", async () => {
 		const authStore = useAuthStore();
 		// Simulate being logged in
-		authStore.userIdentity = { login: "testuser", authorities: ["ROLE_USER"] };
+		authStore.userIdentity = {
+			username: "testuser",
+			authorities: new Set(["ROLE_USER"]),
+		};
 		authStore.authenticated = true;
 		mock.onPost("/api/logout").reply(500);
 

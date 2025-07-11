@@ -2,7 +2,7 @@
   <div class="user-profile">
     <div v-if="authStore.authenticated" class="flex items-center gap-4">
       <div class="user-info">
-        <h3 class="font-medium">{{ authStore.account?.login }}</h3>
+        <h3 class="font-medium">{{ authStore.account?.username }}</h3>
         <p class="text-sm text-gray-500">
           {{ t('profile.authorities') }}: {{ userAuthorities.join(', ') }}
         </p>
