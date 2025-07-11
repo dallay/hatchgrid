@@ -1,0 +1,803 @@
+---
+title: "The Complete Guide to Database Migrations with Liquibase"
+description: "Master database migrations with Liquibase. Learn how to version control your database schema, handle complex migrations, and maintain data integrity across environments in Spring Boot applications."
+date: 2025-07-04T18:35:00
+lastModified: 2025-07-04T18:35:00
+author: en/yuniel-acosta
+cover: src/assets/images/blog-placeholder-2.avif
+tags:
+  - en/database
+  - en/spring-boot
+  - en/backend
+  - en/guide
+  - en/tools
+category: en/technology
+draft: false
+featured: true
+---
+
+Database migrations are a critical aspect of application development that's often overlooked until it causes production issues. Liquibase provides a robust solution for versioning and managing database schema changes. In this comprehensive guide, we'll explore how to effectively use Liquibase in Spring Boot applications.
+
+## Why Database Migrations Matter
+
+Database migrations allow you to:
+
+- **Version control your database schema** alongside your application code
+- **Maintain consistency** across development, staging, and production environments  
+- **Collaborate effectively** with team members on schema changes
+- **Roll back problematic changes** safely
+- **Track the history** of database modifications
+
+Without proper migration management, you risk data loss, schema inconsistencies, and deployment failures.
+
+## Setting Up Liquibase with Spring Boot
+
+### 1. Adding Dependencies
+
+```kotlin
+// build.gradle.kts
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.liquibase:liquibase-core")
+    runtimeOnly("org.postgresql:postgresql")
+    
+    // For testing
+    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:junit-jupiter")
+}
+```
+
+### 2. Configuration
+
+```yaml
+# application.yml
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hatchgrid
+    username: ${DB_USERNAME:hatchgrid}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+    
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+    drop-first: false
+    contexts: development,test,production
+    
+  jpa:
+    hibernate:
+      ddl-auto: validate # Important: Don't let Hibernate manage schema
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+```
+
+### 3. Directory Structure
+
+```
+src/main/resources/
+├── db/
+│   └── changelog/
+│       ├── db.changelog-master.xml
+│       ├── changes/
+│       │   ├── 001-initial-schema.xml
+│       │   ├── 002-add-user-table.xml
+│       │   └── 003-add-user-indexes.xml
+│       └── data/
+│           ├── 001-initial-data.xml
+│           └── 002-test-data.xml
+```
+
+## Creating Your First Migration
+
+### Master Changelog File
+
+```xml
+<!-- db.changelog-master.xml -->
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Schema changes -->
+    <include file="changes/001-initial-schema.xml" relativeToChangelogFile="true"/>
+    <include file="changes/002-add-user-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/003-add-user-indexes.xml" relativeToChangelogFile="true"/>
+    
+    <!-- Data changes (development only) -->
+    <include file="data/001-initial-data.xml" relativeToChangelogFile="true" context="development"/>
+    <include file="data/002-test-data.xml" relativeToChangelogFile="true" context="test"/>
+
+</databaseChangeLog>
+```
+
+### Initial Schema Migration
+
+```xml
+<!-- changes/001-initial-schema.xml -->
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="001-create-base-tables" author="yuniel-acosta">
+        <comment>Create initial database structure</comment>
+        
+        <!-- Create users table -->
+        <createTable tableName="users">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password_hash" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <!-- Create roles table -->
+        <createTable tableName="roles">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <!-- Create user_roles junction table -->
+        <createTable tableName="user_roles">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <!-- Add foreign key constraints -->
+        <addForeignKeyConstraint
+            baseTableName="user_roles"
+            baseColumnNames="user_id"
+            referencedTableName="users"
+            referencedColumnNames="id"
+            constraintName="fk_user_roles_user_id"
+            onDelete="CASCADE"/>
+            
+        <addForeignKeyConstraint
+            baseTableName="user_roles"
+            baseColumnNames="role_id"
+            referencedTableName="roles"
+            referencedColumnNames="id"
+            constraintName="fk_user_roles_role_id"
+            onDelete="CASCADE"/>
+            
+        <!-- Add unique constraint on user_roles -->
+        <addUniqueConstraint
+            tableName="user_roles"
+            columnNames="user_id, role_id"
+            constraintName="uk_user_roles"/>
+            
+        <rollback>
+            <dropTable tableName="user_roles"/>
+            <dropTable tableName="roles"/>
+            <dropTable tableName="users"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+```
+
+## Advanced Migration Patterns
+
+### 1. Adding Columns with Data Migration
+
+```xml
+<!-- changes/002-add-user-department.xml -->
+<changeSet id="002-add-user-department" author="yuniel-acosta">
+    <comment>Add department field to users and migrate existing data</comment>
+    
+    <!-- Add the new column -->
+    <addColumn tableName="users">
+        <column name="department" type="VARCHAR(100)"/>
+    </addColumn>
+    
+    <!-- Set default value for existing users -->
+    <update tableName="users">
+        <column name="department" value="Unknown"/>
+        <where>department IS NULL</where>
+    </update>
+    
+    <!-- Make the column NOT NULL after setting defaults -->
+    <addNotNullConstraint
+        tableName="users"
+        columnName="department"
+        defaultNullValue="Unknown"/>
+    
+    <rollback>
+        <dropColumn tableName="users" columnName="department"/>
+    </rollback>
+</changeSet>
+```
+
+### 2. Complex Data Transformations
+
+```xml
+<!-- changes/003-normalize-user-names.xml -->
+<changeSet id="003-normalize-user-names" author="yuniel-acosta">
+    <comment>Split full_name column into first_name and last_name</comment>
+    
+    <!-- Add new columns -->
+    <addColumn tableName="users">
+        <column name="first_name_new" type="VARCHAR(100)"/>
+        <column name="last_name_new" type="VARCHAR(100)"/>
+    </addColumn>
+    
+    <!-- Custom SQL for data migration -->
+    <sql>
+        UPDATE users 
+        SET 
+            first_name_new = SPLIT_PART(full_name, ' ', 1),
+            last_name_new = CASE 
+                WHEN POSITION(' ' IN full_name) > 0 
+                THEN SUBSTRING(full_name FROM POSITION(' ' IN full_name) + 1)
+                ELSE ''
+            END
+        WHERE full_name IS NOT NULL;
+    </sql>
+    
+    <!-- Set default values for NULL cases -->
+    <update tableName="users">
+        <column name="first_name_new" value="Unknown"/>
+        <where>first_name_new IS NULL OR first_name_new = ''</where>
+    </update>
+    
+    <update tableName="users">
+        <column name="last_name_new" value="User"/>
+        <where>last_name_new IS NULL OR last_name_new = ''</where>
+    </update>
+    
+    <!-- Drop old column and rename new ones -->
+    <dropColumn tableName="users" columnName="full_name"/>
+    
+    <renameColumn
+        tableName="users"
+        oldColumnName="first_name_new"
+        newColumnName="first_name"/>
+        
+    <renameColumn
+        tableName="users"
+        oldColumnName="last_name_new"
+        newColumnName="last_name"/>
+    
+    <!-- Add NOT NULL constraints -->
+    <addNotNullConstraint
+        tableName="users"
+        columnName="first_name"/>
+        
+    <addNotNullConstraint
+        tableName="users"
+        columnName="last_name"/>
+    
+    <rollback>
+        <!-- Rollback is complex for this migration -->
+        <addColumn tableName="users">
+            <column name="full_name" type="VARCHAR(200)"/>
+        </addColumn>
+        
+        <sql>
+            UPDATE users 
+            SET full_name = CONCAT(first_name, ' ', last_name);
+        </sql>
+        
+        <dropColumn tableName="users" columnName="first_name"/>
+        <dropColumn tableName="users" columnName="last_name"/>
+    </rollback>
+</changeSet>
+```
+
+### 3. Creating Indexes for Performance
+
+```xml
+<!-- changes/004-add-performance-indexes.xml -->
+<changeSet id="004-add-performance-indexes" author="yuniel-acosta">
+    <comment>Add indexes for commonly queried columns</comment>
+    
+    <!-- Index for email lookups -->
+    <createIndex indexName="idx_users_email" tableName="users">
+        <column name="email"/>
+    </createIndex>
+    
+    <!-- Composite index for active users by department -->
+    <createIndex indexName="idx_users_active_department" tableName="users">
+        <column name="active"/>
+        <column name="department"/>
+    </createIndex>
+    
+    <!-- Partial index for active users only -->
+    <sql>
+        CREATE INDEX idx_users_active_created_at 
+        ON users(created_at) 
+        WHERE active = true;
+    </sql>
+    
+    <!-- Index for date range queries -->
+    <createIndex indexName="idx_users_created_at" tableName="users">
+        <column name="created_at"/>
+    </createIndex>
+    
+    <rollback>
+        <dropIndex indexName="idx_users_email" tableName="users"/>
+        <dropIndex indexName="idx_users_active_department" tableName="users"/>
+        <dropIndex indexName="idx_users_created_at" tableName="users"/>
+        <sql>DROP INDEX IF EXISTS idx_users_active_created_at;</sql>
+    </rollback>
+</changeSet>
+```
+
+## Environment-Specific Migrations
+
+### Using Contexts
+
+```xml
+<!-- Development data -->
+<changeSet id="dev-001-sample-users" author="yuniel-acosta" context="development">
+    <comment>Add sample users for development</comment>
+    
+    <insert tableName="users">
+        <column name="email" value="admin@hatchgrid.com"/>
+        <column name="password_hash" value="$2a$10$encoded.hash.here"/>
+        <column name="first_name" value="Admin"/>
+        <column name="last_name" value="User"/>
+        <column name="department" value="IT"/>
+    </insert>
+    
+    <insert tableName="users">
+        <column name="email" value="developer@hatchgrid.com"/>
+        <column name="password_hash" value="$2a$10$encoded.hash.here"/>
+        <column name="first_name" value="Developer"/>
+        <column name="last_name" value="User"/>
+        <column name="department" value="Engineering"/>
+    </insert>
+</changeSet>
+
+<!-- Production-only optimization -->
+<changeSet id="prod-001-performance-tuning" author="yuniel-acosta" context="production">
+    <comment>Production-specific performance optimizations</comment>
+    
+    <sql>
+        -- Analyze tables for query planner
+        ANALYZE users;
+        ANALYZE roles;
+        ANALYZE user_roles;
+        
+        -- Set more aggressive autovacuum for high-traffic tables
+        ALTER TABLE users SET (autovacuum_vacuum_scale_factor = 0.1);
+        ALTER TABLE user_roles SET (autovacuum_vacuum_scale_factor = 0.05);
+    </sql>
+</changeSet>
+```
+
+### Environment Configuration
+
+```yaml
+# application-development.yml
+spring:
+  liquibase:
+    contexts: development
+    drop-first: true  # Recreate database on startup
+
+# application-production.yml  
+spring:
+  liquibase:
+    contexts: production
+    drop-first: false
+    test-rollback-on-update: true
+```
+
+## Using Liquibase with Kotlin and Spring Boot
+
+### 1. Configuration Class
+
+```kotlin
+@Configuration
+@Profile("!test")
+class LiquibaseConfig {
+    
+    @Bean
+    @ConditionalOnProperty(name = ["spring.liquibase.enabled"], havingValue = "true", matchIfMissing = true)
+    fun liquibase(dataSource: DataSource): SpringLiquibase {
+        return SpringLiquibase().apply {
+            this.dataSource = dataSource
+            changeLog = "classpath:db/changelog/db.changelog-master.xml"
+            contexts = "development,production"
+            isDropFirst = false
+            isShouldRun = true
+        }
+    }
+}
+```
+
+### 2. Custom Liquibase Service
+
+```kotlin
+@Service
+class DatabaseMigrationService(
+    private val liquibase: Liquibase
+) {
+    private val logger = LoggerFactory.getLogger(DatabaseMigrationService::class.java)
+    
+    @EventListener(ApplicationReadyEvent::class)
+    fun validateDatabaseState() {
+        try {
+            val unrunChangeSets = liquibase.listUnrunChangeSets(null, null)
+            if (unrunChangeSets.isNotEmpty()) {
+                logger.warn("Found {} unrun changesets", unrunChangeSets.size)
+                unrunChangeSets.forEach { changeSet ->
+                    logger.warn("Unrun changeset: {} by {}", 
+                        changeSet.id, changeSet.author)
+                }
+            } else {
+                logger.info("Database schema is up to date")
+            }
+        } catch (e: Exception) {
+            logger.error("Failed to validate database state", e)
+            throw IllegalStateException("Database validation failed", e)
+        }
+    }
+    
+    fun generateMigrationScript(outputFile: String) {
+        try {
+            liquibase.update(null, FileWriter(outputFile))
+            logger.info("Migration script generated: {}", outputFile)
+        } catch (e: Exception) {
+            logger.error("Failed to generate migration script", e)
+            throw RuntimeException("Script generation failed", e)
+        }
+    }
+}
+```
+
+## Testing Migrations
+
+### 1. Test Configuration
+
+```kotlin
+@TestConfiguration
+class TestLiquibaseConfig {
+    
+    @Bean
+    @Primary
+    fun testLiquibase(@Qualifier("testDataSource") dataSource: DataSource): SpringLiquibase {
+        return SpringLiquibase().apply {
+            this.dataSource = dataSource
+            changeLog = "classpath:db/changelog/db.changelog-master.xml"
+            contexts = "test"
+            isDropFirst = true
+            isShouldRun = true
+        }
+    }
+}
+```
+
+### 2. Migration Tests
+
+```kotlin
+@SpringBootTest
+@Testcontainers
+class DatabaseMigrationTest {
+    
+    @Container
+    companion object {
+        @JvmStatic
+        val postgres = PostgreSQLContainer<Nothing>("postgres:15").apply {
+            withDatabaseName("test_db")
+            withUsername("test")
+            withPassword("test")
+        }
+    }
+    
+    @Autowired
+    lateinit var dataSource: DataSource
+    
+    @Test
+    fun `should apply all migrations successfully`() {
+        val liquibase = LiquibaseFactory().createLiquibase(
+            "db/changelog/db.changelog-master.xml",
+            ClassLoaderResourceAccessor(),
+            JdbcConnection(dataSource.connection)
+        )
+        
+        // Apply migrations
+        assertDoesNotThrow {
+            liquibase.update("test")
+        }
+        
+        // Verify database state
+        dataSource.connection.use { connection ->
+            val statement = connection.createStatement()
+            
+            // Check if tables exist
+            val tables = listOf("users", "roles", "user_roles")
+            tables.forEach { table ->
+                val resultSet = statement.executeQuery(
+                    "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = '$table'"
+                )
+                resultSet.next()
+                assertEquals(1, resultSet.getInt(1), "Table $table should exist")
+            }
+            
+            // Check if indexes exist
+            val indexes = listOf("idx_users_email", "idx_users_active_department")
+            indexes.forEach { index ->
+                val resultSet = statement.executeQuery(
+                    "SELECT COUNT(*) FROM pg_indexes WHERE indexname = '$index'"
+                )
+                resultSet.next()
+                assertEquals(1, resultSet.getInt(1), "Index $index should exist")
+            }
+        }
+    }
+    
+    @Test
+    fun `should rollback migration successfully`() {
+        val liquibase = LiquibaseFactory().createLiquibase(
+            "db/changelog/db.changelog-master.xml",
+            ClassLoaderResourceAccessor(),
+            JdbcConnection(dataSource.connection)
+        )
+        
+        // Apply migrations
+        liquibase.update("test")
+        
+        // Count applied changesets
+        val changesets = liquibase.listUnrunChangeSets("test", null)
+        val appliedCount = liquibase.databaseChangeLog.changeSets.size - changesets.size
+        
+        // Rollback last changeset
+        assertDoesNotThrow {
+            liquibase.rollback(1, "test")
+        }
+        
+        // Verify rollback
+        val changesetsAfterRollback = liquibase.listUnrunChangeSets("test", null)
+        assertEquals(changesets.size + 1, changesetsAfterRollback.size)
+    }
+}
+```
+
+## Production Best Practices
+
+### 1. Pre-deployment Validation
+
+```kotlin
+@Component
+class MigrationValidator {
+    
+    fun validateMigrations(changelogFile: String): ValidationResult {
+        val issues = mutableListOf<String>()
+        
+        // Parse changelog
+        val changeLog = ChangeLogParserFactory.getInstance()
+            .getParser(changelogFile, ClassLoaderResourceAccessor())
+            .parse(changelogFile, ChangeLogParameters(), ClassLoaderResourceAccessor())
+        
+        changeLog.changeSets.forEach { changeSet ->
+            // Check for risky operations
+            changeSet.changes.forEach { change ->
+                when (change) {
+                    is DropTableChange -> 
+                        issues.add("Risky operation: DROP TABLE in ${changeSet.id}")
+                    is DropColumnChange -> 
+                        issues.add("Risky operation: DROP COLUMN in ${changeSet.id}")
+                    is AddNotNullConstraintChange -> {
+                        if (change.defaultNullValue == null) {
+                            issues.add("ADD NOT NULL without default value in ${changeSet.id}")
+                        }
+                    }
+                }
+            }
+            
+            // Check for rollback
+            if (changeSet.rollback.changes.isEmpty()) {
+                issues.add("No rollback defined for ${changeSet.id}")
+            }
+        }
+        
+        return ValidationResult(issues)
+    }
+}
+
+data class ValidationResult(
+    val issues: List<String>
+) {
+    val isValid: Boolean = issues.isEmpty()
+}
+```
+
+### 2. Monitoring Migration Status
+
+```kotlin
+@RestController
+@RequestMapping("/api/admin/migrations")
+class MigrationController(
+    private val liquibase: Liquibase
+) {
+    
+    @GetMapping("/status")
+    fun getMigrationStatus(): MigrationStatusResponse {
+        val unrunChangeSets = liquibase.listUnrunChangeSets(null, null)
+        val history = liquibase.ranChangeSetList
+        
+        return MigrationStatusResponse(
+            totalChangesets = liquibase.databaseChangeLog.changeSets.size,
+            appliedChangesets = history.size,
+            pendingChangesets = unrunChangeSets.size,
+            lastAppliedChangeset = history.lastOrNull()?.let {
+                ChangesetInfo(it.id, it.author, it.dateExecuted)
+            }
+        )
+    }
+    
+    @PostMapping("/validate")
+    fun validatePendingMigrations(): ValidationResponse {
+        val unrunChangeSets = liquibase.listUnrunChangeSets(null, null)
+        val issues = mutableListOf<String>()
+        
+        unrunChangeSets.forEach { changeSet ->
+            // Validate each pending changeset
+            if (changeSet.rollback.changes.isEmpty()) {
+                issues.add("No rollback for changeset: ${changeSet.id}")
+            }
+        }
+        
+        return ValidationResponse(
+            valid = issues.isEmpty(),
+            issues = issues
+        )
+    }
+}
+```
+
+### 3. Backup Strategy
+
+```kotlin
+@Service
+class DatabaseBackupService {
+    
+    private val logger = LoggerFactory.getLogger(DatabaseBackupService::class.java)
+    
+    @EventListener
+    fun createBackupBeforeMigration(event: MigrationStartedEvent) {
+        logger.info("Creating database backup before migration")
+        
+        val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
+        val backupFile = "backup_before_migration_${timestamp}.sql"
+        
+        try {
+            createDatabaseDump(backupFile)
+            logger.info("Database backup created: {}", backupFile)
+        } catch (e: Exception) {
+            logger.error("Failed to create database backup", e)
+            throw MigrationException("Backup failed", e)
+        }
+    }
+    
+    private fun createDatabaseDump(filename: String) {
+        val processBuilder = ProcessBuilder(
+            "pg_dump",
+            "--host=${databaseHost}",
+            "--port=${databasePort}",
+            "--username=${databaseUsername}",
+            "--dbname=${databaseName}",
+            "--file=${filename}",
+            "--verbose"
+        )
+        
+        processBuilder.environment()["PGPASSWORD"] = databasePassword
+        
+        val process = processBuilder.start()
+        val exitCode = process.waitFor()
+        
+        if (exitCode != 0) {
+            throw RuntimeException("pg_dump failed with exit code: $exitCode")
+        }
+    }
+}
+```
+
+## Troubleshooting Common Issues
+
+### 1. Changeset Checksum Mismatches
+
+```kotlin
+@Component
+class ChecksumRepairService {
+    
+    fun repairChecksums(changesetId: String) {
+        // This should be used carefully and only in development
+        liquibase.clearCheckSums()
+        logger.warn("Cleared checksums - database may be inconsistent")
+    }
+    
+    fun validateChecksums(): List<String> {
+        val issues = mutableListOf<String>()
+        
+        try {
+            liquibase.validate()
+        } catch (e: ValidationFailedException) {
+            e.failedValidations.forEach { validation ->
+                issues.add("Validation failed: ${validation.errorMessage}")
+            }
+        }
+        
+        return issues
+    }
+}
+```
+
+### 2. Failed Migration Recovery
+
+```sql
+-- Manual recovery queries (use with extreme caution)
+
+-- Check current migration status
+SELECT * FROM databasechangelog ORDER BY dateexecuted DESC LIMIT 10;
+
+-- Mark changeset as executed (if it was partially applied)
+INSERT INTO databasechangelog (id, author, filename, dateexecuted, orderexecuted, exectype, md5sum, description, comments, tag, liquibase)
+VALUES ('changeset-id', 'author', 'changelog.xml', NOW(), 999, 'EXECUTED', 'checksum', 'Description', 'Comments', NULL, 'version');
+
+-- Remove failed changeset record
+DELETE FROM databasechangelog WHERE id = 'failed-changeset-id';
+```
+
+## Conclusion
+
+Liquibase provides a robust foundation for managing database schema evolution in Spring Boot applications. By following these practices, you can:
+
+- Maintain database schema consistency across environments
+- Track and version all database changes
+- Collaborate effectively with team members
+- Handle complex data migrations safely
+- Rollback problematic changes when needed
+
+**Key takeaways:**
+- Always include rollback instructions in your changesets
+- Use contexts to separate environment-specific changes
+- Test migrations thoroughly before production deployment
+- Validate pending migrations before applying them
+- Create backups before major migrations
+- Monitor migration status in production
+
+**Start with simple migrations** and gradually adopt more advanced patterns as your application grows. The investment in proper database migration management will save you countless hours of debugging and data recovery in production.
+
+---
+
+**Ready to implement Liquibase?** Start by setting up the basic configuration and creating your first migration. Remember to always test your migrations in a development environment before applying them to production.
