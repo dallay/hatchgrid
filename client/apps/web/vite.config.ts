@@ -16,7 +16,12 @@ export default defineConfig(({ mode }) => {
 			tailwindcss(),
 			Components({
 				dts: true,
-				resolvers: [IconsResolver({ prefix: "" })],
+				resolvers: [
+					IconsResolver({
+						prefix: "",
+						enabledCollections: ["ph"],
+					}),
+				],
 			}),
 			Icons({
 				autoInstall: true,

@@ -1,9 +1,8 @@
+import { avatar } from "@hatchgrid/utilities";
 import axios, { type AxiosError } from "axios";
 import { defineStore } from "pinia";
-import type { Account } from "../security/account.model";
-import { avatar } from "@hatchgrid/utilities"
-
 import type { UserResponse } from "@/services/response/user.response";
+import type { Account } from "../security/account.model";
 
 export interface AuthStateStorable {
 	logon: Promise<unknown> | null;
@@ -34,10 +33,10 @@ export const useAuthStore = defineStore("auth", {
 			this.logon = promise;
 		},
 		setAuthentication(identity: Account) {
-      // if identity.imageUrl is not set, generate it using the avatar utility
-      if (!identity.imageUrl) {
-        identity.imageUrl = avatar(identity.email, 100);
-      }
+			// if identity.imageUrl is not set, generate it using the avatar utility
+			if (!identity.imageUrl) {
+				identity.imageUrl = avatar(identity.email, 100);
+			}
 			this.userIdentity = identity;
 			this.authenticated = true;
 			this.logon = null;
@@ -72,33 +71,35 @@ export const useAuthStore = defineStore("auth", {
 			}
 		},
 
-	   async login(username: string, password: string): Promise<boolean> {
-		   try {
-			   const loginPromise = axios.post("/api/login", { username, password });
-			   this.authenticate(loginPromise);
+		async login(username: string, password: string): Promise<boolean> {
+			try {
+				const loginPromise = axios.post("/api/login", { username, password });
+				this.authenticate(loginPromise);
 
-			   await loginPromise;
+				await loginPromise;
 
-			   // After successful login, fetch account info and set authentication state
-			   const { data } = await axios.get<UserResponse>("/api/account");
-         const account: Account = {
-           ...data,
-           fullname: [data.firstname, data.lastname].filter(Boolean).join(" ") || undefined,
-           langKey: "en", // in the future, this could be dynamic from user settings
-           activated: true, // assuming the account is always activated
-           imageUrl: avatar(data.email, 100)
-         };
-			   this.setAuthentication(account);
-			   return true;
-		   } catch (error) {
-			   this.clearAuth();
-			   const axiosError = error as AxiosError;
-			   if (axiosError.response?.status === 401) {
-				   throw new Error("Invalid credentials.");
-			   }
-			   throw new Error("Login failed.");
-		   }
-	   },
+				// After successful login, fetch account info and set authentication state
+				const { data } = await axios.get<UserResponse>("/api/account");
+				const account: Account = {
+					...data,
+					fullname:
+						[data.firstname, data.lastname].filter(Boolean).join(" ") ||
+						undefined,
+					langKey: "en", // in the future, this could be dynamic from user settings
+					activated: true, // assuming the account is always activated
+					imageUrl: avatar(data.email, 100),
+				};
+				this.setAuthentication(account);
+				return true;
+			} catch (error) {
+				this.clearAuth();
+				const axiosError = error as AxiosError;
+				if (axiosError.response?.status === 401) {
+					throw new Error("Invalid credentials.");
+				}
+				throw new Error("Login failed.");
+			}
+		},
 
 		async logoutAsync(): Promise<void> {
 			try {
@@ -111,7 +112,10 @@ export const useAuthStore = defineStore("auth", {
 		},
 
 		hasAuthority(authority: string): boolean {
-			return this.userIdentity?.authorities?.includes(authority) ?? false;
+			return (
+				Array.from(this.userIdentity?.authorities || []).includes(authority) ??
+				false
+			);
 		},
 
 		hasAnyAuthority(authorities: string[]): boolean {

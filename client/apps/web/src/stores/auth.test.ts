@@ -15,20 +15,19 @@ describe("Auth Store", () => {
 	it("should set isAuthenticated to true on successful login", async () => {
 		const authStore = useAuthStore();
 		mock.onPost("/api/login").reply(200);
-		mock
-			.onGet("/api/account")
-			.reply(200, { login: "testuser", authorities: ["ROLE_USER"] });
-
-		await authStore.login("testuser", "password");
-		// After successful login, the account service would typically update the auth store
-		// We need to manually trigger this in the test or ensure the mock handles it.
-		// For this test, we'll directly call setAuthentication as it's what retrieveAccount would do.
-		authStore.setAuthentication({
+		mock.onGet("/api/account").reply(200, {
 			login: "testuser",
 			authorities: ["ROLE_USER"],
+			firstname: "Test",
+			lastname: "User",
+			email: "test.user@example.com",
 		});
+
+		await authStore.login("testuser", "password");
+
 		expect(authStore.isAuthenticated).toBe(true);
 		expect(authStore.account?.login).toBe("testuser");
+		expect(authStore.account?.fullname).toBe("Test User");
 	});
 
 	it("should set isAuthenticated to false on failed login", async () => {

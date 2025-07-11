@@ -1,7 +1,6 @@
 import { resolve } from "node:path";
 import { sharedViteConfig } from "@hatchgrid/config/vite.config.shared";
 import { defineConfig, mergeConfig } from "vite";
-import dts from "vite-plugin-dts";
 
 /** @type {import('vite').UserConfig} */
 export default defineConfig(
@@ -14,6 +13,6 @@ export default defineConfig(
 			},
 			target: "esnext", // transpile as little as possible
 		},
-		plugins: [dts({ rollupTypes: true })],
+		plugins: [],
 	}),
 );

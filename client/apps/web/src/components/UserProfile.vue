@@ -47,7 +47,7 @@ const isLoggingOut = ref(false);
 
 // Computed properties
 const userAuthorities = computed(() => {
-	return authStore.account?.authorities || [];
+	return Array.from(authStore.account?.authorities || []);
 });
 
 // Handle logout

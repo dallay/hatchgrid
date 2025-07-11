@@ -45,6 +45,7 @@ describe("Axios Interceptor", () => {
 
 	it("should redirect to /login on 401 error", async () => {
 		mock.onGet("/api/test").reply(401);
+		mock.onGet("/api/account").reply(401);
 		// Set current route to something other than Login
 		(
 			router as {
@@ -53,6 +54,9 @@ describe("Axios Interceptor", () => {
 		).currentRoute.value = { name: "Home", fullPath: "/" };
 
 		await expect(axios.get("/api/test")).rejects.toThrow();
+
+		// Wait for the interceptor to finish
+		await new Promise((resolve) => setTimeout(resolve, 0));
 
 		expect(mockLogout).toHaveBeenCalled();
 		expect(router.push).toHaveBeenCalledWith({

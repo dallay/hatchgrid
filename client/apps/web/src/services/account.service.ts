@@ -1,8 +1,8 @@
+import { avatar } from "@hatchgrid/utilities";
 import axios, { type AxiosResponse } from "axios";
 import type { Account } from "@/security/account.model";
+import type { UserResponse } from "@/services/response/user.response.ts";
 import type { useAuthStore } from "@/stores/auth";
-import type {UserResponse} from "@/services/response/user.response.ts";
-import { avatar } from "@hatchgrid/utilities"
 
 export interface ProfileInfo {
 	activeProfiles: string[];
@@ -68,19 +68,27 @@ export default class AccountService {
 	 */
 	async retrieveAccount(): Promise<boolean> {
 		try {
-			const response: AxiosResponse<UserResponse> = await axios.get("/api/account", { withCredentials: true });
+			const response: AxiosResponse<UserResponse> = await axios.get(
+				"/api/account",
+				{ withCredentials: true },
+			);
 
-      const data = response.data;
-      const account: Account = {
-        ...data,
-        fullname: [data.firstname, data.lastname].filter(Boolean).join(" ") || undefined,
-        langKey: "en", // in the future, this could be dynamic from user settings
-        activated: true, // assuming the account is always activated
-        imageUrl: avatar(data.email, 100)
-      };
+			const data = response.data;
+			const account: Account = {
+				...data,
+				fullname:
+					[data.firstname, data.lastname].filter(Boolean).join(" ") ||
+					undefined,
+				langKey: "en", // in the future, this could be dynamic from user settings
+				activated: true, // assuming the account is always activated
+				imageUrl: avatar(data.email, 100),
+			};
 
 			if (response.status === 200 && account?.username) {
-				this.authStore.setAuthentication(account);
+				this.authStore.setAuthentication({
+					...account,
+					login: account.username,
+				});
 				return true;
 			}
 		} catch (error: any) {
@@ -167,7 +175,7 @@ export default class AccountService {
 		}
 
 		return authorities.some((authority) =>
-			this.userAuthorities.includes(authority),
+			Array.from(this.userAuthorities).includes(authority),
 		);
 	}
 

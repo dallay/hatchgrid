@@ -8,6 +8,8 @@ import "./style.css";
 import App from "./App.vue";
 import router from "./router";
 
+/// <reference types="unplugin-icons/types/vue" />
+
 async function bootstrap() {
 	const app = createApp(App);
 	const pinia = createPinia();
