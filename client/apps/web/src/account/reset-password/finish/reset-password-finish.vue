@@ -95,9 +95,10 @@ const handleResetPassword = async () => {
 		setTimeout(() => {
 			router.push("/login");
 		}, 3000);
-	} catch (err: any) {
+	} catch (err: unknown) {
 		error.value =
-			err.response?.data?.detail ||
+			// biome-ignore lint/suspicious/noExplicitAny: error from axios can be any
+			(err as any)?.response?.data?.detail ||
 			"Failed to reset password. The key might be invalid or expired.";
 	}
 };

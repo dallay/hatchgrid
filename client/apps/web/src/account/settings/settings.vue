@@ -9,30 +9,15 @@
         <CardContent class="grid gap-4">
           <div class="grid gap-2">
             <Label for="firstName">First Name</Label>
-            <Input
-              id="firstName"
-              v-model="form.firstName"
-              type="text"
-              required
-            />
+            <Input id="firstName" v-model="form.firstName" type="text" required />
           </div>
           <div class="grid gap-2">
             <Label for="lastName">Last Name</Label>
-            <Input
-              id="lastName"
-              v-model="form.lastName"
-              type="text"
-              required
-            />
+            <Input id="lastName" v-model="form.lastName" type="text" required />
           </div>
           <div class="grid gap-2">
             <Label for="email">Email</Label>
-            <Input
-              id="email"
-              v-model="form.email"
-              type="email"
-              required
-            />
+            <Input id="email" v-model="form.email" type="email" required />
           </div>
           <div class="grid gap-2">
             <Label>Authorities</Label>
@@ -137,8 +122,14 @@ const handleUpdateSettings = async () => {
 		}
 
 		success.value = "Account settings updated successfully!";
-	} catch (err: any) {
-		error.value = err.response?.data?.detail || "Failed to update settings.";
+	} catch (err: unknown) {
+		if (err instanceof Error) {
+			error.value =
+				(err as { response?: { data?: { message?: string; detail?: string } } })
+					.response?.data?.detail || "Failed to update settings.";
+		} else {
+			error.value = "An unknown error occurred.";
+		}
 	}
 };
 </script>

@@ -2,7 +2,7 @@ import type { Composer, VueI18n } from "vue-i18n";
 
 export default class TranslationService {
 	private i18n: Composer | VueI18n;
-	private supportedLanguages = ["en", "es", "fr", "de", "pt"];
+	private supportedLanguages = ["en", "es"];
 
 	constructor(i18n: Composer | VueI18n) {
 		this.i18n = i18n;

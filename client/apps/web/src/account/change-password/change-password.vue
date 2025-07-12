@@ -88,8 +88,14 @@ const handleChangePassword = async () => {
 		currentPassword.value = "";
 		newPassword.value = "";
 		confirmNewPassword.value = "";
-	} catch (err: any) {
-		error.value = err.response?.data?.message || "Failed to change password.";
+	} catch (err: unknown) {
+		if (err instanceof Error) {
+			error.value =
+				(err as { response?: { data?: { message?: string } } }).response?.data
+					?.message || "Failed to change password.";
+		} else {
+			error.value = "An unknown error occurred.";
+		}
 	}
 };
 </script>

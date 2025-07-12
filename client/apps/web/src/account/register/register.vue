@@ -134,14 +134,15 @@ const handleRegister = async () => {
 				"Welcome to Hatchgrid! Please sign in with your new account.",
 		});
 
-		router.push("/login");
-	} catch (error: any) {
+		await router.push("/login");
+	} catch (error: unknown) {
 		console.error("Registration error:", error);
-		toast.error("Registration failed", {
-			description:
-				error.response?.data?.detail ||
-				"Unable to create your account. Please try again.",
-		});
+		let description = "Unable to create your account. Please try again.";
+		if (typeof error === "object" && error !== null && "response" in error) {
+			// biome-ignore lint/suspicious/noExplicitAny: error from axios can be any
+			description = (error as any).response?.data?.detail || description;
+		}
+		toast.error("Registration failed", { description });
 	} finally {
 		isLoading.value = false;
 	}

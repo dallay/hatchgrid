@@ -61,10 +61,14 @@ const handleResetPasswordInit = async () => {
 		});
 		success.value = "Password reset email sent. Please check your inbox.";
 		email.value = "";
-	} catch (err: any) {
-		error.value =
-			err.response?.data?.detail ||
-			"Failed to send password reset email. Please check your email address.";
+	} catch (err: unknown) {
+		if (err instanceof Error) {
+			error.value =
+				(err as { response?: { data?: { message?: string; detail?: string } } })
+					.response?.data?.detail || "Failed to send reset email.";
+		} else {
+			error.value = "An unknown error occurred.";
+		}
 	}
 };
 </script>

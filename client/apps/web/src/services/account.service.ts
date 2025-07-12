@@ -94,8 +94,9 @@ export default class AccountService {
 				});
 				return true;
 			}
-		} catch (error: any) {
-			const status = error?.response?.status;
+		} catch (error: unknown) {
+			const status = (error as { response?: { status?: number } })?.response
+				?.status;
 			if (status === 401 || status === 403) {
 				this.authStore.clearAuth();
 				if (this.router) {

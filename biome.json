@@ -24,7 +24,8 @@
 			"!**/.vscode",
 			"!**/src/styles/global.css",
 			"!**/worker-configuration.d.ts",
-      "!**/.components/ui"
+      "!**/components/ui",
+      "!**/components.d.ts"
 		]
 	},
 	"formatter": {
