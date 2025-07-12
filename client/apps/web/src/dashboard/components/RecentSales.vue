@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
   <div class="space-y-8">
     <div class="flex items-center">
       <Avatar class="h-9 w-9">
-        <AvatarImage src="/avatars/01.png" alt="Avatar" />
+        <AvatarImage src="https://i.pravatar.cc/300?u=olivia.martin@email.com" alt="Avatar" />
         <AvatarFallback>OM</AvatarFallback>
       </Avatar>
       <div class="ml-4 space-y-1">
@@ -23,7 +23,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
     </div>
     <div class="flex items-center">
       <Avatar class="flex h-9 w-9 items-center justify-center space-y-0 border">
-        <AvatarImage src="/avatars/02.png" alt="Avatar" />
+        <AvatarImage src="https://i.pravatar.cc/300?u=jackson.lee@email.com" alt="Avatar" />
         <AvatarFallback>JL</AvatarFallback>
       </Avatar>
       <div class="ml-4 space-y-1">
@@ -40,7 +40,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
     </div>
     <div class="flex items-center">
       <Avatar class="h-9 w-9">
-        <AvatarImage src="/avatars/03.png" alt="Avatar" />
+        <AvatarImage src="https://i.pravatar.cc/300?u=isabella.nguyen@email.com" alt="Avatar" />
         <AvatarFallback>IN</AvatarFallback>
       </Avatar>
       <div class="ml-4 space-y-1">
@@ -57,7 +57,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
     </div>
     <div class="flex items-center">
       <Avatar class="h-9 w-9">
-        <AvatarImage src="/avatars/04.png" alt="Avatar" />
+        <AvatarImage src="https://i.pravatar.cc/300?u=will@email.com" alt="Avatar" />
         <AvatarFallback>WK</AvatarFallback>
       </Avatar>
       <div class="ml-4 space-y-1">
@@ -74,7 +74,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
     </div>
     <div class="flex items-center">
       <Avatar class="h-9 w-9">
-        <AvatarImage src="/avatars/05.png" alt="Avatar" />
+        <AvatarImage src="https://i.pravatar.cc/300?u=sofia.davis@email.com" alt="Avatar" />
         <AvatarFallback>SD</AvatarFallback>
       </Avatar>
       <div class="ml-4 space-y-1">

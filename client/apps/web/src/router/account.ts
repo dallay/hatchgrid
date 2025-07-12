@@ -31,18 +31,17 @@ export default [
 		meta: { layout: "SimpleLayout" },
 	},
 	{
- {
-   path: "/account/reset/request",
-   name: "ResetPasswordInit",
-   component: ResetPasswordInit,
-   meta: { layout: "SimpleLayout" },
- },
- {
-   path: "/account/reset/finish",
-   name: "ResetPasswordFinish",
-   component: ResetPasswordFinish,
-   meta: { layout: "SimpleLayout" },
- },
+		path: "/account/reset/request",
+		name: "ResetPasswordInit",
+		component: ResetPasswordInit,
+		meta: { layout: "SimpleLayout" },
+	},
+	{
+		path: "/account/reset/finish",
+		name: "ResetPasswordFinish",
+		component: ResetPasswordFinish,
+		meta: { layout: "SimpleLayout" },
+	},
 	{
 		path: "/account/password",
 		name: "ChangePassword",
