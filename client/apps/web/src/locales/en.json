@@ -64,6 +64,11 @@
 		"serverError": "An internal server error occurred",
 		"sessionExpired": "Your session has expired. Please log in again."
 	},
+	"error": {
+		"title": "Oops! Something went wrong.",
+		"message": "We apologize for the inconvenience. Please try again later or go back to the homepage.",
+		"backToHome": "Back to home"
+	},
 	"validation": {
 		"required": "This field is required",
 		"email": "Please enter a valid email address",

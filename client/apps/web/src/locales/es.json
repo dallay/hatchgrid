@@ -64,6 +64,11 @@
 		"serverError": "Ocurrió un error interno del servidor",
 		"sessionExpired": "Tu sesión ha expirado. Por favor, inicia sesión nuevamente."
 	},
+	"error": {
+		"title": "¡Ups! Algo salió mal.",
+		"message": "Pedimos disculpas por las molestias. Por favor, inténtalo de nuevo más tarde o vuelve a la página de inicio.",
+		"backToHome": "Volver a inicio"
+	},
 	"validation": {
 		"required": "Este campo es obligatorio",
 		"email": "Por favor, ingresa una dirección de correo válida",
