@@ -31,7 +31,12 @@ const props = withDefaults(
 	},
 );
 
+import { useRouter } from "vue-router";
+import AccountService from "@/services/account.service";
+
 const authStore = useAuthStore();
+const router = useRouter();
+const accountService = new AccountService(authStore, router);
 
 const variant = props.variant ?? "full";
 const { isMobile } = useSidebar();
@@ -136,7 +141,7 @@ const { isMobile } = useSidebar();
       </DropdownMenuGroup>
 
       <DropdownMenuSeparator />
-      <DropdownMenuItem>
+      <DropdownMenuItem @click="accountService.logout()">
         <LogOut />
         Log out
         <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>

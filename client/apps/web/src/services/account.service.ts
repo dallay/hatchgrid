@@ -1,5 +1,6 @@
 import { avatar } from "@hatchgrid/utilities";
 import axios, { type AxiosResponse } from "axios";
+import type { Router } from "vue-router";
 import type { Account } from "@/security/account.model";
 import type { UserResponse } from "@/services/response/user.response.ts";
 import type { useAuthStore } from "@/stores/auth";
@@ -22,9 +23,11 @@ export interface ProfileInfo {
 
 export default class AccountService {
 	private readonly authStore: ReturnType<typeof useAuthStore>;
+	private readonly router?: Router;
 
-	constructor(authStore: ReturnType<typeof useAuthStore>) {
+	constructor(authStore: ReturnType<typeof useAuthStore>, router?: Router) {
 		this.authStore = authStore;
+		this.router = router;
 	}
 
 	/**
@@ -95,8 +98,14 @@ export default class AccountService {
 			const status = error?.response?.status;
 			if (status === 401 || status === 403) {
 				this.authStore.clearAuth();
-				if (window.location.pathname !== "/login") {
-					window.location.href = "/login";
+				if (this.router) {
+					if (this.router.currentRoute.value.path !== "/login") {
+						await this.router.push("/login");
+					}
+				} else {
+					if (window.location.pathname !== "/login") {
+						window.location.href = "/login";
+					}
 				}
 				return false;
 			}
@@ -245,6 +254,22 @@ export default class AccountService {
 		} catch (error) {
 			console.error("Failed to update user language:", error);
 			return false;
+		}
+	}
+
+	/**
+	 * Logout the current user and redirect to login page
+	 */
+	async logout(): Promise<void> {
+		await this.authStore.logoutAsync();
+		if (this.router) {
+			if (this.router.currentRoute.value.path !== "/login") {
+				await this.router.push("/login");
+			}
+		} else {
+			if (window.location.pathname !== "/login") {
+				window.location.href = "/login";
+			}
 		}
 	}
 }
