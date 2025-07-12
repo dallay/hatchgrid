@@ -7,11 +7,11 @@ import type { RouteLocationNormalized } from "vue-router";
  * Then it loads the layout component, and assigns the loaded component to the meta layoutComponent variable.
  * And layoutComponent is used in the main layout AppLayout.vue for dynamic component switching.
  *
- * If the layout we want to display is not found, loads the default layout AppLayout.
+ * If the layout we want to display is not found, loads the default layout DashboardLayout.
  */
 export async function loadLayoutMiddleware(route: RouteLocationNormalized) {
 	try {
-		// Get layout name from route meta, default to 'AppLayout' if not specified
+		// Get layout name from route meta, default to 'DashboardLayout' if not specified
 		const layout = route.meta.layout || "DashboardLayout";
 
 		// Dynamically import the layout component
