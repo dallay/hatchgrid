@@ -8,11 +8,11 @@ export default defineComponent({
 	setup() {
 		const store = useAuthStore();
 		const ribbonEnv = computed(() => store.ribbonOnProfiles);
-		const ribbonEnabled = computed(
-			() =>
-				store.ribbonOnProfiles &&
-				store.activeProfiles.indexOf(store.ribbonOnProfiles) > -1,
-		);
+	const ribbonEnabled = computed(
+		() =>
+			store.ribbonOnProfiles &&
+			store.activeProfiles.includes(store.ribbonOnProfiles),
+	);
 
 		return {
 			ribbonEnv,
