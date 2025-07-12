@@ -43,6 +43,9 @@ Hatchgrid is a Spring Boot application built with Kotlin and Gradle, providing a
 - REST endpoints should follow RESTful conventions
 - New modules should integrate with the Spring Modulith architecture
 
+## Development Conventions
+For a detailed guide on our development conventions, please refer to the documents in the [`docs/conventions`](../../docs/conventions) directory. These documents cover everything from our REST API design to our security guidelines.
+
 ## Best Practices
 - Include validation for all input data
 - Implement proper error handling with meaningful error messages
