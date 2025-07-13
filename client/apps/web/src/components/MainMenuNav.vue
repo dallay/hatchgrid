@@ -3,32 +3,35 @@ import { cn } from "@/lib/utils.ts";
 </script>
 
 <template>
-  <nav
-    :class="cn('flex items-center space-x-4 lg:space-x-6', $attrs.class ?? '')"
-  >
-    <a
-      href="/examples/dashboard"
+  <nav :class="cn('flex items-center space-x-4 lg:space-x-6', $attrs.class ?? '')">
+    <router-link
+      to="/dashboard"
       class="text-sm font-medium transition-colors hover:text-primary"
+      active-class="text-primary"
+      exact
     >
       Overview
-    </a>
-    <a
-      href="/examples/dashboard"
+    </router-link>
+    <router-link
+      to="/customers"
       class="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+      active-class="text-primary"
     >
       Customers
-    </a>
-    <a
-      href="/examples/dashboard"
+    </router-link>
+    <router-link
+      to="/products"
       class="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+      active-class="text-primary"
     >
       Products
-    </a>
-    <a
-      href="/examples/dashboard"
+    </router-link>
+    <router-link
+      to="/settings"
       class="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+      active-class="text-primary"
     >
       Settings
-    </a>
+    </router-link>
   </nav>
 </template>
