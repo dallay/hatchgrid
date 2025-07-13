@@ -19,4 +19,26 @@ describe("i18n", () => {
 
 		expect(translatedText).toBe("Hello, World!");
 	});
+
+	it("should return the key when translation is missing", () => {
+		const translationStore = useTranslationStore();
+		translationStore.setTranslations("en", {});
+
+		const t = useTranslations("en");
+		const translatedText = t("missing.key");
+
+		expect(translatedText).toBe("missing.key");
+	});
+
+	it("should handle language switching", () => {
+		const translationStore = useTranslationStore();
+		translationStore.setTranslations("en", { "hello": "Hello" });
+		translationStore.setTranslations("es", { "hello": "Hola" });
+
+		const tEn = useTranslations("en");
+		const tEs = useTranslations("es");
+
+		expect(tEn("hello")).toBe("Hello");
+		expect(tEs("hello")).toBe("Hola");
+	});
 });
