@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
+import { useTranslations } from "@/i18n";
 import { useTranslationStore } from "@/stores/translation.store";
-import { useTranslations } from "../i18n";
 
 describe("i18n", () => {
 	beforeEach(() => {
@@ -32,8 +32,8 @@ describe("i18n", () => {
 
 	it("should handle language switching", () => {
 		const translationStore = useTranslationStore();
-		translationStore.setTranslations("en", { "hello": "Hello" });
-		translationStore.setTranslations("es", { "hello": "Hola" });
+		translationStore.setTranslations("en", { hello: "Hello" });
+		translationStore.setTranslations("es", { hello: "Hola" });
 
 		const tEn = useTranslations("en");
 		const tEs = useTranslations("es");
