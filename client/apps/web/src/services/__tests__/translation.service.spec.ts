@@ -3,6 +3,18 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 //import { useTranslationStore } from "@/stores/translation.store";
 import TranslationService from "../translation.service";
 
+// The path should be relative to this test file.
+// service is at ../translation.service
+// service imports ../i18n/en/en.js
+// so from here it is ../../i18n/en/en.js
+vi.mock("../../i18n/en/en.js", () => {
+	return {
+		default: {
+			mocked: "value",
+		},
+	};
+});
+
 describe("TranslationService", () => {
 	let service: TranslationService;
 	let mockI18n: any;
@@ -11,11 +23,13 @@ describe("TranslationService", () => {
 		setActivePinia(createPinia());
 		mockI18n = {
 			locale: { value: "en" },
+			messages: { es: { message: "hola" } }, // Start with 'es' loaded
 			setLocaleMessage: vi.fn(),
 			t: vi.fn().mockReturnValue("translation"),
 			te: vi.fn().mockReturnValue(true),
 		};
 		service = new TranslationService(mockI18n);
+		vi.clearAllMocks();
 	});
 
 	it("should set the current language", () => {
@@ -25,10 +39,15 @@ describe("TranslationService", () => {
 		expect(mockI18n.locale.value).toBe("es");
 	});
 
-	it("should refresh translations", async () => {
+	it("should refresh translations if language is not loaded", async () => {
 		await service.refreshTranslation("en");
-		// const store = useTranslationStore();
-		// Optionally check mockI18n.setLocaleMessage called
-		expect(mockI18n.setLocaleMessage).toHaveBeenCalled();
+		expect(mockI18n.setLocaleMessage).toHaveBeenCalledWith("en", {
+			mocked: "value",
+		});
+	});
+
+	it("should not refresh translations if language is already loaded", async () => {
+		await service.refreshTranslation("es");
+		expect(mockI18n.setLocaleMessage).not.toHaveBeenCalled();
 	});
 });
