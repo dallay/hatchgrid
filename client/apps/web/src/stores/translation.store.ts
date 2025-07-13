@@ -1,28 +1,21 @@
 import { defineStore } from "pinia";
-import { DEFAULT_LOCALE, type Lang } from "@/i18n/types";
 
 interface TranslationState {
-	translations: Record<Lang, Record<string, string>>;
-	currentLanguage: Lang;
+	currentLanguage: string | undefined;
 }
 
-export const useTranslationStore = defineStore("translation", {
+export const useTranslationStore = defineStore("translationStore", {
 	state: (): TranslationState => ({
-		translations: {
-			en: {},
-			es: {},
-		},
-		currentLanguage: DEFAULT_LOCALE,
+		currentLanguage: undefined,
 	}),
 	actions: {
-		setTranslations(lang: Lang, newTranslations: Record<string, string>) {
-			this.translations[lang] = newTranslations;
-		},
-		setCurrentLanguage(lang: Lang) {
-			this.currentLanguage = lang;
-		},
-		getTranslation(lang: Lang, key: string): string | undefined {
-			return this.translations[lang]?.[key];
+		setCurrentLanguage(newLanguage: string | undefined) {
+			this.currentLanguage = newLanguage;
+			if (typeof newLanguage === "string") {
+				localStorage.setItem("currentLanguage", newLanguage);
+			} else {
+				localStorage.removeItem("currentLanguage");
+			}
 		},
 	},
 });

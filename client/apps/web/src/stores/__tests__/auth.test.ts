@@ -2,7 +2,7 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
-import { useAuthStore } from "./auth";
+import { useAuthStore } from "../auth";
 
 describe("Auth Store", () => {
 	let mock: MockAdapter;

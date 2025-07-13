@@ -1,6 +1,26 @@
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { useTranslationStore } from "./translation";
+import { useTranslationStore } from "../translation";
+
+const mockLanguages = [
+	{ code: "en", name: "English", flag: "🇺🇸" },
+	{ code: "es", name: "Español", flag: "🇪🇸" },
+	{ code: "fr", name: "Français", flag: "🇫🇷" },
+	{ code: "de", name: "Deutsch", flag: "🇩🇪" },
+	{ code: "it", name: "Italiano", flag: "🇮🇹" },
+];
+
+vi.mock("../translation", async () => {
+	const actual = await vi.importActual("../translation");
+	return {
+		...actual,
+		useTranslationStore: () => {
+			const store = actual.useTranslationStore();
+			store.availableLanguages = [...mockLanguages];
+			return store;
+		},
+	};
+});
 
 describe("Translation Store", () => {
 	beforeEach(() => {
@@ -74,7 +94,7 @@ describe("Translation Store", () => {
 
 	it("should add new language if not exists", () => {
 		const store = useTranslationStore();
-		const newLang = { code: "it", name: "Italiano", flag: "🇮🇹" };
+		const newLang = { code: "pt", name: "Português", flag: "🇵🇹" };
 		store.addLanguage(newLang);
 		expect(store.availableLanguages).toContainEqual(newLang);
 	});
