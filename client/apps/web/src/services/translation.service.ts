@@ -11,7 +11,8 @@ export default class TranslationService {
 	}
 
 	async refreshTranslation(newLanguage: string) {
-		if (this.i18n && !this.i18n.messages[newLanguage]) {
+		const messages = this.i18n.messages as Record<string, any>;
+		if (this.i18n && !messages[newLanguage]) {
 			const translations = (
 				await import(`../i18n/${newLanguage}/${newLanguage}.js`)
 			).default;
@@ -22,7 +23,10 @@ export default class TranslationService {
 	setLocale(lang: string) {
 		this.i18n.locale.value = lang;
 		axios.defaults.headers.common["Accept-Language"] = lang;
-		document.querySelector("html").setAttribute("lang", lang);
+		const htmlElement = document.querySelector("html");
+		if (htmlElement) {
+			htmlElement.setAttribute("lang", lang);
+		}
 	}
 
 	isLanguageSupported(lang: string) {
