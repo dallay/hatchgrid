@@ -25,7 +25,7 @@ Development Ribbon
   top: 40px;
   white-space: nowrap;
   width: 15em;
-  z-index: 9999;
+  z-index: 1000;
   pointer-events: none;
   opacity: 0.75;
 }
