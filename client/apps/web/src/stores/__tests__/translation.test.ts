@@ -10,8 +10,8 @@ const mockLanguages = [
 	{ code: "it", name: "Italiano", flag: "🇮🇹" },
 ];
 
-vi.mock("../translation", async () => {
-	const actual = await vi.importActual("../translation");
+vi.mock("../translation", async (importOriginal) => {
+	const actual = await importOriginal<typeof import("../translation")>();
 	return {
 		...actual,
 		useTranslationStore: () => {

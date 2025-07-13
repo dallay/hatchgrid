@@ -5,14 +5,15 @@ import { RouterLink, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import MainMenuNav from "@/components/MainMenuNav.vue";
 import ThemeSwitcher from "@/components/ThemeSwitcher.vue";
+import LanguageSwitcher from "./LanguageSwitcher.vue";
 import UserNav from "@/components/UserNav.vue";
 import {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbLink,
-	BreadcrumbList,
-	BreadcrumbPage,
-	BreadcrumbSeparator,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -26,19 +27,19 @@ const router = useRouter();
 const isLoggingOut = ref(false);
 
 const handleLogout = async () => {
-	if (isLoggingOut.value) return;
+  if (isLoggingOut.value) return;
 
-	isLoggingOut.value = true;
-	try {
-		await authStore.logoutAsync();
-		toast.success("Successfully logged out");
-		await router.push("/login");
-	} catch (error) {
-		console.error("Error during logout:", error);
-		toast.error("Logout failed");
-	} finally {
-		isLoggingOut.value = false;
-	}
+  isLoggingOut.value = true;
+  try {
+    await authStore.logoutAsync();
+    toast.success("Successfully logged out");
+    await router.push("/login");
+  } catch (error) {
+    console.error("Error during logout:", error);
+    toast.error("Logout failed");
+  } finally {
+    isLoggingOut.value = false;
+  }
 };
 </script>
 
@@ -63,6 +64,7 @@ const handleLogout = async () => {
     </div>
     <div class="ml-auto flex items-center space-x-4 px-4">
       <MainMenuNav class="mx-6" />
+      <LanguageSwitcher />
       <ThemeSwitcher />
       <UserNav variant="compact" />
     </div>
