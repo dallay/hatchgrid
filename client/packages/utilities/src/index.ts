@@ -14,6 +14,7 @@ import { range } from "./range/range";
 import { remove } from "./remove/remove";
 import { sortBy } from "./sort-by/sort-by";
 import { isDarkMode, loadTheme, toggleTheme } from "./theme/color-theme";
+import { deepmerge } from "./merge/deepmerge";
 
 export {
 	avatar,
@@ -34,4 +35,5 @@ export {
 	toggleTheme,
 	debounce,
 	randomElement,
+  deepmerge,
 };

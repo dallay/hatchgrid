@@ -9,7 +9,9 @@
 		"paths": {
 			"~/*": ["src/*"]
 		},
-		"allowImportingTsExtensions": true
+		"allowImportingTsExtensions": true,
+		"target": "ES2022",
+		"lib": ["es2022", "dom"]
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules", "dist/**", "src/**/*.spec.ts"]

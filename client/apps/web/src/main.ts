@@ -1,8 +1,7 @@
 import { createPinia } from "pinia";
 import { createApp } from "vue";
-import { createI18n } from "vue-i18n";
 import { setupAxiosInterceptors } from "@/config/axios-interceptor";
-import { i18nConfig } from "@/config/i18n.config";
+import initI18N from "./config/i18n.config";
 import { InitializationService } from "@/services/initialization.service";
 import "./style.css";
 import App from "./App.vue";
@@ -13,7 +12,7 @@ import router from "./router";
 async function bootstrap() {
 	const app = createApp(App);
 	const pinia = createPinia();
-	const i18n = createI18n(i18nConfig);
+	const i18n = initI18N();
 
 	// Add plugins to Vue app
 	app.use(pinia);

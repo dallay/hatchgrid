@@ -1,20 +1,65 @@
-import { createI18n, type I18nOptions } from "vue-i18n";
+import { type IntlDateTimeFormats, type I18nOptions, createI18n } from "vue-i18n";
 
-// Import translation files
-import en from "@/locales/en.json";
-import es from "@/locales/es.json";
 
-const messages = {
-	en,
-	es,
+const datetimeFormats: IntlDateTimeFormats = {
+  en: {
+    short: {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    },
+    medium: {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      weekday: 'short',
+      hour: 'numeric',
+      minute: 'numeric',
+    },
+    long: {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long',
+      hour: 'numeric',
+      minute: 'numeric',
+    },
+  },
+  es: {
+    short: {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    },
+    medium: {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      weekday: 'short',
+      hour: 'numeric',
+      minute: 'numeric',
+    },
+    long: {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long',
+      hour: 'numeric',
+      minute: 'numeric',
+    },
+  },
 };
 
-export const i18nConfig: I18nOptions = {
-	locale: "en", // Default locale
-	fallbackLocale: "en",
-	messages,
-	legacy: false, // Use Composition API
-	globalInjection: true, // Enable global injection for $t
-};
-
-export const i18n = createI18n(i18nConfig);
+export default function initI18N(opts: I18nOptions = {}) {
+  return createI18n({
+    missingWarn: false,
+    fallbackWarn: false,
+    legacy: false,
+    datetimeFormats,
+    ...opts,
+  });
+}

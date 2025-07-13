@@ -5,10 +5,11 @@
     "emitDeclarationOnly": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "target": "ES2021",
+    "target": "ES2022",
     "moduleResolution": "bundler",
     "module": "ESNext",
-    "types": ["vitest"]
+    "types": ["vitest"],
+    "lib": ["es2022", "dom"]
   },
   "include": ["src"]
 }
