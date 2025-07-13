@@ -50,7 +50,7 @@ export default class AccountService {
 				await axios.get("/management/info");
 
 			if (response.data?.activeProfiles) {
-        console.log("🟢 Account info found", response.data?.activeProfiles);
+				console.log("🟢 Account info found", response.data?.activeProfiles);
 				this.authStore.setActiveProfiles(response.data.activeProfiles);
 
 				if (response.data["display-ribbon-on-profiles"]) {
