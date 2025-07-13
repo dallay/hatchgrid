@@ -161,7 +161,7 @@ class SecurityConfiguration(
                     auth ->
                 configureAuthorization(auth)
             }
-            //.oauth2Login(withDefaults())
+            // .oauth2Login(withDefaults())
             .oauth2Client(withDefaults())
             .oauth2ResourceServer {
                     oauth2 ->

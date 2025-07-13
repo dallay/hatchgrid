@@ -29,7 +29,7 @@ class JwtCookieOrHeaderFilter : WebFilter {
 
         logger.debug(
             "Injecting Authorization header from ACCESS_TOKEN cookie for request to {}",
-            request.uri
+            request.uri,
         )
 
         val mutatedRequest = request.mutate()
