@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { createTestingPinia } from "@pinia/testing";
 import { shallowMount, type VueWrapper } from "@vue/test-utils";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/stores/auth.ts";
 import Ribbon from "./ribbon.vue";
 
@@ -13,39 +13,62 @@ vi.mock("vue-i18n", () => ({
 
 describe("Ribbon", () => {
 	let wrapper: VueWrapper<InstanceType<typeof Ribbon>>;
-	let store: ReturnType<typeof useAuthStore>;
 
-	beforeEach(() => {
+	function createWrapper(initialState = {}) {
 		wrapper = shallowMount(Ribbon, {
 			global: {
 				plugins: [
 					createTestingPinia({
+						initialState,
 						stubActions: false,
 						createSpy: vi.fn,
 					}),
 				],
 			},
 		});
-		store = useAuthStore();
-	});
+	}
 
 	it("should not have ribbonEnabled when no data", () => {
-		expect(wrapper.vm.ribbonEnabled).toBeFalsy();
+		createWrapper();
+		expect(wrapper.find("[data-testid='ribbon']").exists()).toBe(false);
 	});
 
-	it("should have ribbonEnabled set to value in store", async () => {
+	it("should have ribbonEnabled set to value in store", () => {
 		const profile = "dev";
-		store.activeProfiles = ["foo", profile, "bar"];
-		store.ribbonOnProfiles = profile;
-		await wrapper.vm.$nextTick();
-		expect(wrapper.vm.ribbonEnabled).toBeTruthy();
+		createWrapper({
+			auth: {
+				ribbonOnProfiles: profile,
+				activeProfiles: ["foo", profile, "bar"],
+			},
+		});
+		expect(wrapper.find("[data-testid='ribbon']").exists()).toBeTruthy();
 	});
 
-	it("should not have ribbonEnabled when profile not activated", async () => {
+	it("should not have ribbonEnabled when profile not activated", () => {
 		const profile = "dev";
-		store.activeProfiles = ["foo", "bar"];
-		store.ribbonOnProfiles = profile;
+		createWrapper({
+			auth: {
+				ribbonOnProfiles: profile,
+				activeProfiles: ["foo", "bar"],
+			},
+		});
+		expect(wrapper.find("[data-testid='ribbon']").exists()).toBeFalsy();
+	});
+
+	it("should become enabled when profile is activated", async () => {
+		const profile = "dev";
+		createWrapper({
+			auth: {
+				ribbonOnProfiles: profile,
+				activeProfiles: ["foo", "bar"],
+			},
+		});
+		expect(wrapper.find("[data-testid='ribbon']").exists()).toBeFalsy();
+
+		const store = useAuthStore();
+		store.activeProfiles.push(profile);
 		await wrapper.vm.$nextTick();
-		expect(wrapper.vm.ribbonEnabled).toBeFalsy();
+
+		expect(wrapper.find("[data-testid='ribbon']").exists()).toBeTruthy();
 	});
 });

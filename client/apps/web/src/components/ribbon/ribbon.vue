@@ -1,44 +1,28 @@
+<script lang="ts" setup>
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
+import { useAuthStore } from "@/stores/auth";
+
+const store = useAuthStore();
+const { t: t$ } = useI18n();
+
+const ribbonEnv = computed(() => store.ribbonOnProfiles);
+const ribbonEnabled = computed(
+	() =>
+		store.ribbonOnProfiles &&
+		store.activeProfiles.includes(store.ribbonOnProfiles),
+);
+</script>
 <template>
-  <div class="ribbon" v-if="ribbonEnabled">
-    <a href="" v-text="t$('global.ribbon.' + ribbonEnv)"></a>
+  <div
+      v-if="ribbonEnabled"
+      data-testid="ribbon"
+      class="fixed top-10 right-[-3.5rem] z-[1000] rotate-45 pointer-events-none opacity-75"
+  >
+    <div
+        class="bg-red-700/60 text-white text-sm font-medium shadow-md px-12 py-2 text-center w-[15em] whitespace-nowrap pointer-events-none"
+    >
+      {{ t$('global.ribbon.' + ribbonEnv) }}
+    </div>
   </div>
 </template>
-
-<script lang="ts" src="./ribbon.component.ts"></script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-/* ==========================================================================
-Development Ribbon
-========================================================================== */
-.ribbon {
-  background-color: rgba(170, 0, 0, 0.5);
-  right: -3.5em;
-  left: auto;
-  -moz-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
-  transform: rotate(45deg);
-  overflow: hidden;
-  position: absolute;
-  top: 40px;
-  white-space: nowrap;
-  width: 15em;
-  z-index: 1000;
-  pointer-events: none;
-  opacity: 0.75;
-}
-
-.ribbon a {
-  color: #fff;
-  display: block;
-  font-weight: 400;
-  margin: 1px 0;
-  padding: 10px 50px;
-  text-align: center;
-  text-decoration: none;
-  text-shadow: 0 0 5px #444;
-  pointer-events: none;
-}
-</style>
