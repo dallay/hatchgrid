@@ -111,13 +111,12 @@
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
 
-	--vis-tooltip-background-color: none !important;
-	--vis-tooltip-border-color: none !important;
-	--vis-tooltip-text-color: none !important;
-	--vis-tooltip-shadow-color: none !important;
-	--vis-tooltip-backdrop-filter: none !important;
-	--vis-tooltip-padding: none !important;
-
+	--vis-tooltip-background-color: transparent;
+	--vis-tooltip-border-color: transparent;
+	--vis-tooltip-text-color: inherit;
+	--vis-tooltip-shadow-color: transparent;
+	--vis-tooltip-backdrop-filter: none;
+	--vis-tooltip-padding: 0;
 	--vis-primary-color: var(--primary);
 	/* change to any hsl value you want */
 	--vis-secondary-color: 160 81% 40%;
