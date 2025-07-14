@@ -27,7 +27,7 @@ async function bootstrap() {
 	const i18n = initI18N({
 		locale: initialLanguage,
 	});
-	const tempTranslationService = new TranslationService(i18n.global);
+	const tempTranslationService = new TranslationService(i18n.global as any);
 
 	// 3. Load the initial language messages and wait for it
 	try {
