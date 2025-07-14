@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import type TranslationService from "@/services/translation.service";
+import type TranslationService from "@/i18n/translation.service.ts";
 import { useTranslationStore } from "@/stores/translation";
 
 // Use i18n for reactive translations

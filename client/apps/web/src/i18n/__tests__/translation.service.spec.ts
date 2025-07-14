@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 //import { useTranslationStore } from "@/stores/translation.store";
-import TranslationService from "../translation.service";
+import TranslationService from "../translation.service.ts";
 
 // The path should be relative to this test file.
 // service is at ../translation.service

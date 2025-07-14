@@ -7,7 +7,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type TranslationService from "@/services/translation.service";
+import type TranslationService from "@/i18n/translation.service.ts";
 import { useTranslationStore } from "@/stores/translation";
 import PhGlobeLight from "~icons/ph/globe-light";
 

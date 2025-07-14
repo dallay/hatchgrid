@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { Composer } from "vue-i18n";
-import languages from "@/config/languages";
+import languages from "@/i18n/languages.ts";
 
 export default class TranslationService {
 	private readonly i18n: Composer;

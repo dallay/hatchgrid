@@ -1,8 +1,8 @@
 import type { App } from "vue";
 import { watch } from "vue";
 import type { Router } from "vue-router";
+import TranslationService from "@/i18n/translation.service.ts";
 import AccountService from "@/services/account.service";
-import TranslationService from "@/services/translation.service";
 import { useAuthStore } from "@/stores/auth";
 import { useTranslationStore } from "@/stores/translation";
 

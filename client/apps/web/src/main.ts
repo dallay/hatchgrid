@@ -2,7 +2,7 @@ import { createPinia } from "pinia";
 import { createApp } from "vue";
 import { setupAxiosInterceptors } from "@/config/axios-interceptor";
 import { InitializationService } from "@/services/initialization.service";
-import initI18N from "./config/i18n.config";
+import initI18N from "./i18n/i18n.config.ts";
 import "./style.css";
 import App from "./App.vue";
 import router from "./router";
