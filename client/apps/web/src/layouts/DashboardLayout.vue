@@ -33,9 +33,9 @@ const handleLogout = async () => {
 	try {
 		await authStore.logout();
 		toast.success("Successfully logged out");
-		router.push("/login");
+		router.push({ name: "login" }); // Use named route for better maintainability
 	} catch (error) {
-		console.error("Error during logout:", error);
+		console.error("Logout failed"); // Avoid logging potentially sensitive error details
 		toast.error("Logout failed");
 	} finally {
 		isLoggingOut.value = false;
