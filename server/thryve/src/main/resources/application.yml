@@ -71,7 +71,7 @@ application:
         - account
         - api://default
     cors:
-      allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:9876, https://localhost:9876, http://localhost:5173, https://localhost:5173, http://localhost:3000, https://localhost:3000}
+      allowed-origins: ${CORS_ALLOWED_ORIGINS}
       allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
       allowed-headers: ${CORS_ALLOWED_HEADERS:Authorization,Content-Type,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers, X-Requested-With, X-Xsrf-Token, X-New-Header}
       exposed-headers: ${CORS_EXPOSED_HEADERS:Access-Control-Allow-Origin,Access-Control-Allow-Credentials}
@@ -82,19 +82,18 @@ application:
 management:
   endpoints:
     web:
-      base-path: /management
       exposure:
         include:
-          - configprops
-          - env
           - health
           - info
+          - prometheus
+        # Restrict sensitive endpoints in production
+        exclude:
+          - configprops
+          - env
           - logfile
           - loggers
-          - prometheus
           - threaddump
-          - caches
-          - liquibase
   info:
     git:
       mode: full
