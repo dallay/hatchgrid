@@ -81,7 +81,7 @@
 
         <button
           type="submit"
-          :disabled="isLoading"
+          :disabled="isLoading || !formIsValid"
           class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-2 px-4 rounded-md transition-colors disabled:cursor-not-allowed"
         >
           {{ isLoading ? 'Creating Account...' : 'Create Account' }}
@@ -115,6 +115,7 @@ const form = ref({
 	email: "",
 	password: "",
 });
+const formIsValid = ref(false);
 
 const handleRegister = async () => {
 	if (isLoading.value) return;
