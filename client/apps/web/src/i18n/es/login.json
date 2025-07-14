@@ -1,0 +1,15 @@
+{
+	"login": {
+		"title": "Login",
+    "description": "Enter your credentials below to login to your account.",
+    "form": {
+      "username": "Username",
+      "username-placeholder": "Enter your username",
+      "password": "Password",
+      "password-placeholder": "Enter your password",
+      "rememberMe": "Remember Me",
+      "submit": "Login",
+      "forgotPassword": "Forgot Password?"
+    }
+	}
+}
