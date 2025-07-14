@@ -24,11 +24,23 @@ const route = useRoute();
 const { t } = useI18n();
 
 const validateRedirectPath = (path: string | undefined): string | null => {
+	const allowedRoutes = ["/", "/dashboard", "/profile", "/settings"]; // Add more as needed
+	const suspiciousPatterns = [
+		/%2e/i, // encoded dot
+		/%2f/i, // encoded slash
+		/%5c/i, // encoded backslash
+		/\\/, // literal backslash
+		/\/\//, // double slash
+		/\.\./, // double dot
+	];
 	if (
 		!path ||
 		typeof path !== "string" ||
 		!path.startsWith("/") ||
-		path.includes("..")
+		suspiciousPatterns.some((pat) => pat.test(path)) ||
+		!allowedRoutes.some(
+			(route) => path === route || path.startsWith(route + "/"),
+		)
 	) {
 		return null;
 	}
@@ -55,16 +67,16 @@ const handleLogin = async () => {
     <Card class="w-full max-w-md">
       <CardHeader>
         <CardTitle class="text-2xl">
-          {{ t('login.title') }}
+          {{ t("login.title") }}
         </CardTitle>
         <CardDescription>
-          {{ t('login.description') }}
+          {{ t("login.description") }}
         </CardDescription>
       </CardHeader>
       <form @submit.prevent="handleLogin">
         <CardContent class="grid gap-4">
           <div class="grid gap-2">
-            <Label for="username">{{ t('login.form.username') }}</Label>
+            <Label for="username">{{ t("login.form.username") }}</Label>
             <Input
               id="username"
               v-model="username"
@@ -76,7 +88,7 @@ const handleLogin = async () => {
             />
           </div>
           <div class="grid gap-2">
-            <Label for="password">{{ t('login.form.password') }}</Label>
+            <Label for="password">{{ t("login.form.password") }}</Label>
             <Input
               id="password"
               v-model="password"
@@ -87,13 +99,19 @@ const handleLogin = async () => {
               :aria-invalid="error ? 'true' : 'false'"
             />
           </div>
-          <p v-if="error" id="error-message" class="text-sm text-red-600" role="alert" aria-live="polite">
+          <p
+            v-if="error"
+            id="error-message"
+            class="text-sm text-red-600"
+            role="alert"
+            aria-live="polite"
+          >
             {{ error }}
           </p>
         </CardContent>
         <CardFooter class="flex flex-col gap-2 mt-4">
           <Button type="submit" class="w-full">
-            {{ t('login.form.submit') }}
+            {{ t("login.form.submit") }}
           </Button>
         </CardFooter>
       </form>
