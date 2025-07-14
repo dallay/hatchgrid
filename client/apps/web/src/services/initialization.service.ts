@@ -1,10 +1,10 @@
 import type { App } from "vue";
 import { watch } from "vue";
 import type { Router } from "vue-router";
-import TranslationService from "@/i18n/translation.service.ts";
+import TranslationService from "@/i18n/translation.service";
 import AccountService from "@/services/account.service";
 import { useAuthStore } from "@/stores/auth";
-import { useTranslationStore } from "@/stores/translation";
+import { useTranslationStore } from "@/stores/translation.store";
 
 export interface InitializationOptions {
 	app: App;
@@ -33,7 +33,7 @@ export class InitializationService {
 
 		// Initialize services
 		this.translationService = new TranslationService(this.options.i18n);
-		this.accountService = new AccountService(this.authStore);
+		this.accountService = new AccountService(this.authStore, this.router);
 
 		// Set up router guards
 		this.setupRouterGuards();
@@ -41,8 +41,13 @@ export class InitializationService {
 		// Initialize language settings
 		await this.initializeLanguage();
 
-		// Initialize authentication
-		await this.initializeAuthentication();
+		// Set up language watchers for reactivity
+		this.setupLanguageWatchers();
+
+		// Only initialize authentication if not already on login page
+		if (this.router.currentRoute.value.path !== "/login") {
+			await this.initializeAuthentication();
+		}
 	}
 
 	/**
@@ -50,6 +55,12 @@ export class InitializationService {
 	 */
 	private setupRouterGuards(): void {
 		this.router.beforeResolve(async (to, _from, next) => {
+			// Prevent account update loop if navigating to login
+			if (to.path === "/login") {
+				next();
+				return;
+			}
+
 			// Initialize account if not authenticated
 			if (!this.authStore.authenticated) {
 				try {
@@ -101,26 +112,24 @@ export class InitializationService {
 		// Load language from localStorage first
 		this.translationStore.loadLanguageFromStorage();
 
-		// Determine the best language to use
-		const storedLanguage = this.translationService.getLocalStoreLanguage();
-		const userLanguage = this.authStore.account?.langKey;
-		const browserLanguage = navigator.language.split("-")[0];
+		// Detect and set the preferred language
+		await this.detectAndSetPreferredLanguage();
+	}
 
-		const preferredLanguage =
-			[
-				storedLanguage,
-				userLanguage,
-				browserLanguage,
-				"en", // fallback
-			].find(
-				(lang) => lang && this.translationService.isLanguageSupported(lang),
-			) || "en";
+	/**
+	 * Detect and set the preferred language for the application
+	 */
+	async detectAndSetPreferredLanguage(): Promise<void> {
+		const userLang = this.accountService.userLanguage;
+		const localLang = this.translationService.getLocalStoreLanguage();
+		const browserLang = navigator.language?.split("-")[0];
+		const isLanguageSupported = (lang: string | null | undefined) =>
+			lang ? this.translationService.isLanguageSupported(lang) : false;
 
-		// Set up language change handler
-		this.setupLanguageWatchers();
-
-		// Load the preferred language
-		await this.changeLanguage(preferredLanguage);
+		const initialLang = [localLang, userLang, browserLang, "en"].find(isLanguageSupported);
+		if (initialLang) {
+			await this.changeLanguage(initialLang);
+		}
 	}
 
 	/**
@@ -132,7 +141,7 @@ export class InitializationService {
 		} catch (error) {
 			console.warn("Failed to initialize authentication:", error);
 			// Redirect to login if authentication fails
-			this.router.push({ path: "/login" });
+			await this.router.push({path: "/login"});
 		}
 	}
 
@@ -140,25 +149,20 @@ export class InitializationService {
 	 * Set up reactive language watchers
 	 */
 	private setupLanguageWatchers(): void {
-		// Watch for account language changes
-		watch(
-			() => this.authStore.account?.langKey,
-			(newLangKey) => {
-				if (
-					newLangKey &&
-					!this.translationService.getLocalStoreLanguage() &&
-					newLangKey !== this.translationStore.currentLanguage
-				) {
-					this.changeLanguage(newLangKey);
-				}
-			},
-		);
-
 		// Watch for translation store changes
+	  watch(
+	  () => this.authStore.account,
+	  async value => {
+		if (!this.translationService.getLocalStoreLanguage()) {
+		  const langKey = value?.langKey ?? "en";
+		  await this.changeLanguage(langKey);
+		}
+	  },
+	);
 		watch(
 			() => this.translationStore.currentLanguage,
 			(newLanguage) => {
-				this.translationService.setLocale(newLanguage);
+				this.translationService.setLocale(newLanguage ?? "en");
 			},
 		);
 	}

@@ -1,5 +1,6 @@
 import {
 	createI18n,
+	type I18n,
 	type I18nOptions,
 	type IntlDateTimeFormats,
 } from "vue-i18n";
@@ -57,7 +58,7 @@ const datetimeFormats: IntlDateTimeFormats = {
 	},
 };
 
-export default function initI18N(opts: I18nOptions = {}) {
+export default function initI18N(opts: I18nOptions = {}): I18n {
 	return createI18n({
 		missingWarn: false,
 		fallbackWarn: false,

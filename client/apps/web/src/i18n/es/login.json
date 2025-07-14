@@ -1,15 +1,15 @@
 {
-	"login": {
-		"title": "Login",
-    "description": "Enter your credentials below to login to your account.",
+  "login": {
+    "title": "Iniciar sesión",
+    "description": "Ingrese sus credenciales abajo para acceder a su cuenta.",
     "form": {
-      "username": "Username",
-      "username-placeholder": "Enter your username",
-      "password": "Password",
-      "password-placeholder": "Enter your password",
-      "rememberMe": "Remember Me",
-      "submit": "Login",
-      "forgotPassword": "Forgot Password?"
+      "username": "Usuario",
+      "username-placeholder": "Ingrese su usuario",
+      "password": "Contraseña",
+      "password-placeholder": "Ingrese su contraseña",
+      "rememberMe": "Recuérdame",
+      "submit": "Iniciar sesión",
+      "forgotPassword": "¿Olvidó su contraseña?"
     }
-	}
+  }
 }

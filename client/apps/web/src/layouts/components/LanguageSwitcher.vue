@@ -8,16 +8,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type TranslationService from "@/services/translation.service";
-import { useTranslationStore } from "@/stores/translation";
+import type TranslationService from "@/i18n/translation.service";
+import { useTranslationStore } from "@/stores/translation.store";
 import PhGlobeLight from "~icons/ph/globe-light";
 
 // Define props to control the display style
-const props = withDefaults(defineProps<{
-  displayMode?: 'icon' | 'select';
-}>(), {
-  displayMode: 'icon', // Default to the compact icon view
-});
+const props = withDefaults(
+  defineProps<{
+    displayMode?: "icon" | "select";
+  }>(),
+  {
+    displayMode: "icon", // Default to the compact icon view
+  }
+);
 
 // Composables and services for translation
 const { t } = useI18n();
@@ -60,16 +63,19 @@ onMounted(() => {
 });
 
 // Watch for changes in the store to keep the local state in sync
-watch(() => translationStore.currentLanguage, (newLang) => {
-  selectedLanguage.value = newLang;
-});
+watch(
+  () => translationStore.currentLanguage,
+  (newLang) => {
+    selectedLanguage.value = newLang;
+  }
+);
 </script>
 
 <template>
   <!-- Display as a <select> dropdown -->
   <div v-if="displayMode === 'select'" class="flex items-center gap-2">
     <label for="language-select" class="text-sm font-medium">
-      {{ t('navigation.language') }}
+      {{ t("navigation.language") }}
     </label>
     <select
       id="language-select"
