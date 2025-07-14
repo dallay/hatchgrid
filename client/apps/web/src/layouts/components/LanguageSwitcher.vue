@@ -1,16 +1,25 @@
 <script setup lang="ts">
-import { useTranslationStore } from "@/stores/translation";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { inject } from "vue";
 import { Button } from "@/components/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import type TranslationService from "@/services/translation.service";
+import { useTranslationStore } from "@/stores/translation";
 import PhGlobeLight from "~icons/ph/globe-light";
+
 const translationStore = useTranslationStore();
-function changeLanguage(languageCode: string) {
-  translationStore.setCurrentLanguage(languageCode);
+const translationService = inject<TranslationService>("translationService");
+
+async function changeLanguage(languageCode: string) {
+	if (translationService) {
+		await translationService.refreshTranslation(languageCode);
+		translationService.setLocale(languageCode);
+	}
+	translationStore.setCurrentLanguage(languageCode);
 }
 </script>
 
