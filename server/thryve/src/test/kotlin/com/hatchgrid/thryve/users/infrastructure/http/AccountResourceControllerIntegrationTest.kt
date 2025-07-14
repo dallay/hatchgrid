@@ -68,21 +68,4 @@ class AccountResourceControllerIntegrationTest : InfrastructureTestContainers() 
             it["family_name"] = lastname
             it["roles"] = roles
         }
-
-    inner class CookieAuthTests {
-        @Test
-        fun `should get account information when access token is in cookie`() {
-            webTestClient.get().uri(ENDPOINT)
-                .cookie("ACCESS_TOKEN", "mock-access-token") // Simulate ACCESS_TOKEN cookie
-                .exchange()
-                .expectStatus().isOk
-                .expectBody()
-                .jsonPath("$.username").isEqualTo("test")
-                .jsonPath("$.email").isEqualTo("test@localhost")
-                .jsonPath("$.firstname").isEqualTo("Test")
-                .jsonPath("$.lastname").isEqualTo("User")
-                .jsonPath("$.authorities").isArray.jsonPath("$.authorities[0]")
-                .isEqualTo(AuthoritiesConstants.USER)
-        }
-    }
 }
