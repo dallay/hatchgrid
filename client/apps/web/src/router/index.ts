@@ -24,13 +24,10 @@ export const createRouter = () =>
 			{
 				path: "/not-found",
 				name: "NotFound",
-				component: Error,
+				component: ErrorPage,
 				meta: { error404: true },
 			},
 			...account,
-			// ...admin,
-			// entities,
-			// ...pages,
 		],
 	});
 
