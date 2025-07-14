@@ -4,6 +4,7 @@ import HomeView from "../views/HomeView.vue";
 const ErrorPage = () => import("@/error/error.vue");
 
 import account from "@/router/account";
+import { Authority } from "@/security/authority";
 import { loadLayoutMiddleware } from "./middleware/loadLayoutMiddleware";
 
 export const createRouter = () =>
@@ -14,6 +15,7 @@ export const createRouter = () =>
 				path: "/",
 				name: "Home",
 				component: HomeView,
+				meta: { authorities: [Authority.USER], layout: "DashboardLayout" },
 			},
 			{
 				path: "/forbidden",

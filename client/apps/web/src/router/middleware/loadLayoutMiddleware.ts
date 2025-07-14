@@ -11,8 +11,15 @@ import type { RouteLocationNormalized } from "vue-router";
  */
 export async function loadLayoutMiddleware(route: RouteLocationNormalized) {
 	try {
-		// Get layout name from route meta, default to 'DashboardLayout' if not specified
-		const layout = route.meta.layout || "DashboardLayout";
+		// Get layout name from route meta, default to 'SimpleLayout' if not specified
+		const layout = route.meta.layout || "SimpleLayout";
+
+		// Dynamically import the layout component
+		// Validate layout name to prevent path traversal
+		const validLayoutName = /^[a-zA-Z0-9_-]+$/.test(String(layout));
+		if (!validLayoutName) {
+			throw new Error(`Invalid layout name: ${layout}`);
+		}
 
 		// Dynamically import the layout component
 		const layoutComponent = await import(`@/layouts/${layout}.vue`);
