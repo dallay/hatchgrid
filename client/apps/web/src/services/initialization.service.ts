@@ -126,7 +126,9 @@ export class InitializationService {
 		const isLanguageSupported = (lang: string | null | undefined) =>
 			lang ? this.translationService.isLanguageSupported(lang) : false;
 
-		const initialLang = [localLang, userLang, browserLang, "en"].find(isLanguageSupported);
+		const initialLang = [localLang, userLang, browserLang, "en"].find(
+			isLanguageSupported,
+		);
 		if (initialLang) {
 			await this.changeLanguage(initialLang);
 		}
@@ -141,7 +143,7 @@ export class InitializationService {
 		} catch (error) {
 			console.warn("Failed to initialize authentication:", error);
 			// Redirect to login if authentication fails
-			await this.router.push({path: "/login"});
+			await this.router.push({ path: "/login" });
 		}
 	}
 
@@ -150,15 +152,15 @@ export class InitializationService {
 	 */
 	private setupLanguageWatchers(): void {
 		// Watch for translation store changes
-	  watch(
-	  () => this.authStore.account,
-	  async value => {
-		if (!this.translationService.getLocalStoreLanguage()) {
-		  const langKey = value?.langKey ?? "en";
-		  await this.changeLanguage(langKey);
-		}
-	  },
-	);
+		watch(
+			() => this.authStore.account,
+			async (value) => {
+				if (!this.translationService.getLocalStoreLanguage()) {
+					const langKey = value?.langKey ?? "en";
+					await this.changeLanguage(langKey);
+				}
+			},
+		);
 		watch(
 			() => this.translationStore.currentLanguage,
 			(newLanguage) => {

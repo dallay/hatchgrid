@@ -14,14 +14,14 @@ import AppLayout from "./layouts/AppLayout.vue";
 
 // Initialize CSRF token on app mount
 onMounted(async () => {
-  try {
-    await fetch("/api/health-check", {
-      method: "GET",
-      credentials: "include",
-    });
-    console.log("CSRF token initialized successfully");
-  } catch (error) {
-    console.error("Failed to initialize CSRF token:", error);
-  }
+	try {
+		await fetch("/api/health-check", {
+			method: "GET",
+			credentials: "include",
+		});
+		console.log("CSRF token initialized successfully");
+	} catch (error) {
+		console.error("Failed to initialize CSRF token:", error);
+	}
 });
 </script>

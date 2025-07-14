@@ -3,10 +3,10 @@ import { inject, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type TranslationService from "@/i18n/translation.service";
 import { useTranslationStore } from "@/stores/translation.store";
@@ -14,12 +14,12 @@ import PhGlobeLight from "~icons/ph/globe-light";
 
 // Define props to control the display style
 const props = withDefaults(
-  defineProps<{
-    displayMode?: "icon" | "select";
-  }>(),
-  {
-    displayMode: "icon", // Default to the compact icon view
-  }
+	defineProps<{
+		displayMode?: "icon" | "select";
+	}>(),
+	{
+		displayMode: "icon", // Default to the compact icon view
+	},
 );
 
 // Composables and services for translation
@@ -35,39 +35,39 @@ const selectedLanguage = ref(translationStore.currentLanguage);
  * @param languageCode The code of the language to switch to.
  */
 async function changeLanguage(languageCode: string | undefined) {
-  if (!languageCode || !translationService) {
-    console.error("Language code or translation service is not available.");
-    return;
-  }
+	if (!languageCode || !translationService) {
+		console.error("Language code or translation service is not available.");
+		return;
+	}
 
-  try {
-    // Refresh translations and update the application's locale
-    await translationService.refreshTranslation(languageCode);
-    translationService.setLocale(languageCode);
-    translationStore.setCurrentLanguage(languageCode);
-  } catch (error) {
-    console.error("Failed to change language:", error);
-    // On failure, revert the select element to the currently active language
-    selectedLanguage.value = translationStore.currentLanguage;
-  }
+	try {
+		// Refresh translations and update the application's locale
+		await translationService.refreshTranslation(languageCode);
+		translationService.setLocale(languageCode);
+		translationStore.setCurrentLanguage(languageCode);
+	} catch (error) {
+		console.error("Failed to change language:", error);
+		// On failure, revert the select element to the currently active language
+		selectedLanguage.value = translationStore.currentLanguage;
+	}
 }
 
 // This function is specifically for the @change event of the <select> element
 const handleSelectChange = () => {
-  changeLanguage(selectedLanguage.value);
+	changeLanguage(selectedLanguage.value);
 };
 
 // Ensure the local state (selectedLanguage) is initialized correctly
 onMounted(() => {
-  selectedLanguage.value = translationStore.currentLanguage;
+	selectedLanguage.value = translationStore.currentLanguage;
 });
 
 // Watch for changes in the store to keep the local state in sync
 watch(
-  () => translationStore.currentLanguage,
-  (newLang) => {
-    selectedLanguage.value = newLang;
-  }
+	() => translationStore.currentLanguage,
+	(newLang) => {
+		selectedLanguage.value = newLang;
+	},
 );
 </script>
 

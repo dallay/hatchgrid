@@ -22,20 +22,23 @@ export const useTranslationStore = defineStore("translation", {
 		getCurrentLanguageInfo: (state) => {
 			return (
 				state.availableLanguages.find(
-					(lang) => lang.code === state.currentLanguage
+					(lang) => lang.code === state.currentLanguage,
 				) || state.availableLanguages[0]
 			);
 		},
 		isLanguageSupported: (state) => (languageCode: string) => {
 			return state.availableLanguages.some(
-				(lang) => lang.code === languageCode
+				(lang) => lang.code === languageCode,
 			);
 		},
 	},
 
 	actions: {
 		setCurrentLanguage(newLanguage: string | undefined) {
-			if (typeof newLanguage === "string" && this.isLanguageSupported(newLanguage)) {
+			if (
+				typeof newLanguage === "string" &&
+				this.isLanguageSupported(newLanguage)
+			) {
 				this.currentLanguage = newLanguage;
 				localStorage.setItem("currentLanguage", newLanguage);
 			} else if (typeof newLanguage === "string") {
@@ -64,14 +67,16 @@ export const useTranslationStore = defineStore("translation", {
 		},
 
 		addLanguage(language: { code: string; name: string; flag: string }) {
-			if (!this.availableLanguages.some((lang) => lang.code === language.code)) {
+			if (
+				!this.availableLanguages.some((lang) => lang.code === language.code)
+			) {
 				this.availableLanguages.push(language);
 			}
 		},
 
 		removeLanguage(languageCode: string) {
 			const index = this.availableLanguages.findIndex(
-				(lang) => lang.code === languageCode
+				(lang) => lang.code === languageCode,
 			);
 			if (index > -1 && languageCode !== "en") {
 				// Don't allow removing English

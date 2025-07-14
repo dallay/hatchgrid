@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
+import { useRoute, useRouter } from "vue-router";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,30 +24,30 @@ const route = useRoute();
 const { t } = useI18n();
 
 const validateRedirectPath = (path: string | undefined): string | null => {
-  if (
-      !path ||
-      typeof path !== "string" ||
-      !path.startsWith("/") ||
-      path.includes("..")
-  ) {
-    return null;
-  }
-  return path;
+	if (
+		!path ||
+		typeof path !== "string" ||
+		!path.startsWith("/") ||
+		path.includes("..")
+	) {
+		return null;
+	}
+	return path;
 };
 
 const handleLogin = async () => {
-  error.value = null;
-  try {
-    await authStore.login(username.value, password.value);
-    const redirectQuery =
-        typeof route.query.redirect === "string"
-            ? route.query.redirect
-            : undefined;
-    const redirectPath = validateRedirectPath(redirectQuery) || "/";
-    await router.push(redirectPath);
-  } catch {
-    error.value = "Invalid credentials. Please try again.";
-  }
+	error.value = null;
+	try {
+		await authStore.login(username.value, password.value);
+		const redirectQuery =
+			typeof route.query.redirect === "string"
+				? route.query.redirect
+				: undefined;
+		const redirectPath = validateRedirectPath(redirectQuery) || "/";
+		await router.push(redirectPath);
+	} catch {
+		error.value = "Invalid credentials. Please try again.";
+	}
 };
 </script>
 <template>
