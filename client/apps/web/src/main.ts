@@ -4,7 +4,10 @@ import { setupAxiosInterceptors } from "@/config/axios-interceptor";
 import { InitializationService } from "@/services/initialization.service";
 import initI18N from "./i18n/i18n.config.ts";
 import TranslationService from "./i18n/translation.service.ts";
-import { useTranslationStore } from "./stores/translation.store.ts";
+import {
+	DEFAULT_LANGUAGE,
+	useTranslationStore,
+} from "./stores/translation.store.ts";
 import "./style.css";
 import App from "./App.vue";
 import router from "./router";
@@ -21,7 +24,7 @@ async function bootstrap() {
 	// 1. Determine initial language
 	const translationStore = useTranslationStore();
 	translationStore.loadLanguageFromStorage();
-	const initialLanguage = translationStore.currentLanguage ?? "en";
+	const initialLanguage = translationStore.currentLanguage ?? DEFAULT_LANGUAGE;
 
 	// 2. Create an i18n instance and service to load the language
 	const i18n = initI18N({
@@ -38,8 +41,8 @@ async function bootstrap() {
 			`Failed to load initial language '${initialLanguage}', falling back to 'en'.`,
 			error,
 		);
-		if (initialLanguage !== "en") {
-			await tempTranslationService.refreshTranslation("en");
+		if (initialLanguage !== DEFAULT_LANGUAGE) {
+			await tempTranslationService.refreshTranslation(DEFAULT_LANGUAGE);
 		}
 	}
 	// --- End Language Initialization ---

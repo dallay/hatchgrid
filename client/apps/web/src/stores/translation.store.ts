@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 
+export const DEFAULT_LANGUAGE = "en";
+
 export interface TranslationState {
 	currentLanguage: string | undefined;
 	availableLanguages: { code: string; name: string; flag: string }[];
@@ -59,10 +61,10 @@ export const useTranslationStore = defineStore("translation", {
 				this.currentLanguage = storedLanguage;
 			} else {
 				// Fallback to browser language or default
-				const browserLanguage = navigator.language.split("-")[0];
+				const browserLanguage = navigator.language?.split("-")[0];
 				this.currentLanguage = this.isLanguageSupported(browserLanguage)
 					? browserLanguage
-					: "en";
+					: DEFAULT_LANGUAGE;
 			}
 		},
 
@@ -78,13 +80,13 @@ export const useTranslationStore = defineStore("translation", {
 			const index = this.availableLanguages.findIndex(
 				(lang) => lang.code === languageCode,
 			);
-			if (index > -1 && languageCode !== "en") {
+			if (index > -1 && languageCode !== DEFAULT_LANGUAGE) {
 				// Don't allow removing English
 				this.availableLanguages.splice(index, 1);
 
 				// Switch to English if current language is being removed
 				if (this.currentLanguage === languageCode) {
-					this.setCurrentLanguage("en");
+					this.setCurrentLanguage(DEFAULT_LANGUAGE);
 				}
 			}
 		},

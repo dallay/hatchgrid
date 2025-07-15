@@ -9,7 +9,10 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type TranslationService from "@/i18n/translation.service";
-import { useTranslationStore } from "@/stores/translation.store";
+import {
+	DEFAULT_LANGUAGE,
+	useTranslationStore,
+} from "@/stores/translation.store";
 import PhGlobeLight from "~icons/ph/globe-light";
 
 // Define props to control the display style
@@ -28,7 +31,9 @@ const translationStore = useTranslationStore();
 const translationService = inject<TranslationService>("translationService");
 
 // Local reactive state for the <select> element
-const selectedLanguage = ref(translationStore.currentLanguage ?? "en");
+const selectedLanguage = ref(
+	translationStore.currentLanguage ?? DEFAULT_LANGUAGE,
+);
 
 /**
  * Handles the language change logic.
@@ -48,25 +53,26 @@ async function changeLanguage(languageCode: string) {
 	} catch (error) {
 		console.error("Failed to change language:", error);
 		// On failure, revert the select element to the currently active language
-		selectedLanguage.value = translationStore.currentLanguage ?? "en";
+		selectedLanguage.value =
+			translationStore.currentLanguage ?? DEFAULT_LANGUAGE;
 	}
 }
 
 // This function is specifically for the @change event of the <select> element
 const handleSelectChange = () => {
-	changeLanguage(selectedLanguage.value ?? "en");
+	changeLanguage(selectedLanguage.value ?? DEFAULT_LANGUAGE);
 };
 
 // Ensure the local state (selectedLanguage) is initialized correctly
 onMounted(() => {
-	selectedLanguage.value = translationStore.currentLanguage ?? "en";
+	selectedLanguage.value = translationStore.currentLanguage ?? DEFAULT_LANGUAGE;
 });
 
 // Watch for changes in the store to keep the local state in sync
 watch(
 	() => translationStore.currentLanguage,
 	(newLang) => {
-		selectedLanguage.value = newLang ?? "en";
+		selectedLanguage.value = newLang ?? DEFAULT_LANGUAGE;
 	},
 );
 </script>
