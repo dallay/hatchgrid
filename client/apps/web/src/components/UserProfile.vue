@@ -52,18 +52,12 @@ const userAuthorities = computed(() => {
 
 // Enhanced logout with user feedback, sanitized errors, and null checks
 const handleLogout = async () => {
-	if (!authStore || !router) {
-		// Could show a toast or fallback UI here
-		console.warn("Logout dependencies unavailable");
-		return;
-	}
-
 	isLoggingOut.value = true;
 
 	try {
 		await authStore.logoutAsync();
 		router.push("/");
-	} catch (error) {
+	} catch {
 		// Avoid logging sensitive details
 		// Show a generic error message to the user (replace with your notification system)
 		// Example: toast.error("Logout failed. Please try again.");
