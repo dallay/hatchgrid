@@ -1,8 +1,4 @@
-
 <script setup>
-import { ref } from "vue";
-import { RouterLink, useRouter } from "vue-router";
-import { toast } from "vue-sonner";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -18,39 +14,18 @@ import {
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
 import AppSidebar from "@/layouts/components/AppSidebar.vue";
-import { useAuthStore } from "../stores/auth";
 import AppHeader from "./components/AppHeader.vue";
 import SimpleLayout from "./SimpleLayout.vue";
-
-const authStore = useAuthStore();
-const router = useRouter();
-const isLoggingOut = ref(false);
-
-const handleLogout = async () => {
-	if (isLoggingOut.value) return;
-
-	isLoggingOut.value = true;
-	try {
-		await authStore.logout();
-		toast.success("Successfully logged out");
-		router.push({ name: "login" }); // Use named route for better maintainability
-	} catch (error) {
-		console.error("Logout failed"); // Avoid logging potentially sensitive error details
-		toast.error("Logout failed");
-	} finally {
-		isLoggingOut.value = false;
-	}
-};
 </script>
 
 <template>
   <SidebarProvider>
     <AppSidebar />
     <SidebarInset>
-    <AppHeader />
-   <SimpleLayout>
-      <slot />
-   </SimpleLayout>
+      <AppHeader />
+      <SimpleLayout>
+        <slot />
+      </SimpleLayout>
     </SidebarInset>
   </SidebarProvider>
 </template>
