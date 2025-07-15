@@ -1,0 +1,26 @@
+{
+  "enabled": true,
+  "name": "Source to Docs Sync",
+  "description": "Monitors all source files in the repository and triggers documentation updates in README or docs folder when changes are detected",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "**/*.kt",
+      "**/*.ts",
+      "**/*.vue",
+      "**/*.astro",
+      "**/*.js",
+      "**/*.mjs",
+      "**/*.gradle.kts",
+      "**/*.json",
+      "**/*.yml",
+      "**/*.yaml",
+      "**/*.sql"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Source files have been modified. Please review the changes and update the documentation accordingly. Focus on:\n\n1. Update the main README.md if core functionality, setup instructions, or project structure has changed\n2. Update relevant documentation in the /docs folder for specific features or components\n3. Ensure API documentation reflects any endpoint changes\n4. Update any architectural diagrams or technical specifications\n5. Review and update code examples in documentation\n6. Ensure that the /docs are updated\n\nPlease analyze the changed files and determine what documentation needs to be updated to keep it in sync with the current codebase."
+  }
+}
