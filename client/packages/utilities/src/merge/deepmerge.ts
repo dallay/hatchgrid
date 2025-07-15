@@ -3,8 +3,20 @@
  * @param val Value to check
  * @returns True if value is a mergeable object
  */
-const defaultIsMergeableObject = (val: unknown): val is MergeableObject =>
-	!!val && typeof val === "object" && !Array.isArray(val);
+const defaultIsMergeableObject = (val: unknown): val is MergeableObject => {
+	if (!val || typeof val !== "object" || Array.isArray(val)) return false;
+	// Exclude special objects
+	if (
+		val instanceof Date ||
+		val instanceof RegExp ||
+		val instanceof Set ||
+		val instanceof Map
+	) {
+		return false;
+	}
+	// Only plain objects are mergeable
+	return Object.getPrototypeOf(val) === Object.prototype;
+};
 
 /**
  * Returns an empty target of the same type as the input (array or object).
