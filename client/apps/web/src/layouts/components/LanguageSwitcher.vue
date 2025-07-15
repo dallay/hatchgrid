@@ -34,7 +34,7 @@ const selectedLanguage = ref(translationStore.currentLanguage ?? "en");
  * Handles the language change logic.
  * @param languageCode The code of the language to switch to.
  */
-async function changeLanguage(languageCode: string | undefined) {
+async function changeLanguage(languageCode: string) {
 	if (!languageCode || !translationService) {
 		console.error("Language code or translation service is not available.");
 		return;
@@ -48,18 +48,18 @@ async function changeLanguage(languageCode: string | undefined) {
 	} catch (error) {
 		console.error("Failed to change language:", error);
 		// On failure, revert the select element to the currently active language
-		selectedLanguage.value = translationStore.currentLanguage;
+		selectedLanguage.value = translationStore.currentLanguage ?? "en";
 	}
 }
 
 // This function is specifically for the @change event of the <select> element
 const handleSelectChange = () => {
-	changeLanguage(selectedLanguage.value);
+	changeLanguage(selectedLanguage.value ?? "en");
 };
 
 // Ensure the local state (selectedLanguage) is initialized correctly
 onMounted(() => {
-	selectedLanguage.value = translationStore.currentLanguage;
+	selectedLanguage.value = translationStore.currentLanguage ?? "en";
 });
 
 // Watch for changes in the store to keep the local state in sync
