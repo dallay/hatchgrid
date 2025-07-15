@@ -19,6 +19,7 @@ export interface TranslationState {
 ```
 
 **Key features:**
+
 - Persists language preference in localStorage
 - Provides reactive language switching
 - Supports multiple languages with metadata (name, flag)
@@ -29,12 +30,14 @@ export interface TranslationState {
 Handles the actual translation operations:
 
 **Key methods:**
+
 - `refreshTranslation(newLanguage: string)`: Dynamically loads translation files
 - `setLocale(language: string)`: Updates the i18n instance locale
 - `isLanguageSupported(language: string)`: Validates language support
 - `translate(key: string, params?)`: Direct translation method
 
 **Features:**
+
 - Dynamic import of translation files from `locales/` directory
 - Fallback to English if translation loading fails
 - Document language attribute updating
@@ -55,6 +58,7 @@ await this.changeLanguage(userLanguage);
 Orchestrates the startup sequence:
 
 **Initialization flow:**
+
 1. Load language from localStorage
 2. Determine best language (stored → user profile → browser → fallback)
 3. Set up reactive watchers for language changes
@@ -90,8 +94,10 @@ async function bootstrap() {
   await initializationService.initialize();
 
   // Global service provision
-  app.provide('translationService', initializationService.getTranslationService());
-  app.provide('accountService', initializationService.getAccountService());
+  const translationService = initializationService.getTranslationService();
+  const accountService = initializationService.getAccountService();
+  app.provide('translationService', translationService);
+  app.provide('accountService', accountService);
 
   app.mount("#app");
 }
@@ -110,17 +116,23 @@ async function bootstrap() {
 ### Enhanced Router Guards
 
 ```typescript
+import { useAuthStore } from '@/stores/auth';
+import { inject } from 'vue';
+
 router.beforeResolve(async (to, from, next) => {
+  const authStore = useAuthStore();
+  const accountService = inject('accountService');
+
   // Authentication check
-  if (!this.authStore.authenticated) {
-    await this.accountService.update();
+  if (!authStore.authenticated) {
+    await accountService.update();
   }
 
   // Authority checking
   if (to.meta?.authorities?.length > 0) {
-    const hasAuth = await this.accountService.hasAnyAuthorityAndCheckAuth(to.meta.authorities);
+    const hasAuth = await accountService.hasAnyAuthorityAndCheckAuth(to.meta.authorities);
     if (!hasAuth) {
-      next({ path: this.authStore.authenticated ? '/forbidden' : '/login' });
+      next({ path: authStore.authenticated ? '/forbidden' : '/login' });
       return;
     }
   }
@@ -134,11 +146,13 @@ router.beforeResolve(async (to, from, next) => {
 ### Updated Request/Response Handling
 
 **Request interceptor:**
+
 - XSRF token handling for non-GET requests
 - Bearer token authentication
 - Request logging
 
 **Response interceptor:**
+
 - Enhanced 401/403 error handling
 - Token cleanup on logout
 - Redirect with query parameters for login flow
@@ -204,6 +218,8 @@ Services are provided globally in main.ts and can be injected in any component:
 
 ```typescript
 // In main.ts
+const translationService = initializationService.getTranslationService();
+const accountService = initializationService.getAccountService();
 app.provide('translationService', translationService);
 app.provide('accountService', accountService);
 
