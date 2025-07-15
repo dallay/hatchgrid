@@ -53,8 +53,10 @@ export default class AccountService {
 	async retrieveProfiles(): Promise<boolean> {
 		try {
 			const response: AxiosResponse<ProfileInfo> =
-				await axios.get("/management/info");
-
+				await axios.get("/actuator/info", {
+					withCredentials: true,
+				});
+			console.log("Application profiles retrieved:", response.data);
 			if (response.data?.activeProfiles) {
 				this.authStore.setActiveProfiles(response.data.activeProfiles);
 				if (response.data["display-ribbon-on-profiles"]) {

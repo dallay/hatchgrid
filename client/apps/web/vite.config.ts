@@ -44,7 +44,7 @@ export default defineConfig({
 				secure: false,
 				changeOrigin: true,
 			},
-			"/management": {
+			"/actuator": {
 				target: "http://localhost:8080",
 				secure: false,
 				changeOrigin: true,
