@@ -37,17 +37,6 @@ const cloneUnlessOtherwiseSpecified = (
  * @param options Deep merge options
  * @returns Merged array
  */
-/**
- * Default strategy for merging arrays: concatenates and clones elements.
- * @param target Target array
- * @param source Source array
- * @param options Deep merge options
- * @returns Merged array
- */
-/**
- * Default strategy for merging arrays: concatenates and clones elements.
- * Uses generics for type safety.
- */
 const defaultArrayMerge = <T>(
   target: T[],
   source: T[],
