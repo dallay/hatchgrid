@@ -4,9 +4,11 @@ export type Language = {
 
 export type Languages = Record<string, Language>;
 
-const languages = (): Languages => ({
+const LANGUAGES: Readonly<Languages> = Object.freeze({
 	en: { name: "English" },
 	es: { name: "Spanish" },
 });
+
+const languages = (): Languages => LANGUAGES;
 
 export default languages;
