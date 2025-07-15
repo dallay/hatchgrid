@@ -70,13 +70,15 @@ export default class AccountService {
 
 			return true;
 		} catch (error) {
-			if (isAxiosError(error)) {
-				console.error(
-					"Failed to retrieve application profiles:",
-					error.response?.status,
-				);
-			} else {
-				console.error("Unknown error retrieving profiles:", error);
+			if (process.env.NODE_ENV === "development") {
+				if (isAxiosError(error)) {
+					console.error(
+						"Failed to retrieve application profiles:",
+						error.response?.status,
+					);
+				} else {
+					console.error("Unknown error retrieving profiles:", error);
+				}
 			}
 			return false;
 		}
