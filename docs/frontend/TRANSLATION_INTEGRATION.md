@@ -220,6 +220,10 @@ const accountService = inject('accountService');
 - Error logging for debugging
 - Graceful degradation without breaking the app
 
+#### User Notification Strategy
+
+When a translation fails to load or the system falls back to English, users are notified via non-intrusive toast notifications. These notifications appear briefly at the bottom or top of the screen, informing users that their preferred language could not be loaded and that English is being used as a fallback. This approach ensures users are aware of the issue without interrupting their workflow or navigation. The notification system is implemented using a composable toast component (e.g., Vue Toastification or similar), and all error messages are localized where possible. No modal dialogs or blocking UI elements are used, maintaining a smooth and uninterrupted app experience.
+
 ### Network Errors
 
 - 401: Logout and redirect to login with return URL

@@ -7,7 +7,7 @@
 	"homepage": "https://hatchgrid.tech",
 	"engines": {
 		"node": ">=22.0.0",
-		"pnpm": ">=10.0.0"
+		"pnpm": ">=10.13.1"
 	},
 	"packageManager": "pnpm@10.13.1",
 	"repository": {
