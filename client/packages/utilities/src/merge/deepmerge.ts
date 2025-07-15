@@ -44,12 +44,16 @@ const cloneUnlessOtherwiseSpecified = (
  * @param options Deep merge options
  * @returns Merged array
  */
-const defaultArrayMerge = (
-  target: unknown[],
-  source: unknown[],
+/**
+ * Default strategy for merging arrays: concatenates and clones elements.
+ * Uses generics for type safety.
+ */
+const defaultArrayMerge = <T>(
+  target: T[],
+  source: T[],
   options: DeepMergeOptions,
-): unknown[] =>
-  [...target, ...source].map((element) => cloneUnlessOtherwiseSpecified(element, options));
+): T[] =>
+  [...target, ...source].map((element) => cloneUnlessOtherwiseSpecified(element, options) as T);
 
 /**
  * Gets the merge function for a given key, using customMerge if provided.
@@ -137,7 +141,9 @@ const mergeObject = (
 			Array.isArray(target[key]) &&
 			Array.isArray(source[key])
 		) {
-			destination[key] = options.arrayMerge!(target[key] as unknown[], source[key] as unknown[], options);
+	  if (options.arrayMerge) {
+		destination[key] = options.arrayMerge(target[key] as unknown[], source[key] as unknown[], options);
+	  }
 		} else if (
 			propertyIsOnObject(target, key) &&
 			options.isMergeableObject?.(source[key])
@@ -178,7 +184,9 @@ export const deepmerge: DeepMergeFn & {
 	}
 
 	return sourceIsArray
-		? options.arrayMerge(target as unknown[], source as unknown[], options)
+	? options.arrayMerge
+	  ? options.arrayMerge(target as unknown[], source as unknown[], options)
+	  : defaultArrayMerge(target as unknown[], source as unknown[], options)
 		: mergeObject(
 			target as MergeableObject,
 			source as MergeableObject,

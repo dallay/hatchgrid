@@ -14,7 +14,7 @@ type MergeableObject = Record<string | symbol, unknown>;
  */
 interface DeepMergeOptions {
   clone?: boolean;
-  arrayMerge?: (target: unknown[], source: unknown[], options: DeepMergeOptions) => unknown[];
+  arrayMerge?: <T>(target: T[], source: T[], options: DeepMergeOptions) => T[];
   isMergeableObject?: (val: unknown) => val is MergeableObject;
   customMerge?: (key: string | symbol) => DeepMergeFn | undefined;
   cloneUnlessOtherwiseSpecified?: (value: unknown, options: DeepMergeOptions) => unknown;

@@ -82,14 +82,14 @@ internal class GetUserSessionQueryHandlerTest {
         val accessToken = "jwt-missing-sub"
         val claims = mapOf(
             "email" to "test@example.com",
-            "roles" to listOf("USER")
+            "roles" to listOf("USER"),
         )
         val jwt = Jwt(
             accessToken,
             Instant.now(),
             Instant.now().plusSeconds(3600),
             mapOf("alg" to "none"),
-            claims
+            claims,
         )
         every { reactiveJwtDecoder.decode(accessToken) } returns Mono.just(jwt)
 
@@ -106,14 +106,14 @@ internal class GetUserSessionQueryHandlerTest {
         val claims = mapOf(
             "sub" to "not-a-uuid",
             "email" to "test@example.com",
-            "roles" to listOf("USER")
+            "roles" to listOf("USER"),
         )
         val jwt = Jwt(
             accessToken,
             Instant.now(),
             Instant.now().plusSeconds(3600),
             mapOf("alg" to "none"),
-            claims
+            claims,
         )
         every { reactiveJwtDecoder.decode(accessToken) } returns Mono.just(jwt)
 
@@ -130,7 +130,7 @@ internal class GetUserSessionQueryHandlerTest {
         val userId = UUID.randomUUID()
         val claims = mapOf(
             "sub" to userId.toString(),
-            "email" to "test@example.com"
+            "email" to "test@example.com",
             // No "roles" claim
         )
         val jwt = Jwt(
@@ -138,7 +138,7 @@ internal class GetUserSessionQueryHandlerTest {
             Instant.now(),
             Instant.now().plusSeconds(3600),
             mapOf("alg" to "none"),
-            claims
+            claims,
         )
         every { reactiveJwtDecoder.decode(accessToken) } returns Mono.just(jwt)
 
