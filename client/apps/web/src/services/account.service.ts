@@ -58,7 +58,7 @@ export default class AccountService {
 					withCredentials: true,
 				},
 			);
-			console.log("Application profiles retrieved:", response.data);
+
 			if (response.data?.activeProfiles) {
 				this.authStore.setActiveProfiles(response.data.activeProfiles);
 				if (response.data["display-ribbon-on-profiles"]) {
@@ -70,7 +70,7 @@ export default class AccountService {
 
 			return true;
 		} catch (error) {
-			if (process.env.NODE_ENV === "development") {
+			if (import.meta.env.DEV) {
 				if (isAxiosError(error)) {
 					console.error(
 						"Failed to retrieve application profiles:",
@@ -119,9 +119,13 @@ export default class AccountService {
 					this.redirectToLogin();
 					return false;
 				}
-				console.error("Failed to retrieve account:", status);
+				if (import.meta.env.DEV) {
+					console.error("Failed to retrieve account:", status);
+				}
 			} else {
-				console.error("Unknown error retrieving account:", error);
+				if (import.meta.env.DEV) {
+					console.error("Unknown error retrieving account:", error);
+				}
 			}
 		}
 
@@ -222,7 +226,9 @@ export default class AccountService {
 
 			return true;
 		} catch (error) {
-			console.error("Failed to update user language:", error);
+			if (import.meta.env.DEV) {
+				console.error("Failed to update user language:", error);
+			}
 			return false;
 		}
 	}
