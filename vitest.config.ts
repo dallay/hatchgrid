@@ -3,28 +3,25 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
 	test: {
-    projects: [ 'client/*'],
-		globals: true,
-		environment: "node",
-		include: ["**/__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-		exclude: ["node_modules", "dist", ".idea", ".git", ".cache"],
-		setupFiles: ["./vitest.setup.ts"],
+	globals: true,
+	environment: "node",
+	include: ["src/__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+	setupFiles: ["./vitest.setup.ts"],
 		coverage: {
-			// Add this section
-			provider: "v8", // or 'istanbul'
-			reporter: ["text", "lcov"], // Ensure lcov is present
-			reportsDirectory: "./coverage", // Default is 'coverage'
-			include: ["src/**/*.{js,ts,vue,jsx,tsx}"], // Adjust as needed
-			exclude: [
-				// Optional: exclude files if necessary
-				"src/env.d.ts",
-				"src/consts.ts",
-				"src/content.config.ts",
-				"src/pages/robots.txt.ts", // Example: if this is auto-generated or not testable
-				"src/**/__tests__/**", // Test files themselves
-				"src/i18n/**", // if i18n setup is not directly tested
-			],
-		},
+		provider: "v8", // or 'istanbul'
+		reporter: ["text"], // 'lcov' is not supported by 'v8'
+		reportsDirectory: "./coverage",
+		include: ["src/**/*.{js,ts,vue,jsx,tsx}"], // Adjust as needed
+		exclude: [
+			"src/env.d.ts",
+			"src/consts.ts",
+			"src/content.config.ts",
+			"src/pages/robots.txt.ts", // Example: if this is auto-generated or not testable
+			"src/__tests__/**", // Test files themselves
+			"**/__tests__/*.(test|spec).{js,mjs,cjs,ts,mts,cts,jsx,tsx}", // Explicitly exclude test files
+			"src/i18n/**", // if i18n setup is not directly tested
+		],
+	},
 	},
 	resolve: {
     alias: {
