@@ -75,11 +75,11 @@ sequenceDiagram
 
 ## 3. 🍪 Cookie Strategy
 
-| Cookie         | HttpOnly | Secure | Max-Age    | Path | Description               |
-|----------------|----------|--------|------------|------|---------------------------|
-| ACCESS_TOKEN   | ✅       | ✅     | short TTL  | `/`  | JWT access token          |
-| REFRESH_TOKEN  | ✅       | ✅     | longer TTL | `/`  | Refresh token             |
-| SESSION        | ✅       | ✅     | session    | `/`  | Optional, used if needed  |
+| Cookie        | HttpOnly | Secure | Max-Age    | Path | SameSite | Description              |
+|---------------|----------|--------|------------|------|----------|--------------------------|
+| ACCESS_TOKEN  | ✅        | ✅      | short TTL  | `/`  | Lax      | JWT access token         |
+| REFRESH_TOKEN | ✅        | ✅      | longer TTL | `/`  | Lax      | Refresh token            |
+| SESSION       | ✅        | ✅      | session    | `/`  | Lax      | Optional, used if needed |
 
 ## 4. 🛡️ Security Configuration
 
