@@ -9,7 +9,8 @@
 			"password-placeholder": "Ingrese su contraseña",
 			"rememberMe": "Recuérdame",
 			"submit": "Iniciar sesión",
-			"forgotPassword": "¿Olvidó su contraseña?"
+			"forgotPassword": "¿Olvidó su contraseña?",
+      "loading": "Iniciando sesión..."
 		}
 	}
 }

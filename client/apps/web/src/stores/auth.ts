@@ -103,9 +103,8 @@ export const useAuthStore = defineStore("auth", {
 		},
 
 		hasAuthority(authority: string): boolean {
-			return (
-				Array.from(this.userIdentity?.authorities || []).includes(authority) ??
-				false
+			return Array.from(this.userIdentity?.authorities || []).includes(
+				authority,
 			);
 		},
 
