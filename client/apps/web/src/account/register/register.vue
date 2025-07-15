@@ -145,96 +145,106 @@ import { toast } from "vue-sonner";
 const router = useRouter();
 const isLoading = ref(false);
 const form = ref({
-	firstName: "",
-	lastName: "",
-	username: "",
-	email: "",
-	password: "",
+  firstName: "",
+  lastName: "",
+  username: "",
+  email: "",
+  password: "",
 });
 const errors = ref({
-	firstName: "",
-	lastName: "",
-	username: "",
-	email: "",
-	password: "",
+  firstName: "",
+  lastName: "",
+  username: "",
+  email: "",
+  password: "",
 });
 
 const validateField = (field: string) => {
-	switch (field) {
-		case "firstName":
-			errors.value.firstName =
-				form.value.firstName.length < 2
-					? "First name must be at least 2 characters."
-					: "";
-			break;
-		case "lastName":
-			errors.value.lastName =
-				form.value.lastName.length < 2
-					? "Last name must be at least 2 characters."
-					: "";
-			break;
-		case "username":
-			errors.value.username =
-				form.value.username.length < 3
-					? "Username must be at least 3 characters."
-					: "";
-			break;
-		case "email":
-			errors.value.email = !/^\S+@\S+\.\S+$/.test(form.value.email)
-				? "Please enter a valid email address."
-				: "";
-			break;
-		case "password":
-			errors.value.password = !/^.{8,}$/.test(form.value.password)
-				? "Password must be at least 8 characters."
-				: !/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}/.test(
-							form.value.password,
-						)
-					? "Password must include uppercase, lowercase, number, and special character."
-					: "";
-			break;
-	}
+  switch (field) {
+    case "firstName":
+      errors.value.firstName =
+        form.value.firstName.length < 2
+          ? "First name must be at least 2 characters."
+          : "";
+      break;
+    case "lastName":
+      errors.value.lastName =
+        form.value.lastName.length < 2 ? "Last name must be at least 2 characters." : "";
+      break;
+    case "username":
+      errors.value.username =
+        form.value.username.length < 3 ? "Username must be at least 3 characters." : "";
+      break;
+    case "email":
+      errors.value.email = !/^\S+@\S+\.\S+$/.test(form.value.email)
+        ? "Please enter a valid email address."
+        : "";
+      break;
+    case "password": {
+      const MIN_LENGTH = 8;
+      const LENGTH_REGEX = new RegExp(`^.{${MIN_LENGTH},}$`);
+      const UPPERCASE_REGEX = /[A-Z]/;
+      const LOWERCASE_REGEX = /[a-z]/;
+      const DIGIT_REGEX = /\d/;
+      const SPECIAL_CHAR_REGEX = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
+
+      const password = form.value.password;
+      if (!LENGTH_REGEX.test(password)) {
+        errors.value.password = `Password must be at least ${MIN_LENGTH} characters.`;
+      } else if (!UPPERCASE_REGEX.test(password)) {
+        errors.value.password = "Password must include at least one uppercase letter.";
+      } else if (!LOWERCASE_REGEX.test(password)) {
+        errors.value.password = "Password must include at least one lowercase letter.";
+      } else if (!DIGIT_REGEX.test(password)) {
+        errors.value.password = "Password must include at least one number.";
+      } else if (!SPECIAL_CHAR_REGEX.test(password)) {
+        errors.value.password = "Password must include at least one special character.";
+      } else {
+        errors.value.password = "";
+      }
+      break;
+    }
+  }
 };
 
 const validateForm = () => {
-	validateField("firstName");
-	validateField("lastName");
-	validateField("username");
-	validateField("email");
-	validateField("password");
-	return Object.values(errors.value).every((msg) => !msg);
+  validateField("firstName");
+  validateField("lastName");
+  validateField("username");
+  validateField("email");
+  validateField("password");
+  return Object.values(errors.value).every((msg) => !msg);
 };
 
 const formIsValid = computed(() => validateForm());
 
 const handleRegister = async () => {
-	if (isLoading.value || !formIsValid.value) return;
+  if (isLoading.value || !formIsValid.value) return;
 
-	isLoading.value = true;
-	try {
-		await axios.post("/api/register", {
-			email: form.value.email,
-			password: form.value.password,
-			firstName: form.value.firstName,
-			lastName: form.value.lastName,
-			username: form.value.username,
-		});
+  isLoading.value = true;
+  try {
+    await axios.post("/api/register", {
+      email: form.value.email,
+      password: form.value.password,
+      firstName: form.value.firstName,
+      lastName: form.value.lastName,
+      username: form.value.username,
+    });
 
-		toast.success("Account created successfully!", {
-			description:
-				"Welcome to Hatchgrid! Please sign in with your new account.",
-		});
+    toast.success("Account created successfully!", {
+      description: "Welcome to Hatchgrid! Please sign in with your new account.",
+    });
 
-		await router.push("/login");
-	} catch (error: unknown) {
-		console.error("Registration error:", error);
-		let description = "Unable to create your account. Please try again.";
-		if (axios.isAxiosError(error)) {
-			description = error.response?.data?.detail || description;
-		}
-		toast.error("Registration failed", { description });
-	} finally {
-		isLoading.value = false;
-	}
+    await router.push("/login");
+  } catch (error: unknown) {
+    console.error("Registration error:", error);
+    let description = "Unable to create your account. Please try again.";
+    if (axios.isAxiosError(error)) {
+      description = error.response?.data?.detail || description;
+    }
+    toast.error("Registration failed", { description });
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
