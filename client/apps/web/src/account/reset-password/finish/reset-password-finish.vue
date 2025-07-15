@@ -9,12 +9,7 @@
         <CardContent class="grid gap-4">
           <div class="grid gap-2">
             <Label for="newPassword">New Password</Label>
-            <Input
-              id="newPassword"
-              v-model="newPassword"
-              type="password"
-              required
-            />
+            <Input id="newPassword" v-model="newPassword" type="password" required />
           </div>
           <div class="grid gap-2">
             <Label for="confirmNewPassword">Confirm New Password</Label>
@@ -67,18 +62,20 @@ const resetKey = ref<string | null>(null);
 onMounted(() => {
 	resetKey.value = route.query.key as string;
 	if (!resetKey.value) {
-		error.value = "Reset key is missing. Please use the link from your email.";
+		// Redirect immediately if reset key is missing
+		router.replace({
+			name: "error",
+			params: {
+				message: "Reset key is missing. Please use the link from your email.",
+			},
+		});
+		return;
 	}
 });
 
 const handleResetPassword = async () => {
 	error.value = null;
 	success.value = null;
-
-	if (!resetKey.value) {
-		error.value = "Reset key is missing.";
-		return;
-	}
 
 	if (newPassword.value !== confirmNewPassword.value) {
 		error.value = "New passwords do not match.";
@@ -103,7 +100,3 @@ const handleResetPassword = async () => {
 	}
 };
 </script>
-
-<style scoped>
-/* Add any specific styles here if needed */
-</style>
