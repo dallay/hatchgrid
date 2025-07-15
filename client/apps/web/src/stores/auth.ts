@@ -1,6 +1,7 @@
 import { avatar } from "@hatchgrid/utilities";
 import axios, { type AxiosError } from "axios";
 import { defineStore } from "pinia";
+import { transformUserResponseToAccount } from "@/services/mapper/account.mapper.ts";
 import type { UserResponse } from "@/services/response/user.response";
 import type { Account } from "../security/account.model";
 
@@ -78,15 +79,7 @@ export const useAuthStore = defineStore("auth", {
 
 				// After successful login, fetch account info and set authentication state
 				const { data } = await axios.get<UserResponse>("/api/account");
-				const account: Account = {
-					...data,
-					fullname:
-						[data.firstname, data.lastname].filter(Boolean).join(" ") ||
-						undefined,
-					langKey: "en", // in the future, this could be dynamic from user settings
-					activated: true, // assuming the account is always activated
-					imageUrl: avatar(data.email, 100),
-				};
+				const account: Account = transformUserResponseToAccount(data);
 				this.setAuthentication(account);
 				return true;
 			} catch (error) {

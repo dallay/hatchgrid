@@ -1,39 +1,38 @@
 <script setup lang="ts">
 import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
+	BadgeCheck,
+	Bell,
+	ChevronsUpDown,
+	CreditCard,
+	LogOut,
+	Sparkles,
 } from "lucide-vue-next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuGroup,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuShortcut,
+	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/stores/auth";
 
 const props = withDefaults(
-  defineProps<{
-    variant?: "full" | "compact";
-  }>(),
-  {
-    variant: "full",
-  }
+	defineProps<{
+		variant?: "full" | "compact";
+	}>(),
+	{
+		variant: "full",
+	},
 );
 
-import { useRouter } from "vue-router";
-import AccountService from "@/services/account.service";
 import { inject } from "vue";
+import AccountService from "@/services/account.service";
 
 const authStore = useAuthStore();
 const accountService = inject<AccountService>("accountService");
