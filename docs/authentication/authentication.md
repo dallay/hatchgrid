@@ -123,7 +123,7 @@ Each action uses a clear command/query split:
 
 | Action           | Type    | Class                          |
 |------------------|---------|--------------------------------|
-| Login            | Query   | `AuthenticateUserQueryHandler` |
+| Login            | Command | `AuthenticateUserCommandHandler` |
 | Refresh token    | Query   | `RefreshTokenQueryHandler`     |
 | Logout           | Command | `UserLogoutCommand`            |
 | Get session info | Query   | `GetUserSessionQueryHandler`   |
