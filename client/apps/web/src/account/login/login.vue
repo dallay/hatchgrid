@@ -1,4 +1,3 @@
-<script setup lang="ts">
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
@@ -14,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/stores/auth";
+import { allowedRoutes } from "./allowedRoutes";
 
 const username = ref("");
 const password = ref("");
@@ -25,7 +25,6 @@ const route = useRoute();
 const { t } = useI18n();
 
 const validateRedirectPath = (path: string | undefined): string | null => {
-	const allowedRoutes = ["/", "/dashboard", "/profile", "/settings"]; // Add more as needed
 	const suspiciousPatterns = [
 		/%2e/i, // encoded dot
 		/%2f/i, // encoded slash
@@ -66,79 +65,3 @@ const handleLogin = async () => {
 		isLoading.value = false;
 	}
 };
-</script>
-<template>
-  <div class="w-full h-screen flex items-center justify-center px-4">
-    <Card class="w-full max-w-md">
-      <CardHeader>
-        <CardTitle class="text-2xl">
-          {{ t("login.title") }}
-        </CardTitle>
-        <CardDescription>
-          {{ t("login.description") }}
-        </CardDescription>
-      </CardHeader>
-      <form @submit.prevent="handleLogin">
-        <CardContent class="grid gap-4">
-          <div class="grid gap-2">
-            <Label for="username">{{ t("login.form.username") }}</Label>
-            <Input
-              id="username"
-              v-model="username"
-              type="text"
-              :placeholder="t('login.form.username-placeholder')"
-              required
-              autocomplete="username"
-              :aria-invalid="error ? 'true' : 'false'"
-            />
-          </div>
-          <div class="grid gap-2">
-            <Label for="password">{{ t("login.form.password") }}</Label>
-            <Input
-              id="password"
-              v-model="password"
-              type="password"
-              :placeholder="t('login.form.password-placeholder')"
-              required
-              autocomplete="current-password"
-              :aria-invalid="error ? 'true' : 'false'"
-            />
-          </div>
-          <p
-            v-if="error"
-            id="error-message"
-            class="text-sm text-red-600"
-            role="alert"
-            aria-live="polite"
-          >
-            {{ error }}
-          </p>
-        </CardContent>
-        <CardFooter class="flex flex-col gap-2 mt-4">
-          <Button type="submit" class="w-full" :disabled="isLoading">
-            <span v-if="!isLoading">{{ t("login.form.submit") }}</span>
-            <span v-else>
-              <svg class="animate-spin h-4 w-4 mr-2 inline-block" viewBox="0 0 24 24">
-                <circle
-                  class="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="4"
-                  fill="none"
-                ></circle>
-                <path
-                  class="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                ></path>
-              </svg>
-              {{ t("login.form.loading") }}
-            </span>
-          </Button>
-        </CardFooter>
-      </form>
-    </Card>
-  </div>
-</template>
