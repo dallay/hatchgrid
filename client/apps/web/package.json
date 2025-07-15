@@ -8,6 +8,7 @@
 		"build": "pnpm --filter @hatchgrid/utilities build && vue-tsc -b && vite build",
 		"check": "biome check . --fix",
 		"preview": "vite preview",
+		"pretest": "pnpm --filter @hatchgrid/utilities build",
 		"test": "vitest --run --coverage"
 	},
 	"dependencies": {
