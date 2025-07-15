@@ -1,12 +1,8 @@
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-//import { useTranslationStore } from "@/stores/translation.store";
+
 import TranslationService from "../translation.service.ts";
 
-// The path should be relative to this test file.
-// service is at ../translation.service
-// service imports ../i18n/en/en.js
-// so from here it is ../../i18n/en/en.js
 vi.mock("../../i18n/en/en.js", () => {
 	return {
 		default: {
@@ -34,8 +30,6 @@ describe("TranslationService", () => {
 
 	it("should set the current language", () => {
 		service.setLocale("es");
-		// const store = useTranslationStore();
-		// Optionally check mockI18n.locale.value
 		expect(mockI18n.locale.value).toBe("es");
 	});
 
