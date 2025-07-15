@@ -42,7 +42,7 @@ export function useEmailValidation(options: EmailValidationOptions = {}) {
 			if (error instanceof z.ZodError) {
 				return {
 					isValid: false,
-					error: error.errors[0]?.message,
+					error: error.issues[0]?.message,
 				};
 			}
 			return {

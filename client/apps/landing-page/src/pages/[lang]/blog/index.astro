@@ -1,8 +1,8 @@
 ---
+import ArticleCard from "@/components/ArticleCard.astro";
 import { type Lang, LOCALES, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Base.astro";
 import { getArticles } from "@/models/article";
-import ArticleCard from "@/components/ArticleCard.astro";
 
 const locale = Astro.currentLocale as Lang;
 const t = useTranslations(locale);
@@ -13,8 +13,8 @@ const articles = await getArticles({
 	lang: locale,
 });
 
-const title = t('blog.header.title');
-const subtitle = t('blog.header.subtitle');
+const title = t("blog.header.title");
+const subtitle = t("blog.header.subtitle");
 
 export const getStaticPaths = () =>
 	Object.keys(LOCALES).map((lang) => ({
