@@ -75,4 +75,78 @@ internal class GetUserSessionQueryHandlerTest {
 
         assertEquals("JWT decoding failed", exception.message)
     }
+
+    @Test
+    @DisplayName("should throw InvalidTokenException when sub claim is missing")
+    fun `should throw InvalidTokenException when sub Claim Is Missing`() = runTest {
+        val accessToken = "jwt-missing-sub"
+        val claims = mapOf(
+            "email" to "test@example.com",
+            "roles" to listOf("USER")
+        )
+        val jwt = Jwt(
+            accessToken,
+            Instant.now(),
+            Instant.now().plusSeconds(3600),
+            mapOf("alg" to "none"),
+            claims
+        )
+        every { reactiveJwtDecoder.decode(accessToken) } returns Mono.just(jwt)
+
+        val exception = assertThrows<InvalidTokenException> {
+            handler.handle(GetUserSessionQuery(accessToken))
+        }
+        assertEquals("Unexpected error during token processing", exception.message)
+    }
+
+    @Test
+    @DisplayName("should throw InvalidTokenException when sub claim is not a valid UUID")
+    fun `should throw InvalidTokenException when sub claim is not a valid UUID`() = runTest {
+        val accessToken = "jwt-invalid-sub"
+        val claims = mapOf(
+            "sub" to "not-a-uuid",
+            "email" to "test@example.com",
+            "roles" to listOf("USER")
+        )
+        val jwt = Jwt(
+            accessToken,
+            Instant.now(),
+            Instant.now().plusSeconds(3600),
+            mapOf("alg" to "none"),
+            claims
+        )
+        every { reactiveJwtDecoder.decode(accessToken) } returns Mono.just(jwt)
+
+        val exception = assertThrows<InvalidTokenException> {
+            handler.handle(GetUserSessionQuery(accessToken))
+        }
+        assertEquals("Invalid UUID format in token subject", exception.message)
+    }
+
+    @Test
+    @DisplayName("should return session with empty roles when roles claim is missing")
+    fun `should return session with empty roles when roles claim is missing`() = runTest {
+        val accessToken = "jwt-missing-roles"
+        val userId = UUID.randomUUID()
+        val claims = mapOf(
+            "sub" to userId.toString(),
+            "email" to "test@example.com"
+            // No "roles" claim
+        )
+        val jwt = Jwt(
+            accessToken,
+            Instant.now(),
+            Instant.now().plusSeconds(3600),
+            mapOf("alg" to "none"),
+            claims
+        )
+        every { reactiveJwtDecoder.decode(accessToken) } returns Mono.just(jwt)
+
+        val result = handler.handle(GetUserSessionQuery(accessToken))
+
+        assertNotNull(result)
+        assertEquals(userId, result.userId)
+        assertEquals("test@example.com", result.email)
+        assertEquals(emptyList<String>(), result.roles)
+    }
 }
