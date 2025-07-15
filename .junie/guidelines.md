@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Hatchgrid is a Spring Boot application built with Kotlin and Gradle, providing a reactive backend infrastructure. The project uses modern Spring technologies including WebFlux, R2DBC, OAuth2, and follows a modular architecture approach with Spring Modulith.
+Hatchgrid is a Spring Boot application built with Kotlin and Gradle, providing a reactive backend infrastructure. The project uses modern Spring technologies, including WebFlux, R2DBC, and OAuth2, and follows a modular architecture approach with Spring Modulith.
 
 ## Technology Stack
 
@@ -66,4 +66,4 @@ For a detailed guide on our development conventions, please refer to the documen
 
 ## AI Assistant Development Instructions for Hatchgrid
 
-For AI Assistant development instructions, see [`.github/copilot-instructions.md`](../../.github/copilot-instructions.md)
+For AI Assistant development instructions, see [`.github/copilot-instructions.md`](../.github/copilot-instructions.md)
