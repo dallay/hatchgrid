@@ -46,7 +46,8 @@ data class Credential(
         private val charUppercase = 'A'..'Z'
         private val charLowercase = 'a'..'z'
         private val charSpecial = "!@#$%^&*()_+{}|:<>?".toList()
-        private val charset = charLowercase + charUppercase + charNumbers
+        // Updated charset to include special characters for better entropy
+        private val charset = charLowercase + charUppercase + charNumbers + charSpecial
 
         /**
          * Generates a random password with the following rules:
@@ -75,8 +76,8 @@ data class Credential(
             passwordChars.add(charLowercase.random())
             passwordChars.add(charSpecial.random())
 
-            // Fill the rest of the password with random characters from the full charset
-            val remainingLength = MIN_LENGTH + Random().nextInt(MIN_LENGTH) - passwordChars.size
+            // Fill the rest of the password with random characters from the full charset (including special chars)
+            val remainingLength = MIN_LENGTH + kotlin.random.Random.nextInt(MIN_LENGTH) - passwordChars.size
             repeat(remainingLength) {
                 passwordChars.add(charset.random())
             }
