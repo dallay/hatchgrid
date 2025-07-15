@@ -173,9 +173,7 @@ export const deepmerge: DeepMergeFn & {
 	}
 
 	return sourceIsArray
-	? options.arrayMerge
-	  ? options.arrayMerge(target as unknown[], source as unknown[], options)
-	  : defaultArrayMerge(target as unknown[], source as unknown[], options)
+		? options.arrayMerge(target as unknown[], source as unknown[], options)
 		: mergeObject(
 			target as MergeableObject,
 			source as MergeableObject,

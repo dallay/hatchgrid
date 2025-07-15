@@ -64,6 +64,6 @@ For a detailed guide on our development conventions, please refer to the documen
 - Ensure proper security controls for all endpoints
 - Include monitoring endpoints via Spring Boot Actuator
 
-# AI Assistant Development Instructions for Hatchgrid
+## AI Assistant Development Instructions for Hatchgrid
 
 For AI Assistant development instructions, see [`.github/copilot-instructions.md`](../../.github/copilot-instructions.md)
