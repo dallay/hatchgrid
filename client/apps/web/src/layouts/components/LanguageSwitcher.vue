@@ -66,7 +66,7 @@ onMounted(() => {
 watch(
 	() => translationStore.currentLanguage,
 	(newLang) => {
-		selectedLanguage.value = newLang;
+		selectedLanguage.value = newLang ?? "en";
 	},
 );
 </script>
