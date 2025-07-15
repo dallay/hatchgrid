@@ -62,8 +62,25 @@ export const useAuthStore = defineStore("auth", {
 
 		async getAccount(): Promise<void> {
 			try {
-				const { data } = await axios.get<Account>("/api/account");
-				this.setAuthentication(data);
+				const response = await axios.get("/api/account", {
+					responseType: "text",
+				});
+				// Detect if response is HTML (session expired)
+				const contentType = response.headers["content-type"];
+				const isHtml =
+					contentType?.includes("text/html") ||
+					(typeof response.data === "string" &&
+						response.data.trim().startsWith("<"));
+				if (isHtml) {
+					this.clearAuth();
+					throw new Error("Session expired. Please log in again.");
+				}
+				// If not HTML, parse as Account
+				const accountData =
+					typeof response.data === "string"
+						? JSON.parse(response.data)
+						: response.data;
+				this.setAuthentication(accountData);
 			} catch (_error) {
 				this.clearAuth();
 				throw new Error("Failed to fetch account information.");

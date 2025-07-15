@@ -10,7 +10,7 @@
 			"rememberMe": "Remember Me",
 			"submit": "Login",
 			"forgotPassword": "Forgot Password?",
-      "loading": "Logging in..."
+			"loading": "Logging in..."
 		}
 	}
 }
