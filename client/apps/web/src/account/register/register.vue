@@ -245,7 +245,9 @@ const handleRegister = async () => {
 
 		await router.push("/login");
 	} catch (error: unknown) {
-		console.error("Registration error:", error);
+		if (import.meta.env.DEV) {
+			console.error("Registration error:", error);
+		}
 		let description = "Unable to create your account. Please try again.";
 		if (axios.isAxiosError(error)) {
 			description = error.response?.data?.detail || description;
