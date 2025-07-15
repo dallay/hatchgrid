@@ -51,9 +51,19 @@ const email = ref("");
 const error = ref<string | null>(null);
 const success = ref<string | null>(null);
 
+function validateEmail(email: string): boolean {
+	const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	return pattern.test(email);
+}
+
 const handleResetPasswordInit = async () => {
 	error.value = null;
 	success.value = null;
+
+	if (!validateEmail(email.value)) {
+		error.value = "Please enter a valid email address.";
+		return;
+	}
 
 	try {
 		await axios.post("/api/account/reset-password/init", {
