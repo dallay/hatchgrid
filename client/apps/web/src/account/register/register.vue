@@ -123,7 +123,6 @@ const handleRegister = async () => {
 	isLoading.value = true;
 	try {
 		await axios.post("/api/register", {
-			login: form.value.username,
 			email: form.value.email,
 			password: form.value.password,
 			firstName: form.value.firstName,
