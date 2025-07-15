@@ -27,7 +27,7 @@ export async function loadLayoutMiddleware(route: RouteLocationNormalized) {
 		// Store the loaded component in route meta for use in the main layout
 		route.meta.layoutComponent = layoutComponent.default;
 	} catch (error) {
-    console.error("Failed to load layout component:", error);
+		console.error("Failed to load layout component:", error);
 
 		// Load default layout on error
 		try {
