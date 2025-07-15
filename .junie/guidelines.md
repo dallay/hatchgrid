@@ -4,8 +4,8 @@
 Hatchgrid is a Spring Boot application built with Kotlin and Gradle, providing a reactive backend infrastructure. The project uses modern Spring technologies including WebFlux, R2DBC, OAuth2, and follows a modular architecture approach with Spring Modulith.
 
 ## Technology Stack
-- **Language:** Kotlin 1.9.25 with coroutines
-- **Framework:** Spring Boot 3.4.5
+- **Language:** Kotlin 1.9+ with coroutines
+- **Framework:** Spring Boot 3.4+
 - **API:** Reactive REST APIs with Spring WebFlux
 - **Database:** PostgreSQL with R2DBC for reactive data access
 - **Database Migrations:** Liquibase
@@ -13,8 +13,7 @@ Hatchgrid is a Spring Boot application built with Kotlin and Gradle, providing a
 - **Testing:** JUnit 5, Testcontainers
 - **Documentation:** Spring REST Docs
 - **Monitoring:** Spring Boot Actuator, Prometheus
-- **Build Tool:** Gradle 8.x
-
+- **Build Tool:** Gradle 8+
 ## Project Structure
 - `src/main/kotlin` - Primary Kotlin source files
 - `src/main/resources` - Configuration files, including:
