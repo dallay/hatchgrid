@@ -28,7 +28,7 @@ const translationStore = useTranslationStore();
 const translationService = inject<TranslationService>("translationService");
 
 // Local reactive state for the <select> element
-const selectedLanguage = ref(translationStore.currentLanguage);
+const selectedLanguage = ref(translationStore.currentLanguage ?? "en");
 
 /**
  * Handles the language change logic.
