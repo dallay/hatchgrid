@@ -27,7 +27,6 @@ export default defineConfig({
 		},
 	},
 	resolve: {
-resolve: {
     alias: {
         "@": resolve(__dirname, "./src"),
         "@i18n": resolve(__dirname, "./src/i18n"),
