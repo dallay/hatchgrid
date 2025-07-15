@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.oauth2.jwt.JwtDecoders
@@ -18,6 +19,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract class ControllerIntegrationTest : InfrastructureTestContainers() {
     @Value("\${application.security.oauth2.issuer-uri}")
     protected lateinit var issuerUri: String
