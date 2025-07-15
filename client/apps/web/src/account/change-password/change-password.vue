@@ -18,12 +18,7 @@
           </div>
           <div class="grid gap-2">
             <Label for="newPassword">New Password</Label>
-            <Input
-              id="newPassword"
-              v-model="newPassword"
-              type="password"
-              required
-            />
+            <Input id="newPassword" v-model="newPassword" type="password" required />
           </div>
           <div class="grid gap-2">
             <Label for="confirmNewPassword">Confirm New Password</Label>
@@ -73,6 +68,25 @@ const success = ref<string | null>(null);
 const handleChangePassword = async () => {
 	error.value = null;
 	success.value = null;
+
+	// Password strength validation
+	const password = newPassword.value;
+	if (password.length < 8) {
+		error.value = "Password must be at least 8 characters long.";
+		return;
+	}
+	if (!/[A-Z]/.test(password)) {
+		error.value = "Password must include at least one uppercase letter.";
+		return;
+	}
+	if (!/[0-9]/.test(password)) {
+		error.value = "Password must include at least one number.";
+		return;
+	}
+	if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+		error.value = "Password must include at least one special character.";
+		return;
+	}
 
 	if (newPassword.value !== confirmNewPassword.value) {
 		error.value = "New passwords do not match.";
