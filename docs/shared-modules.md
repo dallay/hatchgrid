@@ -15,6 +15,7 @@ shared/
 > **Spring Modulith Integration:**
 >
 > The `shared/*` modules are organized as [Spring Modulith](https://docs.spring.io/spring-modulith/docs/current/reference/html/) named slices:
+>
 > - **shared:common** defines the core domain model, CQRS, and DDD patterns as a Modulith slice with no external dependencies, forming the foundation for all backend modules.
 > - **shared:spring-boot-common** is a separate Modulith slice that integrates the domain logic with Spring Boot, providing auto-configuration, dependency injection, and infrastructure adapters. It depends only on `shared:common` and exposes its own public API boundary.
 >
@@ -34,22 +35,26 @@ The `common` module provides framework-agnostic domain logic, patterns, and util
 #### Domain Entities
 
 **BaseEntity<ID>**
+
 - Abstract base class for all domain entities
 - Provides common properties: `id`, `createdAt`, `createdBy`, `updatedAt`, `updatedBy`
 - Manages domain events with `record()` and `pullDomainEvents()` methods
 - Implements proper equality and hashing based on entity ID
 
 **AggregateRoot<ID>**
+
 - Extends `BaseEntity` to represent aggregate roots in DDD
 - Marker class for identifying aggregate boundaries
 
 **AuditableEntity**
+
 - Provides auditing capabilities for entities
 - Tracks creation and modification timestamps and users
 
 #### CQRS and Mediator Pattern
 
 **Mediator Interface**
+
 - Central dispatcher for commands, queries, and notifications
 - Supports async operations with Kotlin coroutines
 - Methods:
@@ -59,17 +64,20 @@ The `common` module provides framework-agnostic domain logic, patterns, and util
   - `publish(notification: Notification)`
 
 **Command Bus**
+
 - `Command`: Marker interface for commands (state-changing operations)
 - `CommandWithResult<TResult>`: Commands that return results
 - `CommandHandler<TCommand>`: Handles command execution
 - `CommandHandlerExecutionError`: Exception for command handling errors
 
 **Query Bus**
+
 - `Query<TResponse>`: Interface for queries (read operations)
 - `QueryHandler<TQuery, TResponse>`: Handles query execution
 - `Response`: Base interface for query responses
 
 **Event Bus**
+
 - `DomainEvent`: Base interface for domain events
 - `Notification`: Interface for cross-cutting notifications
 - Support for different publishing strategies
@@ -77,6 +85,7 @@ The `common` module provides framework-agnostic domain logic, patterns, and util
 #### Criteria and Filtering
 
 **Criteria System**
+
 - Type-safe query building with sealed classes
 - Supported operations:
   - Basic: `Equals`, `NotEquals`, `IsNull`, `IsNotNull`
@@ -87,42 +96,51 @@ The `common` module provides framework-agnostic domain logic, patterns, and util
   - Boolean: `IsTrue`, `IsFalse`
 
 **CriteriaParser**
+
 - Converts criteria objects to database-specific queries
 - Runtime parsing capabilities
 
 #### Presentation Layer
 
 **PageResponse<T>**
+
 - Base class for paginated responses
 - Implements the `Response` interface
 
 **Filter System**
+
 - RHS (Right-Hand Side) filter parsing
 - Support for complex filtering expressions
 
 **Pagination**
+
 - Cursor-based pagination support
 - Traditional offset-based pagination
 
 #### Value Objects
 
 **Email Value Objects**
+
 - Type-safe email handling with validation
 - Domain-specific email exceptions
 
 **Name Value Objects**
+
 - Structured name handling (first, last, display names)
 
 **Credential Value Objects**
+
 - Secure credential management
 
 #### Utilities
 
 **SQL Like Transpiler**
+
 - Converts SQL LIKE patterns to regular expressions
 - Tokenizer for pattern parsing
 
 **Memoizers**
+
 - Caching utilities for expensive operations
 
 ### Error Handling
@@ -141,17 +159,20 @@ The `spring-boot-common` module provides Spring Boot-specific implementations an
 #### Auto-Configuration
 
 **HatchgridAutoConfiguration**
+
 - Spring Boot auto-configuration class
 - Automatically registers mediator and dependency injection
 - Configured via `META-INF/spring.factory`
 
 **HatchgridSpringBeanProvider**
+
 - Integrates Spring's dependency injection with the mediator pattern
 - Resolves handlers from Spring application context
 
 #### Base Controller
 
 **ApiController**
+
 - Abstract base class for REST controllers
 - Provides common functionality:
   - Command dispatching via `dispatch(command)`
@@ -180,6 +201,7 @@ The `spring-boot-common` module provides Spring Boot-specific implementations an
 #### Repository Layer
 
 **ReactiveSearchRepository<T>**
+
 - Interface for reactive database operations
 - Methods:
   - `findAll(criteria, domainType): Flow<T>`
@@ -187,41 +209,49 @@ The `spring-boot-common` module provides Spring Boot-specific implementations an
   - `findAllByCursor(criteria, size, domainType, sort, cursor): CursorPageResponse<T>`
 
 **ReactiveSearchRepositoryImpl**
+
 - Implementation using Spring Data R2DBC
 - Converts domain criteria to R2DBC queries
 
 **R2DBCCriteriaParser**
+
 - Translates domain criteria to R2DBC `Criteria` objects
 - Handles all supported criteria operations
 
 #### Presentation Layer
 
 **Presenter Interface**
+
 - Contract for presentation layer transformations
 - Converts domain objects to DTOs
 
 **ResponseBodyResultHandlerAdapter**
+
 - Custom Spring WebFlux result handler
 - Integrates with the presentation system
 
 **Pagination Support**
+
 - `PageResponsePresenter`: Converts domain pages to API responses
 - Cursor-based pagination implementation
 - Sort parameter parsing and validation
 
 **Filter Support**
+
 - RHS filter parsing for HTTP requests
 - Integration with domain criteria system
 
 #### Event System
 
 **Event Configuration**
+
 - Spring-specific event handling setup
 - Integration with domain event publishing
 
 ### Dependencies
 
 The `spring-boot-common` module includes:
+
 - Spring Boot Starter Data R2DBC (reactive database access)
 - Spring Boot Starter Security (authentication/authorization)
 - Spring Boot Starter OAuth2 Resource Server (JWT support)
@@ -302,26 +332,31 @@ class UserRepositoryImpl(
 ## Best Practices
 
 ### Domain Design
+
 - Use aggregate roots to define consistency boundaries
 - Record domain events for cross-aggregate communication
 - Keep domain logic in the domain layer, not in controllers
 
 ### CQRS Implementation
+
 - Separate read and write models when complexity justifies it
 - Use commands for state changes, queries for reads
 - Handle cross-cutting concerns with notifications
 
 ### Security
+
 - Always sanitize path variables using `sanitizePathVariable()`
 - Use JWT authentication for API access
 - Validate input at the presentation layer
 
 ### Performance
+
 - Leverage reactive programming with R2DBC
 - Use cursor-based pagination for large datasets
 - Implement proper indexing strategies for criteria queries
 
 ### Testing
+
 - Test domain logic independently of infrastructure
 - Use test containers for integration testing
 - Mock external dependencies in unit tests
@@ -329,12 +364,15 @@ class UserRepositoryImpl(
 ## Configuration
 
 ### Auto-Configuration
+
 The modules are automatically configured when included in a Spring Boot application. The auto-configuration:
+
 - Registers the mediator bean
 - Sets up dependency injection integration
 - Configures reactive repository implementations
 
 ### Custom Configuration
+
 You can override default configurations by providing your own beans:
 
 ```kotlin
@@ -353,6 +391,7 @@ class CustomMediatorConfiguration {
 ## Migration Guide
 
 When upgrading shared modules:
+
 1. Check for breaking changes in criteria API
 2. Update command/query handlers if interfaces change
 3. Review security-related changes in ApiController
@@ -364,21 +403,25 @@ When upgrading shared modules:
 ### Common Issues
 
 **Handler Not Found**
+
 - Ensure handlers are annotated with `@Component`
 - Verify handler implements correct interface
 - Check Spring component scanning configuration
 
 **Criteria Parsing Errors**
+
 - Validate field names match entity properties
 - Check data types in criteria values
 - Ensure proper escaping for string values
 
 **Authentication Issues**
+
 - Verify JWT configuration in Spring Security
 - Check token validation settings
 - Ensure proper CORS configuration for frontend
 
 **Reactive Issues**
+
 - Use proper coroutine context
 - Handle backpressure appropriately
 - Test with realistic data volumes
