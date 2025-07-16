@@ -90,7 +90,7 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v5 # Use the latest version
         env:
-          VALIDATE_ALL_CODEBASE: false # Only lint changed files
+          VALIDATE_ALL_CODEBASE: true # Only lint changed files
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Configure specific linters if necessary, for example:
@@ -138,7 +138,7 @@ jobs:
           # Optional: specify suppression file if you have one
           # suppressionPath: 'config/owasp/owasp-suppression.xml'
           # Optional: fail the build if vulnerabilities are found
-          # failOnCVSS: '7' # Fail if CVSS score is 7 or higher
+          failOnCVSS: '7' # Fail if CVSS score is 7 or higher
         # Optional: Upload the report as an artifact
       - name: Upload OWASP Dependency Check Report
         if: always() # Ensure report is uploaded even if previous steps fail
@@ -185,14 +185,31 @@ jobs:
 
       - name: Run integration tests
         run: |
-          echo "Running integration tests for the entire monorepo"
-          # Add integration test commands here
-          # For example: ./gradlew integrationTest
+          cd backend
+          ./gradlew integrationTest
 
       - name: Generate integration report
         run: |
-          echo "Generating integration report"
-          # Add report generation commands here
+          mkdir -p integration-report
+          cp backend/build/reports/tests/integrationTest/* integration-report/ || true
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Cache pnpm
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
 
       - name: Upload integration report
         uses: actions/upload-artifact@v4
