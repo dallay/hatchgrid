@@ -62,7 +62,9 @@
 ./gradlew detektAll
 
 # Run code coverage report (Kover)
-./gradlew koverReport
+./gradlew koverXmlReport
+# or, if you want both formats
+# ./gradlew koverXmlReport koverHtmlReport
 
 # Run all verification tasks (includes tests, checks, static analysis)
 ./gradlew check
