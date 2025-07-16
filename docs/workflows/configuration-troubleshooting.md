@@ -347,9 +347,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Java
-        uses: ./.github/actions/setup-java
+        uses: ./.github/actions/setup/java
       - name: Setup Node
-        uses: ./.github/actions/setup-node
+        uses: ./.github/actions/setup/node
       - name: Warm Gradle cache
         run: ./gradlew dependencies
       - name: Warm pnpm cache

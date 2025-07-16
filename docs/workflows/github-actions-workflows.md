@@ -259,11 +259,11 @@ Workflow de prueba para verificar la configuración de pnpm.
 
 ### Setup Java
 
-**Ubicación**: `.github/actions/setup-java/`
+**Ubicación**: `.github/actions/setup/java/`
 
 ```yaml
 - name: Setup Java
-  uses: ./.github/actions/setup-java
+  uses: ./.github/actions/setup/java
 ```
 
 **Características**:
@@ -273,11 +273,11 @@ Workflow de prueba para verificar la configuración de pnpm.
 
 ### Setup Node
 
-**Ubicación**: `.github/actions/setup-node/`
+**Ubicación**: `.github/actions/setup/node/`
 
 ```yaml
 - name: Setup Node.js and pnpm
-  uses: ./.github/actions/setup-node
+  uses: ./.github/actions/setup/node
 ```
 
 **Características**:
@@ -374,5 +374,5 @@ Cada workflow tiene permisos específicos mínimos siguiendo el principio de men
 ---
 
 Para documentación detallada de workflows específicos, consulta:
-- [Guía de CI/CD](./workflows/ci-guide.md)
-- [Acciones Personalizadas](./workflows/custom-actions.md)
+- [Guía de CI/CD](ci-guide.md)
+- [Acciones Personalizadas](custom-actions.md)

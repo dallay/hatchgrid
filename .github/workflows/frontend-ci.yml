@@ -9,7 +9,7 @@ on:
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
       - '.github/workflows/frontend-ci.yml'
-      - '.github/actions/setup-node/**'
+      - '.github/actions/setup/node/**'
   pull_request:
     paths:
       - 'client/**'
@@ -17,7 +17,7 @@ on:
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
       - '.github/workflows/frontend-ci.yml'
-      - '.github/actions/setup-node/**'
+      - '.github/actions/setup/node/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node.js and pnpm
-        uses: ./.github/actions/setup-node
+        uses: ./.github/actions/setup/node
 
       - name: Run Biome with Reviewdog
         uses: mongolyy/reviewdog-action-biome@bf7dffa9b14e8904941a18a28782b74fc40104f0
@@ -57,7 +57,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node.js and pnpm
-        uses: ./.github/actions/setup-node
+        uses: ./.github/actions/setup/node
 
       - name: Build
         run: pnpm build
@@ -80,7 +80,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node.js and pnpm
-        uses: ./.github/actions/setup-node
+        uses: ./.github/actions/setup/node
 
       - name: Test
         run: pnpm test

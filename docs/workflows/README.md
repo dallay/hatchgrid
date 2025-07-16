@@ -9,7 +9,7 @@ Welcome to the complete documentation for Hatchgrid's CI/CD workflows. This sect
 ### 🚀 Main Documentation
 
 - **[CI/CD Guide](./ci-guide.md)** - Complete guide for the main monorepo workflow
-- **[GitHub Actions Overview](../github-actions-workflows.md)** - Overview of all workflows
+- **[GitHub Actions Overview](github-actions-workflows.md)** - Overview of all workflows
 - **[Custom Actions](./custom-actions.md)** - Documentation for composite actions
 
 ### 🔧 Technical Documentation

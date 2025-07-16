@@ -17,7 +17,7 @@ This documentation describes the custom composite actions created to optimize an
 
 ## ☕ Setup Java Action
 
-**Location**: `.github/actions/setup-java/action.yml`
+**Location**: `.github/actions/setup/java/action.yml`
 
 ### Purpose: Setup Java
 
@@ -33,7 +33,7 @@ Configures Java 21 with Temurin JDK and Gradle with optimized caching.
 
 ```yaml
 - name: Setup Java
-  uses: ./.github/actions/setup-java
+  uses: ./.github/actions/setup/java
 ```
 
 ### Implementation
@@ -63,7 +63,7 @@ steps:
 
 ## 🟢 Setup Node Action
 
-**Location**: `.github/actions/setup-node/action.yml`
+**Location**: `.github/actions/setup/node/action.yml`
 
 ### Purpose: Setup Node
 
@@ -80,7 +80,7 @@ Configures Node.js 22 with pnpm and optimized cache management.
 
 ```yaml
 - name: Setup Node.js and pnpm
-  uses: ./.github/actions/setup-node
+  uses: ./.github/actions/setup/node
 ```
 
 ### Detailed Implementation
