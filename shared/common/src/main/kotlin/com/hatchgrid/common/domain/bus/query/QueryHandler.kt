@@ -7,7 +7,7 @@ package com.hatchgrid.common.domain.bus.query
  * @param TQuery any [Query] subclass to handle
  * @see Query
  */
-interface QueryHandler<TQuery : Query<TResponse>, TResponse> {
+fun interface QueryHandler<TQuery : Query<TResponse>, TResponse> {
     /**
      * Handles a query
      *

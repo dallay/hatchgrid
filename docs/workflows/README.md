@@ -236,7 +236,7 @@ actionlint .github/workflows/*.yml
 
 - **DevOps Team**: <devops@hatchgrid.com>
 - **Slack Channel**: #ci-cd
-- **Issues**: [GitHub Issues](https://github.com/hatchgrid/monorepo/issues)
+- **Issues**: [GitHub Issues](https://github.com/hatchgrid/hatchgrid/issues)
 
 ### External Resources
 

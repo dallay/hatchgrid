@@ -1,0 +1,26 @@
+{
+  "enabled": true,
+  "name": "Test Check Build",
+  "description": "Runs comprehensive tests, checks, and builds for both frontend and backend to ensure code quality and functionality",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "client/**/*.ts",
+      "client/**/*.vue",
+      "client/**/*.astro",
+      "client/**/*.js",
+      "client/**/*.json",
+      "server/**/*.kt",
+      "server/**/*.kts",
+      "shared/**/*.kt",
+      "shared/**/*.kts",
+      "build.gradle.kts",
+      "settings.gradle.kts"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Run the following commands to ensure all tests, checks and builds work:\n\nFrontend commands:\n- pnpm run check && pnpm run test && pnpm run build\n\nBackend commands:\n- ./gradlew detektAll && ./gradlew test\n\nPlease execute these commands and report any failures or issues that need to be addressed."
+  }
+}
