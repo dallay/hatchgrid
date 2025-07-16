@@ -60,6 +60,10 @@ export const useAuthStore = defineStore("auth", {
 			this.logon = null;
 		},
 
+		async register(registrationData: any): Promise<void> {
+			await axios.post("/api/account/register", registrationData);
+		},
+
 		async getAccount(): Promise<void> {
 			try {
 				const response = await axios.get("/api/account", {
