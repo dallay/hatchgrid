@@ -3,16 +3,17 @@
 ![Hexagonal Architecture Schema](hexagonal-architecture.png)
 
 ## Overview
+
 Hexagonal Architecture, also known as Ports and Adapters, is a software design pattern that emphasizes the separation of concerns by isolating the core business logic from external systems. This architecture allows for easier testing, maintenance, and adaptability to changes in external dependencies.
 
 ## Key Concepts
+
 - **Core Domain**: The central part of the application that contains the business logic. It is independent of external systems and frameworks.
 - **Ports**: Interfaces that define how the core domain interacts with external systems. They can be inbound (for receiving commands) or outbound (for sending data).
 - **Adapters**: Implementations of the ports that connect the core domain to external systems, such as databases, message queues, or web services. Adapters can be inbound (e.g., REST controllers) or outbound (e.g., repositories).
 - **Dependency Inversion**: The core domain should not depend on external systems. Instead, it should define interfaces (ports) that adapters implement. This allows for easy replacement of external systems without affecting the core logic.
 - **Testing**: The separation of the core domain from external systems allows for easier unit testing of business logic without needing to mock external dependencies. Integration tests can be used to verify the interaction between the core domain and adapters.
 - **Flexibility**: The architecture allows for easy changes to external systems without impacting the core domain. New adapters can be added or existing ones modified without affecting the business logic.
-
 
 ## Clean Architecture in Hatchgrid
 
@@ -21,18 +22,20 @@ At Hatchgrid, we follow a strict Clean Architecture approach to enforce separati
 ### Folder Structure
 
 Each feature is self-contained and follows this standard structure:
+
 ```text
 📁{feature}
 ├── 📁domain         // Core domain logic (pure Kotlin, no framework dependencies)
 ├── 📁application    // Use cases (pure, framework-agnostic)
 └── 📁infrastructure // Framework integration (Spring Boot, R2DBC, HTTP, etc.)
 ```
-![Feature folder structure](form-feature-folder-structure.png)
 
+![Feature folder structure](form-feature-folder-structure.png)
 
 ### Layer Breakdown
 
 #### 1. `domain`: The Core
+
 - **Pure Kotlin**: No framework annotations or external dependencies.
 - **Domain Building Blocks**:
   - **Value Objects**: Immutable objects that represent a descriptive aspect of the domain with no conceptual identity. For example:
@@ -55,6 +58,7 @@ Each feature is self-contained and follows this standard structure:
 - Example files: `Form.kt`, `FormId.kt`, `FormCreatedEvent.kt`, `FormRepository.kt`.
 
 #### 2. `application`: Use Cases
+
 - Defines **commands**, **queries**, and **handlers** (CQRS-style).
 - Contains **services** that orchestrate interactions between domain logic and ports.
 - Completely framework-independent. We even avoid `@Service` from Spring by defining our own annotation:
@@ -82,6 +86,7 @@ annotation class Service
   - Command and query handlers are marked with our custom `@Service` annotation to remain decoupled from Spring-specific logic.
 
 #### 3. `infrastructure`: Adapters
+
 - Implements the interfaces defined in `domain` and integrates with:
   - **HTTP layer**:
     - All controllers extend a shared base class `ApiController` that centralizes common logic:
@@ -122,6 +127,7 @@ form/
 ```
 
 ### Principles Applied
+
 - **Single Responsibility per Layer**: Core logic, use cases, and adapters are strictly separated.
 - **Framework Independence**: Core logic remains decoupled from Spring Boot or any infrastructure.
 - **Port-Driven**: Infrastructure implements domain interfaces, not the other way around.
