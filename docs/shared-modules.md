@@ -12,6 +12,14 @@ shared/
 └── spring-boot-common/     # Spring Boot specific implementations
 ```
 
+> **Spring Modulith Integration:**
+>
+> The `shared/*` modules are organized as [Spring Modulith](https://docs.spring.io/spring-modulith/docs/current/reference/html/) named slices:
+> - **shared:common** defines the core domain model, CQRS, and DDD patterns as a Modulith slice with no external dependencies, forming the foundation for all backend modules.
+> - **shared:spring-boot-common** is a separate Modulith slice that integrates the domain logic with Spring Boot, providing auto-configuration, dependency injection, and infrastructure adapters. It depends only on `shared:common` and exposes its own public API boundary.
+>
+> These boundaries are enforced in the Modulith graph, ensuring clear separation and explicit dependencies between domain, infrastructure, and application layers. See `/docs/architecture/hexagonal-architecture.md` for more on Modulith boundaries in Hatchgrid.
+
 ### Dependencies
 
 - **shared/common**: Pure Kotlin module with no external framework dependencies
