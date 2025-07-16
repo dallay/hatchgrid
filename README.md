@@ -104,6 +104,7 @@ The project uses Testcontainers for integration tests, which automatically spin 
 - OAuth2 Authorization Server
 - Spring Security
 - Spring Data R2DBC for reactive database access
+- Internationalization (i18n) support with message bundles
 - Liquibase for database migrations
 - Spring Boot Admin for application monitoring
 - Docker Compose support
