@@ -10,7 +10,8 @@ import {
 	type Mock,
 } from "vitest";
 import Register from "./register.vue";
-import { useAuthStore }d from "@/stores/auth";
+import { useAuthStore } from "@/stores/auth";
+import { toast } from "vue-sonner";
 
 vi.mock("vue-sonner", () => ({
 	toast: {
@@ -95,7 +96,6 @@ describe("Register.vue", () => {
 		const authStore = useAuthStore();
 		authStore.register = vi.fn().mockResolvedValue(undefined);
 		const wrapper = shallowMount(Register);
-		const { toast } = await import("vue-sonner");
 
 		wrapper.vm.form.firstName = "John";
 		wrapper.vm.form.lastName = "Doe";
@@ -116,7 +116,6 @@ describe("Register.vue", () => {
 		const authStore = useAuthStore();
 		authStore.register = vi.fn().mockRejectedValue(new Error());
 		const wrapper = shallowMount(Register);
-		const { toast } = await import("vue-sonner");
 
 		wrapper.vm.form.firstName = "John";
 		wrapper.vm.form.lastName = "Doe";
