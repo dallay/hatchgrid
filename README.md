@@ -1,6 +1,7 @@
 # Hatchgrid
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/dallay/hatchgrid)
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/dallay/hatchgrid?utm_source=oss&utm_medium=github&utm_campaign=dallay%2Fhatchgrid&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
 A Spring Boot application built with Kotlin and Gradle, providing a robust backend infrastructure.
 
