@@ -149,9 +149,25 @@ The `spring-boot-common` module provides Spring Boot-specific implementations an
   - Command dispatching via `dispatch(command)`
   - Query handling via `ask(query)`
   - Authentication access via `authentication()` and `userId()`
-  - Path variable sanitization for security
+  - Path variable sanitization for security (see `sanitizePathVariable()` below)
 - Includes Swagger/OpenAPI security annotations
 - Supports JWT and username/password authentication
+
+> **Helper Implementation:**
+>
+> The `sanitizePathVariable()` helper is defined in [`ApiController`](../../shared/spring-boot-common/src/main/kotlin/com/hatchgrid/spring/boot/ApiController.kt). It validates path variables using an allow-list regex to prevent path traversal and injection attacks:
+>
+> ```kotlin
+> protected fun sanitizePathVariable(pathVariable: String): String {
+>     val regex = "^[a-zA-Z0-9_-]+$".toRegex()
+>     require(pathVariable.matches(regex)) {
+>         "Invalid path variable. Only alphanumeric characters, underscores, and hyphens are allowed."
+>     }
+>     return URLEncoder.encode(pathVariable, "UTF-8")
+> }
+> ```
+>
+> You can use this method in your controllers by extending `ApiController`.
 
 #### Repository Layer
 
