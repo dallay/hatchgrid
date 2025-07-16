@@ -1,6 +1,7 @@
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-
+import { computed, ref } from "vue";
+import type { Composer } from "vue-i18n";
 import TranslationService from "../translation.service.ts";
 
 vi.mock("../../i18n/en/en.js", () => {
@@ -13,18 +14,21 @@ vi.mock("../../i18n/en/en.js", () => {
 
 describe("TranslationService", () => {
 	let service: TranslationService;
-	let mockI18n: any;
+	let mockI18n: Pick<
+		Composer,
+		"locale" | "messages" | "setLocaleMessage" | "t" | "te"
+	>;
 
 	beforeEach(() => {
 		setActivePinia(createPinia());
 		mockI18n = {
-			locale: { value: "en" },
-			messages: { es: { message: "hola" } }, // Start with 'es' loaded
+			locale: ref("en"),
+			messages: computed(() => ({ es: { message: "hola" } })), // Start with 'es' loaded
 			setLocaleMessage: vi.fn(),
 			t: vi.fn().mockReturnValue("translation"),
 			te: vi.fn().mockReturnValue(true),
-		};
-		service = new TranslationService(mockI18n);
+		} as any;
+		service = new TranslationService(mockI18n as Composer);
 		vi.clearAllMocks();
 	});
 

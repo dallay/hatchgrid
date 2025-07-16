@@ -23,6 +23,14 @@ export const defaultAuthState: AuthStateStorable = {
 	activeProfiles: [],
 };
 
+export interface RegistrationData {
+	login: string;
+	firstname: string;
+	lastname: string;
+	email: string;
+	langKey: string;
+}
+
 export const useAuthStore = defineStore("auth", {
 	state: (): AuthStateStorable => ({ ...defaultAuthState }),
 	getters: {
@@ -60,8 +68,8 @@ export const useAuthStore = defineStore("auth", {
 			this.logon = null;
 		},
 
-		async register(registrationData: any): Promise<void> {
-			await axios.post("/api/account/register", registrationData);
+		async register(registrationData: RegistrationData): Promise<void> {
+			await axios.post("/api/register", registrationData);
 		},
 
 		async getAccount(): Promise<void> {

@@ -40,7 +40,7 @@ const validateRedirectPath = (path: string | undefined): string | null => {
 		!path.startsWith("/") ||
 		suspiciousPatterns.some((pat) => pat.test(path)) ||
 		!allowedRoutes.some(
-			(route) => path === route || path.startsWith(route + "/"),
+			(route) => path === route || path.startsWith(`${route}/`),
 		)
 	) {
 		return null;

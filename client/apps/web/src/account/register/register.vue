@@ -40,21 +40,6 @@
         </div>
 
         <div class="grid gap-2">
-          <Label for="username">Username</Label>
-          <Input
-            id="username"
-            v-model="form.username"
-            type="text"
-            placeholder="Choose a username"
-            required
-            @input="validateField('username')"
-          />
-          <p v-if="errors.username" class="mt-1 text-xs text-red-600">
-            {{ errors.username }}
-          </p>
-        </div>
-
-        <div class="grid gap-2">
           <Label for="email">Email</Label>
           <Input
             id="email"
@@ -132,7 +117,6 @@ const isLoading = ref(false);
 const form = ref({
 	firstName: "",
 	lastName: "",
-	username: "",
 	email: "",
 	password: "",
 	confirmPassword: "",
@@ -140,7 +124,6 @@ const form = ref({
 const errors = ref({
 	firstName: "",
 	lastName: "",
-	username: "",
 	email: "",
 	password: "",
 	confirmPassword: "",
@@ -160,12 +143,6 @@ const validateField = (field: string) => {
 					? "Last name must be at least 2 characters."
 					: "";
 			break;
-		case "username":
-			errors.value.username =
-				form.value.username.length < 3
-					? "Username must be at least 3 characters."
-					: "";
-			break;
 		case "email":
 			errors.value.email = !/^\S+@\S+\.\S+$/.test(form.value.email)
 				? "Please enter a valid email address."
@@ -173,7 +150,7 @@ const validateField = (field: string) => {
 			break;
 		case "password": {
 			const MIN_LENGTH = 8;
-			const LENGTH_REGEX = new RegExp(`^.{${MIN_LENGTH},}$`);
+			const LENGTH_REGEX = new RegExp(`^.{${MIN_LENGTH},}`);
 			const UPPERCASE_REGEX = /[A-Z]/;
 			const LOWERCASE_REGEX = /[a-z]/;
 			const DIGIT_REGEX = /\d/;
@@ -210,7 +187,6 @@ const validateField = (field: string) => {
 const validateForm = () => {
 	validateField("firstName");
 	validateField("lastName");
-	validateField("username");
 	validateField("email");
 	validateField("password");
 	validateField("confirmPassword");
@@ -225,11 +201,11 @@ const handleRegister = async () => {
 	isLoading.value = true;
 	try {
 		await authStore.register({
+			login: form.value.email,
+			firstname: form.value.firstName,
+			lastname: form.value.lastName,
 			email: form.value.email,
-			password: form.value.password,
-			firstName: form.value.firstName,
-			lastName: form.value.lastName,
-			username: form.value.username,
+			langKey: "en",
 		});
 
 		toast.success("Account created successfully!", {

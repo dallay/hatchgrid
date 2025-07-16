@@ -11,7 +11,7 @@ export default class TranslationService {
 	}
 
 	async refreshTranslation(newLanguage: string) {
-		const messages = this.i18n.messages as Record<string, any>;
+		const messages = this.i18n.messages.value as Record<string, unknown>;
 		if (this.i18n && !messages[newLanguage]) {
 			const translations = (
 				await import(`../i18n/${newLanguage}/${newLanguage}.js`)
