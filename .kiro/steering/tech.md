@@ -84,7 +84,7 @@ pnpm check
 pnpm update-deps
 ```
 
-### Full Stack Development
+### Full-Stack Development
 
 ```bash
 # Start both backend and frontend
