@@ -137,6 +137,12 @@ const handleLogin = async () => {
               {{ t("login.form.loading") }}
             </span>
           </Button>
+          <div class="mt-4 text-center text-sm">
+            {{ t("login.form.register") }}
+            <router-link to="/register" class="underline">
+              {{ t("login.form.register-link") }}
+            </router-link>
+          </div>
         </CardFooter>
       </form>
     </Card>

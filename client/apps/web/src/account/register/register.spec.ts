@@ -1,17 +1,9 @@
-import { shallowMount } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
-import {
-	describe,
-	expect,
-	it,
-	vi,
-	beforeEach,
-	afterEach,
-	type Mock,
-} from "vitest";
-import Register from "./register.vue";
-import { useAuthStore } from "@/stores/auth";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { toast } from "vue-sonner";
+import { useAuthStore } from "@/stores/auth";
+import Register from "./register.vue";
 
 vi.mock("vue-sonner", () => ({
 	toast: {
@@ -39,49 +31,52 @@ describe("Register.vue", () => {
 	});
 
 	it("should validate the form correctly", async () => {
-		const wrapper = shallowMount(Register);
-		const form = wrapper.vm.form;
-		const errors = wrapper.vm.errors;
+		const wrapper = mount(Register);
 
-		form.firstName = "J";
-		await wrapper.vm.validateField("firstName");
-		expect(errors.firstName).toBe("First name must be at least 2 characters.");
+		await wrapper.find("#firstName").setValue("J");
+		await wrapper.find("#firstName").trigger("input");
+		expect(wrapper.html()).toContain(
+			"First name must be at least 2 characters.",
+		);
 
-		form.firstName = "John";
-		await wrapper.vm.validateField("firstName");
-		expect(errors.firstName).toBe("");
+		await wrapper.find("#firstName").setValue("John");
+		await wrapper.find("#firstName").trigger("input");
+		expect(wrapper.html()).not.toContain(
+			"First name must be at least 2 characters.",
+		);
 
-		form.password = "password";
-		await wrapper.vm.validateField("password");
-		expect(errors.password).not.toBe("");
+		await wrapper.find("#password").setValue("password");
+		await wrapper.find("#password").trigger("input");
+		expect(wrapper.html()).toContain("Password must be at least 8 characters.");
 
-		form.password = "Password123!";
-		await wrapper.vm.validateField("password");
-		expect(errors.password).toBe("");
+		await wrapper.find("#password").setValue("Password123!");
+		await wrapper.find("#password").trigger("input");
+		expect(wrapper.html()).not.toContain(
+			"Password must be at least 8 characters.",
+		);
 
-		form.confirmPassword = "password";
-		await wrapper.vm.validateField("confirmPassword");
-		expect(errors.confirmPassword).toBe("Passwords do not match.");
+		await wrapper.find("#confirmPassword").setValue("password");
+		await wrapper.find("#confirmPassword").trigger("input");
+		expect(wrapper.html()).toContain("Passwords do not match.");
 
-		form.confirmPassword = "Password123!";
-		await wrapper.vm.validateField("confirmPassword");
-		expect(errors.confirmPassword).toBe("");
+		await wrapper.find("#confirmPassword").setValue("Password123!");
+		await wrapper.find("#confirmPassword").trigger("input");
+		expect(wrapper.html()).not.toContain("Passwords do not match.");
 	});
 
 	it("should call authStore.register on valid form submission", async () => {
 		const authStore = useAuthStore();
 		authStore.register = vi.fn();
-		const wrapper = shallowMount(Register);
-		const form = wrapper.vm.form;
+		const wrapper = mount(Register);
 
-		form.firstName = "John";
-		form.lastName = "Doe";
-		form.username = "johndoe";
-		form.email = "john.doe@example.com";
-		form.password = "Password123!";
-		form.confirmPassword = "Password123!";
+		await wrapper.find("#firstName").setValue("John");
+		await wrapper.find("#lastName").setValue("Doe");
+		await wrapper.find("#username").setValue("johndoe");
+		await wrapper.find("#email").setValue("john.doe@example.com");
+		await wrapper.find("#password").setValue("Password123!");
+		await wrapper.find("#confirmPassword").setValue("Password123!");
 
-		await wrapper.vm.handleRegister();
+		await wrapper.find("form").trigger("submit.prevent");
 
 		expect(authStore.register).toHaveBeenCalledWith({
 			email: "john.doe@example.com",
@@ -95,16 +90,16 @@ describe("Register.vue", () => {
 	it("should show success toast on successful registration", async () => {
 		const authStore = useAuthStore();
 		authStore.register = vi.fn().mockResolvedValue(undefined);
-		const wrapper = shallowMount(Register);
+		const wrapper = mount(Register);
 
-		wrapper.vm.form.firstName = "John";
-		wrapper.vm.form.lastName = "Doe";
-		wrapper.vm.form.username = "johndoe";
-		wrapper.vm.form.email = "john.doe@example.com";
-		wrapper.vm.form.password = "Password123!";
-		wrapper.vm.form.confirmPassword = "Password123!";
+		await wrapper.find("#firstName").setValue("John");
+		await wrapper.find("#lastName").setValue("Doe");
+		await wrapper.find("#username").setValue("johndoe");
+		await wrapper.find("#email").setValue("john.doe@example.com");
+		await wrapper.find("#password").setValue("Password123!");
+		await wrapper.find("#confirmPassword").setValue("Password123!");
 
-		await wrapper.vm.handleRegister();
+		await wrapper.find("form").trigger("submit.prevent");
 
 		expect(toast.success).toHaveBeenCalledWith(
 			"Account created successfully!",
@@ -115,16 +110,16 @@ describe("Register.vue", () => {
 	it("should show error toast on failed registration", async () => {
 		const authStore = useAuthStore();
 		authStore.register = vi.fn().mockRejectedValue(new Error());
-		const wrapper = shallowMount(Register);
+		const wrapper = mount(Register);
 
-		wrapper.vm.form.firstName = "John";
-		wrapper.vm.form.lastName = "Doe";
-		wrapper.vm.form.username = "johndoe";
-		wrapper.vm.form.email = "john.doe@example.com";
-		wrapper.vm.form.password = "Password123!";
-		wrapper.vm.form.confirmPassword = "Password123!";
+		await wrapper.find("#firstName").setValue("John");
+		await wrapper.find("#lastName").setValue("Doe");
+		await wrapper.find("#username").setValue("johndoe");
+		await wrapper.find("#email").setValue("john.doe@example.com");
+		await wrapper.find("#password").setValue("Password123!");
+		await wrapper.find("#confirmPassword").setValue("Password123!");
 
-		await wrapper.vm.handleRegister();
+		await wrapper.find("form").trigger("submit.prevent");
 
 		expect(toast.error).toHaveBeenCalledWith(
 			"Registration failed",
