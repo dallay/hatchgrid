@@ -10,7 +10,7 @@ import {
 	type Mock,
 } from "vitest";
 import Register from "./register.vue";
-import { useAuthStore } from "@/stores/auth";
+import { useAuthStore }d from "@/stores/auth";
 
 vi.mock("vue-sonner", () => ({
 	toast: {
