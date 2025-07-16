@@ -57,6 +57,15 @@
 
 # Check for dependency vulnerabilities
 ./gradlew dependencyCheckAnalyze
+
+# Run static code analysis (Detekt)
+./gradlew detektAll
+
+# Run code coverage report (Kover)
+./gradlew koverReport
+
+# Run all verification tasks (includes tests, checks, static analysis)
+./gradlew check
 ```
 
 ### Frontend (pnpm)
