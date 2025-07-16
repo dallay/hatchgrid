@@ -40,7 +40,7 @@ const validateRedirectPath = (path: string | undefined): string | null => {
 		!path.startsWith("/") ||
 		suspiciousPatterns.some((pat) => pat.test(path)) ||
 		!allowedRoutes.some(
-			(route) => path === route || path.startsWith(route + "/"),
+			(route) => path === route || path.startsWith(`${route}/`),
 		)
 	) {
 		return null;
@@ -137,6 +137,12 @@ const handleLogin = async () => {
               {{ t("login.form.loading") }}
             </span>
           </Button>
+          <div class="mt-4 text-center text-sm">
+            {{ t("login.form.register") }}
+            <router-link to="/register" class="underline">
+              {{ t("login.form.register-link") }}
+            </router-link>
+          </div>
         </CardFooter>
       </form>
     </Card>

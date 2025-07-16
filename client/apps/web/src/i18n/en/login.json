@@ -10,7 +10,9 @@
 			"rememberMe": "Remember Me",
 			"submit": "Login",
 			"forgotPassword": "Forgot Password?",
-			"loading": "Logging in..."
+			"loading": "Logging in...",
+			"register": "Don't have an account?",
+			"register-link": "Sign up"
 		}
 	}
 }

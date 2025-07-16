@@ -9,20 +9,14 @@
       </div>
 
       <form @submit.prevent="handleRegister" class="space-y-6">
-        <div>
-          <label
-            for="firstName"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            First Name
-          </label>
-          <input
+        <div class="grid gap-2">
+          <Label for="firstName">First Name</Label>
+          <Input
             id="firstName"
             v-model="form.firstName"
             type="text"
-            required
             placeholder="Enter your first name"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            required
             @input="validateField('firstName')"
           />
           <p v-if="errors.firstName" class="mt-1 text-xs text-red-600">
@@ -30,20 +24,14 @@
           </p>
         </div>
 
-        <div>
-          <label
-            for="lastName"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Last Name
-          </label>
-          <input
+        <div class="grid gap-2">
+          <Label for="lastName">Last Name</Label>
+          <Input
             id="lastName"
             v-model="form.lastName"
             type="text"
-            required
             placeholder="Enter your last name"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            required
             @input="validateField('lastName')"
           />
           <p v-if="errors.lastName" class="mt-1 text-xs text-red-600">
@@ -51,60 +39,27 @@
           </p>
         </div>
 
-        <div>
-          <label
-            for="username"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Username
-          </label>
-          <input
-            id="username"
-            v-model="form.username"
-            type="text"
-            required
-            placeholder="Choose a username"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            @input="validateField('username')"
-          />
-          <p v-if="errors.username" class="mt-1 text-xs text-red-600">
-            {{ errors.username }}
-          </p>
-        </div>
-
-        <div>
-          <label
-            for="email"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Email
-          </label>
-          <input
+        <div class="grid gap-2">
+          <Label for="email">Email</Label>
+          <Input
             id="email"
             v-model="form.email"
             type="email"
-            required
             placeholder="Enter your email"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            required
             @input="validateField('email')"
           />
           <p v-if="errors.email" class="mt-1 text-xs text-red-600">{{ errors.email }}</p>
         </div>
 
-        <div>
-          <label
-            for="password"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Password
-          </label>
-          <input
+        <div class="grid gap-2">
+          <Label for="password">Password</Label>
+          <Input
             id="password"
             v-model="form.password"
             type="password"
-            required
             placeholder="Create a password"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            required
             @input="validateField('password')"
           />
           <p v-if="errors.password" class="mt-1 text-xs text-red-600">
@@ -112,13 +67,24 @@
           </p>
         </div>
 
-        <button
-          type="submit"
-          :disabled="isLoading || !formIsValid"
-          class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-2 px-4 rounded-md transition-colors disabled:cursor-not-allowed"
-        >
+        <div class="grid gap-2">
+          <Label for="confirmPassword">Confirm Password</Label>
+          <Input
+            id="confirmPassword"
+            v-model="form.confirmPassword"
+            type="password"
+            placeholder="Confirm your password"
+            required
+            @input="validateField('confirmPassword')"
+          />
+          <p v-if="errors.confirmPassword" class="mt-1 text-xs text-red-600">
+            {{ errors.confirmPassword }}
+          </p>
+        </div>
+
+        <Button type="submit" :disabled="isLoading || !formIsValid" class="w-full">
           {{ isLoading ? "Creating Account..." : "Create Account" }}
-        </button>
+        </Button>
       </form>
 
       <div class="text-center">
@@ -137,26 +103,30 @@
 </template>
 
 <script setup lang="ts">
-import axios from "axios";
 import { computed, ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();
+const authStore = useAuthStore();
 const isLoading = ref(false);
 const form = ref({
 	firstName: "",
 	lastName: "",
-	username: "",
 	email: "",
 	password: "",
+	confirmPassword: "",
 });
 const errors = ref({
 	firstName: "",
 	lastName: "",
-	username: "",
 	email: "",
 	password: "",
+	confirmPassword: "",
 });
 
 const validateField = (field: string) => {
@@ -173,12 +143,6 @@ const validateField = (field: string) => {
 					? "Last name must be at least 2 characters."
 					: "";
 			break;
-		case "username":
-			errors.value.username =
-				form.value.username.length < 3
-					? "Username must be at least 3 characters."
-					: "";
-			break;
 		case "email":
 			errors.value.email = !/^\S+@\S+\.\S+$/.test(form.value.email)
 				? "Please enter a valid email address."
@@ -186,7 +150,7 @@ const validateField = (field: string) => {
 			break;
 		case "password": {
 			const MIN_LENGTH = 8;
-			const LENGTH_REGEX = new RegExp(`^.{${MIN_LENGTH},}$`);
+			const LENGTH_REGEX = new RegExp(`^.{${MIN_LENGTH},}`);
 			const UPPERCASE_REGEX = /[A-Z]/;
 			const LOWERCASE_REGEX = /[a-z]/;
 			const DIGIT_REGEX = /\d/;
@@ -211,15 +175,21 @@ const validateField = (field: string) => {
 			}
 			break;
 		}
+		case "confirmPassword":
+			errors.value.confirmPassword =
+				form.value.password !== form.value.confirmPassword
+					? "Passwords do not match."
+					: "";
+			break;
 	}
 };
 
 const validateForm = () => {
 	validateField("firstName");
 	validateField("lastName");
-	validateField("username");
 	validateField("email");
 	validateField("password");
+	validateField("confirmPassword");
 	return Object.values(errors.value).every((msg) => !msg);
 };
 
@@ -230,12 +200,12 @@ const handleRegister = async () => {
 
 	isLoading.value = true;
 	try {
-		await axios.post("/api/register", {
+		await authStore.register({
+			login: form.value.email,
+			firstname: form.value.firstName,
+			lastname: form.value.lastName,
 			email: form.value.email,
-			password: form.value.password,
-			firstName: form.value.firstName,
-			lastName: form.value.lastName,
-			username: form.value.username,
+			langKey: "en",
 		});
 
 		toast.success("Account created successfully!", {
@@ -248,10 +218,7 @@ const handleRegister = async () => {
 		if (import.meta.env.DEV) {
 			console.error("Registration error:", error);
 		}
-		let description = "Unable to create your account. Please try again.";
-		if (axios.isAxiosError(error)) {
-			description = error.response?.data?.detail || description;
-		}
+		const description = "Unable to create your account. Please try again.";
 		toast.error("Registration failed", { description });
 	} finally {
 		isLoading.value = false;
