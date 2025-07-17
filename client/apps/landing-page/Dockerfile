@@ -43,21 +43,23 @@ RUN pnpm build
 FROM nginx:alpine AS production
 
 # Copy nginx configuration
-RUN echo 'server { \
-    listen 80; \
-    server_name _; \
-    root /usr/share/nginx/html; \
-    index index.html; \
-    location / { \
-        try_files $uri $uri/ /index.html; \
-    } \
-    error_page 404 /404.html; \
-    # Enable gzip compression \
-    gzip on; \
-    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript; \
-    gzip_comp_level 6; \
-    gzip_min_length 1000; \
-}' > /etc/nginx/conf.d/default.conf
+RUN cat <<'EOF' > /etc/nginx/conf.d/default.conf
+server {
+    listen 80;
+    server_name _;
+    root /usr/share/nginx/html;
+    index index.html;
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    error_page 404 /404.html;
+    # Enable gzip compression
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    gzip_comp_level 6;
+    gzip_min_length 1000;
+}
+EOF
 
 # Copy built files from build stage
 COPY --from=build /app/client/apps/landing-page/dist /usr/share/nginx/html
