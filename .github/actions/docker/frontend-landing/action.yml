@@ -340,7 +340,7 @@ EOF
     - name: Scan Docker image for vulnerabilities
       uses: ./.github/actions/docker/security-scan
       with:
-        image-ref: ${{ steps.build.outputs.metadata.image }}@${{ steps.build.outputs.digest }}
+        image-ref: ${{ steps.build.outputs.imageid }}
         report-name: ${{ inputs.image-name }}-security-scan
         category: frontend-landing-trivy
         severity: 'HIGH,CRITICAL'

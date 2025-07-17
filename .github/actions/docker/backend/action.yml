@@ -23,6 +23,14 @@ inputs:
     description: "Additional Gradle arguments"
     required: false
     default: ""
+  module-path:
+    description: "Path to the Gradle module to build"
+    required: false
+    default: "server:thryve"
+  java-version:
+    description: "Java version to use"
+    required: false
+    default: "21"
 
 outputs:
   image-full-name:
