@@ -1,18 +1,28 @@
 name: 'Setup Node.js and pnpm'
 description: 'Sets up Node.js and pnpm with caching'
 
+inputs:
+  node-version:
+    description: 'Node.js version to use'
+    required: false
+    default: '22'
+  pnpm-version:
+    description: 'pnpm version to use'
+    required: false
+    default: '10.10.0'
+
 runs:
   using: "composite"
   steps:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '22'
+        node-version: ${{ inputs.node-version }}
 
     - name: Install pnpm
       uses: pnpm/action-setup@v3
       with:
-        version: 10.10.0
+        version: ${{ inputs.pnpm-version }}
         run_install: false
 
     - name: Verify pnpm installation and setup cache

@@ -39,6 +39,9 @@ jobs:
 
       - name: Setup Node.js and pnpm
         uses: ./.github/actions/setup/node
+        with:
+          node-version: '22'
+          pnpm-version: '10.10.0'
 
       - name: Run Biome with Reviewdog
         uses: mongolyy/reviewdog-action-biome@bf7dffa9b14e8904941a18a28782b74fc40104f0
@@ -58,6 +61,9 @@ jobs:
 
       - name: Setup Node.js and pnpm
         uses: ./.github/actions/setup/node
+        with:
+          node-version: '22'
+          pnpm-version: '10.10.0'
 
       - name: Build
         run: pnpm build
@@ -81,6 +87,9 @@ jobs:
 
       - name: Setup Node.js and pnpm
         uses: ./.github/actions/setup/node
+        with:
+          node-version: '22'
+          pnpm-version: '10.10.0'
 
       - name: Test
         run: pnpm test
