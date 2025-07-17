@@ -95,6 +95,10 @@ The project uses Testcontainers for integration tests, which automatically spin 
 - `src/main/kotlin` - Kotlin source files
 - `src/main/resources` - Configuration files and resources
 - `src/test/kotlin` - Test source files
+- `.github/actions` - Custom GitHub Actions for CI/CD
+  - `.github/actions/docker` - Specialized Docker composition actions
+  - `.github/actions/setup` - Setup actions for Java and Node.js
+- `.github/workflows` - GitHub Actions workflows for CI/CD
 
 ## Key Features
 
@@ -125,3 +129,26 @@ The application includes Spring Boot Actuator endpoints for monitoring:
 - Health check: `/actuator/health`
 - Metrics: `/actuator/metrics`
 - Prometheus metrics: `/actuator/prometheus`
+
+## CI/CD Pipeline
+
+The project uses GitHub Actions for continuous integration and deployment:
+
+### Docker Composition Actions
+
+The CI/CD pipeline uses specialized Docker composition actions for building and pushing Docker images:
+
+- **Backend Docker Action**: Builds Spring Boot applications using Gradle's `bootBuildImage`
+- **Frontend Web App Action**: Builds Vue.js applications with multi-stage builds
+- **Frontend Landing Page Action**: Builds Astro static sites with optimized configurations
+- **Security Scanning Action**: Scans Docker images for vulnerabilities using Trivy
+
+For detailed documentation on these actions, see:
+- [Docker Composition Actions Documentation](docs/workflows/docker-composition-actions.md)
+- [Docker Actions Migration Guide](docs/workflows/docker-actions-migration-guide.md)
+
+### Workflows
+
+- `deploy.yml`: Builds and deploys all application components
+- `backend-ci.yml`: Runs tests and static analysis for backend code
+- `frontend-ci.yml`: Runs tests and static analysis for frontend code

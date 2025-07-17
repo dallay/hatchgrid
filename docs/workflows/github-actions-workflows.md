@@ -21,7 +21,7 @@ Esta documentación proporciona una visión general completa de todos los workfl
 ### 🔧 Acciones Personalizadas
 - [Setup Java](#setup-java) - Configuración de Java y Gradle
 - [Setup Node](#setup-node) - Configuración de Node.js y pnpm
-- [Docker Build Push](#docker-build-push) - Build y push de imágenes Docker
+- [Specialized Docker Actions](#specialized-docker-actions) - Acciones especializadas para Docker
 
 ---
 
@@ -286,26 +286,63 @@ Workflow de prueba para verificar la configuración de pnpm.
 - Cache inteligente del store
 - Instalación con frozen-lockfile
 
-### Docker Build Push
+### Specialized Docker Actions
 
-**Ubicación**: `.github/actions/docker-build-push/`
+**Ubicación**: `.github/actions/docker/`
 
+> **Nota**: Las acciones Docker especializadas han reemplazado la acción Docker genérica anterior. Para más detalles, consulta la [documentación de acciones Docker](./docker-composition-actions.md).
+
+**Backend Docker Action**:
 ```yaml
-- name: Build and push Docker image
-  uses: ./.github/actions/docker-build-push
+- name: Build and push backend Docker image
+  uses: ./.github/actions/docker/backend/action.yml
   with:
     image-name: backend
-    dockerfile: ./server/thryve/Dockerfile
-    context: .
     github-token: ${{ secrets.GITHUB_TOKEN }}
-    build-args: |
-      NODE_ENV=production
-      API_URL=https://api.example.com
+    gradle-args: "-Pversion=latest -Penv=production"
+    module-path: server:thryve
+    deliver: 'true'
+```
+
+**Frontend Web App Action**:
+```yaml
+- name: Build and push frontend web app Docker image
+  uses: ./.github/actions/docker/frontend-web/action.yml
+  with:
+    image-name: frontend-web
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    build-env: production
+    api-url: https://api.example.com
+    deliver: 'true'
+```
+
+**Frontend Landing Page Action**:
+```yaml
+- name: Build and push frontend landing page Docker image
+  uses: ./.github/actions/docker/frontend-landing/action.yml
+  with:
+    image-name: frontend-landing
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    build-env: production
+    base-url: https://example.com
+    deliver: 'true'
+```
+
+**Security Scanning Action**:
+```yaml
+- name: Scan Docker image for vulnerabilities
+  uses: ./.github/actions/docker/security-scan/action.yml
+  with:
+    image-ref: ghcr.io/myorg/myapp:latest
+    report-name: myapp-security-scan
+    category: backend-trivy
 ```
 
 **Características**:
-- GitHub Container Registry
+- Acciones especializadas por tipo de aplicación
+- GitHub Container Registry y Docker Hub
 - Cache de GitHub Actions
+- Escaneo de seguridad con Trivy integrado
 - Metadata automático
 - Multi-platform support
 

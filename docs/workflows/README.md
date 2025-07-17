@@ -82,7 +82,10 @@ graph TD
 |--------|---------|-------|----------|
 | **setup-java** | Java 21 + Gradle configuration | Backend workflows | Automatic cache, consistent configuration |
 | **setup-node** | Node.js 22 + pnpm configuration | Frontend workflows | Smart caching, optimized installation |
-| **docker-build-push** | Docker image build and push | Deploy workflows | Automatic registry, layer caching |
+| **docker/backend** | Spring Boot Docker build | Deploy workflows | Gradle bootBuildImage, security scanning |
+| **docker/frontend-web** | Vue.js Docker build | Deploy workflows | Multi-stage builds, environment configs |
+| **docker/frontend-landing** | Astro Docker build | Deploy workflows | Static site optimization, security scanning |
+| **docker/security-scan** | Docker vulnerability scanning | All Docker builds | Trivy integration, SARIF reports |
 
 ---
 
