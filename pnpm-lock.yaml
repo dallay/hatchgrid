@@ -199,7 +199,7 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1
       zod:
-        specifier: ^4.0.0
+        specifier: ^4.0.5
         version: 4.0.5
     devDependencies:
       '@iconify-json/ph':

@@ -105,6 +105,7 @@
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { RouterLink, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import * as z from "zod";
@@ -122,36 +123,37 @@ import { useAuthStore } from "@/stores/auth";
 const router = useRouter();
 const authStore = useAuthStore();
 const isLoading = ref(false);
+const { t } = useI18n();
 
 const formSchema = toTypedSchema(
 	z
 		.object({
 			firstName: z
 				.string()
-				.min(2, { message: "First name must be at least 2 characters." }),
+				.min(2, { message: t("register.form.validation.firstName-min") }),
 			lastName: z
 				.string()
-				.min(2, { message: "Last name must be at least 2 characters." }),
+				.min(2, { message: t("register.form.validation.lastName-min") }),
 			email: z
 				.string()
-				.email({ message: "Please enter a valid email address." }),
+				.email({ message: t("register.form.validation.email-invalid") }),
 			password: z
 				.string()
-				.min(8, { message: "Password must be at least 8 characters." })
+				.min(8, { message: t("register.form.validation.password-min") })
 				.regex(/[A-Z]/, {
-					message: "Password must include at least one uppercase letter.",
+					message: t("register.form.validation.password-uppercase"),
 				})
 				.regex(/[a-z]/, {
-					message: "Password must include at least one lowercase letter.",
+					message: t("register.form.validation.password-lowercase"),
 				})
-				.regex(/\d/, { message: "Password must include at least one number." })
+				.regex(/\d/, { message: t("register.form.validation.password-number") })
 				.regex(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/, {
-					message: "Password must include at least one special character.",
+					message: t("register.form.validation.password-special"),
 				}),
 			confirmPassword: z.string(),
 		})
 		.refine((data) => data.password === data.confirmPassword, {
-			message: "Passwords do not match.",
+			message: t("register.form.validation.password-match"),
 			path: ["confirmPassword"],
 		}),
 );
@@ -170,6 +172,7 @@ const handleRegister = handleSubmit(async (values) => {
 			firstname: values.firstName,
 			lastname: values.lastName,
 			email: values.email,
+			password: values.password,
 			langKey: "en",
 		});
 

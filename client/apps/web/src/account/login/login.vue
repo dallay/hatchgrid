@@ -34,8 +34,13 @@ const { t } = useI18n();
 
 const formSchema = toTypedSchema(
 	z.object({
-		username: z.string().min(1, { message: "Username is required" }),
-		password: z.string().min(1, { message: "Password is required" }),
+		username: z
+			.string()
+			.trim()
+			.min(1, { message: t("login.form.validation.username-required") }),
+		password: z
+			.string()
+			.min(1, { message: t("login.form.validation.password-required") }),
 	}),
 );
 
