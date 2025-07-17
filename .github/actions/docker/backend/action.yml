@@ -36,6 +36,9 @@ outputs:
   image-full-name:
     description: "Full name of the built image including registry and tag"
     value: ${{ steps.image-info.outputs.image-full-name }}
+  image-tags:
+    description: "Tags applied to the image"
+    value: ${{ steps.meta.outputs.tags }}
   build-status:
     description: "Status of the build process (success, failed)"
     value: ${{ steps.build-status.outputs.status }}
