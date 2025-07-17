@@ -6,6 +6,9 @@ Welcome to the complete documentation for Hatchgrid's CI/CD workflows. This sect
 
 ## 📋 Documentation Index
 
+<details>
+<summary>Click to expand documentation links</summary>
+
 ### 🚀 Main Documentation
 
 - **[CI/CD Guide](./ci-guide.md)** - Complete guide for the main monorepo workflow
@@ -15,6 +18,7 @@ Welcome to the complete documentation for Hatchgrid's CI/CD workflows. This sect
 ### 🔧 Technical Documentation
 
 - **[Configuration and Troubleshooting](./configuration-troubleshooting.md)** - Problem resolution and optimization
+</details>
 
 ---
 
