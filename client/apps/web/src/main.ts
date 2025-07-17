@@ -1,6 +1,5 @@
 import { createPinia } from "pinia";
 import { createApp } from "vue";
-import type { Composer } from "vue-i18n";
 import { setupAxiosInterceptors } from "@/config/axios-interceptor";
 import { InitializationService } from "@/services/initialization.service";
 import initI18N from "./i18n/i18n.config.ts";
@@ -31,9 +30,7 @@ async function bootstrap() {
 	const i18n = initI18N({
 		locale: initialLanguage,
 	});
-	const tempTranslationService = new TranslationService(
-		i18n.global as Composer,
-	);
+	const tempTranslationService = new TranslationService(i18n.global as any);
 
 	// 3. Load the initial language messages and wait for it
 	try {
@@ -60,7 +57,7 @@ async function bootstrap() {
 	const initializationService = new InitializationService({
 		app,
 		router,
-		i18n: i18n.global as Composer,
+		i18n: i18n.global,
 	});
 
 	try {

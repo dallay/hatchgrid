@@ -4,14 +4,14 @@ import languages from "@/i18n/languages.ts";
 
 export default class TranslationService {
 	private readonly i18n: Composer;
-	private languages = languages();
+	private readonly languages = languages();
 
 	constructor(i18n: Composer) {
 		this.i18n = i18n;
 	}
 
 	async refreshTranslation(newLanguage: string) {
-		const messages = this.i18n.messages.value as Record<string, unknown>;
+		const messages = this.i18n.messages as Record<string, any>;
 		if (this.i18n && !messages[newLanguage]) {
 			const translations = (
 				await import(`../i18n/${newLanguage}/${newLanguage}.js`)

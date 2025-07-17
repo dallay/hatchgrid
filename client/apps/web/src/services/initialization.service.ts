@@ -1,6 +1,5 @@
 import type { App } from "vue";
 import { watch } from "vue";
-import type { Composer } from "vue-i18n";
 import type { Router } from "vue-router";
 import TranslationService from "@/i18n/translation.service";
 import AccountService from "@/services/account.service";
@@ -10,7 +9,7 @@ import { useTranslationStore } from "@/stores/translation.store";
 export interface InitializationOptions {
 	app: App;
 	router: Router;
-	i18n: Composer;
+	i18n: any;
 }
 
 export class InitializationService {
