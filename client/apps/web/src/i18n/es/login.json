@@ -12,7 +12,11 @@
 			"forgotPassword": "¿Olvidó su contraseña?",
 			"loading": "Iniciando sesión...",
 			"register": "¿No tienes una cuenta?",
-			"register-link": "Regístrate"
+			"register-link": "Regístrate",
+			"validation": {
+				"username-required": "El usuario es obligatorio",
+				"password-required": "La contraseña es obligatoria"
+			}
 		}
 	}
 }

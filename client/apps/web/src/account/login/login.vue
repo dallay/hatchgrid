@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -11,19 +14,39 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import {
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/stores/auth";
 import { allowedRoutes } from "./allowedRoutes";
 
-const username = ref("");
-const password = ref("");
 const error = ref<string | null>(null);
 const isLoading = ref(false);
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 const { t } = useI18n();
+
+const formSchema = toTypedSchema(
+	z.object({
+		username: z
+			.string()
+			.trim()
+			.min(1, { message: t("login.form.validation.username-required") }),
+		password: z
+			.string()
+			.min(1, { message: t("login.form.validation.password-required") }),
+	}),
+);
+
+const { handleSubmit } = useForm({
+	validationSchema: formSchema,
+});
 
 const validateRedirectPath = (path: string | undefined): string | null => {
 	const suspiciousPatterns = [
@@ -48,12 +71,12 @@ const validateRedirectPath = (path: string | undefined): string | null => {
 	return path;
 };
 
-const handleLogin = async () => {
+const handleLogin = handleSubmit(async (values) => {
 	if (isLoading.value) return; // Prevent multiple submissions
 	error.value = null;
 	isLoading.value = true;
 	try {
-		await authStore.login(username.value, password.value);
+		await authStore.login(values.username, values.password);
 		const redirectQuery =
 			typeof route.query.redirect === "string"
 				? route.query.redirect
@@ -65,7 +88,7 @@ const handleLogin = async () => {
 	} finally {
 		isLoading.value = false;
 	}
-};
+});
 </script>
 <template>
   <div class="w-full h-screen flex items-center justify-center px-4">
@@ -80,30 +103,34 @@ const handleLogin = async () => {
       </CardHeader>
       <form @submit.prevent="handleLogin">
         <CardContent class="grid gap-4">
-          <div class="grid gap-2">
-            <Label for="username">{{ t("login.form.username") }}</Label>
-            <Input
-              id="username"
-              v-model="username"
-              type="text"
-              :placeholder="t('login.form.username-placeholder')"
-              required
-              autocomplete="username"
-              :aria-invalid="error ? 'true' : 'false'"
-            />
-          </div>
-          <div class="grid gap-2">
-            <Label for="password">{{ t("login.form.password") }}</Label>
-            <Input
-              id="password"
-              v-model="password"
-              type="password"
-              :placeholder="t('login.form.password-placeholder')"
-              required
-              autocomplete="current-password"
-              :aria-invalid="error ? 'true' : 'false'"
-            />
-          </div>
+          <FormField v-slot="{ componentField }" name="username">
+            <FormItem>
+              <FormLabel>{{ t("login.form.username") }}</FormLabel>
+              <FormControl>
+                <Input
+                  type="text"
+                  :placeholder="t('login.form.username-placeholder')"
+                  v-bind="componentField"
+                  autocomplete="username"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField v-slot="{ componentField }" name="password">
+            <FormItem>
+              <FormLabel>{{ t("login.form.password") }}</FormLabel>
+              <FormControl>
+                <Input
+                  type="password"
+                  :placeholder="t('login.form.password-placeholder')"
+                  v-bind="componentField"
+                  autocomplete="current-password"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
           <p
             v-if="error"
             id="error-message"
@@ -118,7 +145,10 @@ const handleLogin = async () => {
           <Button type="submit" class="w-full" :disabled="isLoading">
             <span v-if="!isLoading">{{ t("login.form.submit") }}</span>
             <span v-else>
-              <svg class="animate-spin h-4 w-4 mr-2 inline-block" viewBox="0 0 24 24">
+              <svg
+                class="animate-spin h-4 w-4 mr-2 inline-block"
+                viewBox="0 0 24 24"
+              >
                 <circle
                   class="opacity-25"
                   cx="12"
@@ -127,12 +157,12 @@ const handleLogin = async () => {
                   stroke="currentColor"
                   stroke-width="4"
                   fill="none"
-                ></circle>
+                />
                 <path
                   class="opacity-75"
                   fill="currentColor"
                   d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                ></path>
+                />
               </svg>
               {{ t("login.form.loading") }}
             </span>
