@@ -27,7 +27,7 @@ Describe the view, UI behavior, or user action flow to be implemented.
 - [ ] Requires a new API (create separate backend task)
 ---
 
-### 🧪 Testing
+## 🧪 Testing
 
 - [ ] Unit tests with Vitest
 - [ ] Snapshot or interaction tests if relevant
