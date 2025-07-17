@@ -21,11 +21,10 @@ Describe the view, UI behavior or user action flow to be implemented.
 
 ---
 
-### 🔌 Integration
+## 🔌 Integration
 
 - [ ] Uses an existing API (list endpoint if known)
 - [ ] Requires a new API (create separate backend task)
-
 ---
 
 ### 🧪 Testing
