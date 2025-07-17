@@ -13,7 +13,7 @@ assignees: []
 Describe the view, UI behavior, or user action flow to be implemented.
 
 ---
-### 🧱 Components
+## 🧱 Components
 
 - [ ] Reuse from `components/ui`
 - [ ] Follow `shadcn-vue` conventions
