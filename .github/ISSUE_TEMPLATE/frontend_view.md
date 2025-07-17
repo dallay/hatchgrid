@@ -34,7 +34,7 @@ Describe the view, UI behavior or user action flow to be implemented.
 
 ---
 
-### 📎 Notes
+## 📎 Notes
 
 - Use `fetcher`/API service pattern to keep data access centralized
 - Never call Keycloak directly — rely on BFF
