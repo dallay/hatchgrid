@@ -1,5 +1,12 @@
-## 🧩 Feature Description
+---
+name: Full Feature Request
+about: End-to-end feature covering backend & frontend
+title: "[FEATURE] "
+labels: ["feature"]
+assignees: []
+---
 
+# 🧩 Feature Description
 Briefly describe the goal of the feature, its purpose, and how it improves the user experience.
 
 ---
