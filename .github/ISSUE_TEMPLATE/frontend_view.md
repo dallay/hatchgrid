@@ -7,12 +7,12 @@ assignees: []
 ---
 
 # 🎨 Frontend Task
-### 🧩 Goal
 
-Describe the view, UI behavior or user action flow to be implemented.
+## 🧩 Goal
+
+Describe the view, UI behavior, or user action flow to be implemented.
 
 ---
-
 ### 🧱 Components
 
 - [ ] Reuse from `components/ui`
