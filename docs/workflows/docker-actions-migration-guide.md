@@ -28,6 +28,7 @@ First, determine which specialized action is appropriate for your application:
 Replace references to the old generic Docker action with the appropriate specialized action:
 
 **Old (Generic Docker Action - Removed)**:
+
 ```yaml
 - name: Build and push Docker image
   uses: ./.github/actions/docker/action.yml  # This action no longer exists
@@ -40,6 +41,7 @@ Replace references to the old generic Docker action with the appropriate special
 **New (Specialized Action)**:
 
 For Spring Boot backend applications:
+
 ```yaml
 - name: Build and push backend Docker image
   uses: ./.github/actions/docker/backend/action.yml
@@ -52,6 +54,7 @@ For Spring Boot backend applications:
 ```
 
 For Vue.js web applications:
+
 ```yaml
 - name: Build and push frontend web app Docker image
   uses: ./.github/actions/docker/frontend-web/action.yml
@@ -64,6 +67,7 @@ For Vue.js web applications:
 ```
 
 For Astro landing pages:
+
 ```yaml
 - name: Build and push frontend landing page Docker image
   uses: ./.github/actions/docker/frontend-landing/action.yml

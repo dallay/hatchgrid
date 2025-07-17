@@ -263,7 +263,7 @@ runs:
     - name: Scan Docker image for vulnerabilities
       uses: ./.github/actions/docker/security-scan
       with:
-        image-ref: ${{ steps.build.outputs.metadata.image }}@${{ steps.build.outputs.digest }}
+        image-ref: ${{ (steps.meta.outputs.tags | split('\n'))[0] }}@${{ steps.build.outputs.digest }}
         report-name: ${{ inputs.image-name }}-security-scan
         category: frontend-web-trivy
         severity: 'HIGH,CRITICAL'

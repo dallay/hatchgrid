@@ -1,35 +1,35 @@
-name: 'Backend Docker Build'
-description: 'Builds and pushes Spring Boot Docker images using Gradle bootBuildImage'
+name: "Backend Docker Build"
+description: "Builds and pushes Spring Boot Docker images using Gradle bootBuildImage"
 
 inputs:
   image-name:
-    description: 'Name of the Docker image'
+    description: "Name of the Docker image"
     required: true
-    default: 'backend'
+    default: "backend"
   github-token:
-    description: 'GitHub token for authentication'
+    description: "GitHub token for authentication"
     required: true
   docker-username:
-    description: 'Docker Hub username'
+    description: "Docker Hub username"
     required: false
   docker-password:
-    description: 'Docker Hub password'
+    description: "Docker Hub password"
     required: false
   deliver:
-    description: 'Whether to push to registries'
+    description: "Whether to push to registries"
     required: false
-    default: 'false'
+    default: "false"
   gradle-args:
-    description: 'Additional Gradle arguments'
+    description: "Additional Gradle arguments"
     required: false
-    default: ''
+    default: ""
 
 outputs:
   image-full-name:
-    description: 'Full name of the built image including registry and tag'
+    description: "Full name of the built image including registry and tag"
     value: ${{ steps.image-info.outputs.image-full-name }}
   build-status:
-    description: 'Status of the build process (success, failed)'
+    description: "Status of the build process (success, failed)"
     value: ${{ steps.build-status.outputs.status }}
 
 runs:
@@ -38,8 +38,8 @@ runs:
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
-        java-version: '21'
-        distribution: 'temurin'
+        java-version: "21"
+        distribution: "temurin"
         cache: gradle
 
     - name: Log build start
@@ -220,7 +220,7 @@ runs:
         fi
 
         # Push to Docker Hub if credentials were provided and login was successful
-        if [ "${{ inputs.docker-username != '' && inputs.docker-password != '' && steps.dockerhub-login.outcome == 'success' }}" == "true" ]; then
+        if [[ -n "${{ inputs.docker-username }}" && -n "${{ inputs.docker-password }}" && "${{ steps.dockerhub-login.outcome }}" == "success" ]]; thenif [ "${{ inputs.docker-username != '' && inputs.docker-password != '' && steps.dockerhub-login.outcome == 'success' }}" == "true" ]; then
           echo "  Pushing to Docker Hub..."
           DOCKERHUB_IMAGE=$(echo '${{ steps.meta.outputs.tags }}' | grep -v "ghcr.io" | head -n 1)
 

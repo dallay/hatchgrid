@@ -27,6 +27,7 @@ These actions replace the previous generic Docker action with technology-specifi
 **Purpose**: Builds and pushes a Spring Boot Docker image using Gradle's `bootBuildImage` task.
 
 **Key Features**:
+
 - Uses existing Java setup action
 - Executes `./gradlew bootBuildImage -x test`
 - Supports both GHCR and Docker Hub publishing
@@ -74,6 +75,7 @@ These actions replace the previous generic Docker action with technology-specifi
 **Purpose**: Builds and pushes a Vue.js web application Docker image with multi-stage build support.
 
 **Key Features**:
+
 - Uses existing Node.js/pnpm setup action
 - Multi-stage Docker build with Node.js optimization
 - Environment-specific build configurations
@@ -121,6 +123,7 @@ These actions replace the previous generic Docker action with technology-specifi
 **Purpose**: Builds and pushes an Astro landing page Docker image optimized for static site generation.
 
 **Key Features**:
+
 - Uses existing Node.js/pnpm setup action
 - Optimized for static site generation
 - Astro-specific build optimizations
@@ -168,6 +171,7 @@ These actions replace the previous generic Docker action with technology-specifi
 **Purpose**: Scans Docker images for vulnerabilities using Trivy and uploads SARIF reports.
 
 **Key Features**:
+
 - Trivy vulnerability scanning
 - SARIF report generation
 - GitHub Security tab integration
@@ -214,6 +218,7 @@ If you're migrating from the old generic Docker action to the new specialized ac
 2. **Update your workflow** - Replace the old Docker action with the appropriate specialized action:
 
    **Old (Generic Docker Action - Removed)**:
+
    ```yaml
    # This action has been removed and should no longer be used
    # The following is shown for historical reference only
@@ -226,6 +231,7 @@ If you're migrating from the old generic Docker action to the new specialized ac
    ```
 
    **New (Specialized Action)**:
+
    ```yaml
    - name: Build and push Docker image
      uses: ./.github/actions/docker/backend/action.yml  # or frontend-web or frontend-landing

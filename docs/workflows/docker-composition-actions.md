@@ -26,6 +26,7 @@ The previous generic Docker action (`.github/actions/docker/action.yml`) has bee
 **Purpose**: Builds and pushes a Spring Boot Docker image using Gradle's `bootBuildImage` task.
 
 **Key Features**:
+
 - Uses existing Java setup action
 - Executes `./gradlew bootBuildImage -x test`
 - Supports both GHCR and Docker Hub publishing
@@ -73,6 +74,7 @@ The previous generic Docker action (`.github/actions/docker/action.yml`) has bee
 **Purpose**: Builds and pushes a Vue.js web application Docker image with multi-stage build support.
 
 **Key Features**:
+
 - Uses existing Node.js/pnpm setup action
 - Multi-stage Docker build with Node.js optimization
 - Environment-specific build configurations
@@ -120,6 +122,7 @@ The previous generic Docker action (`.github/actions/docker/action.yml`) has bee
 **Purpose**: Builds and pushes an Astro landing page Docker image optimized for static site generation.
 
 **Key Features**:
+
 - Uses existing Node.js/pnpm setup action
 - Optimized for static site generation
 - Astro-specific build optimizations
@@ -167,6 +170,7 @@ The previous generic Docker action (`.github/actions/docker/action.yml`) has bee
 **Purpose**: Scans Docker images for vulnerabilities using Trivy and uploads SARIF reports.
 
 **Key Features**:
+
 - Trivy vulnerability scanning
 - SARIF report generation
 - GitHub Security tab integration
