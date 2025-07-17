@@ -18,7 +18,7 @@ inputs:
   deliver:
     description: 'Whether to push to registries'
     required: false
-    default: 'true'
+    default: 'false'
   gradle-args:
     description: 'Additional Gradle arguments'
     required: false
