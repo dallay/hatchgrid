@@ -2,87 +2,86 @@
   <div class="flex items-center justify-center min-h-full">
     <div class="w-full max-w-md space-y-6">
       <div class="text-center">
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Create Account</h2>
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
+          Create Account
+        </h2>
         <p class="mt-2 text-gray-600 dark:text-gray-400">
           Join Hatchgrid to start building amazing applications
         </p>
       </div>
 
-      <form @submit.prevent="handleRegister" class="space-y-6">
-        <div class="grid gap-2">
-          <Label for="firstName">First Name</Label>
-          <Input
-            id="firstName"
-            v-model="form.firstName"
-            type="text"
-            placeholder="Enter your first name"
-            required
-            @input="validateField('firstName')"
-          />
-          <p v-if="errors.firstName" class="mt-1 text-xs text-red-600">
-            {{ errors.firstName }}
-          </p>
-        </div>
+      <form class="space-y-6" @submit="handleRegister">
+        <FormField v-slot="{ componentField }" name="firstName">
+          <FormItem>
+            <FormLabel>First Name</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                placeholder="Enter your first name"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <div class="grid gap-2">
-          <Label for="lastName">Last Name</Label>
-          <Input
-            id="lastName"
-            v-model="form.lastName"
-            type="text"
-            placeholder="Enter your last name"
-            required
-            @input="validateField('lastName')"
-          />
-          <p v-if="errors.lastName" class="mt-1 text-xs text-red-600">
-            {{ errors.lastName }}
-          </p>
-        </div>
+        <FormField v-slot="{ componentField }" name="lastName">
+          <FormItem>
+            <FormLabel>Last Name</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                placeholder="Enter your last name"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <div class="grid gap-2">
-          <Label for="email">Email</Label>
-          <Input
-            id="email"
-            v-model="form.email"
-            type="email"
-            placeholder="Enter your email"
-            required
-            @input="validateField('email')"
-          />
-          <p v-if="errors.email" class="mt-1 text-xs text-red-600">{{ errors.email }}</p>
-        </div>
+        <FormField v-slot="{ componentField }" name="email">
+          <FormItem>
+            <FormLabel>Email</FormLabel>
+            <FormControl>
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <div class="grid gap-2">
-          <Label for="password">Password</Label>
-          <Input
-            id="password"
-            v-model="form.password"
-            type="password"
-            placeholder="Create a password"
-            required
-            @input="validateField('password')"
-          />
-          <p v-if="errors.password" class="mt-1 text-xs text-red-600">
-            {{ errors.password }}
-          </p>
-        </div>
+        <FormField v-slot="{ componentField }" name="password">
+          <FormItem>
+            <FormLabel>Password</FormLabel>
+            <FormControl>
+              <Input
+                type="password"
+                placeholder="Create a password"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <div class="grid gap-2">
-          <Label for="confirmPassword">Confirm Password</Label>
-          <Input
-            id="confirmPassword"
-            v-model="form.confirmPassword"
-            type="password"
-            placeholder="Confirm your password"
-            required
-            @input="validateField('confirmPassword')"
-          />
-          <p v-if="errors.confirmPassword" class="mt-1 text-xs text-red-600">
-            {{ errors.confirmPassword }}
-          </p>
-        </div>
+        <FormField v-slot="{ componentField }" name="confirmPassword">
+          <FormItem>
+            <FormLabel>Confirm Password</FormLabel>
+            <FormControl>
+              <Input
+                type="password"
+                placeholder="Confirm your password"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <Button type="submit" :disabled="isLoading || !formIsValid" class="w-full">
+        <Button type="submit" :disabled="isLoading" class="w-full">
           {{ isLoading ? "Creating Account..." : "Create Account" }}
         </Button>
       </form>
@@ -103,108 +102,74 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import { ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import {
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();
 const authStore = useAuthStore();
 const isLoading = ref(false);
-const form = ref({
-	firstName: "",
-	lastName: "",
-	email: "",
-	password: "",
-	confirmPassword: "",
+
+const formSchema = toTypedSchema(
+	z
+		.object({
+			firstName: z
+				.string()
+				.min(2, { message: "First name must be at least 2 characters." }),
+			lastName: z
+				.string()
+				.min(2, { message: "Last name must be at least 2 characters." }),
+			email: z
+				.string()
+				.email({ message: "Please enter a valid email address." }),
+			password: z
+				.string()
+				.min(8, { message: "Password must be at least 8 characters." })
+				.regex(/[A-Z]/, {
+					message: "Password must include at least one uppercase letter.",
+				})
+				.regex(/[a-z]/, {
+					message: "Password must include at least one lowercase letter.",
+				})
+				.regex(/\d/, { message: "Password must include at least one number." })
+				.regex(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/, {
+					message: "Password must include at least one special character.",
+				}),
+			confirmPassword: z.string(),
+		})
+		.refine((data) => data.password === data.confirmPassword, {
+			message: "Passwords do not match.",
+			path: ["confirmPassword"],
+		}),
+);
+
+const { handleSubmit } = useForm({
+	validationSchema: formSchema,
 });
-const errors = ref({
-	firstName: "",
-	lastName: "",
-	email: "",
-	password: "",
-	confirmPassword: "",
-});
 
-const validateField = (field: string) => {
-	switch (field) {
-		case "firstName":
-			errors.value.firstName =
-				form.value.firstName.length < 2
-					? "First name must be at least 2 characters."
-					: "";
-			break;
-		case "lastName":
-			errors.value.lastName =
-				form.value.lastName.length < 2
-					? "Last name must be at least 2 characters."
-					: "";
-			break;
-		case "email":
-			errors.value.email = !/^\S+@\S+\.\S+$/.test(form.value.email)
-				? "Please enter a valid email address."
-				: "";
-			break;
-		case "password": {
-			const MIN_LENGTH = 8;
-			const LENGTH_REGEX = new RegExp(`^.{${MIN_LENGTH},}`);
-			const UPPERCASE_REGEX = /[A-Z]/;
-			const LOWERCASE_REGEX = /[a-z]/;
-			const DIGIT_REGEX = /\d/;
-			const SPECIAL_CHAR_REGEX = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
-
-			const password = form.value.password;
-			if (!LENGTH_REGEX.test(password)) {
-				errors.value.password = `Password must be at least ${MIN_LENGTH} characters.`;
-			} else if (!UPPERCASE_REGEX.test(password)) {
-				errors.value.password =
-					"Password must include at least one uppercase letter.";
-			} else if (!LOWERCASE_REGEX.test(password)) {
-				errors.value.password =
-					"Password must include at least one lowercase letter.";
-			} else if (!DIGIT_REGEX.test(password)) {
-				errors.value.password = "Password must include at least one number.";
-			} else if (!SPECIAL_CHAR_REGEX.test(password)) {
-				errors.value.password =
-					"Password must include at least one special character.";
-			} else {
-				errors.value.password = "";
-			}
-			break;
-		}
-		case "confirmPassword":
-			errors.value.confirmPassword =
-				form.value.password !== form.value.confirmPassword
-					? "Passwords do not match."
-					: "";
-			break;
-	}
-};
-
-const validateForm = () => {
-	validateField("firstName");
-	validateField("lastName");
-	validateField("email");
-	validateField("password");
-	validateField("confirmPassword");
-	return Object.values(errors.value).every((msg) => !msg);
-};
-
-const formIsValid = computed(() => validateForm());
-
-const handleRegister = async () => {
-	if (isLoading.value || !formIsValid.value) return;
+const handleRegister = handleSubmit(async (values) => {
+	if (isLoading.value) return;
 
 	isLoading.value = true;
 	try {
 		await authStore.register({
-			login: form.value.email,
-			firstname: form.value.firstName,
-			lastname: form.value.lastName,
-			email: form.value.email,
+			login: values.email,
+			firstname: values.firstName,
+			lastname: values.lastName,
+			email: values.email,
 			langKey: "en",
 		});
 
@@ -223,5 +188,5 @@ const handleRegister = async () => {
 	} finally {
 		isLoading.value = false;
 	}
-};
+});
 </script>
