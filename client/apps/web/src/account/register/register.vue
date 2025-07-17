@@ -2,123 +2,88 @@
   <div class="flex items-center justify-center min-h-full">
     <div class="w-full max-w-md space-y-6">
       <div class="text-center">
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Create Account</h2>
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
+          Create Account
+        </h2>
         <p class="mt-2 text-gray-600 dark:text-gray-400">
           Join Hatchgrid to start building amazing applications
         </p>
       </div>
 
-      <form @submit.prevent="handleRegister" class="space-y-6">
-        <div>
-          <label
-            for="firstName"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            First Name
-          </label>
-          <input
-            id="firstName"
-            v-model="form.firstName"
-            type="text"
-            required
-            placeholder="Enter your first name"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            @input="validateField('firstName')"
-          />
-          <p v-if="errors.firstName" class="mt-1 text-xs text-red-600">
-            {{ errors.firstName }}
-          </p>
-        </div>
+      <form class="space-y-6" @submit="handleRegister">
+        <FormField v-slot="{ componentField }" name="firstName">
+          <FormItem>
+            <FormLabel>First Name</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                placeholder="Enter your first name"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <div>
-          <label
-            for="lastName"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Last Name
-          </label>
-          <input
-            id="lastName"
-            v-model="form.lastName"
-            type="text"
-            required
-            placeholder="Enter your last name"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            @input="validateField('lastName')"
-          />
-          <p v-if="errors.lastName" class="mt-1 text-xs text-red-600">
-            {{ errors.lastName }}
-          </p>
-        </div>
+        <FormField v-slot="{ componentField }" name="lastName">
+          <FormItem>
+            <FormLabel>Last Name</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                placeholder="Enter your last name"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <div>
-          <label
-            for="username"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Username
-          </label>
-          <input
-            id="username"
-            v-model="form.username"
-            type="text"
-            required
-            placeholder="Choose a username"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            @input="validateField('username')"
-          />
-          <p v-if="errors.username" class="mt-1 text-xs text-red-600">
-            {{ errors.username }}
-          </p>
-        </div>
+        <FormField v-slot="{ componentField }" name="email">
+          <FormItem>
+            <FormLabel>Email</FormLabel>
+            <FormControl>
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <div>
-          <label
-            for="email"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Email
-          </label>
-          <input
-            id="email"
-            v-model="form.email"
-            type="email"
-            required
-            placeholder="Enter your email"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            @input="validateField('email')"
-          />
-          <p v-if="errors.email" class="mt-1 text-xs text-red-600">{{ errors.email }}</p>
-        </div>
+        <FormField v-slot="{ componentField }" name="password">
+          <FormItem>
+            <FormLabel>Password</FormLabel>
+            <FormControl>
+              <Input
+                type="password"
+                placeholder="Create a password"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <div>
-          <label
-            for="password"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Password
-          </label>
-          <input
-            id="password"
-            v-model="form.password"
-            type="password"
-            required
-            placeholder="Create a password"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            @input="validateField('password')"
-          />
-          <p v-if="errors.password" class="mt-1 text-xs text-red-600">
-            {{ errors.password }}
-          </p>
-        </div>
+        <FormField v-slot="{ componentField }" name="confirmPassword">
+          <FormItem>
+            <FormLabel>Confirm Password</FormLabel>
+            <FormControl>
+              <Input
+                type="password"
+                placeholder="Confirm your password"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <button
-          type="submit"
-          :disabled="isLoading || !formIsValid"
-          class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-2 px-4 rounded-md transition-colors disabled:cursor-not-allowed"
-        >
+        <Button type="submit" :disabled="isLoading" class="w-full">
           {{ isLoading ? "Creating Account..." : "Create Account" }}
-        </button>
+        </Button>
       </form>
 
       <div class="text-center">
@@ -137,105 +102,78 @@
 </template>
 
 <script setup lang="ts">
-import axios from "axios";
-import { computed, ref } from "vue";
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { RouterLink, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import {
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();
+const authStore = useAuthStore();
 const isLoading = ref(false);
-const form = ref({
-	firstName: "",
-	lastName: "",
-	username: "",
-	email: "",
-	password: "",
+const { t } = useI18n();
+
+const formSchema = toTypedSchema(
+	z
+		.object({
+			firstName: z
+				.string()
+				.min(2, { message: t("register.form.validation.firstName-min") }),
+			lastName: z
+				.string()
+				.min(2, { message: t("register.form.validation.lastName-min") }),
+			email: z
+				.string()
+				.email({ message: t("register.form.validation.email-invalid") }),
+			password: z
+				.string()
+				.min(8, { message: t("register.form.validation.password-min") })
+				.regex(/[A-Z]/, {
+					message: t("register.form.validation.password-uppercase"),
+				})
+				.regex(/[a-z]/, {
+					message: t("register.form.validation.password-lowercase"),
+				})
+				.regex(/\d/, { message: t("register.form.validation.password-number") })
+				.regex(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/, {
+					message: t("register.form.validation.password-special"),
+				}),
+			confirmPassword: z.string(),
+		})
+		.refine((data) => data.password === data.confirmPassword, {
+			message: t("register.form.validation.password-match"),
+			path: ["confirmPassword"],
+		}),
+);
+
+const { handleSubmit } = useForm({
+	validationSchema: formSchema,
 });
-const errors = ref({
-	firstName: "",
-	lastName: "",
-	username: "",
-	email: "",
-	password: "",
-});
 
-const validateField = (field: string) => {
-	switch (field) {
-		case "firstName":
-			errors.value.firstName =
-				form.value.firstName.length < 2
-					? "First name must be at least 2 characters."
-					: "";
-			break;
-		case "lastName":
-			errors.value.lastName =
-				form.value.lastName.length < 2
-					? "Last name must be at least 2 characters."
-					: "";
-			break;
-		case "username":
-			errors.value.username =
-				form.value.username.length < 3
-					? "Username must be at least 3 characters."
-					: "";
-			break;
-		case "email":
-			errors.value.email = !/^\S+@\S+\.\S+$/.test(form.value.email)
-				? "Please enter a valid email address."
-				: "";
-			break;
-		case "password": {
-			const MIN_LENGTH = 8;
-			const LENGTH_REGEX = new RegExp(`^.{${MIN_LENGTH},}$`);
-			const UPPERCASE_REGEX = /[A-Z]/;
-			const LOWERCASE_REGEX = /[a-z]/;
-			const DIGIT_REGEX = /\d/;
-			const SPECIAL_CHAR_REGEX = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
-
-			const password = form.value.password;
-			if (!LENGTH_REGEX.test(password)) {
-				errors.value.password = `Password must be at least ${MIN_LENGTH} characters.`;
-			} else if (!UPPERCASE_REGEX.test(password)) {
-				errors.value.password =
-					"Password must include at least one uppercase letter.";
-			} else if (!LOWERCASE_REGEX.test(password)) {
-				errors.value.password =
-					"Password must include at least one lowercase letter.";
-			} else if (!DIGIT_REGEX.test(password)) {
-				errors.value.password = "Password must include at least one number.";
-			} else if (!SPECIAL_CHAR_REGEX.test(password)) {
-				errors.value.password =
-					"Password must include at least one special character.";
-			} else {
-				errors.value.password = "";
-			}
-			break;
-		}
-	}
-};
-
-const validateForm = () => {
-	validateField("firstName");
-	validateField("lastName");
-	validateField("username");
-	validateField("email");
-	validateField("password");
-	return Object.values(errors.value).every((msg) => !msg);
-};
-
-const formIsValid = computed(() => validateForm());
-
-const handleRegister = async () => {
-	if (isLoading.value || !formIsValid.value) return;
+const handleRegister = handleSubmit(async (values) => {
+	if (isLoading.value) return;
 
 	isLoading.value = true;
 	try {
-		await axios.post("/api/register", {
-			email: form.value.email,
-			password: form.value.password,
-			firstName: form.value.firstName,
-			lastName: form.value.lastName,
-			username: form.value.username,
+		await authStore.register({
+			login: values.email,
+			firstname: values.firstName,
+			lastname: values.lastName,
+			email: values.email,
+			password: values.password,
+			langKey: "en",
 		});
 
 		toast.success("Account created successfully!", {
@@ -248,13 +186,10 @@ const handleRegister = async () => {
 		if (import.meta.env.DEV) {
 			console.error("Registration error:", error);
 		}
-		let description = "Unable to create your account. Please try again.";
-		if (axios.isAxiosError(error)) {
-			description = error.response?.data?.detail || description;
-		}
+		const description = "Unable to create your account. Please try again.";
 		toast.error("Registration failed", { description });
 	} finally {
 		isLoading.value = false;
 	}
-};
+});
 </script>

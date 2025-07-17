@@ -4,7 +4,7 @@ import languages from "@/i18n/languages.ts";
 
 export default class TranslationService {
 	private readonly i18n: Composer;
-	private languages = languages();
+	private readonly languages = languages();
 
 	constructor(i18n: Composer) {
 		this.i18n = i18n;

@@ -44,8 +44,9 @@ export class InitializationService {
 		// Set up language watchers for reactivity
 		this.setupLanguageWatchers();
 
-		// Only initialize authentication if not already on login page
-		if (this.router.currentRoute.value.path !== "/login") {
+		// Only initialize authentication if not on a public page
+		const publicPages = ["/login", "/register"];
+		if (!publicPages.includes(this.router.currentRoute.value.path)) {
 			await this.initializeAuthentication();
 		}
 	}
@@ -55,8 +56,8 @@ export class InitializationService {
 	 */
 	private setupRouterGuards(): void {
 		this.router.beforeResolve(async (to, _from, next) => {
-			// Prevent account update loop if navigating to login
-			if (to.path === "/login") {
+			// Prevent account update loop if navigating to login or register
+			if (to.path === "/login" || to.path === "/register") {
 				next();
 				return;
 			}
