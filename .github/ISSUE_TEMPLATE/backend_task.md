@@ -1,5 +1,12 @@
-## 🎯 Backend Task
+---
+name: Backend Task
+about: Template for backend implementation tasks
+title: "[BACKEND] "
+labels: ["backend"]
+assignees: []
+---
 
+# 🎯 Backend Task
 ### 🧩 Goal
 
 Describe what this backend task should accomplish (e.g., create endpoint, add validation, apply business rule).
