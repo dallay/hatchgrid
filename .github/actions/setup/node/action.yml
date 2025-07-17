@@ -15,12 +15,14 @@ runs:
   using: "composite"
   steps:
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      # Pinned to v4 commit hash for security
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
       with:
         node-version: ${{ inputs.node-version }}
 
     - name: Install pnpm
-      uses: pnpm/action-setup@v3
+      # Pinned to v3 commit hash for security
+      uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d # v3
       with:
         version: ${{ inputs.pnpm-version }}
         run_install: false
@@ -33,7 +35,8 @@ runs:
         echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_ENV
 
     - name: Setup pnpm cache
-      uses: actions/cache@v4
+      # Pinned to v4 commit hash for security
+      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
       with:
         path: ${{ env.STORE_PATH }}
         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -45,7 +48,8 @@ runs:
       run: pnpm install --frozen-lockfile
 
     - name: Setup pnpm cache
-      uses: actions/cache@v4
+      # Pinned to v4 commit hash for security
+      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
       with:
         path: ${{ env.STORE_PATH }}
         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}

@@ -15,13 +15,15 @@ runs:
   using: "composite"
   steps:
     - name: Set up JDK
-      uses: actions/setup-java@v4
+      # Pinned to v4 commit hash for security
+      uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.distribution }}
         cache: gradle
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      # Pinned to v3 commit hash for security
+      uses: gradle/actions/setup-gradle@6cfc8b8e8bb586cc164bef1c478c1eea3a4d6a19 # v3
       with:
         gradle-version: wrapper
