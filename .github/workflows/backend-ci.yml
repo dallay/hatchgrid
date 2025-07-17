@@ -45,6 +45,9 @@ jobs:
 
       - name: Setup Java
         uses: ./.github/actions/setup/java
+        with:
+          java-version: '21'
+          distribution: 'temurin'
 
       - name: Install reviewdog
         run: |
@@ -72,6 +75,9 @@ jobs:
 
       - name: Setup Java
         uses: ./.github/actions/setup/java
+        with:
+          java-version: '21'
+          distribution: 'temurin'
 
       - name: Build with Gradle
         run: ./gradlew build -x test
