@@ -49,6 +49,7 @@ This security scanning action is integrated with all Docker composition actions:
 3. **Frontend Landing Page Action**: Scans Astro landing page images with category `frontend-landing-trivy`
 
 The security scanning is configured to:
+
 - Run for all Docker images, regardless of whether they are pushed to registries
 - Not block the pipeline on scan failures (non-blocking)
 - Generate artifacts with scan results for later analysis

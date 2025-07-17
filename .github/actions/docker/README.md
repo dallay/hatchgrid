@@ -11,6 +11,7 @@ This directory contains specialized Docker composition actions for building and 
 **Purpose**: Builds and pushes a Spring Boot Docker image using Gradle's `bootBuildImage` task.
 
 **Key Features**:
+
 - Uses existing Java setup action
 - Executes `./gradlew bootBuildImage -x test`
 - Supports both GHCR and Docker Hub publishing
@@ -26,6 +27,7 @@ This directory contains specialized Docker composition actions for building and 
 **Purpose**: Builds and pushes a Vue.js web application Docker image with multi-stage build support.
 
 **Key Features**:
+
 - Uses existing Node.js/pnpm setup action
 - Multi-stage Docker build with Node.js optimization
 - Environment-specific build configurations
@@ -40,6 +42,7 @@ This directory contains specialized Docker composition actions for building and 
 **Purpose**: Builds and pushes an Astro landing page Docker image optimized for static site generation.
 
 **Key Features**:
+
 - Uses existing Node.js/pnpm setup action
 - Optimized for static site generation
 - Astro-specific build optimizations
@@ -54,6 +57,7 @@ This directory contains specialized Docker composition actions for building and 
 **Purpose**: Scans Docker images for vulnerabilities using Trivy and uploads SARIF reports.
 
 **Key Features**:
+
 - Trivy vulnerability scanning
 - SARIF report generation
 - GitHub Security tab integration
@@ -66,6 +70,7 @@ This directory contains specialized Docker composition actions for building and 
 The previous generic Docker action (`.github/actions/docker/action.yml`) has been removed and replaced with these specialized actions. If you have workflows still using the old action, you should update them to use the appropriate specialized action based on your application type.
 
 For detailed documentation and usage examples, see:
+
 - [Docker Composition Actions Documentation](../../../docs/workflows/docker-composition-actions.md)
 - [Docker Actions Migration Guide](../../../docs/workflows/docker-actions-migration-guide.md)
 
