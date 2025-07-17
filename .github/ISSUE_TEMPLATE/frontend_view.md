@@ -1,5 +1,12 @@
-## 🎨 Frontend Task
+---
+name: Frontend Task
+about: Template for frontend-only implementation work
+title: "[FRONTEND] "
+labels: ["frontend"]
+assignees: []
+---
 
+# 🎨 Frontend Task
 ### 🧩 Goal
 
 Describe the view, UI behavior or user action flow to be implemented.
