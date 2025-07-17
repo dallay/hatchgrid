@@ -64,8 +64,15 @@ EOF
 # Copy built files from build stage
 COPY --from=build /app/client/apps/landing-page/dist /usr/share/nginx/html
 
+# Create required directories with proper permissions
+RUN mkdir -p /var/cache/nginx /var/run \
+    && chown -R 101:101 /usr/share/nginx /var/cache/nginx /var/run
+
 # Expose port
 EXPOSE 80
+
+# Switch to non-root user (nginx)
+USER 101
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
