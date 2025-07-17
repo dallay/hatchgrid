@@ -90,7 +90,7 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v5 # Use the latest version
         env:
-          VALIDATE_ALL_CODEBASE: true # Only lint changed files
+          VALIDATE_ALL_CODEBASE: true  # Lint entire codebase
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Configure specific linters if necessary, for example:
