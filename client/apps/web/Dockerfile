@@ -49,8 +49,9 @@ COPY client/apps/web/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/client/apps/web/dist /usr/share/nginx/html
 
 # Create required directories with proper permissions
+# Note: /usr/share/nginx already has proper permissions in the official nginx:alpine image
 RUN mkdir -p /var/cache/nginx /var/run \
-    && chown -R 101:101 /usr/share/nginx /var/cache/nginx /var/run
+    && chown -R 101:101 /var/cache/nginx /var/run
 
 # Expose port
 EXPOSE 80

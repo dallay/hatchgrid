@@ -1,40 +1,40 @@
 # 🚀 GitHub Actions Workflows - Hatchgrid
 
-Esta documentación proporciona una visión general completa de todos los workflows y acciones personalizadas del monorepo de Hatchgrid.
+This documentation provides a comprehensive overview of all workflows and custom actions in the Hatchgrid monorepo.
 
 ---
 
-## 📋 Índice de Workflows
+## 📋 Workflows Index
 
-### 🔄 Workflows Principales
+### 🔄 Main Workflows
 
-- [Monorepo CI](#monorepo-ci) - Pipeline principal de CI/CD
-- [Backend CI](#backend-ci) - CI específico para Kotlin/Java
-- [Frontend CI](#frontend-ci) - CI específico para Node.js/TypeScript
-- [Deploy](#deploy) - Despliegue a múltiples entornos
+- [Monorepo CI](#monorepo-ci) - Main CI/CD pipeline
+- [Backend CI](#backend-ci) - Kotlin/Java specific CI
+- [Frontend CI](#frontend-ci) - Node.js/TypeScript specific CI
+- [Deploy](#deploy) - Deployment to multiple environments
 
-### 🛠️ Workflows de Soporte
+### 🛠️ Support Workflows
 
-- [Cleanup Cache](#cleanup-cache) - Gestión automática de caché
-- [Issue Labeler](#issue-labeler) - Etiquetado automático de issues
-- [Semantic Pull Request](#semantic-pull-request) - Validación de PRs
-- [Test PNPM](#test-pnpm) - Verificación de configuración
+- [Cleanup Cache](#cleanup-cache) - Automatic cache management
+- [Issue Labeler](#issue-labeler) - Automatic issue labeling
+- [Semantic Pull Request](#semantic-pull-request) - PR validation
+- [Test PNPM](#test-pnpm) - Configuration verification
 
-### 🔧 Acciones Personalizadas
+### 🔧 Custom Actions
 
-- [Setup Java](#setup-java) - Configuración de Java y Gradle
-- [Setup Node](#setup-node) - Configuración de Node.js y pnpm
-- [Specialized Docker Actions](#specialized-docker-actions) - Acciones especializadas para Docker
+- [Setup Java](#setup-java) - Java and Gradle configuration
+- [Setup Node](#setup-node) - Node.js and pnpm configuration
+- [Specialized Docker Actions](#specialized-docker-actions) - Specialized Docker actions
 
 ---
 
 ## 🔄 Monorepo CI
 
-**Archivo**: `.github/workflows/monorepo-ci.yml`
+**File**: `.github/workflows/monorepo-ci.yml`
 
-### Descripción
+### Description
 
-Workflow principal que orquesta todo el proceso de CI/CD, incluyendo análisis de seguridad, linting, testing e integración.
+Main workflow that orchestrates the entire CI/CD process, including security analysis, linting, testing, and integration.
 
 ### Triggers
 
@@ -50,32 +50,32 @@ on:
       environment: [ development, staging ]
 ```
 
-### Jobs Ejecutados
+### Executed Jobs
 
-1. **labeler** - Etiquetado automático de PRs
-2. **codeql-analysis** - Análisis de seguridad (JavaScript, Kotlin)
-3. **super-linter** - Validación de código con múltiples linters
-4. **dependency-review** - Revisión de dependencias en PRs
-5. **owasp-dependency-check** - Análisis de vulnerabilidades OWASP
-6. **backend** - Delegación a workflow de backend
-7. **frontend** - Delegación a workflow de frontend
-8. **integration** - Tests de integración post-build
+1. **labeler** - Automatic PR labeling
+2. **codeql-analysis** - Security analysis (JavaScript, Kotlin)
+3. **super-linter** - Code validation with multiple linters
+4. **dependency-review** - Dependency review in PRs
+5. **owasp-dependency-check** - OWASP vulnerability analysis
+6. **backend** - Delegation to backend workflow
+7. **frontend** - Delegation to frontend workflow
+8. **integration** - Post-build integration tests
 
-### Características Especiales
+### Special Features
 
-- **Concurrencia**: Cancela ejecuciones previas en la misma rama
-- **Seguridad**: Múltiples capas de análisis de seguridad
-- **Artefactos**: Genera reportes de integración y seguridad
+- **Concurrency**: Cancels previous runs on the same branch
+- **Security**: Multiple layers of security analysis
+- **Artifacts**: Generates integration and security reports
 
 ---
 
 ## 🏗️ Backend CI
 
-**Archivo**: `.github/workflows/backend-ci.yml`
+**File**: `.github/workflows/backend-ci.yml`
 
-### Descripción
+### Description
 
-CI específico para el backend desarrollado en Kotlin/Java con Gradle.
+Specific CI for the backend developed in Kotlin/Java with Gradle.
 
 ### Triggers
 
@@ -92,30 +92,30 @@ paths:
 
 #### Lint Job
 
-- **Herramienta**: Detekt para análisis estático de Kotlin
-- **Integración**: Reviewdog para comentarios automáticos en PR
-- **Formato**: Reportes SARIF para GitHub Security
+- **Tool**: Detekt for Kotlin static analysis
+- **Integration**: Reviewdog for automatic PR comments
+- **Format**: SARIF reports for GitHub Security
 
 #### Build Job
 
 - **Build**: `./gradlew build -x test`
 - **Testing**: `./gradlew test`
-- **Cobertura**: Kover → Codecov
-- **Artefactos**: JARs compilados y reportes de test
+- **Coverage**: Kover → Codecov
+- **Artifacts**: Compiled JARs and test reports
 
-### Variables de Entorno
+### Environment Variables
 
-- `NVD_API_KEY`: Para análisis de vulnerabilidades de dependencias
+- `NVD_API_KEY`: For dependency vulnerability analysis
 
 ---
 
 ## 🎨 Frontend CI
 
-**Archivo**: `.github/workflows/frontend-ci.yml`
+**File**: `.github/workflows/frontend-ci.yml`
 
-### Descripción
+### Description
 
-CI específico para el frontend desarrollado en Node.js/TypeScript.
+Specific CI for the frontend developed in Node.js/TypeScript.
 
 ### Triggers
 
@@ -131,39 +131,39 @@ paths:
 
 #### Lint Job
 
-- **Herramienta**: Biome para linting y formatting
-- **Integración**: Reviewdog para feedback en PR
-- **Configuración**: Falla en errores, warnings como sugerencias
+- **Tool**: Biome for linting and formatting
+- **Integration**: Reviewdog for PR feedback
+- **Configuration**: Fails on errors, warnings as suggestions
 
 #### Build Job
 
-- **Comando**: `pnpm build`
-- **Artefactos**: Aplicaciones compiladas y landing page
+- **Command**: `pnpm build`
+- **Artifacts**: Compiled applications and landing page
 
 #### Test Job
 
-- **Comando**: `pnpm test`
-- **Cobertura**: LCOV → Codecov
+- **Command**: `pnpm test`
+- **Coverage**: LCOV → Codecov
 
 ---
 
 ## 🚀 Deploy
 
-**Archivo**: `.github/workflows/deploy.yml`
+**File**: `.github/workflows/deploy.yml`
 
-### Descripción
+### Description
 
-Pipeline de despliegue con soporte para múltiples entornos y estrategias de deployment.
+Deployment pipeline with support for multiple environments and deployment strategies.
 
-### Triggers y Estrategias
+### Triggers and Strategies
 
 ```yaml
-# Manual con selección de entorno
+# Manual with environment selection
 workflow_dispatch:
   inputs:
     environment: [development, staging, production]
 
-# Automático basado en branch/tag
+# Automatic based on branch/tag
 push:
   branches: [main]     # → development
   tags: ['v*']         # → production
@@ -173,50 +173,50 @@ push:
 
 #### 1. determine-environment
 
-Lógica de determinación de entorno:
+Environment determination logic:
 
-- Manual: Usa input del usuario
+- Manual: Uses user input
 - Tag `v*`: production
-- Push a main: development
+- Push to main: development
 
 #### 2. build-backend
 
-- Compilación con Gradle
-- Build de imagen Docker
-- Escaneo de seguridad con Trivy
-- Push a GitHub Container Registry
+- Compilation with Gradle
+- Docker image build
+- Security scanning with Trivy
+- Push to GitHub Container Registry
 
 #### 3. build-frontend
 
-- Compilación con pnpm
-- Build de imagen Docker
-- Escaneo de seguridad con Trivy
-- Push a GitHub Container Registry
+- Compilation with pnpm
+- Docker image build
+- Security scanning with Trivy
+- Push to GitHub Container Registry
 
 #### 4. deploy
 
-- Configuración de kubectl
-- Actualización de manifiestos K8s
-- Despliegue a cluster
-- Verificación de rollout
+- kubectl configuration
+- K8s manifests update
+- Cluster deployment
+- Rollout verification
 
-### Seguridad en Deploy
+### Deploy Security
 
-- Escaneo de imágenes con Trivy
-- Resultados SARIF a GitHub Security
-- Manifiestos versionados por SHA
+- Image scanning with Trivy
+- SARIF results to GitHub Security
+- Manifests versioned by SHA
 
 ---
 
 ## 🧹 Cleanup Cache
 
-**Archivo**: `.github/workflows/cleanup-cache.yml`
+**File**: `.github/workflows/cleanup-cache.yml`
 
-### Propósito
+### Purpose
 
-Limpieza automática de cachés cuando se cierra un PR para optimizar el uso de storage.
+Automatic cache cleanup when a PR is closed to optimize storage usage.
 
-### Funcionamiento
+### Operation
 
 ```yaml
 on:
@@ -234,35 +234,35 @@ jobs:
 
 ## 🏷️ Issue Labeler
 
-**Archivo**: `.github/workflows/issue-labeler.yml`
+**File**: `.github/workflows/issue-labeler.yml`
 
-### Propósito
+### Purpose
 
-Etiquetado automático de issues basado en contenido y patrones.
+Automatic issue labeling based on content and patterns.
 
-### Configuración
+### Configuration
 
-- **Archivo de config**: `.github/issue-labeler-config.yml`
+- **Config file**: `.github/issue-labeler-config.yml`
 - **Trigger**: Issues opened/edited
-- **Acción**: `github/issue-labeler`
+- **Action**: `github/issue-labeler`
 
 ---
 
 ## ✅ Semantic Pull Request
 
-**Archivo**: `.github/workflows/semantic-pull-request.yml`
+**File**: `.github/workflows/semantic-pull-request.yml`
 
-### Propósito
+### Purpose
 
-Validación de títulos de PR según Conventional Commits.
+PR title validation according to Conventional Commits.
 
-### Características
+### Features
 
-- **Validación**: Conventional Commits spec
-- **Feedback**: Comentarios automáticos en PR
-- **Auto-cleanup**: Elimina comentarios cuando se corrige
+- **Validation**: Conventional Commits spec
+- **Feedback**: Automatic PR comments
+- **Auto-cleanup**: Removes comments when fixed
 
-### Ejemplo de Títulos Válidos
+### Valid Title Examples
 
 ```
 feat: add user authentication
@@ -275,58 +275,58 @@ chore: update dependencies
 
 ## 🧪 Test PNPM
 
-**Archivo**: `.github/workflows/test-pnpm.yml`
+**File**: `.github/workflows/test-pnpm.yml`
 
-### Propósito
+### Purpose
 
-Workflow de prueba para verificar la configuración de pnpm.
+Test workflow to verify pnpm configuration.
 
-### Uso
+### Usage
 
-- Solo ejecución manual (`workflow_dispatch`)
-- Debugging de problemas de configuración
-- Verificación de versiones y paths
+- Manual execution only (`workflow_dispatch`)
+- Debugging configuration issues
+- Version and path verification
 
 ---
 
-## 🔧 Acciones Personalizadas
+## 🔧 Custom Actions
 
 ### Setup Java
 
-**Ubicación**: `.github/actions/setup/java/`
+**Location**: `.github/actions/setup/java/`
 
 ```yaml
 - name: Setup Java
   uses: ./.github/actions/setup/java
 ```
 
-**Características**:
+**Features**:
 
 - Java 21 (Eclipse Temurin)
 - Gradle wrapper
-- Cache automático de dependencias
+- Automatic dependency caching
 
 ### Setup Node
 
-**Ubicación**: `.github/actions/setup/node/`
+**Location**: `.github/actions/setup/node/`
 
 ```yaml
 - name: Setup Node.js and pnpm
   uses: ./.github/actions/setup/node
 ```
 
-**Características**:
+**Features**:
 
 - Node.js 22
 - pnpm 10.10.0
-- Cache inteligente del store
-- Instalación con frozen-lockfile
+- Intelligent store caching
+- Installation with frozen-lockfile
 
 ### Specialized Docker Actions
 
-**Ubicación**: `.github/actions/docker/`
+**Location**: `.github/actions/docker/`
 
-> **Nota**: Las acciones Docker especializadas han reemplazado la acción Docker genérica anterior. Para más detalles, consulta la [documentación de acciones Docker](./docker-composition-actions.md).
+> **Note**: Specialized Docker actions have replaced the previous generic Docker action. For more details, see the [Docker actions documentation](./docker-composition-actions.md).
 
 **Backend Docker Action**:
 
@@ -378,25 +378,25 @@ Workflow de prueba para verificar la configuración de pnpm.
     category: backend-trivy
 ```
 
-**Características**:
+**Features**:
 
-- Acciones especializadas por tipo de aplicación
-- GitHub Container Registry y Docker Hub
-- Cache de GitHub Actions
-- Escaneo de seguridad con Trivy integrado
-- Metadata automático
+- Specialized actions by application type
+- GitHub Container Registry and Docker Hub
+- GitHub Actions cache
+- Integrated Trivy security scanning
+- Automatic metadata
 - Multi-platform support
 
 ---
 
-## 📊 Métricas y Monitoreo
+## 📊 Metrics and Monitoring
 
-### Tiempos Típicos de Ejecución
+### Typical Execution Times
 
-- **Backend CI**: ~8-12 minutos
-- **Frontend CI**: ~5-8 minutos
-- **Monorepo CI**: ~15-20 minutos
-- **Deploy**: ~10-15 minutos
+- **Backend CI**: ~8-12 minutes
+- **Frontend CI**: ~5-8 minutes
+- **Monorepo CI**: ~15-20 minutes
+- **Deploy**: ~10-15 minutes
 
 ### Cache Hit Rates
 
@@ -404,63 +404,63 @@ Workflow de prueba para verificar la configuración de pnpm.
 - **pnpm**: ~90-95%
 - **Docker**: ~70-80%
 
-### Artefactos Generados
+### Generated Artifacts
 
-- Reportes de test (JUnit XML)
-- Reportes de cobertura (Kover, LCOV)
-- Reportes de seguridad (SARIF)
-- Imágenes Docker
-- Reportes de integración
+- Test reports (JUnit XML)
+- Coverage reports (Kover, LCOV)
+- Security reports (SARIF)
+- Docker images
+- Integration reports
 
 ---
 
-## 🔒 Seguridad y Compliance
+## 🔒 Security and Compliance
 
-### Análisis de Seguridad
+### Security Analysis
 
-- **CodeQL**: Análisis estático de código
-- **OWASP**: Vulnerabilidades en dependencias
-- **Trivy**: Escaneo de imágenes Docker
-- **Dependency Review**: Revisión de nuevas dependencias
+- **CodeQL**: Static code analysis
+- **OWASP**: Dependency vulnerabilities
+- **Trivy**: Docker image scanning
+- **Dependency Review**: New dependency review
 
-### Secretos Requeridos
+### Required Secrets
 
 ```yaml
-CODECOV_TOKEN      # Subida de cobertura
-NVD_API_KEY       # API de vulnerabilidades
-KUBECONFIG        # Configuración de Kubernetes
-GITHUB_TOKEN      # Automático, para registry
+CODECOV_TOKEN      # Coverage upload
+NVD_API_KEY       # Vulnerability API
+KUBECONFIG        # Kubernetes configuration
+GITHUB_TOKEN      # Automatic, for registry
 ```
 
-### Permisos Mínimos
+### Minimum Permissions
 
-Cada workflow tiene permisos específicos mínimos siguiendo el principio de menor privilegio.
+Each workflow has specific minimum permissions following the principle of least privilege.
 
 ---
 
-## 🚀 Mejores Prácticas
+## 🚀 Best Practices
 
-### Versionado
+### Versioning
 
-- Usar versiones específicas con hash SHA
-- Actualizar regularmente con Dependabot
-- Probar cambios en branches de desarrollo
+- Use specific versions with SHA hash
+- Regular updates with Dependabot
+- Test changes in development branches
 
 ### Performance
 
-- Paralelización de jobs independientes
-- Cache inteligente con keys específicos
-- Concurrencia para cancelar ejecuciones obsoletas
+- Parallelization of independent jobs
+- Intelligent caching with specific keys
+- Concurrency to cancel obsolete runs
 
-### Mantenimiento
+### Maintenance
 
-- Documentación actualizada
-- Monitoreo de métricas de ejecución
-- Revisión regular de configuraciones
+- Updated documentation
+- Execution metrics monitoring
+- Regular configuration review
 
 ---
 
-Para documentación detallada de workflows específicos, consulta:
+For detailed documentation of specific workflows, see:
 
-- [Guía de CI/CD](ci-guide.md)
-- [Acciones Personalizadas](custom-actions.md)
+- [CI/CD Guide](ci-guide.md)
+- [Custom Actions](custom-actions.md)
