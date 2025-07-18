@@ -266,10 +266,18 @@ runs:
         path: /tmp/build-logs/docker-build-error.log
         retention-days: 7
 
+    - name: Extract first tag
+      id: first-tag
+      shell: bash
+      run: |
+        # Extract the first tag from the multiline output
+        FIRST_TAG=$(echo "${{ steps.meta.outputs.tags }}" | head -n 1)
+        echo "value=$FIRST_TAG" >> $GITHUB_OUTPUT
+
     - name: Scan Docker image for vulnerabilities
       uses: ./.github/actions/docker/security-scan
       with:
-        image-ref: ${{ (steps.meta.outputs.tags | split('\n'))[0] }}@${{ steps.build.outputs.digest }}
+        image-ref: ${{ steps.first-tag.outputs.value }}@${{ steps.build.outputs.digest }}
         report-name: ${{ inputs.image-name }}-security-scan
         category: frontend-web-trivy
         severity: 'HIGH,CRITICAL'
