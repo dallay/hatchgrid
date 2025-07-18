@@ -66,7 +66,7 @@ runs:
     #       is to use cache-rotation as above. In the future this might work better.
     - name: Prune pnpm store
       shell: bash
-      run: pnpm prune store
+      run: pnpm store prune
 
     - name: Install dependencies
       shell: bash
