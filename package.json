@@ -33,7 +33,7 @@
 	"scripts": {
 		"update-deps": "pnpm update -i -r --latest",
 		"preinstall": "npx only-allow pnpm",
-		"prepare": "husky install || echo 'Skipping husky install'",
+		"prepare": "lefthook install",
 		"dev": "pnpm --recursive --parallel run dev",
 		"dev:landing": "pnpm --filter @hatchgrid/landing-page dev",
 		"build": "pnpm --recursive run build",
@@ -49,12 +49,14 @@
 		"backend:clean": "./gradlew clean",
 		"start": "concurrently \"pnpm backend:run\" \"pnpm dev\"",
 		"check-updates": "pnpm --recursive exec -- pnpm outdated",
-		"test:all": "pnpm backend:test && pnpm test"
+		"test:all": "pnpm backend:test && pnpm test",
+		"structure": "npx --yes tree-extended -max=5 -max-show-not-empty -gitignore > docs/structure.md && echo '```' >> docs/structure.md && cat docs/structure.md | sed -i '1i\\\n```plaintext' docs/structure.md && echo '# Project Structure\n' | cat - docs/structure.md > temp && mv temp docs/structure.md"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.1.1",
 		"concurrently": "^9.2.0",
-		"husky": "^9.1.7",
+		"lefthook": "^1.6.18",
+		"pre-commit-hooks": "0.9.22",
 		"rimraf": "^6.0.1",
 		"vite": "^7.0.4",
 		"vitest": "^3.2.4"
