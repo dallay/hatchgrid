@@ -14,17 +14,16 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4
+      with:
+        run_install: false
+    #        version: 10.13.1
     - name: Setup Node.js
       # Pinned to v4 commit hash for security
       uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
       with:
         node-version: ${{ inputs.node-version }}
         cache: "pnpm"
-
-    - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4
-      with:
-        run_install: false
-        version: 10.13.1
 
     - name: Expose pnpm config(s) through "$GITHUB_OUTPUT"
       id: pnpm-config
@@ -64,7 +63,9 @@ runs:
     - name: Verify installation
       shell: bash
       run: |
-        echo "Checking Node.js installation"
-        node --version
-        echo "Checking pnpm installation"
-        pnpm --version
+       echo "Checking Node.js installation"
+       node -v
+       echo "Checking pnpm installation"
+       pnpm -v
+       echo "Checking npm installation"
+       npm -v
