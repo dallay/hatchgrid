@@ -61,12 +61,12 @@ server {
 }
 EOF
 
-# Copy built files from build stage
-COPY --from=build /app/client/apps/landing-page/dist /usr/share/nginx/html
+# Copy built files from build stage with proper ownership
+COPY --from=build --chown=101:101 /app/client/apps/landing-page/dist /usr/share/nginx/html
 
 # Create required directories with proper permissions
 RUN mkdir -p /var/cache/nginx /var/run \
-    && chown -R 101:101 /usr/share/nginx /var/cache/nginx /var/run
+    && chown -R 101:101 /var/cache/nginx /var/run
 
 # Expose port
 EXPOSE 80
