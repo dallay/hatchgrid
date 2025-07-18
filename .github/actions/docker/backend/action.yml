@@ -50,7 +50,7 @@ runs:
       # Pinned to v4 commit hash for security
       uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4
       with:
-        java-version: "21"
+        java-version: ${{ inputs.java-version }}
         distribution: "temurin"
         cache: gradle
 
@@ -58,7 +58,7 @@ runs:
       shell: bash
       run: |
         echo "🚀 Starting backend Docker build for ${{ inputs.image-name }}"
-        echo "  Using Gradle bootBuildImage with JDK 21"
+        echo "  Using Gradle bootBuildImage with JDK ${{ inputs.java-version }}"
         echo "  Additional Gradle args: ${{ inputs.gradle-args || 'none' }}"
 
         # Create log directory
@@ -66,7 +66,7 @@ runs:
         echo "  Log directory: /tmp/docker-build-logs"
 
     - name: Login to GitHub Container Registry
-      if: inputs.deliver == 'true'
+      if: ${{ inputs.deliver == 'true' }}
       # Pinned to v3 commit hash for security
       uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3
       id: ghcr-login
@@ -78,7 +78,7 @@ runs:
 
     - name: Check GHCR login status
       shell: bash
-      if: inputs.deliver == 'true'
+      if: ${{ inputs.deliver == 'true' }}
       run: |
         if [ "${{ steps.ghcr-login.outcome }}" == "success" ]; then
           echo "✅ Successfully logged in to GitHub Container Registry"
@@ -89,7 +89,7 @@ runs:
         fi
 
     - name: Login to Docker Hub
-      if: inputs.deliver == 'true' && inputs.docker-username != '' && inputs.docker-password != ''
+      if: ${{ inputs.deliver == 'true' && inputs.docker-username != '' && inputs.docker-password != '' }}
       # Pinned to v3 commit hash for security
       uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3
       id: dockerhub-login
@@ -100,7 +100,7 @@ runs:
 
     - name: Check Docker Hub login status
       shell: bash
-      if: inputs.deliver == 'true' && inputs.docker-username != '' && inputs.docker-password != ''
+      if: ${{ inputs.deliver == 'true' && inputs.docker-username != '' && inputs.docker-password != '' }}
       run: |
         if [ "${{ steps.dockerhub-login.outcome }}" == "success" ]; then
           echo "✅ Successfully logged in to Docker Hub"
@@ -208,7 +208,7 @@ runs:
         fi
 
     - name: Push Docker image
-      if: inputs.deliver == 'true' && steps.build-status.outputs.status == 'success'
+      if: ${{ inputs.deliver == 'true' && steps.build-status.outputs.status == 'success' }}
       id: push
       shell: bash
       continue-on-error: true
@@ -236,7 +236,7 @@ runs:
         fi
 
         # Push to Docker Hub if credentials were provided and login was successful
-        if [[ -n "${{ inputs.docker-username }}" && -n "${{ inputs.docker-password }}" && "${{ steps.dockerhub-login.outcome }}" == "success" ]]; thenif [ "${{ inputs.docker-username != '' && inputs.docker-password != '' && steps.dockerhub-login.outcome == 'success' }}" == "true" ]; then
+        if [[ -n "${{ inputs.docker-username }}" && -n "${{ inputs.docker-password }}" && "${{ steps.dockerhub-login.outcome }}" == "success" ]]; then
           echo "  Pushing to Docker Hub..."
           DOCKERHUB_IMAGE=$(echo '${{ steps.meta.outputs.tags }}' | grep -v "ghcr.io" | head -n 1)
 
@@ -272,7 +272,7 @@ runs:
         echo '${{ steps.meta.outputs.labels }}' | sed 's/^/    /'
 
     - name: Upload build logs
-      if: always()
+      if: ${{ always() }}
       # Pinned to v4 commit hash for security
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
