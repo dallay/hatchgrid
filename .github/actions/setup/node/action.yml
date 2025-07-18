@@ -24,7 +24,7 @@ runs:
     - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4
       with:
         run_install: false
-#        version: 10.13.1
+        version: 10.13.1
 
     - name: Expose pnpm config(s) through "$GITHUB_OUTPUT"
       id: pnpm-config
