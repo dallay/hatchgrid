@@ -6,10 +6,6 @@ inputs:
     description: "Node.js version to use"
     required: false
     default: "22"
-  enable-corepack:
-    description: "Enable corepack"
-    required: false
-    default: "true"
   cwd:
     description: "Changes node's process.cwd() if the project is not located on the root. Default to process.cwd()"
     required: false
@@ -25,21 +21,10 @@ runs:
         node-version: ${{ inputs.node-version }}
         cache: "pnpm"
 
-    - name: ⚙️ Enable Corepack
-      if: ${{ inputs.enable-corepack == 'true' }}
-      shell: bash
-      working-directory: ${{ inputs.cwd }}
-      run: |
-        corepack enable
-        corepack prepare pnpm@10.13.1 --activate
-        echo "corepack enabled and pnpm prepared"
-
     - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4
-      if: ${{ inputs.enable-corepack == 'false' }}
       with:
         run_install: false
-        # If you're not setting the packageManager field in package.json, add the version here
-        # version: 10.13.1
+#        version: 10.13.1
 
     - name: Expose pnpm config(s) through "$GITHUB_OUTPUT"
       id: pnpm-config
