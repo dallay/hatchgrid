@@ -33,7 +33,7 @@
 	"scripts": {
 		"update-deps": "pnpm update -i -r --latest",
 		"preinstall": "npx only-allow pnpm",
-		"prepare": "npx lefthook install",
+		"prepare": "pnpm exec lefthook install",
 		"dev": "pnpm --recursive --parallel run dev",
 		"dev:landing": "pnpm --filter @hatchgrid/landing-page dev",
 		"build": "pnpm --recursive run build",
