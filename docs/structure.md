@@ -1,6 +1,4 @@
-# Project Structure
-
-```plaintext
+# Project Structure\n\n```plaintext
 ├───.github/
 │   ├───ISSUE_TEMPLATE/
 │   │   ├───backend_task.md
@@ -657,6 +655,9 @@
 │   ├───app.yml
 │   ├───common.yml
 │   └───generate-ssl-certificate.sh
+├───scripts/
+│   ├───check-secrets.sh
+│   └───generate-structure-docs.sh
 ├───server/
 │   ├───thryve/
 │   │   ├───bin/

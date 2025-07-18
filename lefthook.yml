@@ -9,7 +9,13 @@ pre-commit:
     e_pnpm_check:
       run: pnpm run check
     f_generate_structure_docs:
-      run: "(echo '# Project Structure\n\n```plaintext' && npx --yes tree-extended -max=5 -max-show-not-empty -gitignore -ignore node_modules,build,.git,public && echo '```') > docs/structure.md"
+      run: ./scripts/generate-structure-docs.sh
+    g_kotlin_static_analysis:
+      run: ./gradlew detektAll
+    h_check_secrets:
+      run: ./scripts/check-secrets.sh
+    i_changed_files_summary:
+      run: git diff --name-only --cached
 
 commit-msg:
   parallel: true
@@ -23,3 +29,9 @@ pre-push:
       run: pnpm run test
     b_backend_test:
       run: ./gradlew test
+    c_dependency_audit:
+      run: pnpm audit || true && ./gradlew dependencyCheckAnalyze || true
+    d_build_check:
+      run: pnpm run build && ./gradlew build
+    e_liquibase_check:
+      run: ./gradlew updateSQL --dry-run
