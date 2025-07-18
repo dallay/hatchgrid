@@ -264,7 +264,7 @@ PR title validation according to Conventional Commits.
 
 ### Valid Title Examples
 
-```
+```text
 feat: add user authentication
 fix: resolve memory leak in cache
 docs: update API documentation

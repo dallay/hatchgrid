@@ -145,6 +145,13 @@ runs:
           echo "✅ Dockerfile found at ${{ inputs.dockerfile }}"
         fi
 
+    - name: Record build start time
+      id: build-start
+      shell: bash
+      run: |
+        echo "start-time=$(date +%s)" >> $GITHUB_OUTPUT
+        echo "⏱️ Starting build at $(date)"
+
     - name: Build and push Docker image
       id: build
       # Pinned to v5 commit hash for security
@@ -160,6 +167,20 @@ runs:
         cache-to: type=gha,mode=max
         provenance: false
         outputs: type=image,name=${{ inputs.image-name }},push-by-digest=true,name-canonical=true,push=${{ inputs.deliver == 'true' }}
+
+    - name: Record build end time and calculate duration
+      id: build-end
+      shell: bash
+      run: |
+        END_TIME=$(date +%s)
+        START_TIME=${{ steps.build-start.outputs.start-time }}
+        if [ -n "$START_TIME" ]; then
+          DURATION=$((END_TIME - START_TIME))
+          echo "duration=$DURATION" >> $GITHUB_OUTPUT
+          echo "⏱️ Build completed in $DURATION seconds"
+        else
+          echo "⚠️ Could not calculate build duration - start time not available"
+        fi
 
     - name: Log build cache status
       shell: bash
@@ -296,6 +317,8 @@ runs:
         echo "  All tags: ${{ steps.meta.outputs.tags }}"
         echo "  Labels: ${{ steps.meta.outputs.labels }}"
         echo "  Build environment: ${{ inputs.build-env }}"
+        echo "  Image Digest: ${{ steps.build.outputs.digest }}"
+        echo "  Image ID: ${{ steps.build.outputs.imageID }}"
 
         # Get image details if available
         if docker inspect "$FIRST_TAG" &>/dev/null; then
@@ -361,9 +384,9 @@ runs:
 
         # Log build performance metrics
         echo "⏱️ Build performance metrics:"
-        BUILD_DURATION=${{ steps.build.outputs.elapsed }}
-        if [ -n "$BUILD_DURATION" ]; then
-          echo "  Build duration: $BUILD_DURATION seconds"
+        if [ -n "${{ steps.build-end.outputs.duration }}" ]; then
+          echo "  Build duration: ${{ steps.build-end.outputs.duration }} seconds"
         else
           echo "  Build duration: information unavailable"
         fi
+        echo "  Image digest: ${{ steps.build.outputs.digest }}"
