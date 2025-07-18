@@ -5,6 +5,8 @@ pre-commit:
         run: lychee --no-progress --exclude-path node_modules --exclude-path public/admin ./**/*.md
     - e_pnpm_check:
         run: pnpm run check
+    - f_generate_structure_docs:
+        run: "(echo '# Project Structure\n\n```plaintext' && npx --yes tree-extended -max=5 -max-show-not-empty -gitignore && echo '```') > docs/structure.md"
 
 commit-msg:
   parallel: true
