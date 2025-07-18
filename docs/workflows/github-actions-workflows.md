@@ -318,7 +318,7 @@ Test workflow to verify pnpm configuration.
 **Features**:
 
 - Node.js 22
-- pnpm 10.10.0
+- pnpm 10.13.1
 - Intelligent store caching
 - Installation with frozen-lockfile
 
