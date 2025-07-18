@@ -31,7 +31,6 @@ concurrency:
 env:
   # Default environment settings
   DEFAULT_NODE_VERSION: '22'
-  DEFAULT_PNPM_VERSION: '10.13.1'
 
 permissions:
   contents: read

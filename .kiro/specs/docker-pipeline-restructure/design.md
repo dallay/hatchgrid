@@ -177,7 +177,7 @@ BuildContext:
   frontend:
     context: "./client"
     node_version: "22"
-    pnpm_version: "10.10.0"
+    pnpm_version: "10.13.1"
     build_env: string
 ```
 

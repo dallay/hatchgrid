@@ -187,7 +187,6 @@ jobs:
         uses: ./.github/actions/setup/node
         with:
           node-version: '22'
-          pnpm-version: '10.13.1'
 
       - name: Download backend artifacts
         # Pinned to v4 commit hash for security

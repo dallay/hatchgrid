@@ -48,7 +48,6 @@ The setup actions are used to configure the build environment for different tech
   uses: ./.github/actions/setup/node
   with:
     node-version: '22'
-    pnpm-version: '10.13.1'
 ```
 
 ## Best Practices
