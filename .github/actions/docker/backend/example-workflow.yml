@@ -13,6 +13,9 @@ jobs:
   build-backend:
     name: Build Backend Docker Image
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout repository

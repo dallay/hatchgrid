@@ -46,7 +46,7 @@ FROM nginx:alpine AS production
 COPY client/apps/web/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy built files from build stage
-COPY --from=build /app/client/apps/web/dist /usr/share/nginx/html
+COPY --from=build --chown=nginx:nginx /app/client/apps/web/dist /usr/share/nginx/html
 
 # Install curl for healthcheck
 RUN apk add --no-cache curl
