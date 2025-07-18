@@ -59,7 +59,7 @@ RUN mkdir -p /var/cache/nginx /var/run \
 EXPOSE 80
 
 # Switch to non-root user (nginx)
-USER 101
+USER 101:101
 
 # Health check using curl to verify the server is responding
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
