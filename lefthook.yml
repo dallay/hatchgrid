@@ -1,22 +1,25 @@
+# @file lefthook.yml
+# @ref https://evilmartians.github.io/lefthook/
+
 pre-commit:
   parallel: true
   commands:
-    - d_lychee_link_check:
-        run: lychee --no-progress --exclude-path node_modules --exclude-path public/admin ./**/*.md
-    - e_pnpm_check:
-        run: pnpm run check
-    - f_generate_structure_docs:
-        run: "(echo '# Project Structure\n\n```plaintext' && npx --yes tree-extended -max=5 -max-show-not-empty -gitignore && echo '```') > docs/structure.md"
+    d_lychee_link_check:
+      run: lychee --no-progress --exclude-path node_modules --exclude-path public/admin ./**/*.md
+    e_pnpm_check:
+      run: pnpm run check
+    f_generate_structure_docs:
+      run: "(echo '# Project Structure\n\n```plaintext' && npx --yes tree-extended -max=5 -max-show-not-empty -gitignore -ignore node_modules,build,.git,public && echo '```') > docs/structure.md"
 
 commit-msg:
   parallel: true
   commands:
-    lint:
+    a_lint:
       run: npx commitlint --edit
 
 pre-push:
   commands:
-    - a_frontend_test:
-        run: pnpm run test
-    - b_backend_test:
-        run: ./gradlew test
+    a_frontend_test:
+      run: pnpm run test
+    b_backend_test:
+      run: ./gradlew test
