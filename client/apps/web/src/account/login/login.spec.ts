@@ -1,6 +1,7 @@
 import { createTestingPinia } from "@pinia/testing";
 import { mount } from "@vue/test-utils";
 import { vi } from "vitest";
+import { useAuthStore } from "@/stores/auth";
 import { createI18n } from "vue-i18n";
 import { createRouter, createWebHistory } from "vue-router";
 import Login from "./login.vue";
