@@ -9,7 +9,7 @@ inputs:
   enable-corepack:
     description: "Enable corepack"
     required: false
-    default: "false"
+    default: "true"
   cwd:
     description: "Changes node's process.cwd() if the project is not located on the root. Default to process.cwd()"
     required: false
