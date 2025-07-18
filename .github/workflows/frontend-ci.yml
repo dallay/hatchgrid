@@ -19,6 +19,10 @@ on:
       - '.github/workflows/frontend-ci.yml'
       - '.github/actions/setup/node/**'
 
+env:
+  NODE_VERSION: '22'
+  PNPM_VERSION: '10.10.0'
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -40,8 +44,8 @@ jobs:
       - name: Setup Node.js and pnpm
         uses: ./.github/actions/setup/node
         with:
-          node-version: '22'
-          pnpm-version: '10.10.0'
+          node-version: ${{ env.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
 
       - name: Run Biome with Reviewdog
         uses: mongolyy/reviewdog-action-biome@bf7dffa9b14e8904941a18a28782b74fc40104f0
@@ -62,8 +66,8 @@ jobs:
       - name: Setup Node.js and pnpm
         uses: ./.github/actions/setup/node
         with:
-          node-version: '22'
-          pnpm-version: '10.10.0'
+          node-version: ${{ env.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
 
       - name: Build
         run: pnpm build
@@ -88,8 +92,8 @@ jobs:
       - name: Setup Node.js and pnpm
         uses: ./.github/actions/setup/node
         with:
-          node-version: '22'
-          pnpm-version: '10.10.0'
+          node-version: ${{ env.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
 
       - name: Test
         run: pnpm test
