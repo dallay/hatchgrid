@@ -297,7 +297,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:15
@@ -311,25 +311,25 @@ jobs:
           --health-retries 5
 
     steps:
-    - uses: actions/checkout@v3
-    
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
         cache: 'npm'
-    
+
     - name: Install dependencies
       run: npm ci
-    
+
     - name: Run linting
       run: npm run lint
-    
+
     - name: Run tests
       run: npm test
       env:
         DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
-    
+
     - name: Build application
       run: npm run build
 ```
@@ -346,10 +346,10 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
     - name: Deploy to server
       uses: appleboy/ssh-action@v0.1.5
       with:
@@ -378,13 +378,13 @@ on:
 jobs:
   security:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
     - name: Run npm audit
       run: npm audit --audit-level high
-    
+
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/node@master
       env:
@@ -413,7 +413,7 @@ const client = new StatsD();
 // Track API response times
 app.use((req, res, next) => {
   const start = Date.now();
-  
+
   res.on('finish', () => {
     const duration = Date.now() - start;
     client.histogram('api.response_time', duration, {
@@ -422,7 +422,7 @@ app.use((req, res, next) => {
       status_code: res.statusCode
     });
   });
-  
+
   next();
 });
 
@@ -432,7 +432,7 @@ function processOrder(order) {
     category: order.category,
     payment_method: order.paymentMethod
   });
-  
+
   client.histogram('orders.value', order.total);
 }
 ```
@@ -451,11 +451,11 @@ alerts:
   - name: "High Error Rate"
     query: "avg(last_5m):avg:api.error_rate{*} > 5"
     message: "API error rate is above 5%"
-    
+
   - name: "Database Connection Pool Exhausted"
     query: "avg(last_2m):avg:database.connections.active{*} > 80"
     message: "Database connection pool is 80% full"
-    
+
   - name: "High Response Time"
     query: "avg(last_10m):avg:api.response_time{*} > 2000"
     message: "API response time is above 2 seconds"
@@ -511,17 +511,17 @@ Managing databases efficiently is crucial for backend development. While not one
 ```sql
 -- Example: Performance monitoring queries
 -- Find slow queries
-SELECT 
+SELECT
   query,
   mean_time,
   calls,
   total_time
-FROM pg_stat_statements 
-ORDER BY mean_time DESC 
+FROM pg_stat_statements
+ORDER BY mean_time DESC
 LIMIT 10;
 
 -- Check database connections
-SELECT 
+SELECT
   datname,
   numbackends,
   xact_commit,
