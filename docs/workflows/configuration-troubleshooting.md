@@ -1,4 +1,4 @@
-# 🔧 Configuration and Troubleshooting - GitHub Actions
+# 🔧 Configuration and Troubleshooting — GitHub Actions
 
 This guide provides detailed information about configuration, troubleshooting, and optimization of GitHub Actions workflows in Hatchgrid.
 
