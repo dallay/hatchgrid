@@ -98,6 +98,7 @@ The following tasks are run automatically on `git push`:
 
 - **Frontend Tests**: Runs all frontend tests using `pnpm run test`.
 - **Backend Tests**: Runs all backend tests using `./gradlew test`.
+- **Build Check**: Ensures that both frontend and backend projects can be built successfully.
 
 ## Development Workflow
 

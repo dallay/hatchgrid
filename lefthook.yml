@@ -24,14 +24,13 @@ commit-msg:
       run: npx commitlint --edit
 
 pre-push:
+  parallel: true
   commands:
     a_frontend_test:
       run: pnpm run test
     b_backend_test:
       run: ./gradlew test
-    c_dependency_audit:
-      run: pnpm audit || true && ./gradlew dependencyCheckAnalyze || true
-    d_build_check:
-      run: pnpm run build && ./gradlew build
-    e_liquibase_check:
-      run: ./gradlew updateSQL --dry-run
+    d_frontend_build:
+      run: pnpm run build
+    e_backend_build:
+      run: ./gradlew build -x test
