@@ -129,7 +129,7 @@ describe("Login.vue", () => {
 
 		await wrapper.find('input[type="text"]').setValue("user");
 		await wrapper.find('input[type="password"]').setValue("password");
-.		await wrapper.find("form").trigger("submit.prevent");
+		await wrapper.find("form").trigger("submit.prevent");
 
 		await wrapper.vm.$nextTick();
 
