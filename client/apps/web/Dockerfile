@@ -48,12 +48,8 @@ COPY client/apps/web/nginx.conf /etc/nginx/conf.d/default.conf
 # Copy built files from build stage
 COPY --from=build --chown=nginx:nginx /app/client/apps/web/dist /usr/share/nginx/html
 
-# Install curl for healthcheck
-RUN apk add --no-cache curl
-
-# Create required directories with proper permissions
-# Note: /usr/share/nginx already has proper permissions in the official nginx:alpine image
-RUN mkdir -p /var/cache/nginx /var/run \
+RUN apk add --no-cache curl \
+    && mkdir -p /var/cache/nginx /var/run \
     && chown -R 101:101 /var/cache/nginx /var/run
 
 # Expose port
