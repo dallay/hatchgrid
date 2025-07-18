@@ -314,7 +314,7 @@ jobs:
 ```yaml
 # Dependencies cache
 - name: Cache dependencies
-  uses: actions/cache@v4
+  uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
   with:
     path: |
       ~/.gradle/caches
@@ -324,7 +324,7 @@ jobs:
 
 # Build cache
 - name: Cache build
-  uses: actions/cache@v4
+  uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
   with:
     path: |
       server/*/build
