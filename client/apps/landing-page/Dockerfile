@@ -43,26 +43,13 @@ RUN pnpm build
 FROM nginx:alpine AS production
 
 # Copy nginx configuration
-RUN cat <<'EOF' > /etc/nginx/conf.d/default.conf
-server {
-    listen 80;
-    server_name _;
-    root /usr/share/nginx/html;
-    index index.html;
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-    error_page 404 /404.html;
-    # Enable gzip compression
-    gzip on;
-    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
-    gzip_comp_level 6;
-    gzip_min_length 1000;
-}
-EOF
+COPY client/apps/landing-page/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy built files from build stage with proper ownership
 COPY --from=build --chown=101:101 /app/client/apps/landing-page/dist /usr/share/nginx/html
+
+# Install curl for healthcheck
+RUN apk add --no-cache curl
 
 # Create required directories with proper permissions
 RUN mkdir -p /var/cache/nginx /var/run \
@@ -74,9 +61,9 @@ EXPOSE 80
 # Switch to non-root user (nginx)
 USER 101
 
-# Health check
+# Health check using curl to verify the server is responding
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget -qO- http://localhost/ || exit 1
+  CMD curl -f http://localhost/ || exit 1
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]

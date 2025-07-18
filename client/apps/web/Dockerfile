@@ -48,6 +48,9 @@ COPY client/apps/web/nginx.conf /etc/nginx/conf.d/default.conf
 # Copy built files from build stage
 COPY --from=build /app/client/apps/web/dist /usr/share/nginx/html
 
+# Install curl for healthcheck
+RUN apk add --no-cache curl
+
 # Create required directories with proper permissions
 # Note: /usr/share/nginx already has proper permissions in the official nginx:alpine image
 RUN mkdir -p /var/cache/nginx /var/run \
@@ -59,9 +62,9 @@ EXPOSE 80
 # Switch to non-root user (nginx)
 USER 101
 
-# Health check
+# Health check using curl to verify the server is responding
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget -qO- http://localhost/ || exit 1
+  CMD curl -f http://localhost/ || exit 1
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
