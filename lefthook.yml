@@ -4,6 +4,21 @@
 pre-commit:
   parallel: true
   commands:
+    biome:
+      run: pnpm run lint
+    i_changed_files_summary:
+      run: git diff --name-only --cached
+    git-update:
+      run: git update-index --again
+commit-msg:
+  parallel: true
+  commands:
+    a_lint:
+      run: npx --no-install commitlint --edit
+
+pre-push:
+  parallel: true
+  commands:
     d_lychee_link_check:
       run: lychee --no-progress --exclude-path node_modules --exclude-path public/admin ./**/*.md
     e_pnpm_check:
@@ -14,18 +29,6 @@ pre-commit:
       run: ./gradlew detektAll
     h_check_secrets:
       run: ./scripts/check-secrets.sh
-    i_changed_files_summary:
-      run: git diff --name-only --cached
-
-commit-msg:
-  parallel: true
-  commands:
-    a_lint:
-      run: npx commitlint --edit
-
-pre-push:
-  parallel: true
-  commands:
     a_frontend_test:
       run: pnpm run test
     b_backend_test:
