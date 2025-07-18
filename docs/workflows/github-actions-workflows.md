@@ -161,7 +161,13 @@ Deployment pipeline with support for multiple environments and deployment strate
 # Manual with environment selection
 workflow_dispatch:
   inputs:
-    environment: [development, staging, production]
+    environment:
+      type: choice
+      description: "Select the deployment environment"
+      options:
+        - development
+        - staging
+        - production
 
 # Automatic based on branch/tag
 push:
@@ -225,9 +231,10 @@ on:
 
 jobs:
   cleanup:
-    - gh extension install actions/gh-actions-cache
-    - gh actions-cache list -R $REPO -B $BRANCH
-    - gh actions-cache delete $cacheKey --confirm
+    steps:
+      - run: gh extension install actions/gh-actions-cache
+      - run: gh actions-cache list -R $REPO -B $BRANCH
+      - run: gh actions-cache delete $cacheKey --confirm
 ```
 
 ---
