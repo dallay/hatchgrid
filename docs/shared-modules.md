@@ -14,7 +14,7 @@ shared/
 
 > **Spring Modulith Integration:**
 >
-> The `shared/*` modules are organized as [Spring Modulith](https://docs.spring.io/spring-modulith/docs/current/reference/html/) named slices:
+> The `shared/*` modules are organized as [Spring Modulith](https://docs.spring.io/spring-modulith/reference/index.html) named slices:
 >
 > - **shared:common** defines the core domain model, CQRS, and DDD patterns as a Modulith slice with no external dependencies, forming the foundation for all backend modules.
 > - **shared:spring-boot-common** is a separate Modulith slice that integrates the domain logic with Spring Boot, providing auto-configuration, dependency injection, and infrastructure adapters. It depends only on `shared:common` and exposes its own public API boundary.
@@ -184,7 +184,7 @@ The `spring-boot-common` module provides Spring Boot-specific implementations an
 
 > **Helper Implementation:**
 >
-> The `sanitizePathVariable()` helper is defined in [`ApiController`](../../shared/spring-boot-common/src/main/kotlin/com/hatchgrid/spring/boot/ApiController.kt). It validates path variables using an allow-list regex to prevent path traversal and injection attacks:
+> The `sanitizePathVariable()` helper is defined in [`ApiController`](../shared/spring-boot-common/src/main/kotlin/com/hatchgrid/spring/boot/ApiController.kt). It validates path variables using an allow-list regex to prevent path traversal and injection attacks:
 >
 > ```kotlin
 > protected fun sanitizePathVariable(pathVariable: String): String {
