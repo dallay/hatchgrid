@@ -47,7 +47,7 @@ jobs:
     steps:
       - name: Checkout repository
         # Pinned to v4 commit hash for security
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
       - name: Run Labeler
         # Pinned to v5 commit hash for security
         uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9 # v5
@@ -66,7 +66,7 @@ jobs:
     steps:
       - name: Checkout repository
         # Pinned to v4 commit hash for security
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
       - name: Initialize CodeQL
         # Pinned to v3 commit hash for security
         uses: github/codeql-action/init@7c651bd38dd1af6b6a3150197b37799cb367fb05 # v3
@@ -90,7 +90,7 @@ jobs:
     steps:
       - name: Checkout repository
         # Pinned to v4 commit hash for security
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
@@ -118,7 +118,7 @@ jobs:
     steps:
       - name: Checkout repository
         # Pinned to v4 commit hash for security
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
       - name: Dependency Review
         # Pinned to v4 commit hash for security
         uses: actions/dependency-review-action@fa6368072a20f00d241e99c93d82db12512ca42d # v4
@@ -139,7 +139,7 @@ jobs:
     steps:
       - name: Checkout repository
         # Pinned to v4 commit hash for security
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
       - name: Run OWASP Dependency Check
         uses: dependency-check/Dependency-Check_Action@75ba02d6183445fe0761d26e836bde58b1560600
         with:
@@ -175,7 +175,7 @@ jobs:
     steps:
       - name: Checkout repository
         # Pinned to v4 commit hash for security
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
       - name: Setup Java
         uses: ./.github/actions/setup/java

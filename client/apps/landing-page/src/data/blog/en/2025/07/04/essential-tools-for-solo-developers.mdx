@@ -311,7 +311,7 @@ jobs:
           --health-retries 5
 
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
@@ -348,7 +348,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
     - name: Deploy to server
       uses: appleboy/ssh-action@v0.1.5
@@ -380,7 +380,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
     - name: Run npm audit
       run: npm audit --audit-level high

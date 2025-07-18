@@ -27,10 +27,9 @@ concurrency:
   group: deploy-${{ github.ref_name }}-${{ inputs.environment || 'development' }}
   cancel-in-progress: false
 
-# Define workflow-level environment variables
-env:
-  # Default environment settings
-  DEFAULT_NODE_VERSION: '22'
+# Workflow-level environment variables can be defined here if needed
+# env:
+#   EXAMPLE_VAR: 'example-value'
 
 permissions:
   contents: read
@@ -66,7 +65,7 @@ jobs:
     steps:
       - name: Checkout repository
         # Pinned to v4 commit hash for security
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
       - name: Build and push backend Docker image
         id: build-backend
@@ -95,7 +94,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
       - name: Set environment-specific configuration
         id: env-config
@@ -154,7 +153,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
       - name: Set environment-specific configuration
         id: env-config
@@ -212,7 +211,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
       - name: Setup kubectl
         uses: azure/setup-kubectl@901a10e89ea615cf61f57ac05cecdf23e7de06d8 # v3.2

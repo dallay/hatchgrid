@@ -345,7 +345,7 @@ jobs:
   warm-cache:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
       - name: Setup Java
         uses: ./.github/actions/setup/java
       - name: Setup Node

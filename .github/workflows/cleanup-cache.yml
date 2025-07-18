@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
       - name: Ensure gh-actions-cache extension is installed
         run: |
@@ -21,6 +21,8 @@ jobs:
 
       - name: Cleanup caches
         run: |
+          set -euo pipefail
+
           REPO="${{ github.repository }}"
           BRANCH="refs/pull/${{ github.event.pull_request.number }}/merge"
 
