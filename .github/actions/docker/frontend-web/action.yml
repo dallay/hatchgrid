@@ -123,16 +123,21 @@ runs:
       id: build-args
       shell: bash
       run: |
-        # Prepare build arguments
+        # Prepare build arguments with newline separation for docker/build-push-action
         BUILD_ARGS="BUILD_ENV=${{ inputs.build-env }}"
 
         # Add API URL if provided
         if [ -n "${{ inputs.api-url }}" ]; then
-          BUILD_ARGS="$BUILD_ARGS,API_URL=${{ inputs.api-url }}"
+          BUILD_ARGS="$BUILD_ARGS
+          API_URL=${{ inputs.api-url }}"
         fi
 
-        echo "args=$BUILD_ARGS" >> $GITHUB_OUTPUT
-        echo "📋 Build arguments: $BUILD_ARGS"
+        echo "args<<EOF" >> $GITHUB_OUTPUT
+        echo "$BUILD_ARGS" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+        echo "📋 Build arguments:"
+        echo "$BUILD_ARGS" | sed 's/^/  /'
 
     - name: Check Dockerfile existence
       shell: bash
