@@ -19,6 +19,7 @@ runs:
       uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
       with:
         node-version: ${{ inputs.node-version }}
+        cache: 'pnpm'
 
     - name: Install pnpm
       # Pinned to v4.1.0 commit hash for security
@@ -27,34 +28,11 @@ runs:
         version: ${{ inputs.pnpm-version }}
         run_install: false
 
-    - name: Verify pnpm installation and setup cache
+    - name: Verify pnpm installation
       shell: bash
       run: |
         echo "Checking pnpm installation"
         pnpm --version
-        echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_ENV
-
-    - name: Setup pnpm cache
-      # Pinned to v4 commit hash for security
-      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
-      with:
-        path: ${{ env.STORE_PATH }}
-        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pnpm-store-
-
-    - name: Install dependencies
-      shell: bash
-      run: pnpm install --frozen-lockfile
-
-    - name: Setup pnpm cache
-      # Pinned to v4 commit hash for security
-      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
-      with:
-        path: ${{ env.STORE_PATH }}
-        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pnpm-store-
 
     - name: Install dependencies
       shell: bash
