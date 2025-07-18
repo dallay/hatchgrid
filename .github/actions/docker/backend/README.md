@@ -53,7 +53,7 @@ This action builds and pushes a Spring Boot Docker image using Gradle's `bootBui
 | `module-path`     | Path to the Gradle module to build | No       | `server:thryve` |
 | `java-version`    | Java version to use                | No       | `21`            |
 
-> **Note:** If the `deliver` input is omitted, delivery is turned off by default (`false`). Specify `deliver: 'true'` to enable delivery. This ensures that omitting the key will not push images to registries.
+> **Note:** By default, if the `deliver` input is omitted, delivery is turned off by default (`false`). Specify `deliver: 'true'` to enable delivery. This ensures that omitting the key will not push images to registries.
 
 ## Outputs
 
