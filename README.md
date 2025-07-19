@@ -63,7 +63,7 @@ Alternatively, Spring Boot's Docker Compose support will automatically start the
 
 This project uses Liquibase for database migrations. The changelog file is located at:
 
-```
+```text
 src/main/resources/db/changelog/db.changelog-master.yaml
 ```
 
@@ -177,6 +177,7 @@ The CI/CD pipeline uses specialized Docker composition actions for building and 
 - **Security Scanning Action**: Scans Docker images for vulnerabilities using Trivy
 
 For detailed documentation on these actions, see:
+
 - [Docker Composition Actions Documentation](docs/workflows/docker-composition-actions.md)
 - [Docker Actions Migration Guide](docs/workflows/docker-actions-migration-guide.md)
 
