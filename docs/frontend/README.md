@@ -40,6 +40,15 @@ Documentation of the authentication store refactoring from Composition API to Op
 ### [Translation Integration](TRANSLATION_INTEGRATION.md)
 Complete documentation of the vue-i18n integration with the Vue 3 application, following modern patterns.
 
+### [Landing Page](landing-page.md)
+Documentation of the Astro-based landing page application structure and configuration.
+
+**Features:**
+- Astro static site generator setup
+- Content collections for structured content
+- Internationalization with file-based routing
+- Biome configuration for code quality
+
 **Features:**
 - Vue-i18n v10 integration with Composition API
 - Dynamic translation file loading
