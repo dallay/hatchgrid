@@ -38,6 +38,9 @@ The pre-commit hook runs before a commit is created. It performs the following c
 The commit-msg hook runs when a commit message is created. It performs the following checks:
 
 - **Lint**: Validates the commit message format using commitlint with the --no-install flag
+  - Enforces the [Conventional Commits](https://www.conventionalcommits.org/) specification
+  - Ensures header and body line lengths do not exceed 120 characters
+  - See [Commit Conventions](../conventions/commit-conventions.md) for more details
 
 ### post-commit
 
@@ -67,12 +70,11 @@ The Git hooks are configured in the `lefthook.yml` file at the root of the proje
 # @ref https://evilmartians.github.io/lefthook/
 
 pre-commit:
-  parallel: true
   commands:
+    generate_structure_docs:
+      run: ./scripts/generate-structure-docs.sh
     biome:
       run: pnpm run lint
-    i_changed_files_summary:
-      run: git diff --name-only --cached
     git-update:
       run: git update-index --again
 
@@ -84,30 +86,20 @@ commit-msg:
 post-commit:
   commands:
     notify_user:
-      run: echo "Commit successful! Don't forget to push your changes."
+      run: echo "✅ Commit successful! Don't forget to push your changes."
 
 pre-push:
+  parallel: true
   commands:
-    d_lychee_link_check:
+    lychee_link_check:
       run: lychee --no-progress --exclude-path node_modules --exclude-path public/admin ./**/*.md
-    e_pnpm_check:
+    pnpm_check:
       run: pnpm run check
-    g_kotlin_static_analysis:
+    kotlin_static_analysis:
       run: ./gradlew detektAll
-    h_check_secrets:
+    check_secrets:
       run: ./scripts/check-secrets.sh
-    tests:
-      run: |
-        pnpm run test
-        ./gradlew test
-    builds:
-      run: |
-        pnpm run build
-        ./gradlew build -x test
 
-# Note: The dependency audit check was removed to improve performance:
-# c_dependency_audit:
-#   run: pnpm audit || true && ./gradlew dependencyCheckAnalyze || true
 ```
 
 For more information about Lefthook, see the [Lefthook documentation](https://github.com/evilmartians/lefthook).

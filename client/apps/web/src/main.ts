@@ -4,6 +4,7 @@ import { setupAxiosInterceptors } from "@/config/axios-interceptor";
 import { InitializationService } from "@/services/initialization.service";
 import initI18N from "./i18n/i18n.config.ts";
 import TranslationService, {
+	createI18nAdapter,
 	type I18nLike,
 } from "./i18n/translation.service.ts";
 import {
@@ -32,10 +33,26 @@ async function bootstrap() {
 	const i18n = initI18N({
 		locale: initialLanguage,
 	});
-	// Cast to I18nLike to ensure compatibility
-	const tempTranslationService = new TranslationService(
-		i18n.global as I18nLike,
-	);
+
+	// Create translation service with proper error handling
+	let tempTranslationService: TranslationService;
+	try {
+		// Create an adapter that converts i18n.global to our I18nLike interface
+		const i18nAdapter = createI18nAdapter(i18n.global);
+		tempTranslationService = new TranslationService(i18nAdapter);
+	} catch (error) {
+		console.error("Failed to create translation service:", error);
+		// Create a fallback minimal implementation that will work with our expected interface
+		const fallbackI18n: I18nLike = {
+			locale: { value: initialLanguage },
+			messages: { value: {} },
+			setLocaleMessage: (lang, messages) => {
+				console.log(`[Fallback] Setting messages for ${lang}`);
+				fallbackI18n.messages.value[lang] = messages;
+			},
+		};
+		tempTranslationService = new TranslationService(fallbackI18n);
+	}
 
 	// 3. Load the initial language messages and wait for it
 	try {
@@ -59,17 +76,40 @@ async function bootstrap() {
 	setupAxiosInterceptors(router);
 
 	// Initialize all services and stores
-	const initializationService = new InitializationService({
-		app,
-		router,
-		i18n: i18n.global as I18nLike,
-	});
+	let initializationService: InitializationService;
+	try {
+		// Create an adapter for the initialization service
+		const i18nAdapter = createI18nAdapter(i18n.global);
+		initializationService = new InitializationService({
+			app,
+			router,
+			i18n: i18nAdapter,
+		});
+	} catch (error) {
+		console.error("Failed to create initialization service:", error);
+		// Create a fallback minimal implementation
+		const fallbackI18n: I18nLike = {
+			locale: { value: initialLanguage },
+			messages: { value: {} },
+			setLocaleMessage: (lang, messages) => {
+				console.log(`[Fallback] Setting messages for ${lang}`);
+				fallbackI18n.messages.value[lang] = messages;
+			},
+		};
+		initializationService = new InitializationService({
+			app,
+			router,
+			i18n: fallbackI18n,
+		});
+	}
 
 	try {
 		await initializationService.initialize();
 		console.log("Application initialized successfully");
 
-		app.provide("currentLanguage", i18n.global.locale);
+		// Use the adapter to get the locale value
+		const i18nAdapter = createI18nAdapter(i18n.global);
+		app.provide("currentLanguage", i18nAdapter.locale.value);
 		app.provide("changeLanguage", initializationService.changeLanguage);
 		// Provide services globally for component access
 		app.provide(

@@ -5,6 +5,7 @@ This directory contains documents outlining the various conventions used in the 
 ## Table of Contents
 
 - [Biome Configuration](./biome-configuration.md)
+- [Commit Conventions](./commit-conventions.md)
 - [Controller Pattern](./controller-pattern.md)
 - [Deprecation Policy](./deprecation-policy.md)
 - [Internationalization (i18n)](./i18n.md)

@@ -15,7 +15,7 @@ The landing page is built with Astro, a modern static site generator that allows
 
 ## Project Structure
 
-```
+```text
 client/apps/landing-page/
 ├── .astro/                # Astro build cache and type definitions
 ├── public/                # Static assets served as-is
@@ -85,6 +85,7 @@ The landing page uses Biome for code formatting and linting. The configuration e
 ```
 
 Key features of this configuration:
+
 - Extends the client-level Biome configuration
 - Targets TypeScript, JavaScript, Astro, and Vue files
 - Uses tabs for indentation with a line width of 100 characters
@@ -120,18 +121,21 @@ The landing page supports multiple languages through Astro's file-based routing:
 ## Key Features
 
 ### Static Site Generation
+
 - **Fast Loading**: Pre-rendered HTML for optimal performance
 - **SEO Friendly**: Built-in SEO optimization
 - **Content Collections**: Type-safe content management
 - **Partial Hydration**: Interactive components only when needed
 
 ### Design System
+
 - **Tailwind CSS**: Utility-first styling approach
 - **Responsive Design**: Mobile-first responsive layouts
 - **Dark Mode**: Built-in light/dark theme support
 - **Accessibility**: WCAG compliance built-in
 
 ### Performance
+
 - **Lighthouse Score**: 90+ on all metrics
 - **Core Web Vitals**: Optimized for CWV metrics
 - **Asset Optimization**: Automatic image optimization
