@@ -1,7 +1,7 @@
 import type { App } from "vue";
 import { watch } from "vue";
 import type { Router } from "vue-router";
-import TranslationService from "@/i18n/translation.service";
+import TranslationService, { type I18nLike } from "@/i18n/translation.service";
 import AccountService from "@/services/account.service";
 import { useAuthStore } from "@/stores/auth";
 import { useTranslationStore } from "@/stores/translation.store";
@@ -9,7 +9,7 @@ import { useTranslationStore } from "@/stores/translation.store";
 export interface InitializationOptions {
 	app: App;
 	router: Router;
-	i18n: any;
+	i18n: I18nLike;
 }
 
 export class InitializationService {

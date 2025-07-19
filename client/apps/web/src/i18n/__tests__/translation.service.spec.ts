@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import TranslationService from "../translation.service.ts";
+import TranslationService, { type I18nLike } from "../translation.service.ts";
 
 vi.mock("../../i18n/en/en.js", () => {
 	return {
@@ -13,16 +13,14 @@ vi.mock("../../i18n/en/en.js", () => {
 
 describe("TranslationService", () => {
 	let service: TranslationService;
-	let mockI18n: any;
+	let mockI18n: I18nLike;
 
 	beforeEach(() => {
 		setActivePinia(createPinia());
 		mockI18n = {
 			locale: { value: "en" },
-			messages: { es: { message: "hola" } }, // Start with 'es' loaded
+			messages: { value: { es: { message: "hola" } } }, // Start with 'es' loaded
 			setLocaleMessage: vi.fn(),
-			t: vi.fn().mockReturnValue("translation"),
-			te: vi.fn().mockReturnValue(true),
 		};
 		service = new TranslationService(mockI18n);
 		vi.clearAllMocks();

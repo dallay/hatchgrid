@@ -30,6 +30,7 @@ async function bootstrap() {
 	const i18n = initI18N({
 		locale: initialLanguage,
 	});
+	// Cast to I18nLike to ensure compatibility
 	const tempTranslationService = new TranslationService(i18n.global as any);
 
 	// 3. Load the initial language messages and wait for it
@@ -57,7 +58,7 @@ async function bootstrap() {
 	const initializationService = new InitializationService({
 		app,
 		router,
-		i18n: i18n.global,
+		i18n: i18n.global as any,
 	});
 
 	try {

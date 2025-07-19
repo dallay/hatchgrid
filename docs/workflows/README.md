@@ -15,10 +15,13 @@ Welcome to the complete documentation for Hatchgrid's CI/CD workflows. This sect
 - **[GitHub Actions Overview](github-actions-workflows.md)** - Overview of all workflows
 - **[Custom Actions](./custom-actions.md)** - Documentation for composite actions
 - **[Git Hooks](./git-hooks.md)** - Documentation for Git hooks with Lefthook
+- **[Git Hooks Update](./git-hooks-update.md)** - Recent updates to Git hooks configuration
+- **[Git Hooks Parallel Update](./git-hooks-parallel-update.md)** - Update on parallel execution of pre-push hooks
 
 ### 🔧 Technical Documentation
 
 - **[Configuration and Troubleshooting](./configuration-troubleshooting.md)** - Problem resolution and optimization
+
 </details>
 
 ---
@@ -256,6 +259,12 @@ actionlint .github/workflows/*.yml
 
 ## 📝 Changelog
 
+### 2025-07-19
+
+- ✅ Updated Git hooks configuration documentation
+- ✅ Added Git hooks update guide
+- ✅ Added documentation for parallel pre-push hooks execution
+
 ### 2025-01-16
 
 - ✅ Complete initial documentation
@@ -272,5 +281,5 @@ actionlint .github/workflows/*.yml
 
 ---
 
-*Last updated: January 16, 2025*
+*Last updated: July 19, 2025*
 *Documentation version: 1.0.0*

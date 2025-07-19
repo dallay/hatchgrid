@@ -2,38 +2,39 @@
 # @ref https://evilmartians.github.io/lefthook/
 
 pre-commit:
-  parallel: true
   commands:
     biome:
       run: pnpm run lint
-    i_changed_files_summary:
-      run: git diff --name-only --cached
     git-update:
       run: git update-index --again
+
 commit-msg:
-  parallel: true
   commands:
     a_lint:
       run: npx --no-install commitlint --edit
 
+post-commit:
+  commands:
+    generate_structure_docs:
+      run: ./scripts/generate-structure-docs.sh
+    notify_user:
+      run: echo "✅ Commit successful! Don't forget to push your changes."
+
 pre-push:
-  parallel: true
   commands:
     d_lychee_link_check:
       run: lychee --no-progress --exclude-path node_modules --exclude-path public/admin ./**/*.md
     e_pnpm_check:
       run: pnpm run check
-    f_generate_structure_docs:
-      run: ./scripts/generate-structure-docs.sh
     g_kotlin_static_analysis:
       run: ./gradlew detektAll
     h_check_secrets:
       run: ./scripts/check-secrets.sh
-    a_frontend_test:
-      run: pnpm run test
-    b_backend_test:
-      run: ./gradlew test
-    d_frontend_build:
-      run: pnpm run build
-    e_backend_build:
-      run: ./gradlew build -x test
+    tests:
+      run: |
+        pnpm run test
+        ./gradlew test
+    builds:
+      run: |
+        pnpm run build
+        ./gradlew build -x test

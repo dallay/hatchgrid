@@ -7,6 +7,7 @@ This directory contains documents outlining the various conventions used in the 
 - [Controller Pattern](./controller-pattern.md)
 - [Deprecation Policy](./deprecation-policy.md)
 - [Internationalization (i18n)](./i18n.md)
+- [JavaScript Modules](./javascript-modules.md)
 - [Offline First](./offline-first.md)
 - [Project Guidelines](./project-guidelines.md)
 - [REST API](./rest-api.md)

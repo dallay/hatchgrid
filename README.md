@@ -85,20 +85,20 @@ The `prepare` script in `package.json` will automatically run `lefthook install`
 
 The following tasks are run automatically on `git commit`:
 
-- **YAML Check**: Checks for syntax errors in YAML files.
-- **End of File Fixer**: Ensures that all files end with a newline.
-- **Trailing Whitespace Fixer**: Removes trailing whitespace from files.
-- **Lychee Link Checker**: Checks for broken links in Markdown files.
-- **PNPM Check**: Runs `pnpm run check` to perform code quality checks.
-- **Generate Structure Docs**: Generates a `structure.md` file in the `docs` directory.
+- **Biome**: Runs the lint script defined in package.json using Biome. If linting issues are found, the commit will be blocked until they are fixed.
+- **Changed Files Summary**: Shows a summary of changed files.
+- **Git Update**: Updates the Git index to ensure all changes are included.
 
 ### Pre-push Hooks
 
-The following tasks are run automatically on `git push`:
+The following tasks are run automatically on `git push` (now running in parallel for improved performance):
 
-- **Frontend Tests**: Runs all frontend tests using `pnpm run test`.
-- **Backend Tests**: Runs all backend tests using `./gradlew test`.
-- **Build Check**: Ensures that both frontend and backend projects can be built successfully.
+- **Link Check**: Checks for broken links in Markdown files using Lychee.
+- **PNPM Check**: Runs the check script defined in package.json.
+- **Kotlin Static Analysis**: Runs Detekt for static code analysis.
+- **Secret Check**: Checks for secrets in the codebase.
+- **Tests**: Runs both frontend and backend tests.
+- **Builds**: Builds both frontend and backend projects (skipping tests as they're run separately).
 
 ## Development Workflow
 

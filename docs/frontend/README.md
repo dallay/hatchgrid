@@ -8,6 +8,7 @@ The frontend is a Vue 3 application built with TypeScript, using modern tooling 
 
 - **Framework**: Vue 3 with Composition API and Options API
 - **Language**: TypeScript
+- **Module System**: ECMAScript Modules (ESM)
 - **Styling**: Tailwind CSS
 - **Build Tool**: Vite
 - **State Management**: Pinia
@@ -129,3 +130,4 @@ When adding new features:
 - [Authentication](../authentication/) - Backend authentication setup
 - [Landing](../landing/) - Landing page design documentation
 - [Clean Code](../clean_code.md) - Coding standards and practices
+- [JavaScript Modules](../conventions/javascript-modules.md) - JavaScript module system conventions
