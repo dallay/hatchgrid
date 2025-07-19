@@ -96,32 +96,12 @@ graph TD
 
 ```typescript
 // Standardized translation file structure
-interface TranslationSchema {
-  [namespace: string]: {
-    [key: string]: string | TranslationSchema;
-  };
-}
+// Refactored to use Record utility type for flexibility and maintainability
+export type TranslationSchema = Record<string, string | TranslationSchema>;
 
 // Example structure
-interface AppTranslations {
-  login: {
-    title: string;
-    description: string;
-    form: {
-      username: string;
-      password: string;
-      submit: string;
-      validation: {
-        [key: string]: string;
-      };
-    };
-  };
-  global: {
-    loading: string;
-    error: string;
-    success: string;
-  };
-}
+// AppTranslations can be defined as an alias of TranslationSchema for simplicity
+export type AppTranslations = TranslationSchema;
 ```
 
 ### Language Configuration
