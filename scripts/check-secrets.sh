@@ -27,7 +27,7 @@ TARBALL_URL="https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_
 INSTALL_DIR="$HOME/.local/bin"
 mkdir -p "$INSTALL_DIR"
 
-if ! command -v gitleaks >/dev/null 2>&1 || ! gitleaks --version | grep -q "v${GITLEAKS_VERSION}"; then
+if ! command -v gitleaks >/dev/null 2>&1; then
   echo -e "${YELLOW}🔍 gitleaks not found, installing to $INSTALL_DIR...${RESET}"
   curl -sSL -O "$TARBALL_URL"
   curl -sSL -O "$CHECKSUMS_URL"
