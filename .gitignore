@@ -64,10 +64,10 @@ client/**/node_modules/
 logs/
 
 ### Local SSL certificates ###
-/infra/ssl/*.pem
-/infra/ssl/*.key
-/infra/ssl/*.crt
-/infra/ssl/*.p12
+/infra/ssl/**/*.pem
+/infra/ssl/**/*.key
+/infra/ssl/**/*.crt
+/infra/ssl/**/*.p12
 !/infra/ssl/README.md
 
 ### Local development data ###
