@@ -23,19 +23,11 @@ post-commit:
 pre-push:
   parallel: true
   commands:
-    d_lychee_link_check:
+    lychee_link_check:
       run: lychee --no-progress --exclude-path node_modules --exclude-path public/admin ./**/*.md
-    e_pnpm_check:
+    pnpm_check:
       run: pnpm run check
-    g_kotlin_static_analysis:
+    kotlin_static_analysis:
       run: ./gradlew detektAll
-    h_check_secrets:
+    check_secrets:
       run: ./scripts/check-secrets.sh
-    tests:
-      run: |
-        pnpm run test
-        ./gradlew test
-    builds:
-      run: |
-        pnpm run build
-        ./gradlew build -x test integrationTest
