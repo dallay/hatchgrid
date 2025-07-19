@@ -9,9 +9,6 @@ const translationModules = import.meta.glob<
 const initialUI: UIMultilingual = {
 	en: {},
 	es: {},
-	ja: {},
-	"zh-cn": {},
-	ar: {},
 };
 
 // Process each module's exports and merge them into the UI object

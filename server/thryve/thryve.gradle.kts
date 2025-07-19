@@ -142,7 +142,6 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-
 tasks.test {
     description = "Runs unit tests (as part of the default 'test' task)."
     useJUnitPlatform {
@@ -156,4 +155,17 @@ tasks.test {
 tasks.asciidoctor {
     inputs.dir(project.extra["snippetsDir"]!!)
     dependsOn(tasks.test)
+}
+
+val computedSpringProfiles = buildList {
+    add("dev")
+    if (project.hasProperty("tls")) add("tls")
+    if (project.hasProperty("e2e")) add("e2e")
+}.joinToString(",")
+
+extra["springProfiles"] = computedSpringProfiles
+
+val springProfiles: String = extra["springProfiles"] as? String ?: "dev"
+tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+    args("--spring.profiles.active=$springProfiles")
 }

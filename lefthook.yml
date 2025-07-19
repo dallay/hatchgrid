@@ -1,0 +1,20 @@
+pre-commit:
+  commands:
+    - a_yaml_check:
+        run: pnpm exec pre-commit-hooks check-yaml
+    - b_end_of_file_fixer:
+        run: pnpm exec pre-commit-hooks end-of-file-fixer
+    - c_trailing_whitespace_fixer:
+        run: pnpm exec pre-commit-hooks trailing-whitespace
+    - d_lychee_link_check:
+        run: lychee --no-progress --exclude-path node_modules --exclude-path public/admin
+    - e_pnpm_check:
+        run: pnpm run check
+    - f_generate_structure_docs:
+        run: npx --yes tree-extended -max=5 -max-show-not-empty -gitignore > docs/structure.md && echo '```' >> docs/structure.md && cat docs/structure.md | sed -i '1i\\\n```plaintext' docs/structure.md && echo '# Project Structure\n' | cat - docs/structure.md > temp && mv temp docs/structure.md
+pre-push:
+  commands:
+    - a_frontend_test:
+        run: pnpm run test
+    - b_backend_test:
+        run: ./gradlew test
