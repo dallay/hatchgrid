@@ -38,4 +38,4 @@ pre-push:
     builds:
       run: |
         pnpm run build
-        ./gradlew build -x test
+        ./gradlew build -x test integrationTest
