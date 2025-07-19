@@ -21,6 +21,7 @@ post-commit:
       run: echo "✅ Commit successful! Don't forget to push your changes."
 
 pre-push:
+  parallel: true
   commands:
     d_lychee_link_check:
       run: lychee --no-progress --exclude-path node_modules --exclude-path public/admin ./**/*.md
