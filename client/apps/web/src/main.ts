@@ -3,7 +3,9 @@ import { createApp } from "vue";
 import { setupAxiosInterceptors } from "@/config/axios-interceptor";
 import { InitializationService } from "@/services/initialization.service";
 import initI18N from "./i18n/i18n.config.ts";
-import TranslationService from "./i18n/translation.service.ts";
+import TranslationService, {
+	type I18nLike,
+} from "./i18n/translation.service.ts";
 import {
 	DEFAULT_LANGUAGE,
 	useTranslationStore,
@@ -31,7 +33,9 @@ async function bootstrap() {
 		locale: initialLanguage,
 	});
 	// Cast to I18nLike to ensure compatibility
-	const tempTranslationService = new TranslationService(i18n.global as any);
+	const tempTranslationService = new TranslationService(
+		i18n.global as I18nLike,
+	);
 
 	// 3. Load the initial language messages and wait for it
 	try {
@@ -58,7 +62,7 @@ async function bootstrap() {
 	const initializationService = new InitializationService({
 		app,
 		router,
-		i18n: i18n.global as any,
+		i18n: i18n.global as I18nLike,
 	});
 
 	try {

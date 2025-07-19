@@ -36,7 +36,7 @@
 - **Testing**: Vitest for frontend, JUnit/Kotest for backend
 - **Coverage**: Kover for Kotlin, Vitest coverage for frontend
 - **Security**: OWASP Dependency Check
-- **Git Hooks**: Lefthook for Git hooks management
+- **Git Hooks**: Lefthook for Git-hooks management
 
 ## Common Commands
 
