@@ -8,8 +8,8 @@ Hatchgrid uses ECMAScript Modules (ESM) as the default module system for JavaScr
 
 The project uses the following module-related configurations:
 
-```json
 // package.json
+```json
 {
   "type": "module"
 }

@@ -83,3 +83,22 @@ logs/
 tmp/
 *.tmp
 *.bak
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows system files
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux system files
+*~
+.nfs*
+
+# Ignore at all levels
+**/.DS_Store
+**/Thumbs.db
+**/Desktop.ini

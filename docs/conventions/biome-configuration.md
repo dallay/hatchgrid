@@ -180,7 +180,7 @@ These overrides relax certain rules for framework-specific files to accommodate 
 
 ## Integration with Git Hooks
 
-Biome is integrated with Git hooks using Lefthook to ensure code quality before commits. See [Git Hooks](./git-hooks.md) for more details.
+Biome is integrated with Git hooks using Lefthook to ensure code quality before commits. See [Git Hooks](../workflows/git-hooks.md) for more details.
 
 ## CI/CD Integration
 

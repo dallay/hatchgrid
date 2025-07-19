@@ -34,71 +34,15 @@ fi
 
 # Run tree-extended from node_modules with more focused output
 if ! npx tree-extended \
-  -max=2 \
+  -max=8 \
   -max-show-not-empty \
   -gitignore \
-  -ignore "node_modules,build,dist,.vite*,.bin,tmp,.artifact,*.jar,*.class,.DS_Store,.gitignore,.env*,*.compiler.options,coverage,.git,public,.idea,.vscode,*.log,*.tmp,*.cache,target,out,generated,bin,lib,logs,temp,assets/generated,__pycache__,*.pyc,*.pyo,*.pyd,*.so,*.dylib,*.dll,*.exe,*.o,*.a,*.obj,*.zip,*.tar,*.gz,*.rar,*.7z,.github,workflows,config,gradle,.DS_Store" \
+  -ignore "node_modules,build,dist,.vite*,.bin,tmp,.artifact,*.jar,*.class,*.DS_Store*,.gitignore,.env*,*.compiler.options,coverage,.git,public,.idea,.vscode,*.log,*.tmp,*.cache,target,out,generated,bin,lib,logs,temp,assets/generated,__pycache__,*.pyc,*.pyo,*.pyd,*.so,*.dylib,*.dll,*.exe,*.o,*.a,*.obj,*.zip,*.tar,*.gz,*.rar,*.7z,.github,workflows,config,gradle" \
   --no-color \
   >> "$doc_file"; then
   echo >&2 "Error: Failed to run tree-extended. Please check the installation."
   exit 1
 fi
-
-# Add a note about the simplified structure
-cat >> "$doc_file" <<EOF
-
-## Detailed Structure
-
-## Backend Structure (\`server/\`)
-
-\`\`\`plaintext
-server/
-└── thryve/                 # Main Spring Boot application
-    ├── src/main/kotlin/    # Kotlin source code
-    ├── src/main/resources/ # Configuration files, migrations
-    └── src/test/kotlin/    # Test source code
-\`\`\`
-
-## Frontend Structure (\`client/\`)
-
-\`\`\`plaintext
-client/
-├── apps/
-│   ├── web/               # Main Vue.js application
-│   └── landing-page/      # Astro marketing site
-├── packages/
-│   ├── utilities/         # Shared utility functions
-│   └── tsconfig/         # Shared TypeScript configs
-└── config/               # Shared build configurations
-\`\`\`
-
-## Shared Libraries (\`shared/\`)
-
-\`\`\`plaintext
-shared/
-├── common/                # Common utilities (Kotlin)
-└── spring-boot-common/    # Spring Boot shared components
-\`\`\`
-
-## Infrastructure (\`infra/\`)
-
-\`\`\`plaintext
-infra/
-├── keycloak/             # Keycloak configuration
-├── postgresql/           # Database setup and init scripts
-└── ssl/                  # Local SSL certificates
-\`\`\`
-
-## Documentation (\`docs/\`)
-
-\`\`\`plaintext
-docs/
-├── conventions/          # Development guidelines
-├── authentication/       # Auth documentation
-├── frontend/            # Frontend-specific docs
-└── landing/             # Landing page assets
-\`\`\`
-EOF
 
 echo '```' >> "$doc_file"
 echo "Project structure documentation generated at $doc_file"
