@@ -67,12 +67,44 @@ This project uses Liquibase for database migrations. The changelog file is locat
 src/main/resources/db/changelog/db.changelog-master.yaml
 ```
 
+## Git Hooks with Lefthook
+
+This project uses [Lefthook](https://github.com/evilmartians/lefthook) to manage Git hooks. Lefthook is a fast and powerful Git hooks manager that allows for parallel execution of commands and is configurable via a simple YAML file.
+
+### Installation
+
+To install Lefthook and enable the Git hooks, run the following command from the root of the repository:
+
+```bash
+pnpm install
+```
+
+The `prepare` script in `package.json` will automatically run `lefthook install`.
+
+### Pre-commit Hooks
+
+The following tasks are run automatically on `git commit`:
+
+- **YAML Check**: Checks for syntax errors in YAML files.
+- **End of File Fixer**: Ensures that all files end with a newline.
+- **Trailing Whitespace Fixer**: Removes trailing whitespace from files.
+- **Lychee Link Checker**: Checks for broken links in Markdown files.
+- **PNPM Check**: Runs `pnpm run check` to perform code quality checks.
+- **Generate Structure Docs**: Generates a `structure.md` file in the `docs` directory.
+
+### Pre-push Hooks
+
+The following tasks are run automatically on `git push`:
+
+- **Frontend Tests**: Runs all frontend tests using `pnpm run test`.
+- **Backend Tests**: Runs all backend tests using `./gradlew test`.
+
 ## Development Workflow
 
 1. Make changes to the code
-2. Run tests: `./gradlew test`
-3. Build the application: `./gradlew build`
-4. Run the application: `./gradlew bootRun`
+2. Run tests: `./gradlew test` and `pnpm test`
+3. Build the application: `./gradlew build` and `pnpm build`
+4. Run the application: `./gradlew bootRun` and `pnpm dev`
 
 ## Testing
 
@@ -104,6 +136,7 @@ The project uses Testcontainers for integration tests, which automatically spin 
 - OAuth2 Authorization Server
 - Spring Security
 - Spring Data R2DBC for reactive database access
+- Internationalization (i18n) support with message bundles
 - Liquibase for database migrations
 - Spring Boot Admin for application monitoring
 - Docker Compose support

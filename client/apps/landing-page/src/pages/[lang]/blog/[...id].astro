@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { getCollection, getEntries, getEntry, render } from "astro:content";
+import { CTAEmail } from "@/components/cta-email";
 import { type Lang, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Article.astro";
 
@@ -24,6 +25,9 @@ const title = post.data.title;
 const category = await getEntry(post.data.category);
 const tags = await getEntries(post.data.tags);
 const author = await getEntry(post.data.author);
+
+// Construct the full URL for sharing
+const currentUrl = new URL(Astro.url.pathname, Astro.site).toString();
 ---
 
 <Layout {title}>
@@ -89,7 +93,84 @@ const author = await getEntry(post.data.author);
     </div>
   </header>
 
-  <Content class="material-icons" />
+  <!-- Article Content -->
+  <article class="prose prose-lg max-w-none dark:prose-invert">
+    <Content class="material-icons" />
+  </article>
+
+  <!-- Social Sharing Section -->
+  <section class="mt-12 py-8 border-t border-border">
+    <div class="max-w-3xl mx-auto">
+      <h3 class="text-sm font-medium text-foreground mb-4">{t('blog.share.title')}</h3>
+      <div class="flex flex-wrap gap-2">
+        <a
+          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(currentUrl)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center px-3 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          aria-label={t('blog.share.twitter')}
+        >
+          🐦 X
+        </a>
+        
+        <a
+          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center px-3 py-2 text-sm bg-blue-700 hover:bg-blue-800 text-white rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2"
+          aria-label={t('blog.share.linkedin')}
+        >
+          💼 LinkedIn
+        </a>
+        
+        <a
+          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+          aria-label={t('blog.share.facebook')}
+        >
+          📘 Facebook
+        </a>
+        
+        <button
+          class="inline-flex items-center px-3 py-2 text-sm bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          onclick={`navigator.clipboard.writeText('${currentUrl}'); this.innerHTML = '✅ Copied!'; setTimeout(() => this.innerHTML = '📋 Copy link', 2000)`}
+          aria-label={t('blog.share.copy')}
+        >
+          📋 {t('blog.share.copy')}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter CTA -->
+  <section class="mt-12 py-12 bg-muted/30 rounded-lg">
+    <div class="max-w-2xl mx-auto text-center px-6">
+      <h3 class="text-2xl font-bold text-foreground mb-4">
+        {t('blog.cta.newsletter')}
+      </h3>
+      <CTAEmail
+        emailPlaceholder={t('cta.email.placeholder')}
+        buttonText={t('blog.cta.newsletter.button')}
+        client:load
+      />
+    </div>
+  </section>
+
+  <!-- Comments Section Placeholder -->
+  <section class="mt-12 py-8 border-t border-border">
+    <div class="max-w-3xl mx-auto">
+      <h3 class="text-xl font-semibold text-foreground mb-4">
+        {t('blog.comments.title')}
+      </h3>
+      <div class="bg-muted/30 rounded-lg p-8 text-center">
+        <p class="text-muted-foreground">
+          {t('blog.comments.placeholder')}
+        </p>
+      </div>
+    </div>
+  </section>
 </Layout>
 
 <style>
@@ -97,6 +178,7 @@ const author = await getEntry(post.data.author);
     text-align: center;
     border-block-end: 1px solid var(--color-theme);
     padding-block-end: var(--sp-m);
+    margin-bottom: 2rem;
     h1 {
       color: var(--color-theme);
       font-size: 1.8rem;
@@ -117,6 +199,7 @@ const author = await getEntry(post.data.author);
       gap: 0.5em;
       flex-wrap: wrap;
       margin-block: 0.5em;
+      justify-content: center;
     }
     .tag {
       background: var(--color-muted);
@@ -134,6 +217,16 @@ const author = await getEntry(post.data.author);
   }
   .cover {
     border-radius: 16px;
-    margin: 0;
+    margin: 0 0 2rem 0;
+    width: 100%;
+    height: auto;
+  }
+
+  article {
+    margin: 2rem 0;
+  }
+
+  section {
+    margin: 2rem 0;
   }
 </style>

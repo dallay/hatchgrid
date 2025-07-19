@@ -52,7 +52,23 @@ export class RandomSelectionStrategy implements ArticleSelectionStrategy {
 		return shuffled.slice(0, count);
 	}
 }
-export type SortingStrategy = "newest" | "position" | "random";
+
+// Concrete strategy: Featured selection
+export class FeaturedSelectionStrategy implements ArticleSelectionStrategy {
+	select(articles: Article[], count: number): Article[] {
+		// Filter featured articles first, then sort by date (newest first)
+		const featuredArticles = articles
+			.filter((article) => article.featured)
+			.sort((a, b) => {
+				const dateA = a.date ? new Date(a.date) : new Date(0);
+				const dateB = b.date ? new Date(b.date) : new Date(0);
+				return dateB.getTime() - dateA.getTime();
+			});
+
+		return featuredArticles.slice(0, count);
+	}
+}
+export type SortingStrategy = "newest" | "position" | "random" | "featured";
 // Factory to get the appropriate strategy
 export function getSelectionStrategy(
 	strategy: SortingStrategy,
@@ -62,6 +78,8 @@ export function getSelectionStrategy(
 			return new NewestSelectionStrategy();
 		case "random":
 			return new RandomSelectionStrategy();
+		case "featured":
+			return new FeaturedSelectionStrategy();
 		default:
 			return new PositionSelectionStrategy();
 	}

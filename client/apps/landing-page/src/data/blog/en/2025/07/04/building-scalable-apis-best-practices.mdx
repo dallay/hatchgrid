@@ -1,0 +1,836 @@
+---
+title: "Building Scalable APIs: Best Practices from the Hatchgrid Development Experience"
+description: "Learn how to design and build scalable REST APIs that can handle growth. Discover proven patterns, performance optimization techniques, and architectural decisions from building Hatchgrid's backend infrastructure."
+date: 2025-07-04T18:30:00
+lastModified: 2025-07-04T18:30:00
+author: en/yuniel-acosta
+cover: src/assets/images/blog-placeholder-1.avif
+tags:
+  - en/apis
+  - en/backend
+  - en/spring-boot
+  - en/engineering
+  - en/product
+category: en/web-development
+draft: false
+featured: true
+---
+
+Building scalable APIs is both an art and a science. During the development of Hatchgrid's backend infrastructure, we've learned valuable lessons about creating APIs that can handle growth, maintain performance, and provide excellent developer experience. Here are the key practices we've implemented.
+
+## The Foundation: Design Principles
+
+### 1. API-First Design
+
+Before writing any code, we design our APIs using OpenAPI specifications. This approach ensures consistency and enables parallel development between frontend and backend teams.
+
+```yaml
+# OpenAPI specification example
+openapi: 3.0.3
+info:
+  title: Hatchgrid API
+  version: 1.0.0
+  description: Backend infrastructure services for developers
+
+paths:
+  /api/v1/users:
+    get:
+      summary: List users
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+```
+
+### 2. Consistent Resource Naming
+
+We follow RESTful conventions religiously:
+
+```kotlin
+// Kotlin Spring Boot Controller
+@RestController
+@RequestMapping("/api/v1")
+class UserController(private val userService: UserService) {
+    
+    // Collection operations
+    @GetMapping("/users")
+    suspend fun getUsers(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") size: Int
+    ): ResponseEntity<Page<UserResponse>> {
+        // Implementation
+    }
+    
+    @PostMapping("/users")
+    suspend fun createUser(@Valid @RequestBody request: CreateUserRequest): ResponseEntity<UserResponse> {
+        // Implementation
+    }
+    
+    // Resource operations
+    @GetMapping("/users/{id}")
+    suspend fun getUser(@PathVariable id: Long): ResponseEntity<UserResponse> {
+        // Implementation
+    }
+    
+    @PutMapping("/users/{id}")
+    suspend fun updateUser(
+        @PathVariable id: Long,
+        @Valid @RequestBody request: UpdateUserRequest
+    ): ResponseEntity<UserResponse> {
+        // Implementation
+    }
+    
+    @DeleteMapping("/users/{id}")
+    suspend fun deleteUser(@PathVariable id: Long): ResponseEntity<Void> {
+        // Implementation
+    }
+    
+    // Nested resources
+    @GetMapping("/users/{userId}/orders")
+    suspend fun getUserOrders(@PathVariable userId: Long): ResponseEntity<List<OrderResponse>> {
+        // Implementation
+    }
+}
+```
+
+### 3. Proper HTTP Status Codes
+
+Use status codes that accurately represent the operation outcome:
+
+```kotlin
+@Service
+class UserService {
+    
+    suspend fun createUser(request: CreateUserRequest): ResponseEntity<UserResponse> {
+        return try {
+            val user = userRepository.save(request.toEntity())
+            ResponseEntity.status(HttpStatus.CREATED).body(user.toResponse())
+        } catch (e: DuplicateEmailException) {
+            ResponseEntity.status(HttpStatus.CONFLICT).build()
+        } catch (e: ValidationException) {
+            ResponseEntity.badRequest().build()
+        }
+    }
+    
+    suspend fun getUser(id: Long): ResponseEntity<UserResponse> {
+        return userRepository.findById(id)
+            ?.let { ResponseEntity.ok(it.toResponse()) }
+            ?: ResponseEntity.notFound().build()
+    }
+    
+    suspend fun updateUser(id: Long, request: UpdateUserRequest): ResponseEntity<UserResponse> {
+        return if (userRepository.existsById(id)) {
+            val updated = userRepository.update(id, request)
+            ResponseEntity.ok(updated.toResponse())
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+}
+```
+
+## Scalability Patterns
+
+### 1. Pagination and Filtering
+
+Always implement pagination for list endpoints:
+
+```kotlin
+data class PageRequest(
+    val page: Int = 0,
+    val size: Int = 20,
+    val sort: String? = null,
+    val direction: Sort.Direction = Sort.Direction.ASC
+) {
+    init {
+        require(page >= 0) { "Page must be non-negative" }
+        require(size in 1..100) { "Size must be between 1 and 100" }
+    }
+}
+
+data class PageResponse<T>(
+    val content: List<T>,
+    val page: Int,
+    val size: Int,
+    val totalElements: Long,
+    val totalPages: Int,
+    val first: Boolean,
+    val last: Boolean
+)
+
+@RestController
+class ProductController(private val productService: ProductService) {
+    
+    @GetMapping("/api/v1/products")
+    suspend fun getProducts(
+        @RequestParam(required = false) category: String?,
+        @RequestParam(required = false) minPrice: BigDecimal?,
+        @RequestParam(required = false) maxPrice: BigDecimal?,
+        @RequestParam(required = false) search: String?,
+        pageRequest: PageRequest
+    ): ResponseEntity<PageResponse<ProductResponse>> {
+        
+        val filter = ProductFilter(
+            category = category,
+            minPrice = minPrice,
+            maxPrice = maxPrice,
+            search = search
+        )
+        
+        return ResponseEntity.ok(productService.findProducts(filter, pageRequest))
+    }
+}
+```
+
+### 2. Efficient Database Queries
+
+Use proper indexing and query optimization:
+
+```kotlin
+// Repository with custom queries
+@Repository
+interface UserRepository : CoroutineCrudRepository<User, Long> {
+    
+    @Query("""
+        SELECT u.* FROM users u 
+        WHERE (:email IS NULL OR u.email = :email)
+        AND (:department IS NULL OR u.department = :department)
+        AND (:active IS NULL OR u.active = :active)
+        ORDER BY u.created_at DESC
+        LIMIT :limit OFFSET :offset
+    """)
+    suspend fun findUsersWithFilter(
+        email: String?,
+        department: String?,
+        active: Boolean?,
+        limit: Int,
+        offset: Int
+    ): Flow<User>
+    
+    @Query("SELECT COUNT(*) FROM users u WHERE u.department = :department")
+    suspend fun countByDepartment(department: String): Long
+    
+    // Use indexes for common queries
+    @Query("SELECT * FROM users WHERE email = :email")
+    suspend fun findByEmail(email: String): User?
+}
+```
+
+```sql
+-- Database indexes for performance
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_department ON users(department);
+CREATE INDEX idx_users_active ON users(active);
+CREATE INDEX idx_users_created_at ON users(created_at DESC);
+
+-- Composite indexes for complex queries
+CREATE INDEX idx_users_dept_active ON users(department, active);
+```
+
+### 3. Caching Strategy
+
+Implement multi-level caching:
+
+```kotlin
+@Service
+class UserService(
+    private val userRepository: UserRepository,
+    private val cacheManager: CacheManager
+) {
+    
+    @Cacheable("users", key = "#id")
+    suspend fun getUserById(id: Long): User? {
+        return userRepository.findById(id)
+    }
+    
+    @CacheEvict("users", key = "#user.id")
+    suspend fun updateUser(user: User): User {
+        return userRepository.save(user)
+    }
+    
+    @Cacheable("user-count", key = "#department")
+    suspend fun getUserCountByDepartment(department: String): Long {
+        return userRepository.countByDepartment(department)
+    }
+    
+    // Cache expensive aggregations
+    @Cacheable("user-stats", key = "'daily-stats'")
+    suspend fun getDailyUserStats(): UserStatsResponse {
+        return userRepository.calculateDailyStats()
+    }
+}
+```
+
+```yaml
+# Cache configuration
+spring:
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000 # 1 hour
+      cache-null-values: false
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+```
+
+## Performance Optimization
+
+### 1. Asynchronous Processing
+
+Use Kotlin coroutines for non-blocking operations:
+
+```kotlin
+@Service
+class OrderService(
+    private val orderRepository: OrderRepository,
+    private val inventoryService: InventoryService,
+    private val paymentService: PaymentService,
+    private val notificationService: NotificationService
+) {
+    
+    suspend fun processOrder(orderRequest: CreateOrderRequest): OrderResponse = coroutineScope {
+        // Run validations in parallel
+        val inventoryCheck = async { inventoryService.checkAvailability(orderRequest.items) }
+        val paymentValidation = async { paymentService.validatePayment(orderRequest.payment) }
+        
+        // Wait for both to complete
+        val inventory = inventoryCheck.await()
+        val payment = paymentValidation.await()
+        
+        if (!inventory.available) {
+            throw InsufficientInventoryException()
+        }
+        
+        if (!payment.valid) {
+            throw InvalidPaymentException()
+        }
+        
+        // Create order
+        val order = orderRepository.save(orderRequest.toEntity())
+        
+        // Fire and forget notification
+        launch { notificationService.sendOrderConfirmation(order) }
+        
+        order.toResponse()
+    }
+}
+```
+
+### 2. Database Connection Pooling
+
+Configure connection pools properly:
+
+```yaml
+# application.yml
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/hatchgrid
+    username: ${DB_USERNAME:hatchgrid}
+    password: ${DB_PASSWORD:password}
+    pool:
+      enabled: true
+      initial-size: 10
+      max-size: 50
+      max-idle-time: 30m
+      max-life-time: 2h
+      max-acquire-time: 3s
+      max-create-connection-time: 3s
+      validation-query: SELECT 1
+```
+
+### 3. Request/Response Optimization
+
+Minimize payload sizes and use compression:
+
+```kotlin
+// DTO optimization
+data class UserResponse(
+    val id: Long,
+    val email: String,
+    val name: String,
+    val department: String?,
+    val createdAt: Instant,
+    val lastLoginAt: Instant?
+) {
+    companion object {
+        fun from(user: User) = UserResponse(
+            id = user.id,
+            email = user.email,
+            name = user.name,
+            department = user.department,
+            createdAt = user.createdAt,
+            lastLoginAt = user.lastLoginAt
+        )
+    }
+}
+
+// Partial updates
+data class UpdateUserRequest(
+    val name: String?,
+    val department: String?,
+    val active: Boolean?
+) {
+    fun hasChanges() = name != null || department != null || active != null
+}
+
+@Configuration
+class CompressionConfig {
+    
+    @Bean
+    fun compressionCustomizer(): WebServerFactoryCustomizer<NettyReactiveWebServerFactory> {
+        return WebServerFactoryCustomizer { factory ->
+            factory.addServerCustomizers { server ->
+                server.compress(true)
+            }
+        }
+    }
+}
+```
+
+## Error Handling and Validation
+
+### 1. Global Exception Handling
+
+Centralize error handling:
+
+```kotlin
+@RestControllerAdvice
+class GlobalExceptionHandler {
+    
+    private val logger = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
+    
+    @ExceptionHandler(ValidationException::class)
+    fun handleValidation(ex: ValidationException): ResponseEntity<ErrorResponse> {
+        logger.warn("Validation error: {}", ex.message)
+        return ResponseEntity
+            .badRequest()
+            .body(ErrorResponse(
+                code = "VALIDATION_ERROR",
+                message = "Invalid input data",
+                details = ex.errors
+            ))
+    }
+    
+    @ExceptionHandler(ResourceNotFoundException::class)
+    fun handleNotFound(ex: ResourceNotFoundException): ResponseEntity<ErrorResponse> {
+        logger.warn("Resource not found: {}", ex.message)
+        return ResponseEntity
+            .notFound()
+            .build()
+    }
+    
+    @ExceptionHandler(DuplicateResourceException::class)
+    fun handleDuplicate(ex: DuplicateResourceException): ResponseEntity<ErrorResponse> {
+        logger.warn("Duplicate resource: {}", ex.message)
+        return ResponseEntity
+            .status(HttpStatus.CONFLICT)
+            .body(ErrorResponse(
+                code = "DUPLICATE_RESOURCE",
+                message = ex.message
+            ))
+    }
+    
+    @ExceptionHandler(Exception::class)
+    fun handleGeneral(ex: Exception): ResponseEntity<ErrorResponse> {
+        logger.error("Unexpected error", ex)
+        return ResponseEntity
+            .internalServerError()
+            .body(ErrorResponse(
+                code = "INTERNAL_ERROR",
+                message = "An unexpected error occurred"
+            ))
+    }
+}
+
+data class ErrorResponse(
+    val code: String,
+    val message: String,
+    val details: List<String>? = null,
+    val timestamp: Instant = Instant.now()
+)
+```
+
+### 2. Input Validation
+
+Use Bean Validation for consistent validation:
+
+```kotlin
+data class CreateUserRequest(
+    @field:Email(message = "Invalid email format")
+    @field:NotBlank(message = "Email is required")
+    val email: String,
+    
+    @field:NotBlank(message = "Name is required")
+    @field:Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
+    val name: String,
+    
+    @field:Pattern(
+        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+        message = "Password must contain at least 8 characters, including uppercase, lowercase, number and special character"
+    )
+    val password: String,
+    
+    @field:Valid
+    val profile: UserProfileRequest?
+)
+
+data class UserProfileRequest(
+    @field:Size(max = 500, message = "Bio cannot exceed 500 characters")
+    val bio: String?,
+    
+    @field:URL(message = "Invalid website URL")
+    val website: String?
+)
+
+@RestController
+class UserController {
+    
+    @PostMapping("/api/v1/users")
+    suspend fun createUser(@Valid @RequestBody request: CreateUserRequest): ResponseEntity<UserResponse> {
+        // Validation is automatically handled by @Valid
+        return userService.createUser(request)
+    }
+}
+```
+
+## Security Best Practices
+
+### 1. Authentication and Authorization
+
+Implement JWT-based security:
+
+```kotlin
+@Configuration
+@EnableWebFluxSecurity
+class SecurityConfig {
+    
+    @Bean
+    fun securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
+        return http
+            .csrf().disable()
+            .authorizeExchange { exchanges ->
+                exchanges
+                    .pathMatchers("/api/v1/auth/**").permitAll()
+                    .pathMatchers("/api/v1/health").permitAll()
+                    .pathMatchers(HttpMethod.GET, "/api/v1/users/**").hasRole("USER")
+                    .pathMatchers(HttpMethod.POST, "/api/v1/users").hasRole("ADMIN")
+                    .pathMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                    .anyExchange().authenticated()
+            }
+            .oauth2ResourceServer { oauth2 ->
+                oauth2.jwt { jwt ->
+                    jwt.jwtDecoder(jwtDecoder())
+                }
+            }
+            .build()
+    }
+}
+
+@Service
+class AuthService(private val jwtService: JwtService) {
+    
+    suspend fun generateTokens(user: User): TokenResponse {
+        val accessToken = jwtService.generateAccessToken(user)
+        val refreshToken = jwtService.generateRefreshToken(user)
+        
+        return TokenResponse(
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            expiresIn = 3600 // 1 hour
+        )
+    }
+}
+```
+
+### 2. Rate Limiting
+
+Protect APIs from abuse:
+
+```kotlin
+@Component
+class RateLimitingFilter : WebFilter {
+    
+    private val rateLimiter = RedisRateLimiter(
+        replenishRate = 10, // requests per second
+        burstCapacity = 20   // max burst
+    )
+    
+    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
+        val clientId = getClientId(exchange)
+        
+        return rateLimiter.isAllowed("api", clientId)
+            .flatMap { response ->
+                if (response.isAllowed) {
+                    chain.filter(exchange)
+                } else {
+                    exchange.response.statusCode = HttpStatus.TOO_MANY_REQUESTS
+                    exchange.response.setComplete()
+                }
+            }
+    }
+    
+    private fun getClientId(exchange: ServerWebExchange): String {
+        return exchange.request.headers.getFirst("X-Client-ID")
+            ?: exchange.request.remoteAddress?.address?.hostAddress
+            ?: "anonymous"
+    }
+}
+```
+
+## Monitoring and Observability
+
+### 1. Metrics and Health Checks
+
+Implement comprehensive monitoring:
+
+```kotlin
+@RestController
+class HealthController(
+    private val databaseHealthIndicator: DatabaseHealthIndicator,
+    private val cacheHealthIndicator: CacheHealthIndicator
+) {
+    
+    @GetMapping("/api/v1/health")
+    suspend fun health(): ResponseEntity<HealthResponse> {
+        val dbHealth = databaseHealthIndicator.health()
+        val cacheHealth = cacheHealthIndicator.health()
+        
+        val overallStatus = if (dbHealth.healthy && cacheHealth.healthy) {
+            HealthStatus.HEALTHY
+        } else {
+            HealthStatus.UNHEALTHY
+        }
+        
+        return ResponseEntity.ok(HealthResponse(
+            status = overallStatus,
+            timestamp = Instant.now(),
+            services = mapOf(
+                "database" to dbHealth,
+                "cache" to cacheHealth
+            )
+        ))
+    }
+}
+
+@Component
+class MetricsService {
+    
+    private val requestCounter = Counter.builder("api_requests_total")
+        .description("Total number of API requests")
+        .register(Metrics.globalRegistry)
+    
+    private val requestTimer = Timer.builder("api_request_duration")
+        .description("API request duration")
+        .register(Metrics.globalRegistry)
+    
+    fun recordRequest(endpoint: String, method: String, status: Int) {
+        requestCounter.increment(
+            Tags.of(
+                "endpoint", endpoint,
+                "method", method,
+                "status", status.toString()
+            )
+        )
+    }
+    
+    fun recordDuration(endpoint: String, duration: Duration) {
+        requestTimer.record(duration, Tags.of("endpoint", endpoint))
+    }
+}
+```
+
+### 2. Structured Logging
+
+Implement consistent logging:
+
+```kotlin
+@Component
+class RequestLoggingFilter : WebFilter {
+    
+    private val logger = LoggerFactory.getLogger(RequestLoggingFilter::class.java)
+    
+    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
+        val startTime = System.currentTimeMillis()
+        val correlationId = UUID.randomUUID().toString()
+        
+        exchange.attributes["correlationId"] = correlationId
+        
+        logger.info("Request started: {} {} [{}]",
+            exchange.request.method,
+            exchange.request.path,
+            correlationId
+        )
+        
+        return chain.filter(exchange)
+            .doFinally {
+                val duration = System.currentTimeMillis() - startTime
+                logger.info("Request completed: {} {} [{}] - {}ms - {}",
+                    exchange.request.method,
+                    exchange.request.path,
+                    correlationId,
+                    duration,
+                    exchange.response.statusCode
+                )
+            }
+    }
+}
+```
+
+## Testing Strategies
+
+### 1. Contract Testing
+
+Use Spring Cloud Contract for API testing:
+
+```groovy
+// contracts/user_get_by_id.groovy
+Contract.make {
+    description "should return user by id"
+    request {
+        method 'GET'
+        url '/api/v1/users/1'
+        headers {
+            contentType(applicationJson())
+            header('Authorization', 'Bearer token')
+        }
+    }
+    response {
+        status OK()
+        body([
+            id: 1,
+            email: 'john@example.com',
+            name: 'John Doe',
+            department: 'Engineering'
+        ])
+        headers {
+            contentType(applicationJson())
+        }
+    }
+}
+```
+
+### 2. Integration Testing
+
+Test complete API workflows:
+
+```kotlin
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class UserApiIntegrationTest {
+    
+    @Autowired
+    lateinit var webTestClient: WebTestClient
+    
+    @Autowired
+    lateinit var userRepository: UserRepository
+    
+    @Test
+    fun `should create and retrieve user`() = runTest {
+        val createRequest = CreateUserRequest(
+            email = "test@example.com",
+            name = "Test User",
+            password = "SecurePass123!"
+        )
+        
+        // Create user
+        val createResponse = webTestClient.post()
+            .uri("/api/v1/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(createRequest)
+            .exchange()
+            .expectStatus().isCreated
+            .expectBody<UserResponse>()
+            .returnResult()
+            .responseBody!!
+        
+        // Retrieve user
+        webTestClient.get()
+            .uri("/api/v1/users/${createResponse.id}")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody<UserResponse>()
+            .consumeWith { response ->
+                val user = response.responseBody!!
+                assertEquals(createRequest.email, user.email)
+                assertEquals(createRequest.name, user.name)
+            }
+    }
+}
+```
+
+## API Versioning Strategy
+
+Implement proper versioning:
+
+```kotlin
+@RestController
+@RequestMapping("/api/v1/users")
+class UserV1Controller {
+    // V1 implementation
+}
+
+@RestController
+@RequestMapping("/api/v2/users")
+class UserV2Controller {
+    // V2 implementation with breaking changes
+}
+
+// Or use headers for versioning
+@RestController
+@RequestMapping("/api/users")
+class UserController {
+    
+    @GetMapping(headers = ["API-Version=1"])
+    fun getUsersV1(): ResponseEntity<List<UserResponseV1>> {
+        // V1 implementation
+    }
+    
+    @GetMapping(headers = ["API-Version=2"])
+    fun getUsersV2(): ResponseEntity<List<UserResponseV2>> {
+        // V2 implementation
+    }
+}
+```
+
+## Conclusion
+
+Building scalable APIs requires careful attention to design, performance, security, and maintainability. The practices we've implemented at Hatchgrid have helped us create APIs that can handle growth while maintaining excellent developer experience.
+
+**Key takeaways:**
+- Design APIs first, then implement
+- Implement pagination and filtering from the start
+- Use proper caching strategies
+- Handle errors consistently
+- Secure your APIs with authentication and rate limiting
+- Monitor everything with metrics and structured logging
+- Test thoroughly with integration and contract tests
+
+**Start implementing these practices incrementally.** You don't need to implement everything at once, but having a plan for scalability from the beginning will save you significant refactoring later.
+
+---
+
+**Ready to build your scalable API?** Start with proper resource design and pagination, then gradually add caching, security, and monitoring as your application grows. Remember: premature optimization is the root of all evil, but ignoring scalability entirely will bite you later.

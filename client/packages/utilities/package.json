@@ -10,7 +10,7 @@
 		"node": ">=22.0.0",
 		"pnpm": ">=10.0.0"
 	},
-	"packageManager": "pnpm@10.12.1",
+	"packageManager": "pnpm@10.13.1",
 	"main": "./dist/utilities.js",
 	"module": "./dist/utilities.js",
 	"types": "./dist/index.d.ts",
@@ -41,18 +41,20 @@
 	"bugs": {
 		"url": "https://github.com/dallay/hatchgrid/issues"
 	},
-	"scripts": {
-		"dev": "vite build -- --watch",
-		"build:types": "tsc --build",
-		"build:vite": "vite build",
-		"build:all": "run-s build:types build:vite",
-		"build": "run-s build:all",
-		"preview": "vite preview",
-		"check": "tsc --noEmit --skipLibCheck && biome check . --fix",
-		"clean": "rm -rf dist coverage",
-		"test": "vitest --coverage --run",
-		"test:watch": "vitest --watch"
-	},
+  "scripts": {
+	"dev": "vite build -- --watch",
+	"clean:types": "rimraf dist tsconfig.build.tsbuildinfo",
+	"build:types:raw": "tsc --build",
+	"build:types": "run-s clean:types build:types:raw",
+	"build:vite": "vite build",
+	"build:all": "run-s build:types build:vite",
+	"build": "run-s build:all",
+	"preview": "vite preview",
+	"check": "tsc --noEmit --skipLibCheck",
+	"clean": "rimraf dist coverage",
+	"test": "vitest --coverage --run",
+	"test:watch": "vitest --watch"
+  },
 	"dependencies": {
 		"gravatar-url": "^4.0.1"
 	},

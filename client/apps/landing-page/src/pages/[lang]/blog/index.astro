@@ -1,21 +1,20 @@
 ---
-import { Image } from "astro:assets";
-import { getCollection } from "astro:content";
-import PageHeadline from "@/components/PageHeadline.astro";
+import ArticleCard from "@/components/ArticleCard.astro";
 import { type Lang, LOCALES, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Base.astro";
+import { getArticles } from "@/models/article";
 
 const locale = Astro.currentLocale as Lang;
 const t = useTranslations(locale);
 
-const posts = (await getCollection("articles"))
-	.filter((post) => post.id.split("/")[0] === locale)
-	.sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
-
-const title = t({
-	en: "Blog",
-	es: "Blog",
+// Get articles using the article service for consistency
+const articles = await getArticles({
+	includeDrafts: false,
+	lang: locale,
 });
+
+const title = t("blog.header.title");
+const subtitle = t("blog.header.subtitle");
 
 export const getStaticPaths = () =>
 	Object.keys(LOCALES).map((lang) => ({
@@ -24,50 +23,168 @@ export const getStaticPaths = () =>
 ---
 
 <Layout {title}>
-  <PageHeadline {title} />
+  <!-- Enhanced Blog Header -->
+  <section class="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-background to-muted/30">
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-4xl mx-auto">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4">
+          {title}
+        </h1>
+        <p class="text-xl text-muted-foreground mb-8 leading-relaxed">
+          {subtitle}
+        </p>
+        
+        <!-- Search Bar -->
+        <div class="flex justify-center">
+          <div class="relative w-full max-w-lg">
+            <div class="relative">
+              <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"></path>
+              </svg>
+              <input
+                id="search-input"
+                type="text"
+                placeholder={t('blog.search.placeholder')}
+                class="w-full pl-10 pr-4 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                role="searchbox"
+                aria-label={t('blog.search.placeholder')}
+              />
+              <button
+                id="clear-search"
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors hidden"
+                aria-label={t('blog.search.clear')}
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+            
+            <div id="search-results" class="mt-2 text-sm text-muted-foreground hidden"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <p class="mt-4">
-    {
-      t({
-        en: "A sample for managing blog or news content. It uses Astro's content collection.",
-        es: "Un ejemplo para gestionar contenido de blog o noticias. Utiliza la colección de contenido de Astro.",
-      })
-    }
-  </p>
-
-  <p class="mt-4">
-    <a
-      href={`https://docs.astro.build/${Astro.currentLocale}/guides/content-collections/`}
-      target="_blank"
-      class="inline-flex items-center text-blue-600 hover:underline"
-    >
-      Content Collection | Astro Docs
-      <span class="material-icons-sharp ml-1"> open_in_new </span>
-    </a>
-  </p>
-
-  <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    {
-      posts.map((post) => {
-        const [, ...id] = post.id.split("/");
-        return (
-          <li class="mb-4">
-            <a
-              href={`/${locale}/blog/${id.join("/")}/`}
-              class="block rounded-lg border border-gray-200 p-4 shadow-sm transition hover:shadow-lg dark:border-gray-700 dark:hover:shadow-lg-dark"
-            >
-              {post.data.cover && (
-                <Image
-                  src={post.data.cover}
-                  alt={post.data.title}
-                  class="mb-2 h-48 w-full rounded-md object-cover"
-                />
-              )}
-              <h2 class="text-xl font-semibold">{post.data.title}</h2>
-            </a>
-          </li>
-        );
-      })
-    }
-  </ul>
+  <!-- Articles Grid -->
+  <section class="py-12 md:py-16">
+    <div class="container mx-auto px-4">
+      <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {articles.map((article) => (
+          <div class="article-item">
+            <ArticleCard article={article} />
+          </div>
+        ))}
+      </div>
+      
+      <div id="no-results" class="hidden text-center py-12">
+        <p class="text-muted-foreground text-lg">
+          {t('blog.search.noResults')}
+        </p>
+      </div>
+      
+      {articles.length === 0 && (
+        <div class="text-center py-12">
+          <p class="text-muted-foreground text-lg">
+            {t('blog.section.noArticles')}
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
 </Layout>
+
+<script>
+  // Enhanced search functionality with dynamic filtering
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    const clearButton = document.getElementById('clear-search') as HTMLButtonElement;
+    const searchResults = document.getElementById('search-results') as HTMLDivElement;
+    const articlesGrid = document.getElementById('articles-grid') as HTMLDivElement;
+    const noResults = document.getElementById('no-results') as HTMLDivElement;
+    const articleItems = document.querySelectorAll('.article-item') as NodeListOf<HTMLElement>;
+    
+    if (!searchInput || !articlesGrid || !noResults) return;
+    
+    const filterArticles = (query: string) => {
+      const lowercaseQuery = query.toLowerCase().trim();
+      
+      if (!lowercaseQuery) {
+        // Show all articles
+        articleItems.forEach(item => {
+          item.style.display = 'block';
+        });
+        noResults.classList.add('hidden');
+        searchResults.classList.add('hidden');
+        clearButton.classList.add('hidden');
+        return;
+      }
+      
+      clearButton.classList.remove('hidden');
+      let visibleCount = 0;
+      
+      articleItems.forEach(item => {
+        const articleCard = item.querySelector('article, div');
+        const title = articleCard?.querySelector('h1, h2, h3')?.textContent?.toLowerCase() || '';
+        const description = articleCard?.querySelector('p')?.textContent?.toLowerCase() || '';
+        const category = articleCard?.querySelector('.badge, .category')?.textContent?.toLowerCase() || '';
+        
+        const isVisible = title.includes(lowercaseQuery) || 
+                         description.includes(lowercaseQuery) || 
+                         category.includes(lowercaseQuery);
+        
+        if (isVisible) {
+          item.style.display = 'block';
+          visibleCount++;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+      
+      // Show search results
+      searchResults.classList.remove('hidden');
+      if (visibleCount === 0) {
+        noResults.classList.remove('hidden');
+        searchResults.textContent = 'No articles found matching your search.';
+      } else {
+        noResults.classList.add('hidden');
+        searchResults.textContent = `Found ${visibleCount} article${visibleCount === 1 ? '' : 's'}`;
+      }
+    };
+    
+    // Debounced search to improve performance
+    let searchTimeout: ReturnType<typeof setTimeout>;
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        const query = (e.target as HTMLInputElement).value;
+        filterArticles(query);
+      }, 300);
+    });
+    
+    // Clear search on button click
+    clearButton.addEventListener('click', () => {
+      searchInput.value = '';
+      filterArticles('');
+    });
+    
+    // Clear search on escape
+    searchInput.addEventListener('keydown', (e) => {
+      if ((e as KeyboardEvent).key === 'Escape') {
+        searchInput.value = '';
+        filterArticles('');
+      }
+    });
+  });
+</script>
+
+<style>
+  .container {
+    max-width: 1200px;
+  }
+  
+  .article-item {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+</style>

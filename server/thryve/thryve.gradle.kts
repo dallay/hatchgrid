@@ -109,15 +109,63 @@ kotlin {
     }
 }
 
+val unitTest = tasks.register<Test>("unitTest") {
+    group = "verification"
+    description = "Runs unit tests."
+    useJUnitPlatform {
+        includeTags("unit")
+    }
+    reports {
+        html.outputLocation.set(layout.buildDirectory.dir("reports/tests/unitTest/html"))
+        junitXml.outputLocation.set(layout.buildDirectory.dir("reports/tests/unitTest/xml"))
+    }
+}
+
+val integrationTest = tasks.register<Test>("integrationTest") {
+    group = "verification"
+    description = "Runs integration tests."
+    useJUnitPlatform {
+        includeTags("integration")
+    }
+    reports {
+        html.outputLocation.set(layout.buildDirectory.dir("reports/tests/integrationTest/html"))
+        junitXml.outputLocation.set(layout.buildDirectory.dir("reports/tests/integrationTest/xml"))
+    }
+}
+
+tasks.named("check") {
+    dependsOn(unitTest)
+    dependsOn(integrationTest)
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
 
 tasks.test {
+    description = "Runs unit tests (as part of the default 'test' task)."
+    useJUnitPlatform {
+        includeTags("unit")
+    }
+    finalizedBy(tasks.named("integrationTest")) // references the already registered integrationTest task
+
     outputs.dir(project.extra["snippetsDir"]!!)
 }
 
 tasks.asciidoctor {
     inputs.dir(project.extra["snippetsDir"]!!)
     dependsOn(tasks.test)
+}
+
+val computedSpringProfiles = buildList {
+    add("dev")
+    if (project.hasProperty("tls")) add("tls")
+    if (project.hasProperty("e2e")) add("e2e")
+}.joinToString(",")
+
+extra["springProfiles"] = computedSpringProfiles
+
+val springProfiles: String = extra["springProfiles"] as? String ?: "dev"
+tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+    args("--spring.profiles.active=$springProfiles")
 }
