@@ -1,11 +1,8 @@
----
 # 🔒 How to Pin GitHub Actions to a Specific Hash
 
 ## Why Pin Actions?
 
 Using a floating tag (e.g. `v4`, `@main`) for a third-party GitHub Action can expose you to supply chain attacks. If the tag is repointed by a compromised maintainer, malicious code may execute in your workflows. Pinning to a full commit hash ensures immutability.
-
----
 
 ## Methods to Find a Commit Hash
 
@@ -21,7 +18,7 @@ git ls-remote --tags https://github.com/codecov/codecov-action.git v4
 Output:
 
 ```text
-b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238	refs/tags/v4
+b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 refs/tags/v4
 ```
 
 Use the full hash (`b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238`).

@@ -1,7 +1,10 @@
 import type { App } from "vue";
 import { watch } from "vue";
 import type { Router } from "vue-router";
-import TranslationService from "@/i18n/translation.service";
+import TranslationService, {
+	type I18nLike,
+	isI18nLike,
+} from "@/i18n/translation.service";
 import AccountService from "@/services/account.service";
 import { useAuthStore } from "@/stores/auth";
 import { useTranslationStore } from "@/stores/translation.store";
@@ -9,7 +12,7 @@ import { useTranslationStore } from "@/stores/translation.store";
 export interface InitializationOptions {
 	app: App;
 	router: Router;
-	i18n: any;
+	i18n: I18nLike;
 }
 
 export class InitializationService {
@@ -20,6 +23,12 @@ export class InitializationService {
 	private readonly router!: Router;
 
 	constructor(private readonly options: InitializationOptions) {
+		// Validate that the i18n instance conforms to I18nLike interface
+		if (!isI18nLike(options.i18n)) {
+			throw new Error(
+				"Invalid i18n instance provided to InitializationService. The object does not implement the required I18nLike interface.",
+			);
+		}
 		this.router = options.router;
 	}
 
@@ -32,7 +41,14 @@ export class InitializationService {
 		this.translationStore = useTranslationStore();
 
 		// Initialize services
-		this.translationService = new TranslationService(this.options.i18n);
+		try {
+			this.translationService = new TranslationService(this.options.i18n);
+		} catch (error) {
+			console.error("Failed to create TranslationService:", error);
+			throw new Error(
+				"Failed to initialize translation service. See console for details.",
+			);
+		}
 		this.accountService = new AccountService(this.authStore, this.router);
 
 		// Set up router guards

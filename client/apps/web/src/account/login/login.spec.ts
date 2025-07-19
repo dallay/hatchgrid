@@ -1,9 +1,9 @@
 import { createTestingPinia } from "@pinia/testing";
 import { mount } from "@vue/test-utils";
-import { describe, it, vi, expect} from "vitest";
-import { useAuthStore } from "@/stores/auth";
+import { describe, expect, it, vi } from "vitest";
 import { createI18n } from "vue-i18n";
 import { createRouter, createWebHistory } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 import Login from "./login.vue";
 
 const router = createRouter({
@@ -93,7 +93,9 @@ describe("Login.vue", () => {
 			createSpy: vi.fn,
 		});
 		const authStore = useAuthStore(pinia);
-		authStore.login = vi.fn().mockRejectedValue(new Error("Invalid credentials"));
+		authStore.login = vi
+			.fn()
+			.mockRejectedValue(new Error("Invalid credentials"));
 
 		const wrapper = mount(Login, {
 			global: {

@@ -6,7 +6,10 @@
 	"scripts": {
 		"dev": "pnpm --filter @hatchgrid/utilities build && vite",
 		"build": "pnpm --filter @hatchgrid/utilities build && vue-tsc -b && vite build",
-		"check": "biome check . --fix",
+		"check": "run-p lint",
+		"lint": "biome check . --fix --log-level=error",
+		"lint:strict": "biome check . --log-level=error",
+		"format": "biome format . --write",
 		"preview": "vite preview",
 		"pretest": "pnpm --filter @hatchgrid/utilities build",
 		"test": "vitest --run --coverage"
@@ -52,7 +55,7 @@
 		"typescript": "~5.8.3",
 		"unplugin-icons": "^22.1.0",
 		"unplugin-vue-components": "^28.8.0",
-		"vite": "^7.0.4",
+		"vite": "^7.0.5",
 		"vitest": "^3.2.4",
 		"vue-tsc": "^3.0.1"
 	}

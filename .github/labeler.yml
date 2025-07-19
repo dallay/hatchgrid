@@ -11,7 +11,7 @@ backend:
     - 'settings.gradle.kts'
     - 'gradle/**/*'
     - '.github/workflows/backend-ci.yml'
-    - '.github/actions/setup-java/**/*'
+    - '.github/actions/setup/java/**/*'
 
 # Frontend related changes
 frontend:
@@ -22,7 +22,7 @@ frontend:
     - 'pnpm-lock.yaml'
     - 'pnpm-workspace.yaml'
     - '.github/workflows/frontend-ci.yml'
-    - '.github/actions/setup-node/**/*'
+    - '.github/actions/setup/node/**/*'
 
 # Infrastructure related changes
 infrastructure:
