@@ -143,6 +143,7 @@ declare module 'vue' {
     HoverCardTrigger: typeof import('./src/components/ui/hover-card/HoverCardTrigger.vue')['default']
     Input: typeof import('./src/components/ui/input/Input.vue')['default']
     Label: typeof import('./src/components/ui/label/Label.vue')['default']
+    LanguageSwitcher: typeof import('./src/components/language-switcher.vue')['default']
     MainMenuNav: typeof import('./src/components/MainMenuNav.vue')['default']
     MainNav: typeof import('./src/components/MainNav.vue')['default']
     Menubar: typeof import('./src/components/ui/menubar/Menubar.vue')['default']

@@ -1,8 +1,13 @@
-# Email Testing with GreenMail
+# Email Testing
 
 ## Overview
 
-Hatchgrid uses [GreenMail](https://greenmail-mail-test.github.io/greenmail/) as a test email server for development and testing environments. GreenMail provides a lightweight, in-memory email server that supports all major email protocols without requiring external email services.
+Hatchgrid supports multiple email testing solutions for development and testing environments:
+
+1. [GreenMail](https://greenmail-mail-test.github.io/greenmail/) - A lightweight, in-memory email server that supports all major email protocols
+2. [MailDev](https://github.com/maildev/maildev) - A simple SMTP server with a web interface for easy email testing
+
+You can choose the email testing solution that best fits your needs and switch between them using the provided script.
 
 Both the Spring Boot application and Keycloak are configured to use GreenMail for sending emails during development and testing.
 
@@ -269,9 +274,24 @@ To test Keycloak email functionality:
 
 3. Check the GreenMail web interface at http://localhost:8080 to view the sent emails
 
+## Switching Between Email Servers
+
+Hatchgrid provides a script to easily switch between GreenMail and MailDev:
+
+```bash
+./scripts/switch-mail-server.sh [greenmail|maildev]
+```
+
+This script will:
+1. Stop any running email servers
+2. Start the requested email server
+3. Display configuration information
+
 ## Related Documentation
 
 - [Spring Boot Email Configuration](https://docs.spring.io/spring-boot/docs/current/reference/html/io.html#io.email)
 - [GreenMail Documentation](https://greenmail-mail-test.github.io/greenmail/)
+- [MailDev Documentation](https://github.com/maildev/maildev)
+- [MailDev Setup Guide](../development/maildev-setup.md)
 - [Keycloak Server Administration Guide - Email](https://www.keycloak.org/docs/latest/server_admin/#_email)
 - [Docker Compose Services](../workflows/docker-composition-actions.md)

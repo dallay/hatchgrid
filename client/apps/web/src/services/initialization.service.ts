@@ -1,10 +1,12 @@
 import type { App } from "vue";
 import { watch } from "vue";
+import type { Composer } from "vue-i18n";
 import type { Router } from "vue-router";
-import TranslationService, {
-	type I18nLike,
-	isI18nLike,
-} from "@/i18n/translation.service";
+import {
+	DEFAULT_LANGUAGE,
+	isLanguageSupported,
+	setHtmlLang,
+} from "@/i18n/config";
 import AccountService from "@/services/account.service";
 import { useAuthStore } from "@/stores/auth";
 import { useTranslationStore } from "@/stores/translation.store";
@@ -12,24 +14,19 @@ import { useTranslationStore } from "@/stores/translation.store";
 export interface InitializationOptions {
 	app: App;
 	router: Router;
-	i18n: I18nLike;
+	i18n: Composer;
 }
 
 export class InitializationService {
 	private authStore!: ReturnType<typeof useAuthStore>;
 	private translationStore!: ReturnType<typeof useTranslationStore>;
-	private translationService!: TranslationService;
 	private accountService!: AccountService;
 	private readonly router!: Router;
+	private readonly i18n: Composer;
 
-	constructor(private readonly options: InitializationOptions) {
-		// Validate that the i18n instance conforms to I18nLike interface
-		if (!isI18nLike(options.i18n)) {
-			throw new Error(
-				"Invalid i18n instance provided to InitializationService. The object does not implement the required I18nLike interface.",
-			);
-		}
+	constructor(options: InitializationOptions) {
 		this.router = options.router;
+		this.i18n = options.i18n;
 	}
 
 	/**
@@ -41,21 +38,10 @@ export class InitializationService {
 		this.translationStore = useTranslationStore();
 
 		// Initialize services
-		try {
-			this.translationService = new TranslationService(this.options.i18n);
-		} catch (error) {
-			console.error("Failed to create TranslationService:", error);
-			throw new Error(
-				"Failed to initialize translation service. See console for details.",
-			);
-		}
 		this.accountService = new AccountService(this.authStore, this.router);
 
 		// Set up router guards
 		this.setupRouterGuards();
-
-		// Initialize language settings
-		await this.initializeLanguage();
 
 		// Set up language watchers for reactivity
 		this.setupLanguageWatchers();
@@ -123,35 +109,6 @@ export class InitializationService {
 	}
 
 	/**
-	 * Initialize language settings and translation system
-	 */
-	private async initializeLanguage(): Promise<void> {
-		// Load language from localStorage first
-		this.translationStore.loadLanguageFromStorage();
-
-		// Detect and set the preferred language
-		await this.detectAndSetPreferredLanguage();
-	}
-
-	/**
-	 * Detect and set the preferred language for the application
-	 */
-	async detectAndSetPreferredLanguage(): Promise<void> {
-		const userLang = this.accountService.userLanguage;
-		const localLang = this.translationService.getLocalStoreLanguage();
-		const browserLang = navigator.language?.split("-")[0];
-		const isLanguageSupported = (lang: string | null | undefined) =>
-			lang ? this.translationService.isLanguageSupported(lang) : false;
-
-		const initialLang = [localLang, userLang, browserLang, "en"].find(
-			isLanguageSupported,
-		);
-		if (initialLang) {
-			await this.changeLanguage(initialLang);
-		}
-	}
-
-	/**
 	 * Initialize authentication state
 	 */
 	private async initializeAuthentication(): Promise<void> {
@@ -172,16 +129,21 @@ export class InitializationService {
 		watch(
 			() => this.authStore.account,
 			async (value) => {
-				if (!this.translationService.getLocalStoreLanguage()) {
-					const langKey = value?.langKey ?? "en";
+				if (!localStorage.getItem("currentLanguage")) {
+					const langKey = value?.langKey ?? DEFAULT_LANGUAGE;
 					await this.changeLanguage(langKey);
 				}
 			},
 		);
+
+		// Watch for translation store changes
 		watch(
 			() => this.translationStore.currentLanguage,
 			(newLanguage) => {
-				this.translationService.setLocale(newLanguage ?? "en");
+				if (newLanguage && this.i18n.locale.value !== newLanguage) {
+					this.i18n.locale.value = newLanguage;
+					setHtmlLang(newLanguage);
+				}
 			},
 		);
 	}
@@ -190,29 +152,45 @@ export class InitializationService {
 	 * Change the application language
 	 */
 	async changeLanguage(newLanguage: string): Promise<void> {
-		if (this.translationService.getCurrentLanguage() !== newLanguage) {
+		const languageToUse = isLanguageSupported(newLanguage)
+			? newLanguage
+			: DEFAULT_LANGUAGE;
+
+		if (!isLanguageSupported(newLanguage)) {
+			console.warn(`Language ${newLanguage} is not supported, using default`);
+		}
+
+		if (this.i18n.locale.value !== languageToUse) {
 			this.translationStore.setLoading(true);
 
 			try {
-				await this.translationService.refreshTranslation(newLanguage);
-				this.translationStore.setCurrentLanguage(newLanguage);
+				// Load the language if it's not the default
+				if (
+					languageToUse !== DEFAULT_LANGUAGE &&
+					!this.i18n.availableLocales.includes(languageToUse)
+				) {
+					const module = await import(
+						`../i18n/translations/${languageToUse}.ts`
+					);
+					this.i18n.setLocaleMessage(languageToUse, module.default);
+				}
+
+				// Update the locale
+				this.i18n.locale.value = languageToUse;
+				setHtmlLang(languageToUse);
+
+				// Update the store
+				this.translationStore.setCurrentLanguage(languageToUse);
 			} catch (error) {
 				console.error("Failed to change language:", error);
 				// Fallback to English if language change fails
-				if (newLanguage !== "en") {
-					await this.changeLanguage("en");
+				if (languageToUse !== DEFAULT_LANGUAGE) {
+					await this.changeLanguage(DEFAULT_LANGUAGE);
 				}
 			} finally {
 				this.translationStore.setLoading(false);
 			}
 		}
-	}
-
-	/**
-	 * Get the translation service instance
-	 */
-	getTranslationService(): TranslationService {
-		return this.translationService;
 	}
 
 	/**

@@ -27,12 +27,18 @@ To switch to MailDev for email testing:
 ```
 
 This will:
-1. Stop all running containers
-2. Update the configuration to use MailDev
-3. Start the containers with MailDev
+1. Stop any running email servers
+2. Start MailDev with the correct configuration
+3. Display configuration information
 
 - **SMTP Server**: localhost:1025
 - **Web Interface**: http://localhost:1080
+
+MailDev provides a clean, modern web interface for viewing emails and includes features like:
+- HTML/Text email viewing
+- Responsive design testing
+- Email forwarding to real addresses
+- API access for automated testing
 
 ## Switching Back to GreenMail
 
