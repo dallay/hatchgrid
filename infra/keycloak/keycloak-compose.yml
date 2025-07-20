@@ -5,9 +5,9 @@ services:
     command: ["start-dev", "--import-realm"]
     volumes:
       # Use absolute paths with ${PWD} to ensure paths are relative to the compose file location
-      - ${PWD}/infra/keycloak/realm-config:/opt/keycloak/data/import
-      - ${PWD}/infra/keycloak/realm-config/keycloak-health-check.sh:/opt/keycloak/health-check.sh
-      - ${PWD}/infra/keycloak/themes:/opt/keycloak/themes
+      - ./realm-config:/opt/keycloak/data/import
+      - ./realm-config/keycloak-health-check.sh:/opt/keycloak/health-check.sh
+      - ./themes:/opt/keycloak/themes
     environment:
       - KC_HOSTNAME_STRICT=false
       - KC_HOSTNAME=${KC_HOSTNAME}
