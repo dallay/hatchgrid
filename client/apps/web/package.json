@@ -12,7 +12,9 @@
 		"format": "biome format . --write",
 		"preview": "vite preview",
 		"pretest": "pnpm --filter @hatchgrid/utilities build",
-		"test": "vitest --run --coverage"
+		"test": "vitest --run --coverage",
+		"coverage": "vitest run --coverage",
+		"generate:i18n-types": "tsx scripts/generate-i18n-types.ts"
 	},
 	"dependencies": {
 		"@hatchgrid/utilities": "workspace:*",
@@ -52,11 +54,14 @@
 		"@vue/tsconfig": "^0.7.0",
 		"axios-mock-adapter": "^2.1.0",
 		"jsdom": "^26.1.0",
-		"typescript": "~5.8.3",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.5.3",
 		"unplugin-icons": "^22.1.0",
 		"unplugin-vue-components": "^28.8.0",
 		"vite": "^7.0.5",
 		"vitest": "^3.2.4",
-		"vue-tsc": "^3.0.1"
+		"vue-tsc": "^2.0.21",
+		"tsx": "^4.16.2",
+		"npm-run-all": "^4.1.5"
 	}
 }

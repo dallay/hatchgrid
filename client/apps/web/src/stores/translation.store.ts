@@ -1,53 +1,31 @@
 import { defineStore } from "pinia";
-
-export const DEFAULT_LANGUAGE = "en";
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from "@/i18n/constants";
 
 export interface TranslationState {
-	currentLanguage: string | undefined;
-	availableLanguages: { code: string; name: string; flag: string }[];
+	currentLanguage: string;
 	isLoading: boolean;
 }
 
-export const defaultTranslationState: TranslationState = {
-	currentLanguage: undefined,
-	availableLanguages: [
-		{ code: "en", name: "English", flag: "🇺🇸" },
-		{ code: "es", name: "Español", flag: "🇪🇸" },
-	],
-	isLoading: false,
-};
-
 export const useTranslationStore = defineStore("translation", {
-	state: (): TranslationState => ({ ...defaultTranslationState }),
+	state: (): TranslationState => ({
+		currentLanguage: DEFAULT_LANGUAGE,
+		isLoading: false,
+	}),
 
 	getters: {
-		getCurrentLanguageInfo: (state) => {
-			return (
-				state.availableLanguages.find(
-					(lang) => lang.code === state.currentLanguage,
-				) || state.availableLanguages[0]
-			);
-		},
-		isLanguageSupported: (state) => (languageCode: string) => {
-			return state.availableLanguages.some(
-				(lang) => lang.code === languageCode,
-			);
+		supportedLanguages: () => SUPPORTED_LANGUAGES,
+		isLanguageSupported: () => (languageCode: string) => {
+			return SUPPORTED_LANGUAGES.some((lang) => lang.code === languageCode);
 		},
 	},
 
 	actions: {
-		setCurrentLanguage(newLanguage: string | undefined) {
-			if (
-				typeof newLanguage === "string" &&
-				this.isLanguageSupported(newLanguage)
-			) {
+		setCurrentLanguage(newLanguage: string) {
+			if (this.isLanguageSupported(newLanguage)) {
 				this.currentLanguage = newLanguage;
 				localStorage.setItem("currentLanguage", newLanguage);
-			} else if (typeof newLanguage === "string") {
-				console.warn(`Language ${newLanguage} is not supported`);
 			} else {
-				this.currentLanguage = undefined;
-				localStorage.removeItem("currentLanguage");
+				console.warn(`Language ${newLanguage} is not supported.`);
 			}
 		},
 
@@ -59,36 +37,16 @@ export const useTranslationStore = defineStore("translation", {
 			const storedLanguage = localStorage.getItem("currentLanguage");
 			if (storedLanguage && this.isLanguageSupported(storedLanguage)) {
 				this.currentLanguage = storedLanguage;
-			} else {
-				// Fallback to browser language or default
-				const browserLanguage = navigator.language?.split("-")[0];
-				this.currentLanguage = this.isLanguageSupported(browserLanguage)
-					? browserLanguage
-					: DEFAULT_LANGUAGE;
+				return;
 			}
-		},
 
-		addLanguage(language: { code: string; name: string; flag: string }) {
-			if (
-				!this.availableLanguages.some((lang) => lang.code === language.code)
-			) {
-				this.availableLanguages.push(language);
+			const browserLanguage = navigator.language?.split("-")[0];
+			if (browserLanguage && this.isLanguageSupported(browserLanguage)) {
+				this.currentLanguage = browserLanguage;
+				return;
 			}
-		},
 
-		removeLanguage(languageCode: string) {
-			const index = this.availableLanguages.findIndex(
-				(lang) => lang.code === languageCode,
-			);
-			if (index > -1 && languageCode !== DEFAULT_LANGUAGE) {
-				// Don't allow removing English
-				this.availableLanguages.splice(index, 1);
-
-				// Switch to English if current language is being removed
-				if (this.currentLanguage === languageCode) {
-					this.setCurrentLanguage(DEFAULT_LANGUAGE);
-				}
-			}
+			this.currentLanguage = DEFAULT_LANGUAGE;
 		},
 	},
 });

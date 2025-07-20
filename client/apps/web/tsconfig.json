@@ -12,5 +12,10 @@
 		"types": ["unplugin-icons/types/vue", "vitest/globals"],
 		"strict": true,
 		"forceConsistentCasingInFileNames": true
+	},
+	"ts-node": {
+		"compilerOptions": {
+			"module": "CommonJS"
+		}
 	}
 }
