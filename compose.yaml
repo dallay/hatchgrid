@@ -8,6 +8,7 @@ services:
       file: ./infra/keycloak/keycloak-compose.yml
     depends_on:
       - postgresql
+      - greenmail
     networks:
       - frontend
       - backend
@@ -18,3 +19,20 @@ services:
       file: ./infra/postgresql/postgresql-compose.yml
     networks:
       - backend
+
+  greenmail:
+    extends:
+      service: greenmail
+      file: ./infra/greenmail/greenmail-compose.yml
+    networks:
+      - backend
+      - frontend
+
+  # Uncomment to use MailDev instead of GreenMail
+  # maildev:
+  #   extends:
+  #     service: maildev
+  #     file: ./infra/maildev/maildev-compose.yml
+  #   networks:
+  #     - backend
+  #     - frontend

@@ -134,9 +134,7 @@ const formSchema = toTypedSchema(
 			lastName: z
 				.string()
 				.min(2, { message: t("register.form.validation.lastName-min") }),
-			email: z
-				.string()
-				.email({ message: t("register.form.validation.email-invalid") }),
+			email: z.email({ message: t("register.form.validation.email-invalid") }),
 			password: z
 				.string()
 				.min(8, { message: t("register.form.validation.password-min") })
@@ -168,17 +166,15 @@ const handleRegister = handleSubmit(async (values) => {
 	isLoading.value = true;
 	try {
 		await authStore.register({
-			login: values.email,
-			firstname: values.firstName,
-			lastname: values.lastName,
 			email: values.email,
 			password: values.password,
-			langKey: "en",
+			firstname: values.firstName,
+			lastname: values.lastName,
 		});
 
 		toast.success("Account created successfully!", {
 			description:
-				"Welcome to Hatchgrid! Please sign in with your new account.",
+				"Welcome to Hatchgrid! Please check your email for verification instructions.",
 		});
 
 		await router.push("/login");
