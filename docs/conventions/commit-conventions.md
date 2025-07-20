@@ -28,7 +28,7 @@ The header has a maximum length of **120 characters**.
 
 The body is optional and should provide context about the change and explain what it does rather than how it does it.
 
-Each line of the body has a maximum length of **120 characters**.
+While the linter allows each line of the body to have a maximum length of **220 characters**, developers are strongly encouraged to manually wrap their commit message bodies at around 72-100 characters for better readability in narrower editors, terminals, and git log outputs.
 
 ### Footer
 
@@ -76,7 +76,7 @@ Fixes #456
 The commit message format is enforced using commitlint with the following custom rules:
 
 - Header max length: 120 characters
-- Body line max length: 120 characters
+- Body line max length: 220 characters (though manual wrapping at 72-100 characters is recommended)
 
 These rules are defined in `commitlint.config.mjs` at the root of the project.
 
@@ -90,9 +90,21 @@ export default {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'header-max-length': [2, 'always', 120],
-    'body-max-line-length': [2, 'always', 120]
+    'body-max-line-length': [2, 'always', 220]
   }
 };
 ```
 
 The commit message format is enforced using the commit-msg Git hook, which is managed by Lefthook. See [Git Hooks](../workflows/git-hooks.md) for more information.
+
+## Commit Message Template
+
+A commit message template is provided in the `.gitmessage` file at the root of the project. This template includes guidelines for formatting commit messages, including the recommended line length for the body.
+
+To configure Git to use this template by default, run:
+
+```bash
+git config --local commit.template .gitmessage
+```
+
+This will pre-populate your commit message editor with the template whenever you run `git commit` without the `-m` flag.

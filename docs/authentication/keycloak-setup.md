@@ -5,6 +5,7 @@
 Hatchgrid uses [Keycloak](https://www.keycloak.org/) as its identity and access management solution. Keycloak provides OAuth2/OpenID Connect capabilities, user management, and authentication flows for the application.
 
 This document outlines:
+
 - Local development setup
 - Realm configuration
 - Email configuration
@@ -12,7 +13,7 @@ This document outlines:
 
 ## Local Development Setup
 
-Keycloak is configured to run as a Docker container using Docker Compose:
+Keycloak is configured to run as a Docker container using Docker Compose. The configuration is split between the compose file and an environment file for better portability:
 
 ```yaml
 # infra/keycloak/keycloak-compose.yml
@@ -22,12 +23,13 @@ services:
     container_name: keycloak
     command: [ "start-dev", "--import-realm" ]
     volumes:
-      - ./realm-config:/opt/keycloak/data/import
-      - ./realm-config/keycloak-health-check.sh:/opt/keycloak/health-check.sh
-      - ./themes:/opt/keycloak/themes
+      # Absolute paths ensure correct mounting regardless of working directory
+      - ${PWD}/infra/keycloak/realm-config:/opt/keycloak/data/import
+      - ${PWD}/infra/keycloak/realm-config/keycloak-health-check.sh:/opt/keycloak/health-check.sh
+      - ${PWD}/infra/keycloak/themes:/opt/keycloak/themes
     environment:
       - KC_HOSTNAME_STRICT=false
-      - KC_HOSTNAME=${KEYCLOAK_URL:-keycloak.${HOSTNAME}}
+      - KC_HOSTNAME=${KC_HOSTNAME}
       - KC_HTTP_ENABLED=true
       - KC_DB=postgres
       - KC_DB_USERNAME=${POSTGRESQL_USER}
@@ -37,8 +39,22 @@ services:
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
       # Additional configuration...
     ports:
-      - 127.0.0.1:${KC_HTTP_PORT}:9080
-      - 127.0.0.1:${KC_HTTPS_PORT}:9443
+      - ${KC_HTTP_PORT}:9080
+      - ${KC_HTTPS_PORT}:9443
+```
+
+Environment variables are defined in a dedicated `.env` file:
+
+```properties
+# infra/keycloak/.env
+KEYCLOAK_VERSION=24.0
+KC_HTTP_PORT=9080
+KC_HTTPS_PORT=9443
+KC_HOSTNAME=localhost
+KEYCLOAK_ADMIN=admin
+KEYCLOAK_ADMIN_PASSWORD=secret
+POSTGRESQL_USER=postgres
+POSTGRES_PASSWORD=postgres
 ```
 
 ### Starting Keycloak
@@ -46,22 +62,44 @@ services:
 To start Keycloak for local development:
 
 ```bash
+# From the project root directory
 docker compose up -d keycloak
 ```
 
 This will start Keycloak with the pre-configured realm imported from `infra/keycloak/realm-config/hatchgrid-realm.json`.
 
+> **Important**: Always run Docker Compose commands from the project root directory to ensure proper path resolution and environment variable loading.
+
+### Environment Variables
+
+Keycloak configuration uses environment variables defined in the following locations:
+
+1. Project-level `.env` file at the root directory
+2. Keycloak-specific `.env` file in `infra/keycloak/.env`
+
+The Keycloak-specific variables include:
+
+- `KEYCLOAK_VERSION`: The version of Keycloak to use
+- `KC_HTTP_PORT`: The HTTP port for Keycloak (default: 9080)
+- `KC_HTTPS_PORT`: The HTTPS port for Keycloak (default: 9443)
+- `KC_HOSTNAME`: The hostname for Keycloak (default: localhost)
+- `KEYCLOAK_ADMIN`: Admin username
+- `KEYCLOAK_ADMIN_PASSWORD`: Admin password
+- `POSTGRESQL_USER`: PostgreSQL username
+- `POSTGRES_PASSWORD`: PostgreSQL password
+
 ### Accessing Keycloak Admin Console
 
 The Keycloak admin console is available at:
 
-```
+```bash
 http://localhost:9080/admin/
 ```
 
-Default admin credentials are defined in your `.env` file:
-- Username: `${KEYCLOAK_ADMIN}`
-- Password: `${KEYCLOAK_ADMIN_PASSWORD}`
+Default admin credentials are defined in the `.env` file:
+
+- Username: `admin` (or the value of `KEYCLOAK_ADMIN`)
+- Password: `secret` (or the value of `KEYCLOAK_ADMIN_PASSWORD`)
 
 ## Realm Configuration
 
@@ -127,10 +165,12 @@ If you need to make changes to the realm configuration:
 
 1. Make changes through the Keycloak admin console
 2. Export the realm configuration:
+
    ```bash
    docker exec -it keycloak /opt/keycloak/bin/kc.sh export --realm hatchgrid --file /tmp/hatchgrid-realm.json
    docker cp keycloak:/tmp/hatchgrid-realm.json infra/keycloak/realm-config/hatchgrid-realm.json
    ```
+
 3. Commit the updated realm configuration file
 
 ## Troubleshooting
@@ -140,20 +180,42 @@ If you need to make changes to the realm configuration:
 #### Keycloak Not Starting
 
 Check the logs:
+
 ```bash
 docker compose logs keycloak
 ```
 
+#### Port Binding Issues
+
+If you see errors about ports already being in use, you can modify the port mappings in the `.env` file:
+
+```properties
+KC_HTTP_PORT=9080  # Change this to an available port
+KC_HTTPS_PORT=9443 # Change this to an available port
+```
+
+#### Container Communication Issues
+
+If services can't communicate with each other, ensure that:
+
+1. The ports are not bound to 127.0.0.1 in the compose file
+2. The services are on the same Docker network
+3. The KC_HOSTNAME is set correctly in the environment variables
+
 #### Email Not Being Sent
 
 1. Ensure GreenMail is running:
+
    ```bash
    docker compose ps greenmail
    ```
+
 2. Check GreenMail logs:
+
    ```bash
    docker compose logs greenmail
    ```
+
 3. Verify the SMTP configuration in the Keycloak admin console:
    - Go to Realm Settings > Email
 

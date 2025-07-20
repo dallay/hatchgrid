@@ -3,7 +3,7 @@
 # Script to switch between email testing servers (GreenMail and MailDev)
 # Usage: ./scripts/switch-mail-server.sh [greenmail|maildev]
 
-set -e
+set -euo pipefail
 
 # Default to help if no argument is provided
 if [ $# -eq 0 ]; then

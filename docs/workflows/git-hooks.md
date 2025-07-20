@@ -39,8 +39,15 @@ The commit-msg hook runs when a commit message is created. It performs the follo
 
 - **Lint**: Validates the commit message format using commitlint with the --no-install flag
   - Enforces the [Conventional Commits](https://www.conventionalcommits.org/) specification
-  - Ensures header and body line lengths do not exceed 120 characters
+  - Ensures header length does not exceed 120 characters
+  - Ensures body line length does not exceed 220 characters (though manual wrapping at 72-100 characters is recommended for better readability)
   - See [Commit Conventions](../conventions/commit-conventions.md) for more details
+
+A commit message template is provided in the `.gitmessage` file at the root of the project. To use this template by default, run:
+
+```bash
+git config --local commit.template .gitmessage
+```
 
 ### post-commit
 

@@ -141,16 +141,6 @@ management:
 notification:
   email:
     sendgrid-api-key: ${SENDGRID_API_KEY:WILL_BE_REPLACED}
-    smtp:
-      host: ${SMTP_HOST:localhost}
-      port: ${SMTP_PORT:3025}
-      username: ${SMTP_USERNAME:developer}
-      password: ${SMTP_PASSWORD:secret}
-      from-email: ${SMTP_FROM_EMAIL:noreply@hatchgrid.local}
-      from-name: ${SMTP_FROM_NAME:Hatchgrid Development}
-      auth: false
-      starttls: false
-      ssl: false
 springdoc:
   show-actuator: true
   api-docs:
