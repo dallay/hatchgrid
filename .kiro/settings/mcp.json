@@ -11,8 +11,7 @@
       "autoApprove": [
         "list_teams",
         "list_issue_statuses",
-        "list_issue_labels",
-        "create_issue"
+        "list_issue_labels"
       ]
     }
   }
