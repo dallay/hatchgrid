@@ -46,3 +46,16 @@ application:
       allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
       max-age: ${CORS_MAX_AGE:3600}
     domain: ${HOSTNAME:localhost}
+notification:
+  email:
+    smtp:
+      host: ${SMTP_HOST:localhost}
+      port: ${SMTP_PORT:3025}
+      username: ${SMTP_USERNAME:developer}
+      password: ${SMTP_PASSWORD:secret}
+      from-email: ${SMTP_FROM_EMAIL:noreply@hatchgrid.local}
+      from-name: ${SMTP_FROM_NAME:Hatchgrid Development}
+      auth: false
+      starttls: false
+      ssl: false
+      debug: true

@@ -24,12 +24,10 @@ export const defaultAuthState: AuthStateStorable = {
 };
 
 export interface RegistrationData {
-	login: string;
+	email: string;
 	firstname: string;
 	lastname: string;
-	email: string;
 	password: string;
-	langKey: string;
 }
 
 export const useAuthStore = defineStore("auth", {

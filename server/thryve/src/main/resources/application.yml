@@ -51,6 +51,19 @@ spring:
       caches:
         linkPreviews:
           spec: maximumSize=500,expireAfterWrite=5m
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:3025}
+    username: ${SMTP_USERNAME:developer}
+    password: ${SMTP_PASSWORD:secret}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+          ssl:
+            enable: false
 application:
   name: hatchgrid
   description: Hatchgrid is the future of newsletter creation and social media management. It's an app that uses AI to help you create newsletters and manage social media.
@@ -128,6 +141,16 @@ management:
 notification:
   email:
     sendgrid-api-key: ${SENDGRID_API_KEY:WILL_BE_REPLACED}
+    smtp:
+      host: ${SMTP_HOST:localhost}
+      port: ${SMTP_PORT:3025}
+      username: ${SMTP_USERNAME:developer}
+      password: ${SMTP_PASSWORD:secret}
+      from-email: ${SMTP_FROM_EMAIL:noreply@hatchgrid.local}
+      from-name: ${SMTP_FROM_NAME:Hatchgrid Development}
+      auth: false
+      starttls: false
+      ssl: false
 springdoc:
   show-actuator: true
   api-docs:

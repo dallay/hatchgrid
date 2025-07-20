@@ -47,14 +47,21 @@ The application uses PostgreSQL as its database. The connection is configured in
 
 ### Using Docker Compose
 
-The project includes a `compose.yaml` file that sets up a PostgreSQL database:
+The project includes a `compose.yaml` file that sets up the required infrastructure services:
+
+- **PostgreSQL**: Database server on port 5432
+- **Keycloak**: Authentication server on port 9080
+- **GreenMail**: Email testing server on port 3025 (SMTP) and 8080 (Web UI)
 
 ```bash
-# Start the database
-docker compose -f compose.yaml up -d
+# Start all infrastructure services
+docker compose up -d
 
-# Stop the database
-docker compose -f compose.yaml down
+# Stop all services
+docker compose down
+
+# Start only specific services
+docker compose up -d postgresql greenmail
 ```
 
 Alternatively, Spring Boot's Docker Compose support will automatically start the required containers when you run the application.
@@ -138,9 +145,10 @@ The project uses Testcontainers for integration tests, which automatically spin 
 - Spring Boot 3.4.5
 - Kotlin 1.9.25
 - Reactive programming with Spring WebFlux
-- OAuth2 Authorization Server
+- OAuth2 Authorization Server with Keycloak integration
 - Spring Security
 - Spring Data R2DBC for reactive database access
+- Email testing with GreenMail
 - Internationalization (i18n) support with message bundles
 - Liquibase for database migrations
 - Spring Boot Admin for application monitoring
