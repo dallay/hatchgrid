@@ -47,30 +47,25 @@ export function setupAxiosInterceptors(router: Router) {
 				if (url?.endsWith("api/account")) {
 					return Promise.reject(error);
 				}
-				axios.get("/api/account").catch((innerError) => {
+				return axios.get("/api/account").catch((innerError) => {
 					if (innerError.response?.status === 401) {
 						store.logout();
 						if (
 							!url?.endsWith("api/authenticate") &&
 							currentRoute.name !== "Login"
 						) {
-							router
-								.push({
-									name: "Login",
-									query: { redirect: currentRoute.fullPath },
-								})
-								.catch((navError) => {
-									console.error("Navigation to Login failed:", navError);
-								});
+							router.push({
+								name: "Login",
+								query: { redirect: currentRoute.fullPath },
+							});
 						}
 					}
+					return Promise.reject(error);
 				});
-			} else if (status === 403) {
-				if (currentRoute.name !== "Forbidden") {
-					router.push({ name: "Forbidden" }).catch((navError) => {
-						console.error("Navigation to Forbidden failed:", navError);
-					});
-				}
+			}
+			if (status === 403 && currentRoute.name !== "Forbidden") {
+				router.push({ name: "Forbidden" });
+				return Promise.reject(error);
 			}
 			return Promise.reject(error);
 		},

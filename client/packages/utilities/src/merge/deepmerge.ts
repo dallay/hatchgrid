@@ -50,11 +50,13 @@ const cloneUnlessOtherwiseSpecified = (
  * @returns Merged array
  */
 const defaultArrayMerge = <T>(
-  target: T[],
-  source: T[],
-  options: DeepMergeOptions,
+	target: T[],
+	source: T[],
+	options: DeepMergeOptions,
 ): T[] =>
-  [...target, ...source].map((element) => cloneUnlessOtherwiseSpecified(element, options) as T);
+	[...target, ...source].map(
+		(element) => cloneUnlessOtherwiseSpecified(element, options) as T,
+	);
 
 /**
  * Gets the merge function for a given key, using customMerge if provided.
@@ -85,8 +87,8 @@ const getEnumerableOwnPropertySymbols = (target: object): symbol[] =>
  * @returns Array of keys
  */
 const getKeys = (target: object): (string | symbol)[] => [
-  ...Object.keys(target),
-  ...getEnumerableOwnPropertySymbols(target),
+	...Object.keys(target),
+	...getEnumerableOwnPropertySymbols(target),
 ];
 
 /**
@@ -112,7 +114,7 @@ const propertyIsOnObject = (
  * @returns True if property is unsafe
  */
 const propertyIsUnsafe = (key: string | symbol): boolean =>
-	key === '__proto__' || key === 'constructor';
+	key === "__proto__" || key === "constructor";
 
 /**
  * Deeply merges two mergeable objects according to options.
@@ -142,9 +144,13 @@ const mergeObject = (
 			Array.isArray(target[key]) &&
 			Array.isArray(source[key])
 		) {
-	  if (options.arrayMerge) {
-		destination[key] = options.arrayMerge(target[key] as unknown[], source[key] as unknown[], options);
-	  }
+			if (options.arrayMerge) {
+				destination[key] = options.arrayMerge(
+					target[key] as unknown[],
+					source[key] as unknown[],
+					options,
+				);
+			}
 		} else if (
 			propertyIsOnObject(target, key) &&
 			options.isMergeableObject?.(source[key])
@@ -172,9 +178,8 @@ export const deepmerge: DeepMergeFn & {
 	all: (array: unknown[], options?: DeepMergeOptions) => unknown;
 } = (target, source, options = {}) => {
 	options.arrayMerge = options.arrayMerge || defaultArrayMerge;
-	options.isMergeableObject = (
-		options.isMergeableObject || defaultIsMergeableObject
-	);
+	options.isMergeableObject =
+		options.isMergeableObject || defaultIsMergeableObject;
 	options.cloneUnlessOtherwiseSpecified = cloneUnlessOtherwiseSpecified;
 
 	const sourceIsArray = Array.isArray(source);
@@ -187,10 +192,10 @@ export const deepmerge: DeepMergeFn & {
 	return sourceIsArray
 		? options.arrayMerge(target as unknown[], source as unknown[], options)
 		: mergeObject(
-			target as MergeableObject,
-			source as MergeableObject,
-			options,
-		);
+				target as MergeableObject,
+				source as MergeableObject,
+				options,
+			);
 };
 
 /**

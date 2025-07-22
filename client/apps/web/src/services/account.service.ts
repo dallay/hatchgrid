@@ -238,12 +238,12 @@ export default class AccountService {
 		this.redirectToLogin();
 	}
 
-	private redirectToLogin(): void {
+	private async redirectToLogin(): void {
 		const currentPath =
-			this.router?.currentRoute.value.path || window.location.pathname;
+			this.router?.currentRoute.value.path ?? window.location.pathname;
 		if (currentPath !== "/login") {
 			if (this.router) {
-				this.router.push("/login");
+				await this.router.push("/login");
 			} else {
 				window.location.href = "/login";
 			}

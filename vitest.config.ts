@@ -5,7 +5,14 @@ export default defineConfig({
 	test: {
 	globals: true,
 	environment: "node",
-	include: ["src/__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    include: [
+      "**/__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
+      "**/*.{spec,test}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"
+    ],
+    exclude: [
+      "**/node_modules/**",
+      "**/components.d.ts"
+    ],
 	setupFiles: ["./vitest.setup.ts"],
 		coverage: {
 		provider: "v8", // or 'istanbul'

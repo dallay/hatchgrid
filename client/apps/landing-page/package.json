@@ -32,13 +32,15 @@
 		"start": "astro dev --open",
 		"build": "astro check && astro build",
 		"preview": "astro preview",
-		"check": "astro check && pnpm run lint",
+		"check": "run-p -r astro:check lint",
+		"astro:check": "astro check",
 		"lint": "biome check . --fix --log-level=error",
 		"lint:strict": "biome check . --log-level=error",
 		"format": "biome format . --write",
 		"astro": "astro",
-		"test": "vitest run",
-		"test:watch": "vitest"
+		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.9.4",

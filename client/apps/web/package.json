@@ -12,7 +12,9 @@
 		"format": "biome format . --write",
 		"preview": "vite preview",
 		"pretest": "pnpm --filter @hatchgrid/utilities build",
-		"test": "vitest --run --coverage"
+		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
 		"@hatchgrid/utilities": "workspace:*",
