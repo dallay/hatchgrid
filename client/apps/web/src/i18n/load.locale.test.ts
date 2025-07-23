@@ -95,7 +95,33 @@ const esLoginForm = {
 
 const mockMessages = {
 	"./locales/en/global.json": {
-		default: { global: { ribbon: { dev: "Development" } } },
+		default: {
+			global: {
+				ribbon: { dev: "Development" },
+				common: {
+					auth: {
+						login: "Login",
+						logout: "Logout",
+					},
+					loading: "Loading...",
+					error: "An error occurred",
+					notFound: "Page not found",
+					backToHome: "Back to Home",
+					search: "Search",
+					submit: "Submit",
+					cancel: "Cancel",
+					save: "Save",
+					delete: "Delete",
+					edit: "Edit",
+					view: "View",
+					update: "Update",
+					create: "Create",
+					confirm: "Confirm",
+					yes: "Yes",
+					no: "No",
+				},
+			},
+		},
 	},
 	"./locales/en/error.json": {
 		default: {
@@ -119,7 +145,33 @@ const mockMessages = {
 		default: { register: { form: { validation: enRegisterValidation } } },
 	},
 	"./locales/es/global.json": {
-		default: { global: { ribbon: { dev: "Desarrollo" } } },
+		default: {
+			global: {
+				ribbon: { dev: "Desarrollo" },
+				common: {
+					auth: {
+						login: "Iniciar sesión",
+						logout: "Cerrar sesión",
+					},
+					loading: "Cargando...",
+					error: "Ocurrió un error",
+					notFound: "Página no encontrada",
+					backToHome: "Volver al inicio",
+					search: "Buscar",
+					submit: "Enviar",
+					cancel: "Cancelar",
+					save: "Guardar",
+					delete: "Eliminar",
+					edit: "Editar",
+					view: "Ver",
+					update: "Actualizar",
+					create: "Crear",
+					confirm: "Confirmar",
+					yes: "Sí",
+					no: "No",
+				},
+			},
+		},
 	},
 	"./locales/es/error.json": {
 		default: {
@@ -155,11 +207,35 @@ vi.stubGlobal("import.meta", {
 });
 
 const expectedEnMessages = {
-	global: { ribbon: { dev: "Development" } },
 	error: {
 		title: "Error Occurred",
 		message: "An unexpected error has occurred. Please try again later.",
 		backToHome: "Back to Home",
+	},
+	global: {
+		ribbon: { dev: "Development" },
+		common: {
+			auth: {
+				login: "Login",
+				logout: "Logout",
+			},
+			loading: "Loading...",
+			error: "An error occurred",
+			notFound: "Page not found",
+			backToHome: "Back to Home",
+			search: "Search",
+			submit: "Submit",
+			cancel: "Cancel",
+			save: "Save",
+			delete: "Delete",
+			edit: "Edit",
+			view: "View",
+			update: "Update",
+			create: "Create",
+			confirm: "Confirm",
+			yes: "Yes",
+			no: "No",
+		},
 	},
 	login: {
 		title: "Login",
@@ -170,12 +246,36 @@ const expectedEnMessages = {
 };
 
 const expectedEsMessages = {
-	global: { ribbon: { dev: "Desarrollo" } },
 	error: {
 		title: "Ocurrió un error",
 		message:
 			"Ha ocurrido un error inesperado. Por favor, inténtelo de nuevo más tarde.",
 		backToHome: "Volver al inicio",
+	},
+	global: {
+		ribbon: { dev: "Desarrollo" },
+		common: {
+			auth: {
+				login: "Iniciar sesión",
+				logout: "Cerrar sesión",
+			},
+			loading: "Cargando...",
+			error: "Ocurrió un error",
+			notFound: "Página no encontrada",
+			backToHome: "Volver al inicio",
+			search: "Buscar",
+			submit: "Enviar",
+			cancel: "Cancelar",
+			save: "Guardar",
+			delete: "Eliminar",
+			edit: "Editar",
+			view: "Ver",
+			update: "Actualizar",
+			create: "Crear",
+			confirm: "Confirmar",
+			yes: "Sí",
+			no: "No",
+		},
 	},
 	login: {
 		title: "Iniciar sesión",
@@ -188,13 +288,11 @@ const expectedEsMessages = {
 describe("getLocaleModules", () => {
 	it("returns merged messages for en locale", () => {
 		const result = getLocaleModules("en");
-		console.log("Test en result:", result);
 		expect(result).toEqual(expectedEnMessages);
 	});
 
 	it("returns merged messages for es locale", () => {
 		const result = getLocaleModules("es");
-		console.log("Test es result:", result);
 		expect(result).toEqual(expectedEsMessages);
 	});
 
