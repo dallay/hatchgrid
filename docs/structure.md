@@ -58,7 +58,10 @@
 │   ├───settings/
 │   │   └───mcp.json
 │   ├───specs/
-│   │   ├───api-rate-limiting/
+│   │   ├───client-logger-package/
+│   │   │   ├───design.md
+│   │   │   ├───requirements.md
+│   │   │   └───tasks.md
 │   │   ├───docker-pipeline-restructure/
 │   │   │   ├───design.md
 │   │   │   ├───requirements.md
@@ -75,11 +78,7 @@
 │   │   │   ├───design.md
 │   │   │   ├───requirements.md
 │   │   │   └───tasks.md
-│   │   ├───user-settings-feature/
-│   │   │   ├───design.md
-│   │   │   ├───requirements.md
-│   │   │   └───tasks.md
-│   │   └───vue-i18n-optimization/
+│   │   └───user-settings-feature/
 │   │       ├───design.md
 │   │       ├───requirements.md
 │   │       └───tasks.md
@@ -1057,6 +1056,13 @@
 │   │   ├───vitest.config.shared.d.ts
 │   │   └───vitest.config.shared.mjs
 │   └───packages/
+│       ├───logger/
+│       │   ├───src/
+│       │   │   └───index.ts
+│       │   ├───package.json
+│       │   ├───tsconfig.build.json
+│       │   ├───tsconfig.json
+│       │   └───vite.config.ts
 │       ├───tsconfig/
 │       │   ├───package.json
 │       │   ├───tsconfig.base.json
