@@ -27,6 +27,7 @@ To switch to MailDev for email testing:
 ```
 
 This will:
+
 1. Stop any running email servers
 2. Start MailDev with the correct configuration
 3. Display configuration information

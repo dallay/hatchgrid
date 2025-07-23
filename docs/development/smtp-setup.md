@@ -11,7 +11,7 @@ Hatchgrid supports multiple SMTP server options for development and testing. Thi
 GreenMail is a test suite for email servers that provides a comprehensive set of email protocols and a web interface.
 
 - **SMTP Port**: 3025
-- **Web Interface**: http://localhost:8080
+- **Web Interface**: [http://localhost:8080](http://localhost:8080)
 - **Configuration**: See [Email Testing with GreenMail](../conventions/email-testing.md)
 
 ### 2. MailDev
@@ -19,7 +19,7 @@ GreenMail is a test suite for email servers that provides a comprehensive set of
 MailDev is a simple SMTP server with a clean web interface for viewing and testing emails.
 
 - **SMTP Port**: 1025
-- **Web Interface**: http://localhost:1080
+- **Web Interface**: [http://localhost:1080](http://localhost:1080)
 - **Configuration**: See [MailDev Setup](maildev-setup.md)
 
 ## Switching Between SMTP Servers

@@ -1,5 +1,3 @@
-
-
 # TypeScript Conventions and Best Practices
 
 This document defines the conventions and best practices for writing and maintaining TypeScript code across the codebase.
@@ -47,12 +45,12 @@ This document defines the conventions and best practices for writing and maintai
 ## Safety & Code Quality
 
 - Enable `strict` mode in `tsconfig.json`.
-- Use `readonly` where applicable.
-- Avoid mutation—prefer immutability by default.
-- Use utility types (`Partial`, `Pick`, `Omit`, etc.) for shaping objects.
-- Use `as const` for literal types when you want to preserve the exact type.
-- Use `Record<string, unknown>` for objects with dynamic keys.
-- Use `satisfy` for type assertions only when absolutely necessary.
+- Apply `readonly` to properties and variables where immutability is desired.
+- Favor immutability over mutation by default.
+- Leverage utility types (`Partial`, `Pick`, `Omit`, etc.) to shape objects as needed.
+- Preserve exact literal types by declaring values with `as const` when appropriate.
+- For objects with dynamic keys, declare them as `Record<string, unknown>`.
+- Reserve `satisfy` for type assertions only when absolutely necessary.
 
 ## Testing
 

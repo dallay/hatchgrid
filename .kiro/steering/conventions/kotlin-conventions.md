@@ -1,5 +1,3 @@
-
-
 # Kotlin Conventions and Best Practices
 
 This document outlines the standard conventions and best practices when writing Kotlin code across the entire codebase.
