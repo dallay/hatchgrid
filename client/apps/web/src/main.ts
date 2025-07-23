@@ -12,6 +12,8 @@ import router from "@/router";
 import App from "./App.vue";
 import "@/style.css";
 import { useRouteGuards } from "@/composables/useRouteGuards";
+import AccountService from "@/services/account.service";
+import { useAuthStore } from "@/stores/auth";
 
 const app = createApp(App);
 
@@ -20,6 +22,10 @@ app.use(router);
 app.use(i18n);
 setupAxiosInterceptors(router);
 useRouteGuards(router);
+
+const authStore = useAuthStore();
+const accountService = new AccountService(authStore, router);
+app.provide("accountService", accountService);
 
 const userPreferredLocale =
 	localStorage.getItem(LANGUAGE_STORAGE_KEY) ??

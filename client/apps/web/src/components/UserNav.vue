@@ -7,6 +7,8 @@ import {
 	LogOut,
 	Sparkles,
 } from "lucide-vue-next";
+import { inject } from "vue";
+import { useI18n } from "vue-i18n";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +22,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
+import AccountService from "@/services/account.service";
 import { useAuthStore } from "@/stores/auth";
 
 const props = withDefaults(
@@ -31,9 +34,7 @@ const props = withDefaults(
 	},
 );
 
-import { inject } from "vue";
-import AccountService from "@/services/account.service";
-
+const { t } = useI18n();
 const authStore = useAuthStore();
 const accountService = inject<AccountService>("accountService");
 
@@ -141,9 +142,9 @@ const { isMobile } = useSidebar();
 
       <DropdownMenuSeparator />
 
-      <DropdownMenuItem @click="accountService?.logout() || authStore.logout()">
+      <DropdownMenuItem @click="accountService?.logout()">
         <LogOut />
-        Log out
+        {{ t("global.common.auth.logout") }}
         <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
       </DropdownMenuItem>
     </DropdownMenuContent>

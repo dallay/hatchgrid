@@ -1,5 +1,27 @@
 {
 	"global": {
+		"common": {
+			"auth": {
+				"login": "Login",
+				"logout": "Logout"
+			},
+			"loading": "Loading...",
+			"error": "An error occurred",
+			"notFound": "Page not found",
+			"backToHome": "Back to Home",
+			"search": "Search",
+			"submit": "Submit",
+			"cancel": "Cancel",
+			"save": "Save",
+			"delete": "Delete",
+			"edit": "Edit",
+			"view": "View",
+			"update": "Update",
+			"create": "Create",
+			"confirm": "Confirm",
+			"yes": "Yes",
+			"no": "No"
+		},
 		"ribbon": {
 			"dev": "Development"
 		}
