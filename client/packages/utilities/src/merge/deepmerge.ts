@@ -114,7 +114,7 @@ const propertyIsOnObject = (
  * @returns True if property is unsafe
  */
 const propertyIsUnsafe = (key: string | symbol): boolean =>
-	key === "__proto__" || key === "constructor";
+	key === "__proto__" || key === "constructor" || key === "prototype";
 
 /**
  * Deeply merges two mergeable objects according to options.
