@@ -42,7 +42,7 @@
 		"url": "https://github.com/dallay/hatchgrid/issues"
 	},
 	"scripts": {
-		"dev": "vite build -- --watch",
+		"dev": "vite dev --mode development",
 		"clean:types": "rimraf dist tsconfig.build.tsbuildinfo",
 		"build:types:raw": "tsc --build",
 		"build:types": "run-s clean:types build:types:raw",
