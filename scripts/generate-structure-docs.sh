@@ -8,7 +8,7 @@ mkdir -p docs
 # Output file
 doc_file="docs/structure.md"
 
-date_only="$(date '+%Y-%m-%d')"
+date_only="$(date -u '+%Y-%m-%d')"
 
 cat > "$doc_file" <<EOF
 # Project Structure
