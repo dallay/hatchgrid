@@ -1058,7 +1058,13 @@
 │   └───packages/
 │       ├───logger/
 │       │   ├───src/
-│       │   │   └───index.ts
+│       │   │   ├───LogManager.test.ts
+│       │   │   ├───LogManager.ts
+│       │   │   ├───Logger.improved.ts
+│       │   │   ├───Logger.test.ts
+│       │   │   ├───Logger.ts
+│       │   │   ├───index.ts
+│       │   │   └───types.ts
 │       │   ├───package.json
 │       │   ├───tsconfig.build.json
 │       │   ├───tsconfig.json
@@ -1129,7 +1135,6 @@
 │           ├───biome.json
 │           ├───package.json
 │           ├───tsconfig.build.json
-│           ├───tsconfig.build.tsbuildinfo
 │           ├───tsconfig.json
 │           └───vite.config.ts
 ├───config/

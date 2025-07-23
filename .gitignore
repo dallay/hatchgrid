@@ -102,3 +102,6 @@ $RECYCLE.BIN/
 **/.DS_Store
 **/Thumbs.db
 **/Desktop.ini
+
+# TypeScript cache
+**/*.tsbuildinfo
