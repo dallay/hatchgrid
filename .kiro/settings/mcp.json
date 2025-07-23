@@ -1,18 +1,10 @@
 {
-  "mcpServers": {
-    "linear": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "mcp-remote",
-        "https://mcp.linear.app/sse"
-      ],
-      "disabled": false,
-      "autoApprove": [
-        "list_teams",
-        "list_issue_statuses",
-        "list_issue_labels"
-      ]
-    }
-  }
+	"mcpServers": {
+		"linear": {
+			"command": "npx",
+			"args": ["-y", "mcp-remote", "https://mcp.linear.app/sse"],
+			"disabled": false,
+			"autoApprove": ["list_teams", "list_issue_statuses", "list_issue_labels"]
+		}
+	}
 }

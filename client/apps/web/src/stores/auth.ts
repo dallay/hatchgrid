@@ -123,8 +123,10 @@ export const useAuthStore = defineStore("auth", {
 		async logoutAsync(): Promise<void> {
 			try {
 				await axios.post("/api/logout");
-			} catch (_error) {
-				// handle logout error silently
+			} catch (error) {
+				if (import.meta.env.DEV) {
+					console.warn("Logout failed, but continuing:", error);
+				}
 			} finally {
 				this.logout();
 			}

@@ -13,11 +13,14 @@ type MergeableObject = Record<string | symbol, unknown>;
  * @property cloneUnlessOtherwiseSpecified - Function to clone a value unless specified otherwise.
  */
 interface DeepMergeOptions {
-  clone?: boolean;
-  arrayMerge?: <T>(target: T[], source: T[], options: DeepMergeOptions) => T[];
-  isMergeableObject?: (val: unknown) => val is MergeableObject;
-  customMerge?: (key: string | symbol) => DeepMergeFn | undefined;
-  cloneUnlessOtherwiseSpecified?: (value: unknown, options: DeepMergeOptions) => unknown;
+	clone?: boolean;
+	arrayMerge?: <T>(target: T[], source: T[], options: DeepMergeOptions) => T[];
+	isMergeableObject?: (val: unknown) => val is MergeableObject;
+	customMerge?: (key: string | symbol) => DeepMergeFn | undefined;
+	cloneUnlessOtherwiseSpecified?: (
+		value: unknown,
+		options: DeepMergeOptions,
+	) => unknown;
 }
 
 /**
@@ -28,4 +31,8 @@ interface DeepMergeOptions {
  * @param options - Options to control the merge behavior.
  * @returns The merged value.
  */
-type DeepMergeFn = (target: unknown, source: unknown, options?: DeepMergeOptions) => unknown;
+type DeepMergeFn = (
+	target: unknown,
+	source: unknown,
+	options?: DeepMergeOptions,
+) => unknown;

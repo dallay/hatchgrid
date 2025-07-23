@@ -32,13 +32,13 @@
 		"start": "astro dev --open",
 		"build": "astro check && astro build",
 		"preview": "astro preview",
-		"check": "astro check && pnpm run lint",
-		"lint": "biome check . --fix --log-level=error",
-		"lint:strict": "biome check . --log-level=error",
+		"check": "astro check",
+		"astro:check": "astro check",
 		"format": "biome format . --write",
 		"astro": "astro",
-		"test": "vitest run",
-		"test:watch": "vitest"
+		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.9.4",
@@ -64,7 +64,7 @@
 		"tw-animate-css": "^1.3.5",
 		"vee-validate": "^4.15.1",
 		"vue": "^3.5.17",
-		"vue-sonner": "^2.0.1",
+		"vue-sonner": "^2.0.2",
 		"zod": "^4.0.5"
 	},
 	"devDependencies": {

@@ -1,5 +1,5 @@
+import { describe, expect, it } from "vitest";
 import { remove } from "./remove";
-import { describe, it, expect } from "vitest";
 
 describe("remove", () => {
 	it("removes items that satisfy the predicate", () => {

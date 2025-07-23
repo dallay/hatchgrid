@@ -1,18 +1,18 @@
 {
-	"name": "web",
+	"name": "@hatchgrid/web",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
 		"dev": "pnpm --filter @hatchgrid/utilities build && vite",
 		"build": "pnpm --filter @hatchgrid/utilities build && vue-tsc -b && vite build",
-		"check": "run-p lint",
-		"lint": "biome check . --fix --log-level=error",
-		"lint:strict": "biome check . --log-level=error",
+		"check": "vue-tsc -b",
 		"format": "biome format . --write",
 		"preview": "vite preview",
 		"pretest": "pnpm --filter @hatchgrid/utilities build",
-		"test": "vitest --run --coverage"
+		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
 		"@hatchgrid/utilities": "workspace:*",
