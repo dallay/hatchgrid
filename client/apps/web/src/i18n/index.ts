@@ -1,15 +1,10 @@
 import { createI18n } from "vue-i18n";
-import { getLocaleModules } from "./load.locales.ts";
+import { getLocaleModules, type LocaleMessages } from "./load.locales.ts";
 
 export interface Language {
 	name: string;
 	code: string;
 }
-
-const messages = {
-	en: getLocaleModules("en"),
-	es: getLocaleModules("es"),
-};
 
 export const LANGUAGES: ReadonlyArray<Language> = [
 	{ name: "English", code: "en" },
@@ -26,18 +21,35 @@ export const DEFAULT_LOCALE: SupportedLocale = LANGUAGES[0].code;
 export const LANGUAGE_STORAGE_KEY = "currentLanguage";
 
 function getLocale(): SupportedLocale {
-	const stored = localStorage.getItem("locale") as SupportedLocale;
-	if (stored && SUPPORTED_LOCALES.includes(stored)) return stored;
-	const browserLocale = navigator.language.split("-")[0];
-	return SUPPORTED_LOCALES.includes(browserLocale)
-		? browserLocale
-		: DEFAULT_LOCALE;
+	try {
+		const stored = localStorage.getItem(
+			LANGUAGE_STORAGE_KEY,
+		) as SupportedLocale;
+		if (stored && SUPPORTED_LOCALES.includes(stored)) return stored;
+	} catch {
+		// localStorage might not be available (SSR, private browsing, etc.)
+	}
+
+	try {
+		const browserLocale = navigator.language.split("-")[0] as SupportedLocale;
+		if (SUPPORTED_LOCALES.includes(browserLocale)) return browserLocale;
+	} catch {
+		// navigator.language might not be available
+	}
+
+	return DEFAULT_LOCALE;
 }
+
+// Initialize with only the current locale to improve startup performance
+const currentLocale = getLocale();
+const messages: Record<string, LocaleMessages> = {
+	[currentLocale]: getLocaleModules(currentLocale),
+};
 
 export const i18n = createI18n({
 	legacy: false,
-	locale: getLocale(),
-	fallbackLocale: "en",
+	locale: currentLocale,
+	fallbackLocale: DEFAULT_LOCALE,
 	messages,
 	globalInjection: true,
 });
@@ -49,10 +61,27 @@ export const i18n = createI18n({
  * @param locale SupportedLocale
  */
 export async function setLocale(locale: SupportedLocale) {
-	if (!i18n.global.availableLocales.includes(locale)) {
-		i18n.global.setLocaleMessage(locale, getLocaleModules(locale));
+	const targetLocale = SUPPORTED_LOCALES.includes(locale)
+		? locale
+		: (() => {
+				console.warn(
+					`Unsupported locale: ${locale}. Falling back to ${DEFAULT_LOCALE}`,
+				);
+				return DEFAULT_LOCALE;
+			})();
+
+	if (!i18n.global.availableLocales.includes(targetLocale)) {
+		i18n.global.setLocaleMessage(targetLocale, getLocaleModules(targetLocale));
 	}
-	i18n.global.locale.value = locale;
-	localStorage.setItem(LANGUAGE_STORAGE_KEY, locale);
-	document.documentElement.lang = locale;
+
+	// i18n.global.locale is a Ref when legacy: false
+	i18n.global.locale.value = targetLocale;
+
+	try {
+		localStorage.setItem(LANGUAGE_STORAGE_KEY, targetLocale);
+	} catch (error) {
+		console.warn("Failed to save locale to localStorage:", error);
+	}
+
+	document.documentElement.lang = targetLocale;
 }
