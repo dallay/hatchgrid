@@ -6,10 +6,15 @@ import { useAuthStore } from "@/stores/auth";
 /**
  * Sets up maintainable route guards for authentication and authorization.
  * @param router Vue Router instance
+ * @param injectedAccountService Optional AccountService instance for testability
  */
-export function useRouteGuards(router: Router) {
+export function useRouteGuards(
+	router: Router,
+	injectedAccountService?: AccountService,
+) {
 	const authStore = useAuthStore();
-	const accountService = new AccountService(authStore, router);
+	const accountService =
+		injectedAccountService ?? new AccountService(authStore, router);
 	const publicPages = ["/login", "/register"];
 
 	router.beforeResolve(async (to, _from, next) => {
