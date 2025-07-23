@@ -29,7 +29,7 @@ vi.mock("@hatchgrid/utilities", () => ({
 	},
 }));
 
-import { getLocaleModules } from "./load.locales";
+import { getLocaleModulesSync } from "./load.locales";
 
 const enRegisterValidation = {
 	"firstName-min": "First name must be at least 2 characters.",
@@ -285,25 +285,25 @@ const expectedEsMessages = {
 	register: { form: { validation: esRegisterValidation } },
 };
 
-describe("getLocaleModules", () => {
+describe("getLocaleModulesSync", () => {
 	it("returns merged messages for en locale", () => {
-		const result = getLocaleModules("en");
+		const result = getLocaleModulesSync("en");
 		expect(result).toEqual(expectedEnMessages);
 	});
 
 	it("returns merged messages for es locale", () => {
-		const result = getLocaleModules("es");
+		const result = getLocaleModulesSync("es");
 		expect(result).toEqual(expectedEsMessages);
 	});
 
 	it("returns empty object for unsupported locale", () => {
-		const result = getLocaleModules("fr");
+		const result = getLocaleModulesSync("fr");
 		expect(result).toEqual({});
 	});
 
 	it("caches merged locale messages to avoid redundant merging", () => {
-		const firstCall = getLocaleModules("en");
-		const secondCall = getLocaleModules("en");
+		const firstCall = getLocaleModulesSync("en");
+		const secondCall = getLocaleModulesSync("en");
 		expect(secondCall).toBe(firstCall);
 	});
 });

@@ -50,11 +50,11 @@ const handleSelectChange = () => {
       class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
     >
       <option
-        v-for="language in translationStore.availableLanguages"
+        v-for="language in LANGUAGES"
         :key="language.code"
         :value="language.code"
       >
-        {{ language.flag }} {{ language.name }}
+        {{ language.name }}
       </option>
     </select>
   </div>

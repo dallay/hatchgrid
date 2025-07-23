@@ -1,5 +1,5 @@
 import { createI18n } from "vue-i18n";
-import { getLocaleModules, type LocaleMessages } from "./load.locales.ts";
+import { getLocaleModules, getLocaleModulesSync } from "./load.locales.ts";
 
 export interface Language {
 	name: string;
@@ -21,38 +21,44 @@ export const DEFAULT_LOCALE: SupportedLocale = LANGUAGES[0].code;
 export const LANGUAGE_STORAGE_KEY = "currentLanguage";
 
 function getLocale(): SupportedLocale {
+	// Try localStorage first
 	try {
-		const stored = localStorage.getItem(
-			LANGUAGE_STORAGE_KEY,
-		) as SupportedLocale;
-		if (stored && SUPPORTED_LOCALES.includes(stored)) return stored;
-	} catch {
-		// localStorage might not be available (SSR, private browsing, etc.)
+		const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+		if (stored && SUPPORTED_LOCALES.includes(stored as SupportedLocale)) {
+			return stored as SupportedLocale;
+		}
+	} catch (error) {
+		console.debug("localStorage not available:", error);
 	}
 
+	// Try browser language detection
 	try {
-		const browserLocale = navigator.language.split("-")[0] as SupportedLocale;
-		if (SUPPORTED_LOCALES.includes(browserLocale)) return browserLocale;
-	} catch {
-		// navigator.language might not be available
+		if (typeof navigator !== "undefined" && navigator.language) {
+			const browserLocale = navigator.language.split("-")[0];
+			if (SUPPORTED_LOCALES.includes(browserLocale as SupportedLocale)) {
+				return browserLocale as SupportedLocale;
+			}
+		}
+	} catch (error) {
+		console.debug("Browser language detection failed:", error);
 	}
 
 	return DEFAULT_LOCALE;
 }
 
-// Initialize with only the current locale to improve startup performance
 const currentLocale = getLocale();
-const messages: Record<string, LocaleMessages> = {
-	[currentLocale]: getLocaleModules(currentLocale),
-};
 
 export const i18n = createI18n({
 	legacy: false,
 	locale: currentLocale,
 	fallbackLocale: DEFAULT_LOCALE,
-	messages,
 	globalInjection: true,
 });
+
+i18n.global.setLocaleMessage(
+	currentLocale,
+	getLocaleModulesSync(currentLocale),
+);
 
 /**
  * Sets the application locale and updates i18n messages.
@@ -71,10 +77,13 @@ export async function setLocale(locale: SupportedLocale) {
 			})();
 
 	if (!i18n.global.availableLocales.includes(targetLocale)) {
-		i18n.global.setLocaleMessage(targetLocale, getLocaleModules(targetLocale));
+		i18n.global.setLocaleMessage(
+			targetLocale,
+			await getLocaleModules(targetLocale),
+		);
 	}
 
-	// i18n.global.locale is a Ref when legacy: false
+	// Set the locale - in composition API mode, locale is a WritableComputedRef
 	i18n.global.locale.value = targetLocale;
 
 	try {
