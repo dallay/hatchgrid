@@ -6,9 +6,7 @@
 	"scripts": {
 		"dev": "pnpm --filter @hatchgrid/utilities build && vite",
 		"build": "pnpm --filter @hatchgrid/utilities build && vue-tsc -b && vite build",
-		"check": "run-p lint",
-		"lint": "biome check . --fix --log-level=error",
-		"lint:strict": "biome check . --log-level=error",
+		"check": "vue-tsc -b",
 		"format": "biome format . --write",
 		"preview": "vite preview",
 		"pretest": "pnpm --filter @hatchgrid/utilities build",

@@ -46,7 +46,7 @@
 		"test:coverage": "pnpm --recursive run test:coverage",
 		"lint": "pnpm --recursive --parallel run lint",
 		"lint:strict": "pnpm --recursive --parallel run lint:strict",
-		"check": "pnpm --recursive run check",
+		"check": "pnpm run -r check && biome check . --fix",
 		"clean": "pnpm --recursive run clean",
 		"backend:build": "./gradlew build",
 		"backend:run": "./gradlew bootRun",
