@@ -1,5 +1,5 @@
+import { createTestingPinia } from "@pinia/testing";
 import { mount } from "@vue/test-utils";
-import { createPinia, setActivePinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { toast } from "vue-sonner";
 import { useAuthStore } from "@/stores/auth";
@@ -29,7 +29,7 @@ vi.mock("vue-router", () => ({
 
 describe("Register.vue", () => {
 	beforeEach(() => {
-		setActivePinia(createPinia());
+		// No need to call setActivePinia here when using createTestingPinia
 	});
 
 	afterEach(() => {
@@ -37,7 +37,11 @@ describe("Register.vue", () => {
 	});
 
 	it("should validate the form correctly", async () => {
-		const wrapper = mount(Register);
+		const wrapper = mount(Register, {
+			global: {
+				plugins: [createTestingPinia({ createSpy: vi.fn })],
+			},
+		});
 
 		// Test firstName validation
 		await wrapper.find('input[name="firstName"]').setValue("J");
@@ -148,9 +152,16 @@ describe("Register.vue", () => {
 	});
 
 	it("should show error toast on failed registration", async () => {
-		const authStore = useAuthStore();
-		authStore.register = vi.fn().mockRejectedValue(new Error());
-		const wrapper = mount(Register);
+		const registerMock = vi.fn().mockRejectedValue(new Error());
+		const pinia = createTestingPinia({
+			createSpy: () => registerMock,
+			stubActions: false,
+		});
+		const wrapper = mount(Register, {
+			global: {
+				plugins: [pinia],
+			},
+		});
 
 		await wrapper.find('input[name="firstName"]').setValue("John");
 		await wrapper.find('input[name="lastName"]').setValue("Doe");
