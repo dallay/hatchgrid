@@ -21,7 +21,7 @@ export function useRouteGuards(router: Router) {
 		if (!authStore.authenticated) {
 			try {
 				await accountService.update();
-			} catch (error) {
+			} catch (_error) {
 				next({ path: "/login", query: { redirect: to.fullPath } });
 				return;
 			}
