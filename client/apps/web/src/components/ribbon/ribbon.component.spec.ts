@@ -30,6 +30,8 @@ describe("Ribbon", () => {
 
 	it("should not have ribbonEnabled when no data", () => {
 		createWrapper();
+		const store = useAuthStore();
+		expect(store.ribbonOnProfiles).toBeFalsy();
 		expect(wrapper.find("[data-testid='ribbon']").exists()).toBe(false);
 	});
 
@@ -41,6 +43,9 @@ describe("Ribbon", () => {
 				activeProfiles: ["foo", profile, "bar"],
 			},
 		});
+		const store = useAuthStore();
+		expect(store.ribbonOnProfiles).toBe(profile);
+		expect(store.activeProfiles).toContain(profile);
 		expect(wrapper.find("[data-testid='ribbon']").exists()).toBeTruthy();
 	});
 

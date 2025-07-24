@@ -51,6 +51,19 @@ spring:
       caches:
         linkPreviews:
           spec: maximumSize=500,expireAfterWrite=5m
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:3025}
+    username: ${SMTP_USERNAME:developer}
+    password: ${SMTP_PASSWORD:secret}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+          ssl:
+            enable: false
 application:
   name: hatchgrid
   description: Hatchgrid is the future of newsletter creation and social media management. It's an app that uses AI to help you create newsletters and manage social media.

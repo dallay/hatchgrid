@@ -1,5 +1,5 @@
+import { describe, expect, it } from "vitest";
 import randomNumber from "./random-number";
-import { describe, it, expect } from "vitest";
 
 describe("randomNumber", () => {
 	it("returns a number within the specified range", () => {

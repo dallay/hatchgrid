@@ -11,7 +11,7 @@ on:
       - 'settings.gradle.kts'
       - 'gradle/**'
       - '.github/workflows/backend-ci.yml'
-      - '.github/actions/setup-java/**'
+      - '.github/actions/setup/java/**'
   pull_request:
     paths:
       - 'server/**'
@@ -20,7 +20,7 @@ on:
       - 'settings.gradle.kts'
       - 'gradle/**'
       - '.github/workflows/backend-ci.yml'
-      - '.github/actions/setup-java/**'
+      - '.github/actions/setup/java/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -41,10 +41,10 @@ jobs:
       pull-requests: read # Or 'write' if reviewdog needs to create PR review comments directly
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
       - name: Setup Java
-        uses: ./.github/actions/setup-java
+        uses: ./.github/actions/setup/java
 
       - name: Install reviewdog
         run: |
@@ -68,10 +68,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
       - name: Setup Java
-        uses: ./.github/actions/setup-java
+        uses: ./.github/actions/setup/java
 
       - name: Build with Gradle
         run: ./gradlew build -x test
@@ -87,7 +87,7 @@ jobs:
             **/build/test-results/**/*.xml
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v4
+        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4
         with:
           files: ./server/thryve/build/reports/kover/report.xml # Updated path for Kover
           # flags: backend # Optional: add flags to distinguish reports

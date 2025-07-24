@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.1.1/schema.json",
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
@@ -24,8 +24,8 @@
 			"!**/.vscode",
 			"!**/src/styles/global.css",
 			"!**/worker-configuration.d.ts",
-      "!**/components/ui",
-      "!**/components.d.ts"
+			"!**/components/ui",
+			"!**/components.d.ts"
 		]
 	},
 	"formatter": {

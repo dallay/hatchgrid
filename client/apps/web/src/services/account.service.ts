@@ -235,15 +235,15 @@ export default class AccountService {
 
 	async logout(): Promise<void> {
 		await this.authStore.logoutAsync();
-		this.redirectToLogin();
+		await this.redirectToLogin();
 	}
 
-	private redirectToLogin(): void {
+	private async redirectToLogin(): Promise<void> {
 		const currentPath =
-			this.router?.currentRoute.value.path || window.location.pathname;
+			this.router?.currentRoute.value.path ?? window.location.pathname;
 		if (currentPath !== "/login") {
 			if (this.router) {
-				this.router.push("/login");
+				await this.router.push({ name: "Login" });
 			} else {
 				window.location.href = "/login";
 			}
