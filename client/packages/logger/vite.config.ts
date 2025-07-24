@@ -9,11 +9,11 @@ export default defineConfig(
 		test: {
 			include: ["tests/**/*.test.ts"],
 		},
-    resolve: {
-      alias: {
-        "@": resolve(__dirname, "./src")
-      }
-    },
+		resolve: {
+			alias: {
+				"@": resolve(__dirname, "./src"),
+			},
+		},
 		build: {
 			lib: {
 				entry: resolve(__dirname, "src/index.ts"),

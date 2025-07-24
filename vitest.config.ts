@@ -42,6 +42,6 @@ export default defineConfig({
 			"@lib": resolve(__dirname, "./src/lib"),
 			"@models": resolve(__dirname, "./src/lib/models"),
 			"@components": resolve(__dirname, "./src/components"),
-			},
+		},
 	},
 });

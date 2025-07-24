@@ -39,7 +39,8 @@ const loggerState: LoggerState = {
  */
 const configure = (config: LoggerConfiguration): void => {
 	// Enhanced error handling: validate config before applying
-	const enhancedErrorHandling = (globalThis as any).__LOGGER_ENHANCED_ERROR_HANDLING__;
+	const enhancedErrorHandling = (globalThis as any)
+		.__LOGGER_ENHANCED_ERROR_HANDLING__;
 
 	// If enhanced error handling is enabled, validate config
 	if (enhancedErrorHandling) {
@@ -48,7 +49,10 @@ const configure = (config: LoggerConfiguration): void => {
 			loggerState.config = null;
 			loggerState.levelCache.clear();
 			// Remove global reference if config is invalid
-			if (typeof globalThis !== 'undefined' && (globalThis as Record<string, unknown>).__LOGGER_MANAGER__) {
+			if (
+				typeof globalThis !== "undefined" &&
+				(globalThis as Record<string, unknown>).__LOGGER_MANAGER__
+			) {
 				delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
 			}
 			return;
@@ -59,20 +63,27 @@ const configure = (config: LoggerConfiguration): void => {
 		if (!validLevel) {
 			loggerState.config = null;
 			loggerState.levelCache.clear();
-			if (typeof globalThis !== 'undefined' && (globalThis as Record<string, unknown>).__LOGGER_MANAGER__) {
+			if (
+				typeof globalThis !== "undefined" &&
+				(globalThis as Record<string, unknown>).__LOGGER_MANAGER__
+			) {
 				delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
 			}
 			return;
 		}
 
 		// Validate transports
-		const validTransports = Array.isArray(config.transports) && config.transports.length > 0 && config.transports.every(
-			(t) => t && typeof t.log === "function"
-		);
+		const validTransports =
+			Array.isArray(config.transports) &&
+			config.transports.length > 0 &&
+			config.transports.every((t) => t && typeof t.log === "function");
 		if (!validTransports) {
 			loggerState.config = null;
 			loggerState.levelCache.clear();
-			if (typeof globalThis !== 'undefined' && (globalThis as Record<string, unknown>).__LOGGER_MANAGER__) {
+			if (
+				typeof globalThis !== "undefined" &&
+				(globalThis as Record<string, unknown>).__LOGGER_MANAGER__
+			) {
 				delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
 			}
 			return;
@@ -81,15 +92,18 @@ const configure = (config: LoggerConfiguration): void => {
 		// Validate levels object if present
 		if (
 			config.levels != null &&
-			(
-				typeof config.levels !== "object" ||
+			(typeof config.levels !== "object" ||
 				Array.isArray(config.levels) ||
-				Object.values(config.levels).some((v) => typeof v !== "number" || v < 0)
-			)
+				Object.values(config.levels).some(
+					(v) => typeof v !== "number" || v < 0,
+				))
 		) {
 			loggerState.config = null;
 			loggerState.levelCache.clear();
-			if (typeof globalThis !== 'undefined' && (globalThis as Record<string, unknown>).__LOGGER_MANAGER__) {
+			if (
+				typeof globalThis !== "undefined" &&
+				(globalThis as Record<string, unknown>).__LOGGER_MANAGER__
+			) {
 				delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
 			}
 			return;
@@ -100,7 +114,7 @@ const configure = (config: LoggerConfiguration): void => {
 	loggerState.levelCache.clear();
 
 	// Register LogManager globally for test and runtime access
-	if (typeof globalThis !== 'undefined') {
+	if (typeof globalThis !== "undefined") {
 		(globalThis as Record<string, unknown>).__LOGGER_MANAGER__ = LogManager;
 	}
 
@@ -117,7 +131,8 @@ const configure = (config: LoggerConfiguration): void => {
  */
 const getLogger = (name: string): Logger => {
 	// Enhanced error handling: normalize logger name
-	const enhancedErrorHandling = (globalThis as any).__LOGGER_ENHANCED_ERROR_HANDLING__;
+	const enhancedErrorHandling = (globalThis as any)
+		.__LOGGER_ENHANCED_ERROR_HANDLING__;
 	let normalizedName: string;
 	if (enhancedErrorHandling) {
 		if (name == null || (typeof name === "string" && name.trim() === "")) {
@@ -152,12 +167,13 @@ const getLogger = (name: string): Logger => {
  * @param level The log level to check
  * @returns True if the level is enabled, false otherwise
  */
-	const isLevelEnabled = (loggerName: LoggerName, level: LogLevel): boolean => {
-		if (!loggerState.config) {
-			return false;
-		}
+const isLevelEnabled = (loggerName: LoggerName, level: LogLevel): boolean => {
+	if (!loggerState.config) {
+		return false;
+	}
 
-	const enhancedErrorHandling = (globalThis as any).__LOGGER_ENHANCED_ERROR_HANDLING__;
+	const enhancedErrorHandling = (globalThis as any)
+		.__LOGGER_ENHANCED_ERROR_HANDLING__;
 	if (enhancedErrorHandling) {
 		// Invalid loggerName: null, undefined, not a string, empty, or whitespace
 		if (
@@ -193,17 +209,15 @@ const processLog = (entry: LogEntry): void => {
 	}
 
 	// Enhanced error handling: validate entry before processing
-	const enhancedErrorHandling = (globalThis as any).__LOGGER_ENHANCED_ERROR_HANDLING__;
+	const enhancedErrorHandling = (globalThis as any)
+		.__LOGGER_ENHANCED_ERROR_HANDLING__;
 	if (enhancedErrorHandling) {
 		// Null, undefined, or not an object
 		if (!entry || typeof entry !== "object") {
 			return;
 		}
 		// Missing required properties
-		if (
-			!('loggerName' in entry) ||
-			!('level' in entry)
-		) {
+		if (!("loggerName" in entry) || !("level" in entry)) {
 			return;
 		}
 	}
@@ -274,7 +288,6 @@ const getEffectiveLevel = (loggerName: LoggerName): LogLevel => {
 	// Cache the result for future lookups to avoid repeated hierarchy traversal
 	loggerState.levelCache.set(name, effectiveLevel);
 
-
 	return effectiveLevel;
 };
 
@@ -326,7 +339,11 @@ const resolveHierarchicalLevel = (name: string): LogLevel => {
 const clearCaches = (): void => {
 	loggerState.levelCache.clear();
 	// Remove per-logger level overrides from configuration
-	if (loggerState.config && typeof loggerState.config === 'object' && 'levels' in loggerState.config) {
+	if (
+		loggerState.config &&
+		typeof loggerState.config === "object" &&
+		"levels" in loggerState.config
+	) {
 		delete (loggerState.config as any).levels;
 	}
 	// Note: We typically don't clear logger cache as instances are stateless
@@ -360,7 +377,10 @@ const reset = (): void => {
 	loggerState.levelCache.clear();
 
 	// Remove the global reference to ensure a fully unconfigured state
-	if (typeof globalThis !== 'undefined' && (globalThis as Record<string, unknown>).__LOGGER_MANAGER__) {
+	if (
+		typeof globalThis !== "undefined" &&
+		(globalThis as Record<string, unknown>).__LOGGER_MANAGER__
+	) {
 		delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
 	}
 };

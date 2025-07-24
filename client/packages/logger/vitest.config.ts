@@ -1,6 +1,6 @@
+import { resolve } from "node:path";
 import { sharedVitestConfig } from "@hatchgrid/config/vitest.config.shared";
 import { defineConfig, mergeConfig } from "vite";
-import {resolve} from "node:path";
 
 export default defineConfig(
 	mergeConfig(sharedVitestConfig(__dirname), {
@@ -32,10 +32,10 @@ export default defineConfig(
 				reporter: ["text", "json", "html"],
 			},
 		},
-    resolve: {
-      alias: {
-        "@": resolve(__dirname, "./src")
-      }
-    },
+		resolve: {
+			alias: {
+				"@": resolve(__dirname, "./src"),
+			},
+		},
 	}),
 );

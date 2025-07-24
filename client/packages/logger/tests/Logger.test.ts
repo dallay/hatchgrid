@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { Logger, createLoggerName, type LogEntry, LogLevel } from "../src";
+import { createLoggerName, type LogEntry, Logger, LogLevel } from "../src";
 
 // Mock LogManager interface for testing
 interface MockLogManager {
@@ -61,7 +61,10 @@ describe("Logger", () => {
 
 			logger.trace(message, ...args);
 
-			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(logger.name, LogLevel.TRACE);
+			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(
+				logger.name,
+				LogLevel.TRACE,
+			);
 			expect(mockLogManager.processLog).toHaveBeenCalledWith({
 				timestamp: expect.any(Date),
 				level: LogLevel.TRACE,
@@ -77,7 +80,10 @@ describe("Logger", () => {
 
 			logger.debug(message, ...args);
 
-			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(logger.name, LogLevel.DEBUG);
+			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(
+				logger.name,
+				LogLevel.DEBUG,
+			);
 			expect(mockLogManager.processLog).toHaveBeenCalledWith({
 				timestamp: expect.any(Date),
 				level: LogLevel.DEBUG,
@@ -93,7 +99,10 @@ describe("Logger", () => {
 
 			logger.info(message, ...args);
 
-			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(logger.name, LogLevel.INFO);
+			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(
+				logger.name,
+				LogLevel.INFO,
+			);
 			expect(mockLogManager.processLog).toHaveBeenCalledWith({
 				timestamp: expect.any(Date),
 				level: LogLevel.INFO,
@@ -109,7 +118,10 @@ describe("Logger", () => {
 
 			logger.warn(message, ...args);
 
-			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(logger.name, LogLevel.WARN);
+			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(
+				logger.name,
+				LogLevel.WARN,
+			);
 			expect(mockLogManager.processLog).toHaveBeenCalledWith({
 				timestamp: expect.any(Date),
 				level: LogLevel.WARN,
@@ -125,7 +137,10 @@ describe("Logger", () => {
 
 			logger.error(message, ...args);
 
-			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(logger.name, LogLevel.ERROR);
+			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(
+				logger.name,
+				LogLevel.ERROR,
+			);
 			expect(mockLogManager.processLog).toHaveBeenCalledWith({
 				timestamp: expect.any(Date),
 				level: LogLevel.ERROR,
@@ -141,7 +156,10 @@ describe("Logger", () => {
 
 			logger.fatal(message, ...args);
 
-			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(logger.name, LogLevel.FATAL);
+			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(
+				logger.name,
+				LogLevel.FATAL,
+			);
 			expect(mockLogManager.processLog).toHaveBeenCalledWith({
 				timestamp: expect.any(Date),
 				level: LogLevel.FATAL,
@@ -216,7 +234,8 @@ describe("Logger", () => {
 
 			specificLogger.info("test message");
 
-			const logEntry = specificMockLogManager.processLog.mock.calls[0][0] as LogEntry;
+			const logEntry = specificMockLogManager.processLog.mock
+				.calls[0][0] as LogEntry;
 			expect(logEntry.loggerName).toBe(createLoggerName(loggerName));
 		});
 
@@ -262,7 +281,10 @@ describe("Logger", () => {
 
 			logger.log(LogLevel.INFO, message, args);
 
-			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(logger.name, LogLevel.INFO);
+			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(
+				logger.name,
+				LogLevel.INFO,
+			);
 			expect(mockLogManager.processLog).toHaveBeenCalledWith({
 				timestamp: expect.any(Date),
 				level: LogLevel.INFO,
@@ -281,7 +303,10 @@ describe("Logger", () => {
 			logger.info("test message", "arg1", "arg2");
 
 			// Should check level but not process log
-			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(logger.name, LogLevel.INFO);
+			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(
+				logger.name,
+				LogLevel.INFO,
+			);
 			expect(mockLogManager.processLog).not.toHaveBeenCalled();
 		});
 
@@ -308,7 +333,10 @@ describe("Logger", () => {
 
 			logger.info("test message", "arg1");
 
-			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(logger.name, LogLevel.INFO);
+			expect(mockLogManager.isLevelEnabled).toHaveBeenCalledWith(
+				logger.name,
+				LogLevel.INFO,
+			);
 			expect(mockLogManager.processLog).toHaveBeenCalledTimes(1);
 		});
 	});
@@ -385,13 +413,13 @@ describe("Logger", () => {
 			expect(mockLogManager.processLog).toHaveBeenCalledWith(
 				expect.objectContaining({
 					message: "123",
-				})
+				}),
 			);
 
 			expect(mockLogManager.processLog).toHaveBeenCalledWith(
 				expect.objectContaining({
 					message: "[object Object]",
-				})
+				}),
 			);
 		});
 
@@ -400,12 +428,16 @@ describe("Logger", () => {
 			const loggerWithMockedInternal = new Logger("test", mockLogManager);
 
 			// Access the private method for testing
-			(loggerWithMockedInternal as any).logInternal(LogLevel.INFO, "test", "not-an-array");
+			(loggerWithMockedInternal as any).logInternal(
+				LogLevel.INFO,
+				"test",
+				"not-an-array",
+			);
 
 			expect(mockLogManager.processLog).toHaveBeenCalledWith(
 				expect.objectContaining({
 					args: [],
-				})
+				}),
 			);
 		});
 	});

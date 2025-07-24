@@ -42,9 +42,9 @@ export { ConsoleTransport } from "./transports/index";
 export type {
 	LogEntry,
 	LoggerConfiguration,
+	LoggerName,
 	LogMethod,
 	Transport,
-    LoggerName
 } from "./types";
 
 export {
