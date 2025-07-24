@@ -1,5 +1,5 @@
-import type { LogEntry, LoggerName, LogLevel, LogMethod } from "./types.js";
-import { createLoggerName, LogLevel as LogLevelEnum } from "./types.js";
+import type { LogEntry, LoggerName, LogLevel } from "./types";
+import { createLoggerName, LogLevel as LogLevelEnum } from "./types";
 
 /**
  * Interface for LogManager to avoid circular dependencies
@@ -20,11 +20,18 @@ export class Logger {
   public readonly name: LoggerName;
 
   /**
+   * LogManager instance for processing log entries
+   */
+  private readonly logManager: ILogManager | null;
+
+  /**
    * Creates a new Logger instance with the specified name.
    * @param name The logger name, typically using dot-notation for hierarchy
+   * @param logManager Optional LogManager instance for dependency injection
    */
-  constructor(name: string) {
+  constructor(name: string, logManager?: ILogManager) {
     this.name = createLoggerName(name);
+    this.logManager = logManager || this.getLogManager();
   }
 
   /**
@@ -34,7 +41,7 @@ export class Logger {
    * @param args Additional arguments to include in the log entry
    */
   public trace(message: string, ...args: unknown[]): void {
-    this.log(LogLevelEnum.TRACE, message, args);
+    this.logInternal(LogLevelEnum.TRACE, message, args);
   }
 
   /**
@@ -44,7 +51,7 @@ export class Logger {
    * @param args Additional arguments to include in the log entry
    */
   public debug(message: string, ...args: unknown[]): void {
-    this.log(LogLevelEnum.DEBUG, message, args);
+    this.logInternal(LogLevelEnum.DEBUG, message, args);
   }
 
   /**
@@ -54,7 +61,7 @@ export class Logger {
    * @param args Additional arguments to include in the log entry
    */
   public info(message: string, ...args: unknown[]): void {
-    this.log(LogLevelEnum.INFO, message, args);
+    this.logInternal(LogLevelEnum.INFO, message, args);
   }
 
   /**
@@ -64,7 +71,7 @@ export class Logger {
    * @param args Additional arguments to include in the log entry
    */
   public warn(message: string, ...args: unknown[]): void {
-    this.log(LogLevelEnum.WARN, message, args);
+    this.logInternal(LogLevelEnum.WARN, message, args);
   }
 
   /**
@@ -74,7 +81,7 @@ export class Logger {
    * @param args Additional arguments to include in the log entry
    */
   public error(message: string, ...args: unknown[]): void {
-    this.log(LogLevelEnum.ERROR, message, args);
+    this.logInternal(LogLevelEnum.ERROR, message, args);
   }
 
   /**
@@ -84,58 +91,158 @@ export class Logger {
    * @param args Additional arguments to include in the log entry
    */
   public fatal(message: string, ...args: unknown[]): void {
-    this.log(LogLevelEnum.FATAL, message, args);
+    this.logInternal(LogLevelEnum.FATAL, message, args);
+  }
+
+  /**
+   * Public log method for testing and advanced usage.
+   * Allows logging at any level programmatically.
+   * @param level The log level for this entry
+   * @param message The log message
+   * @param args Additional arguments to include in the log entry
+   */
+  public log(level: LogLevel, message: string, args: unknown[]): void {
+    this.logInternal(level, message, args);
   }
 
   /**
    * Private method that creates a LogEntry and delegates to LogManager for processing.
    * This method is responsible for creating the log entry with proper timestamp and
    * routing it to the LogManager for level checking and transport routing.
-   * Implements performance optimization by checking level before creating LogEntry.
+   *
+   * Performance optimizations implemented:
+   * - Early return when LogManager is not available (graceful degradation)
+   * - Level checking before LogEntry creation to skip message processing when disabled
+   * - LogEntry creation only when level is enabled to avoid unnecessary object allocation
+   * - Comprehensive error handling and null checks
+   *
    * @param level The log level for this entry
    * @param message The log message
    * @param args Additional arguments to include in the log entry
    */
-  private log(level: LogLevel, message: string, args: unknown[]): void {
-    const logManager = this.getLogManager();
-    if (!logManager) {
-      return; // Graceful degradation
-    }
-
-    // Performance optimization: check level before creating LogEntry
-    if (!logManager.isLevelEnabled(this.name, level)) {
+  private logInternal(level: LogLevel, message: string, args: unknown[]): void {
+    if (!this.isValidLogInput(level, message) || !this.logManager) {
       return;
     }
 
-    // Create the log entry with current timestamp only if level is enabled
-    const entry: LogEntry = {
+    if (!this.isLogLevelEnabled(level)) {
+      return;
+    }
+
+    this.createAndProcessLogEntry(level, message, args);
+  }
+
+  /**
+   * Create and process log entry with error handling
+   */
+  private createAndProcessLogEntry(level: LogLevel, message: string, args: unknown[]): void {
+    try {
+      const safeMessage = this.sanitizeMessage(message);
+      const safeArgs = this.sanitizeArgs(args);
+      const entry = this.createLogEntry(level, safeMessage, safeArgs);
+      this.processLogEntry(entry);
+    } catch (error) {
+      // Graceful degradation: logging errors should not affect application
+    }
+  }
+
+  /**
+   * Validate log input parameters
+   */
+  private isValidLogInput(level: LogLevel, message: unknown): boolean {
+    return (
+      level !== undefined &&
+      level !== null &&
+      typeof level === 'number' &&
+      message !== undefined &&
+      message !== null
+    );
+  }
+
+  /**
+   * Sanitize message parameter
+   */
+  private sanitizeMessage(message: unknown): string {
+    return typeof message === 'string' ? message : String(message);
+  }
+
+  /**
+   * Sanitize args parameter
+   */
+  private sanitizeArgs(args: unknown): unknown[] {
+    return Array.isArray(args) ? args : [];
+  }
+
+  /**
+   * Check if log level is enabled
+   */
+  private isLogLevelEnabled(level: LogLevel): boolean {
+    try {
+      return this.logManager?.isLevelEnabled(this.name, level) ?? false;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  /**
+   * Create log entry object
+   */
+  private createLogEntry(level: LogLevel, message: string, args: unknown[]): LogEntry {
+    return {
       timestamp: new Date(),
       level,
       loggerName: this.name,
       message,
       args,
     };
+  }
 
-    // Delegate to LogManager for processing
-    logManager.processLog(entry);
+  /**
+   * Process log entry through LogManager
+   */
+  private processLogEntry(entry: LogEntry): void {
+    try {
+      this.logManager?.processLog(entry);
+    } catch (error) {
+      // Graceful degradation: processing failures are silently ignored
+    }
   }
 
   /**
    * Safely attempt to get LogManager instance.
-   * This method encapsulates the LogManager access logic and can be easily
-   * modified when LogManager is properly implemented.
+   * This method encapsulates the LogManager access logic and provides
+   * comprehensive error handling and graceful degradation.
    * @returns LogManager instance or null if not available
    */
   private getLogManager(): ILogManager | null {
     try {
-      // Check if LogManager is available in the module system
-      // This approach is more robust than global scope access
-      const logManagerModule = (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
-      return logManagerModule?.processLog && logManagerModule?.isLevelEnabled
-        ? logManagerModule as ILogManager
-        : null;
-    } catch {
+      if (typeof globalThis === 'undefined') {
+        return null;
+      }
+
+      const logManagerModule = (globalThis as any).__LOGGER_MANAGER__;
+      return this.validateLogManagerInterface(logManagerModule);
+    } catch (error) {
+      // Graceful degradation: any error in LogManager access results in null
       return null;
     }
+  }
+
+  /**
+   * Validate that the LogManager interface is properly implemented
+   */
+  private validateLogManagerInterface(manager: unknown): ILogManager | null {
+    if (!manager || typeof manager !== 'object') {
+      return null;
+    }
+
+    const candidate = manager as Record<string, unknown>;
+
+    if (typeof candidate.processLog !== 'function' ||
+        typeof candidate.isLevelEnabled !== 'function') {
+      return null;
+    }
+
+    return candidate as unknown as ILogManager;
   }
 }

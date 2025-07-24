@@ -1,6 +1,9 @@
 /**
  * Log levels with numeric values for efficient comparison.
  * Higher numeric values indicate higher severity.
+ *
+ * Performance optimization: Numeric values enable fast comparison operations
+ * using >= operator instead of string comparisons, improving log level checking performance.
  */
 export enum LogLevel {
   TRACE = 0,
@@ -54,6 +57,16 @@ export interface Transport {
    * @param entry The log entry to process
    */
   log(entry: LogEntry): void;
+
+  /**
+   * Optional method to check if transport is available/healthy
+   */
+  isAvailable?(): boolean;
+
+  /**
+   * Optional cleanup method for transport resources
+   */
+  dispose?(): void;
 }
 
 /**
@@ -76,5 +89,66 @@ export type LogMethod = (message: string, ...args: unknown[]) => void;
 
 /**
  * Utility type for creating logger name from string
+ * Normalizes the name by trimming whitespace and providing fallback for empty names
  */
-export const createLoggerName = (name: string): LoggerName => name as LoggerName;
+export const createLoggerName = (name: string): LoggerName => {
+  const normalized = name?.trim();
+  return (normalized || 'unknown') as LoggerName;
+};
+
+/**
+ * Type guard to check if a value is a valid LogLevel
+ */
+export const isLogLevel = (value: unknown): value is LogLevel => {
+  return typeof value === 'number' &&
+         value >= LogLevel.TRACE &&
+         value <= LogLevel.FATAL &&
+         Number.isInteger(value);
+};
+
+/**
+ * Utility type for log level configuration
+ */
+export type LogLevelConfig = Partial<Record<string, LogLevel>>;
+
+/**
+ * Result type for operations that might fail
+ */
+export type LoggerResult<T> = {
+  success: true;
+  data: T;
+} | {
+  success: false;
+  error: string;
+};
+
+/**
+ * Structured error types for better error handling
+ */
+export enum LoggerErrorType {
+  CONFIGURATION_INVALID = 'CONFIGURATION_INVALID',
+  TRANSPORT_FAILURE = 'TRANSPORT_FAILURE',
+  LEVEL_INVALID = 'LEVEL_INVALID',
+  LOGGER_NAME_INVALID = 'LOGGER_NAME_INVALID',
+}
+
+export interface LoggerError {
+  type: LoggerErrorType;
+  message: string;
+  details?: Record<string, unknown>;
+}
+
+/**
+ * Custom error class for logger-specific errors
+ */
+export class LoggerConfigurationError extends Error {
+  public readonly type: LoggerErrorType;
+  public readonly details?: Record<string, unknown>;
+
+  constructor(type: LoggerErrorType, message: string, details?: Record<string, unknown>) {
+    super(message);
+    this.name = 'LoggerConfigurationError';
+    this.type = type;
+    this.details = details;
+  }
+}

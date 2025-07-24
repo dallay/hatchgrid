@@ -6,6 +6,7 @@ const ErrorPage = () => import("@/error/error.vue");
 import account from "@/router/account";
 import { Authority } from "@/security/authority";
 import { loadLayoutMiddleware } from "./middleware/loadLayoutMiddleware";
+import audience from "@/router/audience.ts";
 
 export const createRouter = () =>
 	createVueRouter({
@@ -30,6 +31,7 @@ export const createRouter = () =>
 				meta: { error404: true },
 			},
 			...account,
+			...audience,
 		],
 	});
 

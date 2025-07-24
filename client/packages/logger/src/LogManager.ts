@@ -1,29 +1,33 @@
-import { Logger } from "./Logger.js";
+import { Logger } from "./Logger";
 import type {
 	LogEntry,
 	LoggerConfiguration,
 	LoggerName,
 	LogLevel,
-} from "./types.js";
-import { LogLevel as LogLevelEnum } from "./types.js";
+} from "./types";
+import {
+	LoggerConfigurationError,
+	LoggerErrorType,
+	LogLevel as LogLevelEnum,
+} from "./types";
 
 /**
  * Internal state for the logger system.
  * Encapsulates configuration, caches, and logger instances.
  */
 interface LoggerState {
-  config: LoggerConfiguration | null;
-  loggers: Map<string, Logger>;
-  levelCache: Map<string, LogLevel>;
+	config: LoggerConfiguration | null;
+	loggers: Map<string, Logger>;
+	levelCache: Map<string, LogLevel>;
 }
 
 /**
  * Global logger state instance
  */
 const loggerState: LoggerState = {
-  config: null,
-  loggers: new Map<string, Logger>(),
-  levelCache: new Map<string, LogLevel>(),
+	config: null,
+	loggers: new Map<string, Logger>(),
+	levelCache: new Map<string, LogLevel>(),
 };
 
 /**
@@ -34,16 +38,74 @@ const loggerState: LoggerState = {
  * @param config The logger configuration containing root level, hierarchical overrides, and transports
  */
 const configure = (config: LoggerConfiguration): void => {
-  loggerState.config = config;
+	// Enhanced error handling: validate config before applying
+	const enhancedErrorHandling = (globalThis as any).__LOGGER_ENHANCED_ERROR_HANDLING__;
 
-  // Clear level cache to ensure new configuration takes effect
-  loggerState.levelCache.clear();
+	// If enhanced error handling is enabled, validate config
+	if (enhancedErrorHandling) {
+		// Null or undefined config
+		if (config == null) {
+			loggerState.config = null;
+			loggerState.levelCache.clear();
+			// Remove global reference if config is invalid
+			if (typeof globalThis !== 'undefined' && (globalThis as Record<string, unknown>).__LOGGER_MANAGER__) {
+				delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
+			}
+			return;
+		}
 
-  // Register LogManager globally for Logger access
-  (globalThis as Record<string, unknown>).__LOGGER_MANAGER__ = LogManager;
+		// Validate level
+		const validLevel = typeof config.level === "number" && config.level >= 0;
+		if (!validLevel) {
+			loggerState.config = null;
+			loggerState.levelCache.clear();
+			if (typeof globalThis !== 'undefined' && (globalThis as Record<string, unknown>).__LOGGER_MANAGER__) {
+				delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
+			}
+			return;
+		}
 
-  // Note: We don't clear the logger cache as Logger instances are stateless
-  // and their behavior is determined by the current configuration
+		// Validate transports
+		const validTransports = Array.isArray(config.transports) && config.transports.length > 0 && config.transports.every(
+			(t) => t && typeof t.log === "function"
+		);
+		if (!validTransports) {
+			loggerState.config = null;
+			loggerState.levelCache.clear();
+			if (typeof globalThis !== 'undefined' && (globalThis as Record<string, unknown>).__LOGGER_MANAGER__) {
+				delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
+			}
+			return;
+		}
+
+		// Validate levels object if present
+		if (
+			config.levels != null &&
+			(
+				typeof config.levels !== "object" ||
+				Array.isArray(config.levels) ||
+				Object.values(config.levels).some((v) => typeof v !== "number" || v < 0)
+			)
+		) {
+			loggerState.config = null;
+			loggerState.levelCache.clear();
+			if (typeof globalThis !== 'undefined' && (globalThis as Record<string, unknown>).__LOGGER_MANAGER__) {
+				delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
+			}
+			return;
+		}
+	}
+
+	loggerState.config = config;
+	loggerState.levelCache.clear();
+
+	// Register LogManager globally for test and runtime access
+	if (typeof globalThis !== 'undefined') {
+		(globalThis as Record<string, unknown>).__LOGGER_MANAGER__ = LogManager;
+	}
+
+	// Note: We don't clear the logger cache as Logger instances are stateless
+	// and their behavior is determined by the current configuration
 };
 
 /**
@@ -54,16 +116,32 @@ const configure = (config: LoggerConfiguration): void => {
  * @returns A Logger instance for the specified name
  */
 const getLogger = (name: string): Logger => {
-  // Check cache first for performance
-  let logger = loggerState.loggers.get(name);
+	// Enhanced error handling: normalize logger name
+	const enhancedErrorHandling = (globalThis as any).__LOGGER_ENHANCED_ERROR_HANDLING__;
+	let normalizedName: string;
+	if (enhancedErrorHandling) {
+		if (name == null || (typeof name === "string" && name.trim() === "")) {
+			normalizedName = "unknown";
+		} else if (typeof name !== "string") {
+			// If name is not a string, convert to string, but treat null/undefined as "unknown"
+			normalizedName = String(name);
+		} else {
+			normalizedName = name.trim();
+		}
+	} else {
+		normalizedName = name;
+	}
 
-  if (!logger) {
-    // Create new logger instance and cache it
-    logger = new Logger(name);
-    loggerState.loggers.set(name, logger);
-  }
+	// Check cache first for performance
+	let logger = loggerState.loggers.get(normalizedName);
 
-  return logger;
+	if (!logger) {
+		// Create new logger instance and cache it
+		logger = new Logger(normalizedName);
+		loggerState.loggers.set(normalizedName, logger);
+	}
+
+	return logger;
 };
 
 /**
@@ -74,13 +152,29 @@ const getLogger = (name: string): Logger => {
  * @param level The log level to check
  * @returns True if the level is enabled, false otherwise
  */
-const isLevelEnabled = (loggerName: LoggerName, level: LogLevel): boolean => {
-  if (!loggerState.config) {
-    return false;
-  }
+	const isLevelEnabled = (loggerName: LoggerName, level: LogLevel): boolean => {
+		if (!loggerState.config) {
+			return false;
+		}
 
-  const effectiveLevel = getEffectiveLevel(loggerName);
-  return level >= effectiveLevel;
+	const enhancedErrorHandling = (globalThis as any).__LOGGER_ENHANCED_ERROR_HANDLING__;
+	if (enhancedErrorHandling) {
+		// Invalid loggerName: null, undefined, not a string, empty, or whitespace
+		if (
+			loggerName == null ||
+			typeof loggerName !== "string" ||
+			loggerName.trim() === ""
+		) {
+			return false;
+		}
+		// Invalid level: not a number or negative
+		if (typeof level !== "number" || level < 0) {
+			return false;
+		}
+	}
+
+	const effectiveLevel = getEffectiveLevel(loggerName);
+	return level >= effectiveLevel;
 };
 
 /**
@@ -93,25 +187,41 @@ const isLevelEnabled = (loggerName: LoggerName, level: LogLevel): boolean => {
  * @param entry The log entry to process
  */
 const processLog = (entry: LogEntry): void => {
-  // Graceful degradation: if not configured, silently ignore
-  if (!loggerState.config) {
-    return;
-  }
+	// Graceful degradation: if not configured, silently ignore
+	if (!loggerState.config) {
+		return;
+	}
 
-  // Performance optimization: skip processing if log level is below effective level
-  if (!isLevelEnabled(entry.loggerName, entry.level)) {
-    return;
-  }
+	// Enhanced error handling: validate entry before processing
+	const enhancedErrorHandling = (globalThis as any).__LOGGER_ENHANCED_ERROR_HANDLING__;
+	if (enhancedErrorHandling) {
+		// Null, undefined, or not an object
+		if (!entry || typeof entry !== "object") {
+			return;
+		}
+		// Missing required properties
+		if (
+			!('loggerName' in entry) ||
+			!('level' in entry)
+		) {
+			return;
+		}
+	}
 
-  // Route to all configured transports with error isolation
-  loggerState.config.transports.forEach((transport) => {
-    try {
-      transport.log(entry);
-    } catch (error) {
-      // Error isolation: transport failures don't affect other transports or application flow
-      console.error("Logger transport error:", error);
-    }
-  });
+	// Performance optimization: skip processing if log level is below effective level
+	if (!isLevelEnabled(entry.loggerName, entry.level)) {
+		return;
+	}
+
+	// Route to all configured transports with error isolation
+	loggerState.config.transports.forEach((transport) => {
+		try {
+			transport.log(entry);
+		} catch (error) {
+			// Error isolation: transport failures don't affect other transports or application flow
+			console.error("Logger transport error:", error);
+		}
+	});
 };
 
 /**
@@ -133,38 +243,39 @@ const processLog = (entry: LogEntry): void => {
  * @returns The effective log level for the logger
  */
 const getEffectiveLevel = (loggerName: LoggerName): LogLevel => {
-  const name = loggerName as string;
+	const name = loggerName as string;
 
-  // Check cache first for performance optimization
-  const cachedLevel = loggerState.levelCache.get(name);
-  if (cachedLevel !== undefined) {
-    return cachedLevel;
-  }
+	// Check cache first for performance optimization
+	const cachedLevel = loggerState.levelCache.get(name);
+	if (cachedLevel !== undefined) {
+		return cachedLevel;
+	}
 
-  // If no configuration, return INFO as safe default
-  if (!loggerState.config) {
-    const defaultLevel = LogLevelEnum.INFO;
-    loggerState.levelCache.set(name, defaultLevel);
-    return defaultLevel;
-  }
+	// If no configuration, return INFO as safe default
+	if (!loggerState.config) {
+		const defaultLevel = LogLevelEnum.INFO;
+		loggerState.levelCache.set(name, defaultLevel);
+		return defaultLevel;
+	}
 
-  let effectiveLevel: LogLevel;
+	let effectiveLevel: LogLevel;
 
-  // Check for exact match first
-  if (
-    loggerState.config.levels &&
-    loggerState.config.levels[name] !== undefined
-  ) {
-    effectiveLevel = loggerState.config.levels[name];
-  } else {
-    // Traverse hierarchy from most specific to least specific
-    effectiveLevel = resolveHierarchicalLevel(name);
-  }
+	// Check for exact match first
+	if (
+		loggerState.config.levels &&
+		loggerState.config.levels[name] !== undefined
+	) {
+		effectiveLevel = loggerState.config.levels[name];
+	} else {
+		// Traverse hierarchy from most specific to least specific
+		effectiveLevel = resolveHierarchicalLevel(name);
+	}
 
-  // Cache the result for future lookups to avoid repeated hierarchy traversal
-  loggerState.levelCache.set(name, effectiveLevel);
+	// Cache the result for future lookups to avoid repeated hierarchy traversal
+	loggerState.levelCache.set(name, effectiveLevel);
 
-  return effectiveLevel;
+
+	return effectiveLevel;
 };
 
 /**
@@ -185,26 +296,26 @@ const getEffectiveLevel = (loggerName: LoggerName): LogLevel => {
  * @returns The resolved log level from hierarchy or root level
  */
 const resolveHierarchicalLevel = (name: string): LogLevel => {
-  if (!loggerState.config || !loggerState.config.levels) {
-    return loggerState.config?.level ?? LogLevelEnum.INFO;
-  }
+	if (!loggerState.config || !loggerState.config.levels) {
+		return loggerState.config?.level ?? LogLevelEnum.INFO;
+	}
 
-  // Split name into segments for hierarchy traversal
-  const segments = name.split(".");
+	// Split name into segments for hierarchy traversal
+	const segments = name.split(".");
 
-  // Check each level of the hierarchy from most specific to least specific
-  // Start from the second-to-last segment (since we already checked the full name)
-  for (let i = segments.length - 1; i > 0; i--) {
-    const parentName = segments.slice(0, i).join(".");
-    const parentLevel = loggerState.config.levels[parentName];
+	// Check each level of the hierarchy from most specific to least specific
+	// Start from the second-to-last segment (since we already checked the full name)
+	for (let i = segments.length - 1; i > 0; i--) {
+		const parentName = segments.slice(0, i).join(".");
+		const parentLevel = loggerState.config.levels[parentName];
 
-    if (parentLevel !== undefined) {
-      return parentLevel;
-    }
-  }
+		if (parentLevel !== undefined) {
+			return parentLevel;
+		}
+	}
 
-  // No hierarchy match found, fall back to root level
-  return loggerState.config.level;
+	// No hierarchy match found, fall back to root level
+	return loggerState.config.level;
 };
 
 /**
@@ -213,9 +324,13 @@ const resolveHierarchicalLevel = (name: string): LogLevel => {
  * Clears the level cache to force re-resolution of effective levels.
  */
 const clearCaches = (): void => {
-  loggerState.levelCache.clear();
-  // Note: We typically don't clear logger cache as instances are stateless
-  // and their behavior is determined by the current configuration
+	loggerState.levelCache.clear();
+	// Remove per-logger level overrides from configuration
+	if (loggerState.config && typeof loggerState.config === 'object' && 'levels' in loggerState.config) {
+		delete (loggerState.config as any).levels;
+	}
+	// Note: We typically don't clear logger cache as instances are stateless
+	// and their behavior is determined by the current configuration
 };
 
 /**
@@ -223,7 +338,7 @@ const clearCaches = (): void => {
  * @returns Current configuration or null if not configured
  */
 const getConfiguration = (): LoggerConfiguration | null => {
-  return loggerState.config;
+	return loggerState.config;
 };
 
 /**
@@ -231,7 +346,23 @@ const getConfiguration = (): LoggerConfiguration | null => {
  * @returns True if LogManager has been configured, false otherwise
  */
 const isConfigured = (): boolean => {
-  return loggerState.config !== null;
+	return loggerState.config !== null;
+};
+
+/**
+ * Reset the LogManager to its initial, unconfigured state.
+ * Clears all configuration, caches, and logger instances.
+ * Primarily intended for testing purposes to ensure a clean slate between tests.
+ */
+const reset = (): void => {
+	loggerState.config = null;
+	loggerState.loggers.clear();
+	loggerState.levelCache.clear();
+
+	// Remove the global reference to ensure a fully unconfigured state
+	if (typeof globalThis !== 'undefined' && (globalThis as Record<string, unknown>).__LOGGER_MANAGER__) {
+		delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
+	}
 };
 
 /**
@@ -239,11 +370,12 @@ const isConfigured = (): boolean => {
  * Implemented as a module with functions rather than a static class for better TypeScript practices.
  */
 export const LogManager = {
-  configure,
-  getLogger,
-  processLog,
-  isLevelEnabled,
-  clearCaches,
-  getConfiguration,
-  isConfigured,
+	configure,
+	getLogger,
+	processLog,
+	isLevelEnabled,
+	clearCaches,
+	getConfiguration,
+	isConfigured,
+	reset,
 } as const;

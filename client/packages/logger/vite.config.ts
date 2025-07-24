@@ -6,20 +6,47 @@ import dts from "vite-plugin-dts";
 /** @type {import('vite').UserConfig} */
 export default defineConfig(
 	mergeConfig(sharedViteConfig(__dirname), {
+		test: {
+			include: ["tests/**/*.test.ts"],
+		},
+    resolve: {
+      alias: {
+        "@": resolve(__dirname, "./src")
+      }
+    },
 		build: {
 			lib: {
 				entry: resolve(__dirname, "src/index.ts"),
-				name: "logger",
-				formats: ["es"],
-				// The filename is inferred from package.json (main/module)
-				// so we don't need `fileName` here.
+				name: "HatchgridLogger",
+				formats: ["es", "cjs"],
+				fileName: (format) => `logger.${format === "es" ? "js" : "cjs"}`,
 			},
-			target: "esnext",
+			target: ["es2022", "node18"],
+			rollupOptions: {
+				external: [],
+				output: [
+					{
+						format: "es",
+						preserveModules: false,
+						exports: "named",
+						entryFileNames: "logger.js",
+					},
+					{
+						format: "cjs",
+						preserveModules: false,
+						exports: "named",
+						entryFileNames: "logger.cjs",
+					},
+				],
+			},
+			minify: process.env.NODE_ENV === "production",
+			sourcemap: true,
 		},
 		plugins: [
-			// Add the plugin and point it to the build tsconfig
 			dts({
 				tsconfigPath: "./tsconfig.build.json",
+				insertTypesEntry: true,
+				rollupTypes: true,
 			}),
 		],
 	}),

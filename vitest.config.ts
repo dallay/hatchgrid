@@ -8,6 +8,7 @@ export default defineConfig({
 		include: [
 			"**/__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
 			"**/*.{spec,test}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
+			"client/packages/logger/src/**/*.ts",
 		],
 		exclude: [
 			"**/node_modules/**",
@@ -41,6 +42,6 @@ export default defineConfig({
 			"@lib": resolve(__dirname, "./src/lib"),
 			"@models": resolve(__dirname, "./src/lib/models"),
 			"@components": resolve(__dirname, "./src/components"),
-		},
+			},
 	},
 });
