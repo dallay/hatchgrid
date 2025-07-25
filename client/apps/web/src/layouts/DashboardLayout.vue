@@ -1,26 +1,18 @@
 <script setup>
-import {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbLink,
-	BreadcrumbList,
-	BreadcrumbPage,
-	BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import {
-	SidebarInset,
-	SidebarProvider,
-	SidebarTrigger,
-} from "@/components/ui/sidebar";
-import AppSidebar from "@/layouts/components/AppSidebar.vue";
+import { computed } from "vue";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { getNavigationItems } from "@/config/navigation";
+import AppSidebar from "@/layouts/components/sidebar/AppSidebar.vue";
 import AppHeader from "./components/AppHeader.vue";
 import SimpleLayout from "./SimpleLayout.vue";
+
+// Get navigation items reactively
+const navigationItems = computed(() => getNavigationItems());
 </script>
 
 <template>
   <SidebarProvider>
-    <AppSidebar />
+    <AppSidebar :items="navigationItems" />
     <SidebarInset>
       <AppHeader />
       <SimpleLayout>

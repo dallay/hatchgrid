@@ -11,11 +11,7 @@ export {
 } from "./composables/useErrorBoundary";
 
 // Composable exports
-export {
-	isValidSidebarItem,
-	useItemValidation,
-	validateSidebarItem,
-} from "./composables/useItemValidation";
+export { useItemValidation } from "./composables/useItemValidation";
 // Test utility exports (development only)
 export * from "./test-utils";
 // Type exports

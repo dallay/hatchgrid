@@ -969,7 +969,9 @@
 │   │       │   │   └───useRouteGuards.ts
 │   │       │   ├───config/
 │   │       │   │   ├───axios-interceptor.spec.ts
-│   │       │   │   └───axios-interceptor.ts
+│   │       │   │   ├───axios-interceptor.ts
+│   │       │   │   ├───navigation.test.ts
+│   │       │   │   └───navigation.ts
 │   │       │   ├───dashboard/
 │   │       │   │   ├───components/
 │   │       │   │   │   ├───DateRangePicker.vue
@@ -999,13 +1001,25 @@
 │   │       │   ├───layouts/
 │   │       │   │   ├───components/
 │   │       │   │   │   ├───sidebar/
+│   │       │   │   │   │   ├───composables/
+│   │       │   │   │   │   │   └───...
+│   │       │   │   │   │   ├───AppSidebar.test.ts
+│   │       │   │   │   │   ├───AppSidebar.vue
+│   │       │   │   │   │   ├───AppSidebarItem.test.ts
+│   │       │   │   │   │   ├───AppSidebarItem.vue
+│   │       │   │   │   │   ├───error-factory.ts
 │   │       │   │   │   │   ├───example.ts
 │   │       │   │   │   │   ├───index.ts
+│   │       │   │   │   │   ├───test-factories.ts
+│   │       │   │   │   │   ├───test-helpers.ts
+│   │       │   │   │   │   ├───test-types.ts
+│   │       │   │   │   │   ├───test-utils.ts
+│   │       │   │   │   │   ├───tooltip-demo.vue
+│   │       │   │   │   │   ├───tooltip-integration.test.ts
 │   │       │   │   │   │   ├───types.ts
 │   │       │   │   │   │   ├───utils.test.ts
 │   │       │   │   │   │   └───utils.ts
 │   │       │   │   │   ├───AppHeader.vue
-│   │       │   │   │   ├───AppSidebar.vue
 │   │       │   │   │   └───LanguageSwitcher.vue
 │   │       │   │   ├───AppLayout.vue
 │   │       │   │   ├───DashboardLayout.vue
@@ -1199,12 +1213,16 @@
 │   │   ├───email-testing.md
 │   │   ├───maildev-setup.md
 │   │   └───smtp-setup.md
+│   ├───endpoints/
+│   │   ├───HatchgridApplication.http
+│   │   └───http-client.env.json
 │   ├───frontend/
 │   │   ├───README.md
 │   │   ├───TRANSLATION_INTEGRATION.md
 │   │   ├───auth-store.md
 │   │   ├───landing-page.md
-│   │   └───layout-system.md
+│   │   ├───layout-system.md
+│   │   └───sidebar-navigation-system.md
 │   ├───landing/
 │   │   ├───frontend-project-color-palette.md
 │   │   ├───high-converting-pricing-page.jpeg

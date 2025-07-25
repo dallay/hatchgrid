@@ -21,6 +21,6 @@
   },
   "then": {
     "type": "askAgent",
-    "prompt": "Run the following commands to ensure all tests, checks and builds work:\n\nFrontend commands:\n- pnpm run check && pnpm run test && pnpm run build\n\nBackend commands:\n- ./gradlew detektAll && ./gradlew test\n\nPlease execute these commands and report any failures or issues that need to be addressed."
+    "prompt": "Run the following commands to verify code quality, test coverage, and build integrity. Fix any issues that arise.\n\nFrontend\n\npnpm run check\npnpm run test\npnpm run build\n\nMake sure all static checks, tests, and the build process complete successfully. Investigate and resolve any warnings or errors.\n\nBackend\n\n./gradlew detektAll\n./gradlew test\n\nEnsure that code quality and tests pass without errors. Address any violations or failures.\n\nOnce completed, report back with a summary of the results and any issues you had to fix.\n"
   }
 }

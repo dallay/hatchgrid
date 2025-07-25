@@ -2,14 +2,8 @@
  * Error boundary composable for sidebar components
  * Provides graceful error handling and recovery mechanisms
  */
-import {
-	type ComputedRef,
-	computed,
-	onErrorCaptured,
-	type Ref,
-	ref,
-} from "vue";
-import type { AppSidebarItem, Result } from "../types";
+import { type ComputedRef, computed, onErrorCaptured, ref } from "vue";
+import type { AppSidebarItem } from "../types";
 
 export interface ErrorState {
 	hasError: boolean;
@@ -79,7 +73,7 @@ export function useErrorBoundary(options: ErrorBoundaryOptions = {}) {
 
 		// Add delay before retry
 		if (retryDelay > 0) {
-			await new Promise(resolve => setTimeout(resolve, retryDelay));
+			await new Promise((resolve) => setTimeout(resolve, retryDelay));
 		}
 
 		clearError();

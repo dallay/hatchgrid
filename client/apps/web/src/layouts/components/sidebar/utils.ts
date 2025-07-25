@@ -74,22 +74,111 @@ export async function filterNavItems(
 	return results;
 }
 
-// Enhanced memoization cache with LRU eviction and performance monitoring
+// Enhanced memoization cache with proper LRU eviction
 const MAX_CACHE_SIZE = 100;
-const activeStateCache = new Map<string, boolean>();
-const cacheHitCount = new Map<string, number>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-// Cache performance monitoring (development only)
-const logCachePerformance = () => {
-  if (!import.meta.env.DEV) return;
+interface CacheEntry<T> {
+	value: T;
+	lastAccessed: number;
+	createdAt: number;
+}
 
-  const totalHits = Array.from(cacheHitCount.values()).reduce((a, b) => a + b, 0);
-  const cacheSize = activeStateCache.size;
+class LRUCache<T> {
+	private cache = new Map<string, CacheEntry<T>>();
+	private accessOrder = new Set<string>();
+	private hitCount = 0;
+	private missCount = 0;
 
-  if (totalHits > 0 && totalHits % 100 === 0) {
-    console.log(`Navigation cache stats: ${cacheSize} entries, ${totalHits} total hits`);
-  }
-};
+	get(key: string): T | undefined {
+		const entry = this.cache.get(key);
+		if (!entry) {
+			this.missCount++;
+			return undefined;
+		}
+
+		// Check TTL
+		if (Date.now() - entry.createdAt > CACHE_TTL) {
+			this.cache.delete(key);
+			this.accessOrder.delete(key);
+			this.missCount++;
+			return undefined;
+		}
+
+		// Update access order
+		this.accessOrder.delete(key);
+		this.accessOrder.add(key);
+		entry.lastAccessed = Date.now();
+
+		this.hitCount++;
+		return entry.value;
+	}
+
+	set(key: string, value: T): void {
+		const now = Date.now();
+
+		// Evict oldest entries if cache is full
+		if (this.cache.size >= MAX_CACHE_SIZE) {
+			this.evictLRU();
+		}
+
+		// Remove existing entry to update access order
+		if (this.cache.has(key)) {
+			this.accessOrder.delete(key);
+		}
+
+		this.cache.set(key, {
+			value,
+			lastAccessed: now,
+			createdAt: now,
+		});
+		this.accessOrder.add(key);
+	}
+
+	clear(): void {
+		this.cache.clear();
+		this.accessOrder.clear();
+		this.hitCount = 0;
+		this.missCount = 0;
+	}
+
+	private evictLRU(): void {
+		const oldestKey = this.accessOrder.values().next().value;
+		if (oldestKey) {
+			this.cache.delete(oldestKey);
+			this.accessOrder.delete(oldestKey);
+		}
+	}
+
+	// Cleanup expired entries
+	private cleanup(): void {
+		const now = Date.now();
+		const expiredKeys: string[] = [];
+
+		for (const [key, entry] of this.cache.entries()) {
+			if (now - entry.createdAt > CACHE_TTL) {
+				expiredKeys.push(key);
+			}
+		}
+
+		for (const key of expiredKeys) {
+			this.cache.delete(key);
+			this.accessOrder.delete(key);
+		}
+	}
+
+	getStats() {
+		this.cleanup(); // Clean up before reporting stats
+		return {
+			size: this.cache.size,
+			hitCount: this.hitCount,
+			missCount: this.missCount,
+			hitRate: this.hitCount / (this.hitCount + this.missCount) || 0,
+		};
+	}
+}
+
+const activeStateCache = new LRUCache<boolean>();
 
 /**
  * Checks if a sidebar item or any of its children is active
@@ -107,9 +196,6 @@ export function isItemActive(
 	const cachedResult = activeStateCache.get(cacheKey);
 
 	if (cachedResult !== undefined) {
-		// Track cache hits for performance monitoring
-		cacheHitCount.set(cacheKey, (cacheHitCount.get(cacheKey) || 0) + 1);
-		logCachePerformance();
 		return cachedResult;
 	}
 
@@ -127,14 +213,6 @@ export function isItemActive(
 	else {
 		result =
 			item.items?.some((child) => isItemActive(child, currentRoute)) ?? false;
-	}
-
-	// Implement LRU-like cache management
-	if (activeStateCache.size >= MAX_CACHE_SIZE) {
-		const firstKey = activeStateCache.keys().next().value;
-		if (firstKey) {
-			activeStateCache.delete(firstKey);
-		}
 	}
 
 	activeStateCache.set(cacheKey, result);
@@ -266,6 +344,7 @@ export function validateSidebarItems(
 
 /**
  * Type guard to check if an object is a valid AppSidebarItem
+ * Enhanced with better validation and error reporting
  */
 function isAppSidebarItem(item: unknown): item is AppSidebarItem {
 	if (typeof item !== "object" || item === null) {
@@ -274,23 +353,65 @@ function isAppSidebarItem(item: unknown): item is AppSidebarItem {
 
 	const obj = item as Record<string, unknown>;
 
-	// Required fields
-	if (!("title" in obj) || typeof obj.title !== "string" || obj.title.trim().length === 0) {
+	// Required fields validation
+	if (
+		!("title" in obj) ||
+		typeof obj.title !== "string" ||
+		obj.title.trim().length === 0
+	) {
 		return false;
 	}
 
-	// Optional fields with type validation
-	const validations = [
-		obj.url === undefined || (typeof obj.url === "string" && obj.url.length > 0),
-		obj.visible === undefined || typeof obj.visible === "boolean" || typeof obj.visible === "function",
-		obj.canAccess === undefined || typeof obj.canAccess === "function",
-		obj.isActive === undefined || typeof obj.isActive === "boolean",
-		obj.tooltip === undefined || (typeof obj.tooltip === "string" && obj.tooltip.length > 0),
-		obj.icon === undefined || typeof obj.icon === "object", // Lucide icons are objects/functions
-		obj.items === undefined || (Array.isArray(obj.items) && obj.items.every(isAppSidebarItem))
+	// Enhanced optional field validations with better type checking
+	const validations: Array<{ check: boolean; field: string }> = [
+		{
+			check:
+				obj.url === undefined ||
+				(typeof obj.url === "string" && obj.url.length > 0),
+			field: "url",
+		},
+		{
+			check:
+				obj.visible === undefined ||
+				typeof obj.visible === "boolean" ||
+				typeof obj.visible === "function",
+			field: "visible",
+		},
+		{
+			check: obj.canAccess === undefined || typeof obj.canAccess === "function",
+			field: "canAccess",
+		},
+		{
+			check: obj.isActive === undefined || typeof obj.isActive === "boolean",
+			field: "isActive",
+		},
+		{
+			check:
+				obj.tooltip === undefined ||
+				(typeof obj.tooltip === "string" && obj.tooltip.length >= 0),
+			field: "tooltip",
+		},
+		{
+			check:
+				obj.icon === undefined ||
+				(typeof obj.icon === "object" && obj.icon !== null) ||
+				typeof obj.icon === "function",
+			field: "icon",
+		},
+		{
+			check: obj.items === undefined || Array.isArray(obj.items),
+			field: "items",
+		},
 	];
 
-	return validations.every(Boolean);
+	const failedValidation = validations.find((v) => !v.check);
+	if (failedValidation && import.meta.env.DEV) {
+		console.warn(
+			`Invalid AppSidebarItem: field '${failedValidation.field}' failed validation`,
+		);
+	}
+
+	return validations.every((v) => v.check);
 }
 
 /**
@@ -365,19 +486,44 @@ export function validateNavConfig(items: unknown): items is AppSidebarItem[] {
  * Enhanced error boundary for navigation item processing
  * Provides graceful degradation when items are malformed
  */
-export function safeProcessNavItems(items: AppSidebarItem[]): AppSidebarItem[] {
+export function safeProcessNavItems(items: unknown): AppSidebarItem[] {
+	if (!Array.isArray(items)) {
+		if (import.meta.env.DEV) {
+			console.warn("Expected array of navigation items, got:", typeof items);
+		}
+		return [];
+	}
+
 	return items
-		.filter(item => {
-			if (!item.title?.trim()) {
+		.filter((item): item is AppSidebarItem => {
+			// More robust validation using type guard
+			if (!isAppSidebarItem(item)) {
 				if (import.meta.env.DEV) {
-					console.warn("Filtering out navigation item with empty title:", item);
+					console.warn("Filtering out invalid navigation item:", item);
 				}
 				return false;
 			}
+
+			// Validate URL format if provided
+			if (item.url && typeof item.url === "string") {
+				const urlPattern = /^(\/|https?:\/\/)/;
+				if (!urlPattern.test(item.url)) {
+					if (import.meta.env.DEV) {
+						console.warn(
+							`Invalid URL format for item "${item.title}": ${item.url}`,
+						);
+					}
+					// Don't filter out, just log warning
+				}
+			}
+
 			return true;
 		})
-		.map(item => ({
+		.map((item) => ({
 			...item,
+			// Ensure title is always a string
+			title: item.title.trim(),
+			// Recursively process children
 			items: item.items ? safeProcessNavItems(item.items) : undefined,
 		}));
 }
@@ -388,7 +534,7 @@ export function safeProcessNavItems(items: AppSidebarItem[]): AppSidebarItem[] {
  */
 export function measureNavigationPerformance<T>(
 	operation: () => T,
-	operationName: string
+	operationName: string,
 ): T {
 	if (!import.meta.env.DEV) {
 		return operation();
@@ -397,10 +543,34 @@ export function measureNavigationPerformance<T>(
 	const startTime = performance.now();
 	const result = operation();
 	const endTime = performance.now();
+	const duration = endTime - startTime;
 
-	if (endTime - startTime > 10) { // Log if operation takes more than 10ms
+	// Collect performance metrics
+	if (typeof window !== "undefined" && "performance" in window) {
+		// Use Performance Observer API if available
+		try {
+			performance.mark(`sidebar-${operationName}-start`);
+			performance.mark(`sidebar-${operationName}-end`);
+			performance.measure(
+				`sidebar-${operationName}`,
+				`sidebar-${operationName}-start`,
+				`sidebar-${operationName}-end`,
+			);
+		} catch (_error) {
+			// Fallback to console logging
+			if (duration > 10) {
+				console.warn(
+					`Navigation operation "${operationName}" took ${duration.toFixed(2)}ms`,
+				);
+			}
+		}
+	}
+
+	// Log slow operations
+	if (duration > 16) {
+		// More than one frame at 60fps
 		console.warn(
-			`Navigation operation "${operationName}" took ${(endTime - startTime).toFixed(2)}ms`
+			`Slow navigation operation "${operationName}": ${duration.toFixed(2)}ms`,
 		);
 	}
 

@@ -1,76 +1,71 @@
 /**
- * Composable for enhanced accessibility features in sidebar navigation
- * Provides ARIA attributes, keyboard navigation, and screen reader support
+ * Accessibility composable for sidebar components
+ * Provides ARIA attributes and keyboard navigation support
  */
 import { type ComputedRef, computed } from "vue";
 import type { AppSidebarItem } from "../types";
 
-export interface AccessibilityAttributes {
-	role: string;
-	ariaLabel: string;
-	ariaExpanded?: boolean;
-	ariaHasPopup?: boolean;
-	tabIndex?: number;
+export interface AccessibilityOptions {
+	level?: number;
+	isExpanded?: boolean;
+	hasChildren?: boolean;
 }
 
 /**
- * Generates comprehensive accessibility attributes for sidebar items
+ * Provides accessibility features for sidebar items
  */
 export function useAccessibility(
 	item: ComputedRef<AppSidebarItem>,
-	level: ComputedRef<number>,
-	hasChildren: ComputedRef<boolean>,
-	isActive: ComputedRef<boolean>,
+	options: ComputedRef<AccessibilityOptions> = computed(() => ({})),
 ) {
-	const role = computed(() => {
-		if (hasChildren.value) return "button";
-		return item.value.url ? "link" : "button";
-	});
+	const { level = 0, isExpanded = false, hasChildren = false } = options.value;
 
+	// Generate appropriate ARIA label
 	const ariaLabel = computed(() => {
 		const title = item.value.title || "Navigation Item";
 
-		if (!hasChildren.value) {
-			// Simple item - just return the title with context
-			return level.value === 0 ? title : `${title} (submenu item)`;
+		if (!hasChildren) {
+			return title;
 		}
 
-		// Collapsible item - provide state information
-		const menuType = level.value === 0 ? "menu" : "submenu";
-		const expandedState = isActive.value ? "expanded" : "collapsed";
-		const childCount = item.value.items?.length || 0;
-
-		return `${title} ${menuType}, ${expandedState}, ${childCount} item${childCount !== 1 ? "s" : ""}`;
+		const menuType = level === 0 ? "menu" : "submenu";
+		const expandedState = isExpanded ? "expanded" : "collapsed";
+		return `${title} ${menuType}, ${expandedState}`;
 	});
 
+	// Determine appropriate role
+	const role = computed(() => {
+		if (hasChildren) return "button";
+		return item.value.url ? "link" : "button";
+	});
+
+	// Generate tooltip text with fallback
+	const tooltipText = computed(() => {
+		return item.value.tooltip || item.value.title || "Navigation Item";
+	});
+
+	// ARIA attributes for expanded state
 	const ariaExpanded = computed(() => {
-		return hasChildren.value ? isActive.value : undefined;
+		return hasChildren ? isExpanded : undefined;
 	});
 
-	const ariaHasPopup = computed(() => {
-		return hasChildren.value ? true : undefined;
+	// ARIA attributes for hierarchical navigation
+	const ariaLevel = computed(() => {
+		return level > 0 ? level + 1 : undefined;
 	});
 
-	const tabIndex = computed(() => {
-		// Ensure keyboard navigation works properly
-		return 0;
+	// Check if item has valid navigation target
+	const hasValidTarget = computed(() => {
+		return Boolean(item.value.url?.trim());
 	});
-
-	const accessibilityAttributes = computed<AccessibilityAttributes>(() => ({
-		role: role.value,
-		ariaLabel: ariaLabel.value,
-		ariaExpanded: ariaExpanded.value,
-		ariaHasPopup: ariaHasPopup.value,
-		tabIndex: tabIndex.value,
-	}));
 
 	return {
-		role,
 		ariaLabel,
+		role,
+		tooltipText,
 		ariaExpanded,
-		ariaHasPopup,
-		tabIndex,
-		accessibilityAttributes,
+		ariaLevel,
+		hasValidTarget,
 	};
 }
 
@@ -80,36 +75,39 @@ export function useAccessibility(
 export function useKeyboardNavigation() {
 	const handleKeyDown = (
 		event: KeyboardEvent,
-		hasChildren: boolean,
-		toggleExpanded?: () => void,
+		callbacks: {
+			onEnter?: () => void;
+			onSpace?: () => void;
+			onArrowRight?: () => void;
+			onArrowLeft?: () => void;
+			onArrowDown?: () => void;
+			onArrowUp?: () => void;
+		},
 	) => {
 		switch (event.key) {
 			case "Enter":
+				event.preventDefault();
+				callbacks.onEnter?.();
+				break;
 			case " ":
 				event.preventDefault();
-				if (hasChildren && toggleExpanded) {
-					toggleExpanded();
-				}
+				callbacks.onSpace?.();
 				break;
-
 			case "ArrowRight":
-				if (hasChildren && toggleExpanded) {
-					event.preventDefault();
-					toggleExpanded();
-				}
-				break;
-
-			case "ArrowLeft":
-				if (hasChildren && toggleExpanded) {
-					event.preventDefault();
-					toggleExpanded();
-				}
-				break;
-
-			case "Escape":
-				// Close any open menus and return focus to parent
 				event.preventDefault();
-				(event.target as HTMLElement)?.blur();
+				callbacks.onArrowRight?.();
+				break;
+			case "ArrowLeft":
+				event.preventDefault();
+				callbacks.onArrowLeft?.();
+				break;
+			case "ArrowDown":
+				event.preventDefault();
+				callbacks.onArrowDown?.();
+				break;
+			case "ArrowUp":
+				event.preventDefault();
+				callbacks.onArrowUp?.();
 				break;
 		}
 	};

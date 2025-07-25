@@ -1,129 +1,140 @@
 /**
- * Composable for runtime validation of sidebar items
- * Provides type guards and validation utilities
+ * Item validation composable
+ * Provides validation and sanitization for sidebar items
  */
 import { type ComputedRef, computed } from "vue";
-import type { AppSidebarItem } from "../types";
-
-export interface ValidationResult {
-	isValid: boolean;
-	errors: string[];
-	warnings: string[];
-}
+import type { AppSidebarItem, ValidationResult } from "../types";
 
 /**
- * Type guard to check if an object is a valid AppSidebarItem
- */
-export function isValidSidebarItem(item: unknown): item is AppSidebarItem {
-	if (!item || typeof item !== "object") return false;
-
-	const obj = item as Record<string, unknown>;
-
-	// Required: title must be a non-empty string
-	if (!obj.title || typeof obj.title !== "string" || !obj.title.trim()) {
-		return false;
-	}
-
-	// Optional validations
-	const validations = [
-		obj.url === undefined ||
-			(typeof obj.url === "string" && obj.url.length > 0),
-		obj.visible === undefined ||
-			typeof obj.visible === "boolean" ||
-			typeof obj.visible === "function",
-		obj.canAccess === undefined || typeof obj.canAccess === "function",
-		obj.isActive === undefined || typeof obj.isActive === "boolean",
-		obj.tooltip === undefined ||
-			(typeof obj.tooltip === "string" && obj.tooltip.length > 0),
-		obj.icon === undefined || typeof obj.icon === "object",
-		obj.items === undefined ||
-			(Array.isArray(obj.items) && obj.items.every(isValidSidebarItem)),
-	];
-
-	return validations.every(Boolean);
-}
-
-/**
- * Validates a sidebar item and returns detailed results
- */
-export function validateSidebarItem(item: AppSidebarItem): ValidationResult {
-	const errors: string[] = [];
-	const warnings: string[] = [];
-
-	// Title validation
-	if (!item.title?.trim()) {
-		errors.push("Item title is required and cannot be empty");
-	}
-
-	// URL validation
-	if (item.url && !item.url.startsWith("/") && !item.url.startsWith("http")) {
-		errors.push(
-			`Invalid URL format: "${item.url}". URLs should start with "/" or "http"`,
-		);
-	}
-
-	// Icon validation
-	if (item.icon && typeof item.icon !== "object") {
-		warnings.push("Icon should be a Lucide icon component");
-	}
-
-	// Recursive validation for children
-	if (item.items) {
-		item.items.forEach((child, index) => {
-			const childResult = validateSidebarItem(child);
-			errors.push(
-				...childResult.errors.map((error) => `Child ${index}: ${error}`),
-			);
-			warnings.push(
-				...childResult.warnings.map((warning) => `Child ${index}: ${warning}`),
-			);
-		});
-	}
-
-	return {
-		isValid: errors.length === 0,
-		errors,
-		warnings,
-	};
-}
-
-/**
- * Composable for validating sidebar items with reactive results
+ * Validates and sanitizes a sidebar item
  */
 export function useItemValidation(item: ComputedRef<AppSidebarItem>) {
-	const validationResult = computed(() => validateSidebarItem(item.value));
+	// Validate item structure
+	const validationResult = computed((): ValidationResult => {
+		const errors: string[] = [];
+		const currentItem = item.value;
 
-	const isValid = computed(() => validationResult.value.isValid);
-	const errors = computed(() => validationResult.value.errors);
-	const warnings = computed(() => validationResult.value.warnings);
-
-	// Development-only logging
-	if (import.meta.env.DEV) {
-		const logValidationIssues = () => {
-			if (errors.value.length > 0) {
-				console.error(
-					`Sidebar item validation errors for "${item.value.title}":`,
-					errors.value,
-				);
-			}
-			if (warnings.value.length > 0) {
-				console.warn(
-					`Sidebar item validation warnings for "${item.value.title}":`,
-					warnings.value,
-				);
-			}
-		};
-
-		// Log issues when they occur
-		if (!isValid.value) {
-			logValidationIssues();
+		// Required field validation
+		if (!currentItem.title || typeof currentItem.title !== "string") {
+			errors.push("Title is required and must be a string");
+		} else if (currentItem.title.trim().length === 0) {
+			errors.push("Title cannot be empty");
 		}
-	}
+
+		// Optional field validation
+		if (currentItem.url !== undefined) {
+			if (typeof currentItem.url !== "string") {
+				errors.push("URL must be a string");
+			} else if (currentItem.url.trim().length === 0) {
+				errors.push("URL cannot be empty");
+			} else if (
+				!currentItem.url.startsWith("/") &&
+				!currentItem.url.startsWith("http")
+			) {
+				errors.push("URL should start with '/' or 'http'");
+			}
+		}
+
+		if (
+			currentItem.tooltip !== undefined &&
+			typeof currentItem.tooltip !== "string"
+		) {
+			errors.push("Tooltip must be a string");
+		}
+
+		if (
+			currentItem.isActive !== undefined &&
+			typeof currentItem.isActive !== "boolean"
+		) {
+			errors.push("isActive must be a boolean");
+		}
+
+		if (currentItem.visible !== undefined) {
+			const isValidVisible =
+				typeof currentItem.visible === "boolean" ||
+				typeof currentItem.visible === "function";
+
+			if (!isValidVisible) {
+				errors.push("visible must be a boolean or function");
+			}
+		}
+
+		if (
+			currentItem.canAccess !== undefined &&
+			typeof currentItem.canAccess !== "function"
+		) {
+			errors.push("canAccess must be a function");
+		}
+
+		if (currentItem.items !== undefined && !Array.isArray(currentItem.items)) {
+			errors.push("items must be an array");
+		}
+
+		return {
+			isValid: errors.length === 0,
+			errors,
+		};
+	});
+
+	// Sanitized item with safe defaults
+	const sanitizedItem = computed((): AppSidebarItem => {
+		const currentItem = item.value;
+
+		return {
+			title:
+				typeof currentItem.title === "string"
+					? currentItem.title.trim()
+					: "Navigation Item",
+			url:
+				typeof currentItem.url === "string"
+					? currentItem.url.trim() || undefined
+					: undefined,
+			icon: currentItem.icon,
+			isActive: Boolean(currentItem.isActive),
+			tooltip:
+				typeof currentItem.tooltip === "string" && currentItem.tooltip.trim()
+					? currentItem.tooltip.trim()
+					: typeof currentItem.title === "string"
+						? currentItem.title.trim()
+						: "Navigation Item",
+			visible: currentItem.visible ?? true,
+			canAccess: currentItem.canAccess,
+			items: Array.isArray(currentItem.items) ? currentItem.items : undefined,
+		};
+	});
+
+	// Safe title with fallback
+	const safeTitle = computed(() => {
+		const title = sanitizedItem.value.title;
+		return title && title.length > 0 ? title : "Navigation Item";
+	});
+
+	// Safe tooltip with fallback
+	const safeTooltip = computed(() => {
+		const tooltip = sanitizedItem.value.tooltip;
+		return tooltip && tooltip.length > 0 ? tooltip : safeTitle.value;
+	});
+
+	// Check if item has valid URL
+	const hasValidUrl = computed(() => {
+		const url = sanitizedItem.value.url;
+		return url && url.length > 0;
+	});
+
+	// Check if item has children
+	const hasChildren = computed(() => {
+		const items = sanitizedItem.value.items;
+		return Array.isArray(items) && items.length > 0;
+	});
 
 	return {
-		isValid,
-		errors,
-		warnings,
 		validationResult,
+		sanitizedItem,
+		safeTitle,
+		safeTooltip,
+		hasValidUrl,
+		hasChildren,
+		isValid: computed(() => validationResult.value.isValid),
+		errors: computed(() => validationResult.value.errors),
 	};
 }

@@ -112,7 +112,9 @@ describe("AppSidebarItem Tooltip Integration", () => {
 			},
 		});
 
-		const menuButtonCustom = wrapperCustom.findComponent({ name: "SidebarMenuButton" });
+		const menuButtonCustom = wrapperCustom.findComponent({
+			name: "SidebarMenuButton",
+		});
 		expect(menuButtonCustom.props("tooltip")).toBe("Go to main dashboard");
 
 		// Test with fallback to item title
@@ -128,7 +130,9 @@ describe("AppSidebarItem Tooltip Integration", () => {
 			},
 		});
 
-		const menuButtonFallback = wrapperFallback.findComponent({ name: "SidebarMenuButton" });
+		const menuButtonFallback = wrapperFallback.findComponent({
+			name: "SidebarMenuButton",
+		});
 		expect(menuButtonFallback.props("tooltip")).toBe("Settings");
 	});
 

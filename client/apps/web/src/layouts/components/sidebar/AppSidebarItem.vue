@@ -13,7 +13,7 @@
  * @component
  */
 import { ChevronRight } from "lucide-vue-next";
-import { computed } from "vue";
+import { computed, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 import {
 	Collapsible,
@@ -27,6 +27,7 @@ import {
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { useSafeItemProcessing } from "./composables/useErrorBoundary";
 import type { AppSidebarItem } from "./types";
 import { isItemActive } from "./utils";
 
@@ -41,54 +42,80 @@ const props = withDefaults(defineProps<Props>(), {
 
 const route = useRoute();
 
-// Determine if this item is active based on current route or isActive property
-const isActive = computed(() => isItemActive(props.item, route.path));
+// Use safe item processing for error boundary and validation
+const { safeItem, safeChildren } = useSafeItemProcessing(
+	computed(() => props.item),
+);
 
-// Determine tooltip text with fallback
-const tooltipText = computed(() => props.item.tooltip || props.item.title || 'Navigation Item');
+// Determine if this item is active based on current route or isActive property
+const isActive = computed(() => isItemActive(safeItem.value, route.path));
+
+// Use safe children from error boundary composable
+const filteredChildren = computed(() => safeChildren.value);
 
 // Check if item has children (using filtered children for better validation)
 const hasChildren = computed(() => filteredChildren.value.length > 0);
 
+// Memoized safe title with fallback - shared across computeds
+const safeTitle = computed(() => {
+	const title = safeItem.value.title?.trim();
+	return title && title.length > 0 ? title : "Navigation Item";
+});
+
+// Memoized tooltip text with fallback
+const tooltipText = computed(() => {
+	const tooltip = safeItem.value.tooltip?.trim();
+	return tooltip && tooltip.length > 0 ? tooltip : safeTitle.value;
+});
+
 // Memoized ARIA label computation with better accessibility
 const ariaLabel = computed(() => {
-  const title = props.item.title || 'Navigation Item';
-  if (!hasChildren.value) return title;
+	if (!hasChildren.value) return safeTitle.value;
 
-  const menuType = props.level === 0 ? 'menu' : 'submenu';
-  const expandedState = isActive.value ? 'expanded' : 'collapsed';
-  return `${title} ${menuType}, ${expandedState}`;
+	const menuType = props.level === 0 ? "menu" : "submenu";
+	const expandedState = isActive.value ? "expanded" : "collapsed";
+	return `${safeTitle.value} ${menuType}, ${expandedState}`;
 });
 
 // Improved role determination for better screen reader support
 const roleAttribute = computed(() => {
-  if (hasChildren.value) return 'button';
-  return props.item.url ? 'link' : 'button';
+	if (hasChildren.value) return "button";
+	return props.item.url ? "link" : "button";
 });
 
-// Generate stable key for child items to improve rendering performance
-const getChildKey = (childItem: AppSidebarItem, index: number) => {
-  // Use URL as primary key, fallback to title-index combination
-  if (childItem.url) return childItem.url;
+// Memoized stable key generation for child items with cleanup
+const keyCache = new Map<string, string>();
+const MAX_CACHE_SIZE = 1000;
 
-  // Create a more stable key by including level to avoid conflicts
-  return `${props.level}-${childItem.title}-${index}`;
+const getChildKey = (childItem: AppSidebarItem, index: number): string => {
+	// Create cache key from item properties
+	const cacheKey = `${childItem.url || ""}-${childItem.title}-${index}-${props.level}`;
+
+	const cachedKey = keyCache.get(cacheKey);
+	if (cachedKey) {
+		return cachedKey;
+	}
+
+	// Prevent memory leaks by limiting cache size
+	if (keyCache.size >= MAX_CACHE_SIZE) {
+		const firstKey = keyCache.keys().next().value;
+		if (firstKey) keyCache.delete(firstKey);
+	}
+
+	// Use URL as primary key, fallback to title-index combination
+	const key = childItem.url || `${props.level}-${childItem.title}-${index}`;
+	keyCache.set(cacheKey, key);
+
+	return key;
 };
 
-// Memoized component type determination
-const linkComponent = computed(() => props.item.url ? 'a' : 'button');
-
-// Memoized children filtering for better performance with validation
-const filteredChildren = computed(() => {
-  if (!props.item.items?.length) return [];
-
-  return props.item.items.filter(child => {
-    // More robust validation
-    return child &&
-           typeof child.title === 'string' &&
-           child.title.trim().length > 0;
-  });
+// Cleanup on unmount
+onUnmounted(() => {
+	keyCache.clear();
 });
+
+// Memoized component type determination
+const linkComponent = computed(() => (props.item.url ? "a" : "button"));
 </script>
 
 <template>
@@ -108,6 +135,7 @@ const filteredChildren = computed(() => {
                 :is-active="isActive"
                 :as="linkComponent"
                 :href="item.url"
+                :role="roleAttribute"
                 :aria-expanded="isActive"
                 :aria-label="ariaLabel"
               >
@@ -139,6 +167,7 @@ const filteredChildren = computed(() => {
           :is-active="isActive"
           :as="linkComponent"
           :href="item.url"
+          :role="roleAttribute"
         >
           <component :is="item.icon" v-if="item.icon" />
           <span>{{ item.title }}</span>

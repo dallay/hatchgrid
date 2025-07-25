@@ -28,12 +28,12 @@ import {
 	SidebarMenu,
 	SidebarMenuSkeleton,
 } from "@/components/ui/sidebar";
-import AppSidebarItem from "./sidebar/AppSidebarItem.vue";
-import { useNavigationFiltering } from "./sidebar/composables/useNavigationFiltering";
+import AppSidebarItem from "./AppSidebarItem.vue";
+import { useNavigationFiltering } from "./composables/useNavigationFiltering.ts";
 import type {
 	AppSidebarItem as AppSidebarItemType,
 	AppSidebarProps,
-} from "./sidebar/types";
+} from "./types.ts";
 
 // Extend SidebarProps with our custom props
 interface Props extends SidebarProps, AppSidebarProps {}
