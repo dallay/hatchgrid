@@ -48,6 +48,21 @@ const loggerState: LoggerState = {
  *
  * @param config The logger configuration containing root level, hierarchical overrides, and transports
  */
+
+/**
+ * Helper to clear logger state and global LogManager reference, then return early from configure.
+ */
+function cleanupLoggerStateAndReturn(): void {
+	loggerState.config = null;
+	loggerState.levelCache.clear();
+	if (
+		typeof globalThis !== "undefined" &&
+		(globalThis as Record<string, unknown>).__LOGGER_MANAGER__
+	) {
+		delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
+	}
+}
+
 const configure = (config: LoggerConfiguration): void => {
 	// Enhanced error handling: validate config before applying
 	const enhancedErrorHandling = (globalThis as any)
@@ -57,29 +72,14 @@ const configure = (config: LoggerConfiguration): void => {
 	if (enhancedErrorHandling) {
 		// Null or undefined config
 		if (config == null) {
-			loggerState.config = null;
-			loggerState.levelCache.clear();
-			// Remove global reference if config is invalid
-			if (
-				typeof globalThis !== "undefined" &&
-				(globalThis as Record<string, unknown>).__LOGGER_MANAGER__
-			) {
-				delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
-			}
+			cleanupLoggerStateAndReturn();
 			return;
 		}
 
 		// Validate level
 		const validLevel = typeof config.level === "number" && config.level >= 0;
 		if (!validLevel) {
-			loggerState.config = null;
-			loggerState.levelCache.clear();
-			if (
-				typeof globalThis !== "undefined" &&
-				(globalThis as Record<string, unknown>).__LOGGER_MANAGER__
-			) {
-				delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
-			}
+			cleanupLoggerStateAndReturn();
 			return;
 		}
 
@@ -89,14 +89,7 @@ const configure = (config: LoggerConfiguration): void => {
 			config.transports.length > 0 &&
 			config.transports.every((t) => t && typeof t.log === "function");
 		if (!validTransports) {
-			loggerState.config = null;
-			loggerState.levelCache.clear();
-			if (
-				typeof globalThis !== "undefined" &&
-				(globalThis as Record<string, unknown>).__LOGGER_MANAGER__
-			) {
-				delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
-			}
+			cleanupLoggerStateAndReturn();
 			return;
 		}
 
@@ -109,14 +102,7 @@ const configure = (config: LoggerConfiguration): void => {
 					(v) => typeof v !== "number" || v < 0,
 				))
 		) {
-			loggerState.config = null;
-			loggerState.levelCache.clear();
-			if (
-				typeof globalThis !== "undefined" &&
-				(globalThis as Record<string, unknown>).__LOGGER_MANAGER__
-			) {
-				delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
-			}
+			cleanupLoggerStateAndReturn();
 			return;
 		}
 	}
