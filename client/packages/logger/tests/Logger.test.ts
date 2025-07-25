@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: In this context, null is used to test robustness */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createLoggerName, type LogEntry, Logger, LogLevel } from "../src";
 

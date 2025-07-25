@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: In this context, null is used to test robustness */
 import { Logger } from "./Logger";
 import type {
 	LogEntry,
@@ -5,11 +6,7 @@ import type {
 	LoggerName,
 	LogLevel,
 } from "./types";
-import {
-	LoggerConfigurationError,
-	LoggerErrorType,
-	LogLevel as LogLevelEnum,
-} from "./types";
+import { LogLevel as LogLevelEnum } from "./types";
 
 /**
  * Internal state for the logger system.
@@ -341,8 +338,9 @@ const clearCaches = (): void => {
 		typeof loggerState.config === "object" &&
 		"levels" in loggerState.config
 	) {
-		const { levels, ...rest } = loggerState.config;
-		loggerState.config = { ...rest } as LoggerConfiguration;
+		const configCopy = { ...loggerState.config };
+		delete configCopy.levels;
+		loggerState.config = configCopy as LoggerConfiguration;
 	}
 	// Note: We typically don't clear logger cache as instances are stateless
 	// and their behavior is determined by the current configuration

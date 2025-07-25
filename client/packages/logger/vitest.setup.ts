@@ -7,6 +7,7 @@ import { afterEach, beforeEach } from "vitest";
 beforeEach(() => {
 	// Clear any global logger state that might affect tests
 	if (typeof globalThis !== "undefined") {
+		// biome-ignore lint/suspicious/noExplicitAny: GlobalThis is used for browser compatibility
 		delete (globalThis as any).__LOGGER_MANAGER__;
 	}
 });
@@ -15,6 +16,7 @@ beforeEach(() => {
 afterEach(() => {
 	// Ensure no test state leaks to the next test
 	if (typeof globalThis !== "undefined") {
+		// biome-ignore lint/suspicious/noExplicitAny: GlobalThis is used for browser compatibility
 		delete (globalThis as any).__LOGGER_MANAGER__;
 	}
 });

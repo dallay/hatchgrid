@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny:  Explicit `any` is used in test and global logger manager access for flexibility. This is intentional to allow mocking and dynamic injection in test environments.*/
 import type { LogEntry, LoggerName, LogLevel } from "./types";
 import { createLoggerName, LogLevel as LogLevelEnum } from "./types";
 
@@ -170,14 +171,11 @@ export class Logger {
 				(typeof process !== "undefined" &&
 					process.env &&
 					process.env.NODE_ENV === "development") ||
-				// biome-ignore lint/suspicious/noExplicitAny: globalThis is used for browser compatibility
 				(typeof globalThis !== "undefined" &&
 					(globalThis as any).__LOGGER_DEBUG__ === true);
 			if (isDev) {
-				// eslint-disable-next-line no-console
 				console.error("[Logger] Log entry processing error:", error);
 			}
-			// Graceful degradation: logging errors should not affect application in production
 		}
 	}
 
@@ -214,7 +212,7 @@ export class Logger {
 	private isLogLevelEnabled(level: LogLevel): boolean {
 		try {
 			return this.logManager?.isLevelEnabled(this.name, level) ?? false;
-		} catch (error) {
+		} catch (_error) {
 			return false;
 		}
 	}
@@ -242,7 +240,7 @@ export class Logger {
 	private processLogEntry(entry: LogEntry): void {
 		try {
 			this.logManager?.processLog(entry);
-		} catch (error) {
+		} catch (_error) {
 			// Graceful degradation: processing failures are silently ignored
 		}
 	}
@@ -261,7 +259,7 @@ export class Logger {
 
 			const logManagerModule = (globalThis as any).__LOGGER_MANAGER__;
 			return this.validateLogManagerInterface(logManagerModule);
-		} catch (error) {
+		} catch (_error) {
 			// Graceful degradation: any error in LogManager access results in null
 			return null;
 		}

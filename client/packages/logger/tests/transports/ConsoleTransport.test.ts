@@ -9,6 +9,7 @@ import {
 import type { LogEntry } from "../../src";
 import { ConsoleTransport, type LoggerName, LogLevel } from "../../src";
 
+// biome-ignore lint/suspicious/noExplicitAny: In this context, globalThis is used for browser compatibility
 let consoleSpy: Record<string, MockInstance<any>>;
 const testLogger = "test.logger" as LoggerName;
 const noArgs = "no.args" as LoggerName;

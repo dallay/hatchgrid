@@ -20,14 +20,14 @@ The configuration follows an inheritance pattern where child configurations exte
 ## Schema Version
 
 The Biome configuration uses schema versions that should match the CLI version being used:
-- Root level: Schema version 2.1.1
+- Root level: Schema version 2.1.2
 - Landing page: Schema version 2.0.0
 
 If you encounter warnings about schema version mismatch, update the schema URL in the configuration file:
 
 ```json
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.1/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
   // rest of configuration
 }
 ```

@@ -87,7 +87,7 @@ export class LoggerConfigurationBuilder {
 		}
 
 		return {
-			level: this.config.level!,
+			level: this.config.level || LogLevel.INFO,
 			levels: this.config.levels,
 			transports: this.config.transports,
 		};

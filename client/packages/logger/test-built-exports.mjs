@@ -2,14 +2,13 @@ import {
 	ConsoleTransport,
 	createLoggerName,
 	LOG_LEVEL_NAMES,
-	Logger,
 	LogLevel,
 	LogManager,
 } from "./dist/logger.js";
 
 function assert(condition, message) {
 	if (!condition) {
-		throw new Error("Assertion failed: " + message);
+		throw new Error(`Assertion failed: ${message}`);
 	}
 }
 
@@ -46,7 +45,7 @@ const testBuiltExports = () => {
 		let didNotThrow = true;
 		try {
 			logger.info("Built package exports are working correctly!");
-		} catch (err) {
+		} catch (_err) {
 			didNotThrow = false;
 		}
 		assert(didNotThrow, "logger.info should not throw an error");

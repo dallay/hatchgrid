@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: Allow 'any' usage for flexible test scenarios */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { LogEntry, LoggerConfiguration, Transport } from "../src";
 import { Logger, type LoggerName, LogLevel, LogManager } from "../src";
