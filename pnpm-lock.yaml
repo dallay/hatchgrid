@@ -138,6 +138,9 @@ importers:
 
   client/apps/web:
     dependencies:
+      '@hatchgrid/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
       '@hatchgrid/utilities':
         specifier: workspace:*
         version: link:../../packages/utilities

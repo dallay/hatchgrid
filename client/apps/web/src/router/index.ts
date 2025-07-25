@@ -4,6 +4,7 @@ import HomeView from "../views/HomeView.vue";
 const ErrorPage = () => import("@/error/error.vue");
 
 import account from "@/router/account";
+import audience from "@/router/audience";
 import { Authority } from "@/security/authority";
 import { loadLayoutMiddleware } from "./middleware/loadLayoutMiddleware";
 
@@ -30,6 +31,7 @@ export const createRouter = () =>
 				meta: { error404: true },
 			},
 			...account,
+			...audience,
 		],
 	});
 
