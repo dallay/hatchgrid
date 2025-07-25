@@ -44,9 +44,6 @@ export class LoggerConfigurationBuilder {
 	 * Add a hierarchical level override
 	 */
 	withLoggerLevel(loggerName: string, level: LogLevel): this {
-		if (!this.config.levels) {
-			this.config.levels = {};
-		}
 		this.config.levels[loggerName] = level;
 		return this;
 	}
