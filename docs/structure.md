@@ -66,6 +66,10 @@
 │   │   │   ├───design.md
 │   │   │   ├───requirements.md
 │   │   │   └───tasks.md
+│   │   ├───dynamic-sidebar-navigation/
+│   │   │   ├───design.md
+│   │   │   ├───requirements.md
+│   │   │   └───tasks.md
 │   │   ├───email-verification-flow/
 │   │   │   ├───design.md
 │   │   │   ├───requirements.md
@@ -554,6 +558,9 @@
 │   │       │   │       └───settings.vue
 │   │       │   ├───assets/
 │   │       │   │   └───vue.svg
+│   │       │   ├───audience/
+│   │       │   │   └───subscriber/
+│   │       │   │       └───Subscribers.vue
 │   │       │   ├───components/
 │   │       │   │   ├───ribbon/
 │   │       │   │   │   ├───ribbon.component.spec.ts
@@ -991,6 +998,12 @@
 │   │       │   │   └───types.ts
 │   │       │   ├───layouts/
 │   │       │   │   ├───components/
+│   │       │   │   │   ├───sidebar/
+│   │       │   │   │   │   ├───example.ts
+│   │       │   │   │   │   ├───index.ts
+│   │       │   │   │   │   ├───types.ts
+│   │       │   │   │   │   ├───utils.test.ts
+│   │       │   │   │   │   └───utils.ts
 │   │       │   │   │   ├───AppHeader.vue
 │   │       │   │   │   ├───AppSidebar.vue
 │   │       │   │   │   └───LanguageSwitcher.vue
@@ -1003,6 +1016,7 @@
 │   │       │   │   ├───middleware/
 │   │       │   │   │   └───loadLayoutMiddleware.ts
 │   │       │   │   ├───account.ts
+│   │       │   │   ├───audience.ts
 │   │       │   │   └───index.ts
 │   │       │   ├───security/
 │   │       │   │   ├───account.model.ts
