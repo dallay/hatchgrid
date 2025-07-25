@@ -12,13 +12,13 @@
 	},
 	"packageManager": "pnpm@10.13.1",
 	"main": "./dist/logger.cjs",
-	"module": "./dist/logger.js",
+	"module": "./dist/logger.mjs",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
 			"require": "./dist/logger.cjs",
-			"import": "./dist/logger.js"
+			"import": "./dist/logger.mjs"
 		}
 	},
 	"files": [
