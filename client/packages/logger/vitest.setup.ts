@@ -3,20 +3,18 @@
 
 import { afterEach, beforeEach } from "vitest";
 
-// Clean up global state between tests to prevent test interference
-beforeEach(() => {
-	// Clear any global logger state that might affect tests
+// Helper to clean up global logger state
+function cleanupGlobalLoggerState() {
 	if (typeof globalThis !== "undefined") {
 		// biome-ignore lint/suspicious/noExplicitAny: GlobalThis is used for browser compatibility
 		delete (globalThis as any).__LOGGER_MANAGER__;
 	}
+}
+
+beforeEach(() => {
+	cleanupGlobalLoggerState();
 });
 
-// Additional cleanup after each test
 afterEach(() => {
-	// Ensure no test state leaks to the next test
-	if (typeof globalThis !== "undefined") {
-		// biome-ignore lint/suspicious/noExplicitAny: GlobalThis is used for browser compatibility
-		delete (globalThis as any).__LOGGER_MANAGER__;
-	}
+	cleanupGlobalLoggerState();
 });
