@@ -44,9 +44,9 @@
 		"url": "https://github.com/dallay/hatchgrid/issues"
 	},
 	"scripts": {
-		"dev": "vite build --watch --mode development",
+		"dev:build": "vite build --watch --mode development",
 		"dev:types": "tsc --build --watch",
-		"dev:full": "run-p dev:types dev",
+		"dev:full": "run-p dev:types dev:build",
 		"clean:types": "rimraf dist tsconfig.tsbuildinfo",
 		"build:types:raw": "tsc --build",
 		"build:types": "run-s clean:types build:types:raw",
@@ -66,7 +66,6 @@
 		"test:watch": "vitest",
 		"test:ui": "vitest --ui",
 		"test:coverage": "vitest run --coverage",
-		"test:integration": "vitest run tests/integration.test.ts",
 		"ci": "run-s clean typecheck build test"
 	},
 	"devDependencies": {
