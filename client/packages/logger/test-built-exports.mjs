@@ -1,4 +1,3 @@
-
 import {
 	ConsoleTransport,
 	createLoggerName,
@@ -19,12 +18,21 @@ const testBuiltExports = () => {
 		console.log("Testing built package exports...");
 
 		// Test LogLevel enum
-		assert(typeof LogLevel.INFO === "number", "LogLevel.INFO should be a number");
+		assert(
+			typeof LogLevel.INFO === "number",
+			"LogLevel.INFO should be a number",
+		);
 		assert(LogLevel.INFO === 2, "LogLevel.INFO should be 2");
 
 		// Test LOG_LEVEL_NAMES
-		assert(LOG_LEVEL_NAMES[LogLevel.INFO] === "INFO", "LOG_LEVEL_NAMES[LogLevel.INFO] should be 'INFO'");
-		assert(Object.values(LOG_LEVEL_NAMES).includes("ERROR"), "LOG_LEVEL_NAMES should include 'ERROR'");
+		assert(
+			LOG_LEVEL_NAMES[LogLevel.INFO] === "INFO",
+			"LOG_LEVEL_NAMES[LogLevel.INFO] should be 'INFO'",
+		);
+		assert(
+			Object.values(LOG_LEVEL_NAMES).includes("ERROR"),
+			"LOG_LEVEL_NAMES should include 'ERROR'",
+		);
 
 		// Test LogManager
 		const transport = new ConsoleTransport();
@@ -45,8 +53,14 @@ const testBuiltExports = () => {
 
 		// Test utility functions
 		const loggerName = createLoggerName("test.logger");
-		assert(typeof loggerName === "string", "createLoggerName should return a string");
-		assert(loggerName === "test.logger", "createLoggerName should trim and normalize the name");
+		assert(
+			typeof loggerName === "string",
+			"createLoggerName should return a string",
+		);
+		assert(
+			loggerName === "test.logger",
+			"createLoggerName should trim and normalize the name",
+		);
 
 		console.log("✅ All built package exports are working correctly!");
 	} catch (error) {

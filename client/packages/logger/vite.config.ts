@@ -21,7 +21,30 @@ export default defineConfig(
 			rollupOptions: {
 				// Exclude Node.js built-in modules and future peer dependencies from the bundle
 				external: [
-					"fs", "path", "os", "util", "stream", "events", "http", "https", "url", "crypto", "zlib", "buffer", "child_process", "net", "tls", "dns", "readline", "repl", "vm", "worker_threads", "assert", "tty", "module", "process"
+					"fs",
+					"path",
+					"os",
+					"util",
+					"stream",
+					"events",
+					"http",
+					"https",
+					"url",
+					"crypto",
+					"zlib",
+					"buffer",
+					"child_process",
+					"net",
+					"tls",
+					"dns",
+					"readline",
+					"repl",
+					"vm",
+					"worker_threads",
+					"assert",
+					"tty",
+					"module",
+					"process",
 					// Add any peer dependencies here, e.g. "some-peer-lib"
 				],
 				output: [

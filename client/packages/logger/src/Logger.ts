@@ -167,12 +167,15 @@ export class Logger {
 		} catch (error) {
 			// Log error in development mode for debugging
 			const isDev =
-				(typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') ||
+				(typeof process !== "undefined" &&
+					process.env &&
+					process.env.NODE_ENV === "development") ||
 				// biome-ignore lint/suspicious/noExplicitAny: globalThis is used for browser compatibility
-				(typeof globalThis !== 'undefined' && (globalThis as any).__LOGGER_DEBUG__ === true);
+				(typeof globalThis !== "undefined" &&
+					(globalThis as any).__LOGGER_DEBUG__ === true);
 			if (isDev) {
 				// eslint-disable-next-line no-console
-				console.error('[Logger] Log entry processing error:', error);
+				console.error("[Logger] Log entry processing error:", error);
 			}
 			// Graceful degradation: logging errors should not affect application in production
 		}

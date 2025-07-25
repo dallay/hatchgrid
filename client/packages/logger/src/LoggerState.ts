@@ -59,7 +59,6 @@ export class LoggerState {
 		this.levelCache.set(name, level);
 	}
 
-
 	/**
 	 * Clears only the level cache. Use clearAllCaches() to clear all caches.
 	 */

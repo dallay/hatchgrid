@@ -1,4 +1,3 @@
-
 import type { LoggerConfiguration, LogLevel, Transport } from "./types";
 import {
 	LoggerConfigurationError,
