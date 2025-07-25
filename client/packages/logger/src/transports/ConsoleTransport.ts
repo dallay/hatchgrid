@@ -105,14 +105,14 @@ export class ConsoleTransport implements Transport {
 		switch (level) {
 			case LogLevel.TRACE:
 			case LogLevel.DEBUG:
-				return console.debug;
+				return console.debug || console.log;
 			case LogLevel.INFO:
-				return console.info;
+				return console.info || console.log;
 			case LogLevel.WARN:
-				return console.warn;
+				return console.warn || console.log;
 			case LogLevel.ERROR:
 			case LogLevel.FATAL:
-				return console.error;
+				return console.error || console.log;
 			default:
 				return console.log;
 		}
