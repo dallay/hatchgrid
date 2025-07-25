@@ -10,26 +10,26 @@ export default defineConfig(
 			include: ["tests/**/*.test.ts"],
 		},
 		resolve: {
-			alias: {
-				"@": resolve(__dirname, "./src"),
-			},
+			"@": resolve(__dirname, "./src"),
 		},
 		build: {
 			lib: {
 				entry: resolve(__dirname, "src/index.ts"),
-				name: "HatchgridLogger",
-				formats: ["es", "cjs"],
-				fileName: (format) => `logger.${format === "es" ? "js" : "cjs"}`,
+				name: "Logger",
 			},
 			target: ["es2022", "node18"],
 			rollupOptions: {
-				external: [],
+				// Exclude Node.js built-in modules and future peer dependencies from the bundle
+				external: [
+					"fs", "path", "os", "util", "stream", "events", "http", "https", "url", "crypto", "zlib", "buffer", "child_process", "net", "tls", "dns", "readline", "repl", "vm", "worker_threads", "assert", "tty", "module", "process"
+					// Add any peer dependencies here, e.g. "some-peer-lib"
+				],
 				output: [
 					{
 						format: "es",
 						preserveModules: false,
 						exports: "named",
-						entryFileNames: "logger.js",
+						entryFileNames: "logger.mjs",
 					},
 					{
 						format: "cjs",
