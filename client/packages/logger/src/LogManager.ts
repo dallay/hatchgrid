@@ -349,14 +349,13 @@ const resolveHierarchicalLevel = (name: string): LogLevel => {
  */
 const clearCaches = (): void => {
 	loggerState.levelCache.clear();
-	// Remove per-logger level overrides from configuration immutably
+	// Reset per-logger level overrides to an empty object for type safety
 	if (
 		loggerState.config &&
 		typeof loggerState.config === "object" &&
 		"levels" in loggerState.config
 	) {
-		const configCopy = { ...loggerState.config };
-		delete configCopy.levels;
+		const configCopy = { ...loggerState.config, levels: {} };
 		loggerState.config = configCopy as LoggerConfiguration;
 	}
 	// Note: We typically don't clear logger cache as instances are stateless
