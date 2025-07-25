@@ -490,7 +490,7 @@ formatting:
 
 ```json
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",

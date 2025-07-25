@@ -5,9 +5,6 @@ import { createLoggerName, LogLevel as LogLevelEnum } from "./types";
 /**
  * Interface for LogManager to avoid circular dependencies
  */
-/**
- * Interface for LogManager to avoid circular dependencies
- */
 interface ILogManager {
 	/**
 	 * Processes a log entry by routing it to the appropriate transports and handling log logic.
