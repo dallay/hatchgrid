@@ -4,8 +4,25 @@ import { createLoggerName, LogLevel as LogLevelEnum } from "./types";
 /**
  * Interface for LogManager to avoid circular dependencies
  */
+/**
+ * Interface for LogManager to avoid circular dependencies
+ */
 interface ILogManager {
+	/**
+	 * Processes a log entry by routing it to the appropriate transports and handling log logic.
+	 *
+	 * @param entry - The log entry to process.
+	 * @returns void
+	 */
 	processLog(entry: LogEntry): void;
+
+	/**
+	 * Determines if a given log level is enabled for the specified logger name.
+	 *
+	 * @param loggerName - The name of the logger to check.
+	 * @param level - The log level to check.
+	 * @returns True if the log level is enabled, false otherwise.
+	 */
 	isLevelEnabled(loggerName: LoggerName, level: LogLevel): boolean;
 }
 
@@ -134,6 +151,8 @@ export class Logger {
 
 	/**
 	 * Create and process log entry with error handling
+	 *
+	 * In development mode, errors are logged to the console for debugging.
 	 */
 	private createAndProcessLogEntry(
 		level: LogLevel,
@@ -146,7 +165,15 @@ export class Logger {
 			const entry = this.createLogEntry(level, safeMessage, safeArgs);
 			this.processLogEntry(entry);
 		} catch (error) {
-			// Graceful degradation: logging errors should not affect application
+			// Log error in development mode for debugging
+			const isDev = typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development';
+			// biome-ignore lint/suspicious/noExplicitAny: This is a global variable for debugging purposes
+			const debugFlag = typeof globalThis !== 'undefined' && (globalThis as any).__LOGGER_DEBUG__;
+			if (isDev || debugFlag) {
+				// eslint-disable-next-line no-console
+				console.error('[Logger] Log entry processing error:', error);
+			}
+			// Graceful degradation: logging errors should not affect application in production
 		}
 	}
 

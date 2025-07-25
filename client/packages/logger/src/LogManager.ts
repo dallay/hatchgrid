@@ -22,7 +22,18 @@ interface LoggerState {
 }
 
 /**
- * Global logger state instance
+ * Singleton global state for logger configuration and caches.
+ *
+ * This object is initialized once and shared across the LogManager module, providing
+ * centralized storage for the active LoggerConfiguration, cached Logger instances, and
+ * cached effective log levels. Its lifecycle matches the module's lifecycle: it is created
+ * at module load and persists for the duration of the process.
+ *
+ * Thread Safety:
+ * - In Node.js and most JavaScript environments, modules are singletons per process/thread.
+ * - This state is NOT safe for direct concurrent mutation in multi-threaded environments (e.g., worker threads).
+ * - For web or serverless environments, each instance will have its own copy; no cross-request sharing occurs.
+ * - If using in a concurrent or distributed context, ensure external synchronization or isolation.
  */
 const loggerState: LoggerState = {
 	config: null,

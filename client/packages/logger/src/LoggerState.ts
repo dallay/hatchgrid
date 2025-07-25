@@ -1,8 +1,23 @@
-import type { Logger, LogLevel } from "vite";
-import type { LoggerConfiguration } from "~/types";
+import type { Logger } from "./Logger";
+import type { LoggerConfiguration, LogLevel } from "./types";
 
 /**
- * Encapsulates logger system state management
+ * Manages the internal state for the logger system, including configuration, logger instances, and level caches.
+ *
+ * The LoggerState class is responsible for:
+ * - Storing and updating the active LoggerConfiguration
+ * - Caching Logger instances for efficient retrieval and reuse
+ * - Caching effective log levels for performance optimization
+ * - Enforcing cache limits to prevent memory leaks in long-running applications
+ * - Providing methods to reset, clear, and inspect cache statistics
+ *
+ * This class is used internally by the logging infrastructure to ensure consistent state management and fast logger lookups.
+ * It is not intended for direct use by application code; instead, use the public LogManager API for logger operations.
+ *
+ * Important notes:
+ * - LoggerState automatically invalidates level caches when configuration changes.
+ * - Cache limits are enforced using a simple FIFO eviction policy.
+ * - Resetting LoggerState will clear all configuration and caches, returning the system to an unconfigured state.
  */
 export class LoggerState {
 	private config: LoggerConfiguration | null = null;
@@ -44,7 +59,20 @@ export class LoggerState {
 		this.levelCache.set(name, level);
 	}
 
-	clearCaches(): void {
+
+	/**
+	 * Clears only the level cache. Use clearAllCaches() to clear all caches.
+	 */
+	clearLevelCache(): void {
+		this.levelCache.clear();
+	}
+
+	/**
+	 * Clears all relevant caches: logger instances and level cache.
+	 * Does not reset configuration.
+	 */
+	clearAllCaches(): void {
+		this.loggers.clear();
 		this.levelCache.clear();
 	}
 

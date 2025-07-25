@@ -26,8 +26,7 @@ Your primary directive is to ensure all code you generate, review, or refactor i
   ```
   ```python
   # BAD: Hardcoded secret
-  api_key = "sk_this_is_a_very_bad_idea_12345"
-  ```
+  api_key = "<REPLACE_WITH_API_KEY>"
 
 ### 3. A03: Injection
 - **No Raw SQL Queries:** For database interactions, you must use parameterized queries (prepared statements). Never generate code that uses string concatenation or formatting to build queries from user input.

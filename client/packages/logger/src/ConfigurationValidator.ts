@@ -1,16 +1,24 @@
+
 import type { LoggerConfiguration, LogLevel, Transport } from "./types";
 import {
 	LoggerConfigurationError,
 	LoggerErrorType,
 	LogLevel as LogLevelEnum,
-} from "./types.ts";
+} from "./types";
 
 /**
- * Validates logger configuration objects
+ * Validates logger configuration objects to ensure they meet the required structure
+ * and contain valid values for all properties.
+ *
+ * @remarks
+ * This class provides static methods to validate logger configuration, transports, log levels, and hierarchical overrides.
  */
 export class ConfigurationValidator {
 	/**
-	 * Validate a complete logger configuration
+	 * Validates a complete logger configuration object.
+	 *
+	 * @param config - The logger configuration to validate.
+	 * @throws LoggerConfigurationError if the configuration is invalid.
 	 */
 	static validate(config: LoggerConfiguration): void {
 		ConfigurationValidator.validateConfigExists(config);
@@ -19,6 +27,12 @@ export class ConfigurationValidator {
 		ConfigurationValidator.validateHierarchicalLevels(config.levels);
 	}
 
+	/**
+	 * Validates that the configuration object exists and is of the correct type.
+	 *
+	 * @param config - The configuration object to check.
+	 * @throws LoggerConfigurationError if the configuration is null, undefined, or not an object.
+	 */
 	private static validateConfigExists(
 		config: unknown,
 	): asserts config is LoggerConfiguration {
@@ -30,6 +44,12 @@ export class ConfigurationValidator {
 		}
 	}
 
+	/**
+	 * Validates the transports array in the logger configuration.
+	 *
+	 * @param transports - The array of transport objects to validate.
+	 * @throws LoggerConfigurationError if transports are missing, empty, or invalid.
+	 */
 	private static validateTransports(transports: readonly Transport[]): void {
 		if (!Array.isArray(transports) || transports.length === 0) {
 			throw new LoggerConfigurationError(
@@ -48,6 +68,12 @@ export class ConfigurationValidator {
 		}
 	}
 
+	/**
+	 * Validates the root log level in the logger configuration.
+	 *
+	 * @param level - The root log level to validate.
+	 * @throws LoggerConfigurationError if the log level is invalid.
+	 */
 	private static validateRootLevel(level: LogLevel): void {
 		if (!ConfigurationValidator.isValidLogLevel(level)) {
 			throw new LoggerConfigurationError(
@@ -57,6 +83,12 @@ export class ConfigurationValidator {
 		}
 	}
 
+	/**
+	 * Validates hierarchical log level overrides in the logger configuration.
+	 *
+	 * @param levels - An optional record of logger names to log levels.
+	 * @throws LoggerConfigurationError if any override log level is invalid.
+	 */
 	private static validateHierarchicalLevels(
 		levels?: Record<string, LogLevel>,
 	): void {
@@ -72,6 +104,12 @@ export class ConfigurationValidator {
 		}
 	}
 
+	/**
+	 * Checks if a value is a valid log level.
+	 *
+	 * @param level - The value to check.
+	 * @returns True if the value is a valid LogLevel, false otherwise.
+	 */
 	private static isValidLogLevel(level: unknown): level is LogLevel {
 		return (
 			typeof level === "number" &&

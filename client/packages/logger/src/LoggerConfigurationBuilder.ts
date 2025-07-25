@@ -3,7 +3,27 @@ import { LogLevel } from "./types";
 
 /**
  * Builder pattern for creating LoggerConfiguration objects.
- * Provides a fluent API for configuration setup.
+ * Provides a fluent API for configuration setup using method chaining.
+ *
+ * @example
+ * // Example usage of LoggerConfigurationBuilder:
+ * import { LoggerConfigurationBuilder } from './LoggerConfigurationBuilder';
+ * import { LogLevel } from './types';
+ *
+ * const transport = {
+ *   log: (entry) => {
+ *     // Custom transport logic
+ *   }
+ * };
+ *
+ * const config = new LoggerConfigurationBuilder()
+ *   .withLevel(LogLevel.DEBUG) // Set the root log level
+ *   .withTransport(transport) // Add a transport
+ *   .withLoggerLevel('api', LogLevel.INFO) // Override log level for 'api' logger
+ *   .withLoggerLevel('db', LogLevel.ERROR) // Override log level for 'db' logger
+ *   .build(); // Build the final LoggerConfiguration object
+ *
+ * // The resulting config can be passed to LogManager.configure(config)
  */
 export class LoggerConfigurationBuilder {
 	private config: Partial<LoggerConfiguration> = {
