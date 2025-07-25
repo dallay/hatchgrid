@@ -71,7 +71,7 @@ export class LoggerConfigurationBuilder {
 	 * Add multiple transports
 	 */
 	withTransports(transports: Transport[]): this {
-		this.config.transports = [...(this.config.transports || []), ...transports];
+		this.config.transports = this.config.transports.concat(transports);
 		return this;
 	}
 
