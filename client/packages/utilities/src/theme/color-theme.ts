@@ -1,7 +1,10 @@
+import { LogManager } from "@hatchgrid/logger";
+
 const DEFAULT_KEY = "theme";
 const DARK_THEME = "dark";
 const LIGHT_THEME = "light";
 
+const logger = LogManager.getLogger("utilities:color-theme");
 export interface ThemeChangedEventDetail {
 	isDark: boolean;
 }
@@ -71,7 +74,7 @@ export const loadTheme = (
 
 	// Create new event handler and store reference
 	themeChangeHandler = ((event: CustomEvent<ThemeChangedEventDetail>) => {
-		console.log("🚨 Theme changed", event.detail.isDark);
+		logger.info("Theme changed", { isDark: event.detail.isDark });
 		const isDark = event.detail.isDark;
 		document.documentElement.classList.toggle(darkThemeClass, isDark);
 		localStorage.setItem(key, isDark ? darkThemeClass : lightThemeClass);

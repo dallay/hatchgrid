@@ -102,6 +102,7 @@
 </template>
 
 <script setup lang="ts">
+import { LogManager } from "@hatchgrid/logger";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { ref } from "vue";
@@ -120,6 +121,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/stores/auth";
 
+const logger = LogManager.getLogger("web:register");
 const router = useRouter();
 const authStore = useAuthStore();
 const isLoading = ref(false);
@@ -179,9 +181,7 @@ const handleRegister = handleSubmit(async (values) => {
 
 		await router.push("/login");
 	} catch (error: unknown) {
-		if (import.meta.env.DEV) {
-			console.error("Registration error:", error);
-		}
+		logger.error("Registration error", { error });
 		const description = "Unable to create your account. Please try again.";
 		toast.error("Registration failed", { description });
 	} finally {

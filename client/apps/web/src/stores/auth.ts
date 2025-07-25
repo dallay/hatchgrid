@@ -1,3 +1,4 @@
+import { LogManager } from "@hatchgrid/logger";
 import { avatar } from "@hatchgrid/utilities";
 import axios, { type AxiosError } from "axios";
 import { defineStore } from "pinia";
@@ -29,6 +30,8 @@ export interface RegistrationData {
 	lastname: string;
 	password: string;
 }
+
+const logger = LogManager.getLogger("web:stores-auth");
 
 export const useAuthStore = defineStore("auth", {
 	state: (): AuthStateStorable => ({ ...defaultAuthState }),
@@ -124,9 +127,7 @@ export const useAuthStore = defineStore("auth", {
 			try {
 				await axios.post("/api/logout");
 			} catch (error) {
-				if (import.meta.env.DEV) {
-					console.warn("Logout failed, but continuing:", error);
-				}
+				logger.warn("Logout failed, but continuing", { error });
 			} finally {
 				this.logout();
 			}

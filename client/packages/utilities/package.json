@@ -59,6 +59,7 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
+		"@hatchgrid/logger": "workspace:*",
 		"gravatar-url": "^4.0.1"
 	},
 	"devDependencies": {

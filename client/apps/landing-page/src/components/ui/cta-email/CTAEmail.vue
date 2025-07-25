@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { LogManager } from "@hatchgrid/logger";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import type { HTMLAttributes } from "vue";
@@ -47,6 +48,8 @@ const props = withDefaults(defineProps<Props>(), {
 	buttonSize: "default",
 });
 
+const logger = LogManager.getLogger("landing-page:ui-cta-email");
+
 const formSchema = toTypedSchema(
 	z.object({
 		email: z
@@ -69,7 +72,7 @@ const onSubmit = handleSubmit((values) => {
 		),
 	});
 	// Here you would typically send the email to your backend
-	console.log("Email submitted:", values.email);
+	logger.info("Email submitted", { email: values.email });
 });
 </script>
 

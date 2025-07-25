@@ -4,10 +4,13 @@
  */
 
 import { getCollection, getEntry } from "astro:content";
+import { LogManager } from "@hatchgrid/logger";
 import { parseEntityId } from "@/utils/collection.entity";
 import type { CategoryCriteria } from "./category.criteria";
 import { toCategories, toCategory } from "./category.mapper";
 import type Category from "./category.model";
+
+const logger = LogManager.getLogger("landing-page:category-service");
 
 /**
  * Retrieves categories from the content collection with filtering options
@@ -70,7 +73,7 @@ export const getCategoryById = async (
 		const entry = await getEntry("categories", categoryId);
 		return entry ? toCategory(entry) : undefined;
 	} catch (error) {
-		console.error(`Failed to fetch category ${categoryId}:`, error);
+		logger.error(`Failed to fetch category ${categoryId}`, { error });
 		throw new Error(`Failed to fetch category ${categoryId}`);
 	}
 };

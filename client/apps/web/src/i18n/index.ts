@@ -1,3 +1,4 @@
+import { LogManager } from "@hatchgrid/logger";
 import { createI18n } from "vue-i18n";
 import { getLocaleModules, getLocaleModulesSync } from "./load.locales.ts";
 
@@ -20,6 +21,8 @@ export const DEFAULT_LOCALE: SupportedLocale = LANGUAGES[0].code;
 
 export const LANGUAGE_STORAGE_KEY = "currentLanguage";
 
+const logger = LogManager.getLogger("web:i18n");
+
 function getLocale(): SupportedLocale {
 	// Try localStorage first
 	try {
@@ -28,7 +31,7 @@ function getLocale(): SupportedLocale {
 			return stored as SupportedLocale;
 		}
 	} catch (error) {
-		console.debug("localStorage not available:", error);
+		logger.debug("localStorage not available", { error });
 	}
 
 	// Try browser language detection
@@ -40,7 +43,7 @@ function getLocale(): SupportedLocale {
 			}
 		}
 	} catch (error) {
-		console.debug("Browser language detection failed:", error);
+		logger.debug("Browser language detection failed", { error });
 	}
 
 	return DEFAULT_LOCALE;
@@ -70,7 +73,7 @@ export async function setLocale(locale: SupportedLocale) {
 	const targetLocale = SUPPORTED_LOCALES.includes(locale)
 		? locale
 		: (() => {
-				console.warn(
+				logger.warn(
 					`Unsupported locale: ${locale}. Falling back to ${DEFAULT_LOCALE}`,
 				);
 				return DEFAULT_LOCALE;
@@ -89,7 +92,7 @@ export async function setLocale(locale: SupportedLocale) {
 	try {
 		localStorage.setItem(LANGUAGE_STORAGE_KEY, targetLocale);
 	} catch (error) {
-		console.warn("Failed to save locale to localStorage:", error);
+		logger.warn("Failed to save locale to localStorage", { error });
 	}
 
 	document.documentElement.lang = targetLocale;

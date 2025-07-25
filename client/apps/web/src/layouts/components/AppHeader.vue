@@ -1,4 +1,5 @@
 <script setup>
+import { LogManager } from "@hatchgrid/logger";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
@@ -21,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth";
 import LanguageSwitcher from "./LanguageSwitcher.vue";
 
+const logger = LogManager.getLogger("web:app-header");
 const authStore = useAuthStore();
 const { isAuthenticated } = storeToRefs(authStore);
 const router = useRouter();
@@ -36,7 +38,7 @@ const handleLogout = async () => {
 		toast.success("Successfully logged out");
 		await router.push("/login");
 	} catch (error) {
-		console.error("Error during logout:", error);
+		logger.error("Error during logout", { error });
 		toast.error("Logout failed");
 	} finally {
 		isLoggingOut.value = false;

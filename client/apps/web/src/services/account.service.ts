@@ -1,3 +1,4 @@
+import { LogManager } from "@hatchgrid/logger";
 import { avatar } from "@hatchgrid/utilities";
 import axios, { type AxiosResponse, isAxiosError } from "axios";
 import type { Router } from "vue-router";
@@ -20,6 +21,8 @@ export interface ProfileInfo {
 		timestamp?: string;
 	};
 }
+
+const logger = LogManager.getLogger("web:account-service");
 
 export default class AccountService {
 	private readonly authStore: ReturnType<typeof useAuthStore>;
@@ -70,15 +73,13 @@ export default class AccountService {
 
 			return true;
 		} catch (error) {
-			if (import.meta.env.DEV) {
-				if (isAxiosError(error)) {
-					console.error(
-						"Failed to retrieve application profiles:",
-						error.response?.status,
-					);
-				} else {
-					console.error("Unknown error retrieving profiles:", error);
-				}
+			if (isAxiosError(error)) {
+				logger.error("Failed to retrieve application profiles", {
+					status: error.response?.status,
+					error,
+				});
+			} else {
+				logger.error("Unknown error retrieving profiles", { error });
 			}
 			return false;
 		}
@@ -119,13 +120,9 @@ export default class AccountService {
 					this.redirectToLogin();
 					return false;
 				}
-				if (import.meta.env.DEV) {
-					console.error("Failed to retrieve account:", status);
-				}
+				logger.error("Failed to retrieve account", { status });
 			} else {
-				if (import.meta.env.DEV) {
-					console.error("Unknown error retrieving account:", error);
-				}
+				logger.error("Unknown error retrieving account", { error });
 			}
 		}
 
@@ -226,9 +223,7 @@ export default class AccountService {
 
 			return true;
 		} catch (error) {
-			if (import.meta.env.DEV) {
-				console.error("Failed to update user language:", error);
-			}
+			logger.error("Failed to update user language", { error });
 			return false;
 		}
 	}

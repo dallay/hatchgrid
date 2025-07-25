@@ -1,3 +1,4 @@
+import { LogManager } from "@hatchgrid/logger";
 import axios, { type AxiosError, type AxiosResponse } from "axios";
 import type { Router } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
@@ -8,6 +9,8 @@ function getCookie(name: string): string | undefined {
 	);
 	return match ? decodeURIComponent(match[2]) : undefined;
 }
+
+const logger = LogManager.getLogger("web:axios-interceptor");
 
 export function setupAxiosInterceptors(router: Router) {
 	axios.interceptors.request.use(
@@ -21,7 +24,7 @@ export function setupAxiosInterceptors(router: Router) {
 			return config;
 		},
 		(error) => {
-			console.error("Request interceptor error:", error);
+			logger.error("Request interceptor error", { error });
 			return Promise.reject(
 				error instanceof Error ? error : new Error(String(error)),
 			);
