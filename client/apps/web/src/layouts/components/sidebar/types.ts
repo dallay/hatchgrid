@@ -57,6 +57,18 @@ export type Result<T, E = string> =
 	| { success: false; error: E };
 
 /**
+ * Enhanced navigation item with computed properties for better performance
+ */
+export interface ComputedAppSidebarItem extends AppSidebarItem {
+	/** Computed active state */
+	readonly isActiveComputed?: boolean;
+	/** Computed visibility state */
+	readonly isVisibleComputed?: boolean;
+	/** Computed accessibility label */
+	readonly ariaLabel?: string;
+}
+
+/**
  * Validation result type
  */
 export interface ValidationResult {

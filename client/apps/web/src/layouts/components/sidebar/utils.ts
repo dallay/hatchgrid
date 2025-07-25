@@ -74,9 +74,22 @@ export async function filterNavItems(
 	return results;
 }
 
-// Memoization cache for active state calculations with size limit
+// Enhanced memoization cache with LRU eviction and performance monitoring
 const MAX_CACHE_SIZE = 100;
 const activeStateCache = new Map<string, boolean>();
+const cacheHitCount = new Map<string, number>();
+
+// Cache performance monitoring (development only)
+const logCachePerformance = () => {
+  if (!import.meta.env.DEV) return;
+
+  const totalHits = Array.from(cacheHitCount.values()).reduce((a, b) => a + b, 0);
+  const cacheSize = activeStateCache.size;
+
+  if (totalHits > 0 && totalHits % 100 === 0) {
+    console.log(`Navigation cache stats: ${cacheSize} entries, ${totalHits} total hits`);
+  }
+};
 
 /**
  * Checks if a sidebar item or any of its children is active
@@ -94,6 +107,9 @@ export function isItemActive(
 	const cachedResult = activeStateCache.get(cacheKey);
 
 	if (cachedResult !== undefined) {
+		// Track cache hits for performance monitoring
+		cacheHitCount.set(cacheKey, (cacheHitCount.get(cacheKey) || 0) + 1);
+		logCachePerformance();
 		return cachedResult;
 	}
 
@@ -258,19 +274,23 @@ function isAppSidebarItem(item: unknown): item is AppSidebarItem {
 
 	const obj = item as Record<string, unknown>;
 
-	return (
-		"title" in obj &&
-		typeof obj.title === "string" &&
-		obj.title.trim().length > 0 &&
-		(obj.url === undefined || typeof obj.url === "string") &&
-		(obj.visible === undefined ||
-			typeof obj.visible === "boolean" ||
-			typeof obj.visible === "function") &&
-		(obj.canAccess === undefined || typeof obj.canAccess === "function") &&
-		(obj.isActive === undefined || typeof obj.isActive === "boolean") &&
-		(obj.tooltip === undefined || typeof obj.tooltip === "string") &&
-		(obj.items === undefined || Array.isArray(obj.items))
-	);
+	// Required fields
+	if (!("title" in obj) || typeof obj.title !== "string" || obj.title.trim().length === 0) {
+		return false;
+	}
+
+	// Optional fields with type validation
+	const validations = [
+		obj.url === undefined || (typeof obj.url === "string" && obj.url.length > 0),
+		obj.visible === undefined || typeof obj.visible === "boolean" || typeof obj.visible === "function",
+		obj.canAccess === undefined || typeof obj.canAccess === "function",
+		obj.isActive === undefined || typeof obj.isActive === "boolean",
+		obj.tooltip === undefined || (typeof obj.tooltip === "string" && obj.tooltip.length > 0),
+		obj.icon === undefined || typeof obj.icon === "object", // Lucide icons are objects/functions
+		obj.items === undefined || (Array.isArray(obj.items) && obj.items.every(isAppSidebarItem))
+	];
+
+	return validations.every(Boolean);
 }
 
 /**
@@ -309,26 +329,96 @@ export function createSidebarItem(
  */
 export function validateNavConfig(items: unknown): items is AppSidebarItem[] {
 	if (!Array.isArray(items)) {
-		console.error("Navigation items must be an array");
+		if (import.meta.env.DEV) {
+			console.error("Navigation items must be an array");
+		}
 		return false;
 	}
 
 	if (items.length === 0) {
-		console.warn("Navigation items array is empty");
+		if (import.meta.env.DEV) {
+			console.warn("Navigation items array is empty");
+		}
 		return true; // Empty array is technically valid
 	}
 
 	// Type guard check
 	if (!items.every(isAppSidebarItem)) {
-		console.error("All items must be valid AppSidebarItem objects");
+		if (import.meta.env.DEV) {
+			console.error("All items must be valid AppSidebarItem objects");
+		}
 		return false;
 	}
 
 	const errors = validateSidebarItems(items);
 	if (errors.length > 0) {
-		console.warn("Navigation configuration issues found:", errors);
+		if (import.meta.env.DEV) {
+			console.warn("Navigation configuration issues found:", errors);
+		}
 		return false;
 	}
 
 	return true;
+}
+
+/**
+ * Enhanced error boundary for navigation item processing
+ * Provides graceful degradation when items are malformed
+ */
+export function safeProcessNavItems(items: AppSidebarItem[]): AppSidebarItem[] {
+	return items
+		.filter(item => {
+			if (!item.title?.trim()) {
+				if (import.meta.env.DEV) {
+					console.warn("Filtering out navigation item with empty title:", item);
+				}
+				return false;
+			}
+			return true;
+		})
+		.map(item => ({
+			...item,
+			items: item.items ? safeProcessNavItems(item.items) : undefined,
+		}));
+}
+
+/**
+ * Performance monitoring utility for development
+ * Measures navigation processing time and cache efficiency
+ */
+export function measureNavigationPerformance<T>(
+	operation: () => T,
+	operationName: string
+): T {
+	if (!import.meta.env.DEV) {
+		return operation();
+	}
+
+	const startTime = performance.now();
+	const result = operation();
+	const endTime = performance.now();
+
+	if (endTime - startTime > 10) { // Log if operation takes more than 10ms
+		console.warn(
+			`Navigation operation "${operationName}" took ${(endTime - startTime).toFixed(2)}ms`
+		);
+	}
+
+	return result;
+}
+
+/**
+ * Debounced cache clearing for better performance
+ */
+let clearCacheTimeout: ReturnType<typeof setTimeout> | null = null;
+
+export function debouncedClearCache(delay = 1000): void {
+	if (clearCacheTimeout) {
+		clearTimeout(clearCacheTimeout);
+	}
+
+	clearCacheTimeout = setTimeout(() => {
+		clearActiveParentsCache();
+		clearCacheTimeout = null;
+	}, delay);
 }

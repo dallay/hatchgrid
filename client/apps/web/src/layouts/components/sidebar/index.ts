@@ -1,18 +1,24 @@
-// Export all types
-
-// Re-export example data for development/testing
-export { exampleNavItems } from "./example";
-export type { AppSidebarItem, AppSidebarProps } from "./types";
-
-// Export all utility functions
+// Main component exports
+export { default as AppSidebarItem } from "./AppSidebarItem.vue";
 export {
-	canAccess,
-	clearActiveParentsCache,
-	filterNavItems,
-	findActiveParents,
-	isItemActive,
-	isVisible,
-	validateNavConfig,
+	useAccessibility,
+	useKeyboardNavigation,
+} from "./composables/useAccessibility";
+export {
+	useErrorBoundary,
+	usePerformanceMonitoring,
+	useSafeItemProcessing,
+} from "./composables/useErrorBoundary";
+
+// Composable exports
+export {
+	isValidSidebarItem,
+	useItemValidation,
 	validateSidebarItem,
-	validateSidebarItems,
-} from "./utils";
+} from "./composables/useItemValidation";
+// Test utility exports (development only)
+export * from "./test-utils";
+// Type exports
+export * from "./types";
+// Utility exports
+export * from "./utils";

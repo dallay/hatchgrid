@@ -1,0 +1,59 @@
+### Hatchgrid Application API Endpoints
+# @name health-check
+# @description This file contains the API endpoints for the Hatchgrid application.
+GET {{url}}/api/health-check
+Accept: application/vnd.api.v1+json
+
+> {%
+// Gets the value of the 'Set-Cookie' header
+const cookieHeader = response.headers.valueOf("Set-Cookie");
+
+// Important! Add a check to avoid errors if the header does not exist
+if (cookieHeader) {
+    const tokenMatch = cookieHeader.match(/XSRF-TOKEN=([^;]*)/);
+    if (tokenMatch && tokenMatch[1]) {
+        const token = tokenMatch[1];
+        // Save the token in a global variable
+        client.global.set("xsrf_token", token);
+        client.log("XSRF-TOKEN captured: " + token);
+    }
+} else {
+    client.log("The 'Set-Cookie' header was not found in the response.");
+}
+%}
+
+###
+
+GET {{url}}/management/info
+Accept: application/vnd.spring-boot.actuator.v3+json
+
+<> 2025-07-13T143526.200.json
+
+###
+
+GET {{url}}/management/env
+Accept: application/vnd.spring-boot.actuator.v3+json
+
+###
+
+GET {{url}}/api/account
+Accept: application/vnd.api.v1+json
+X-XSRF-TOKEN: {{xsrf_token}}
+
+###
+@workspaceId=5adbcc5d-0e9e-46b7-91cf-5cfc7cc88bfa
+
+# @name create-workspace
+# @description This endpoint creates a new workspace.
+# @method PUT
+PUT {{url}}/api/workspace/{{workspaceId}}
+Accept: application/vnd.api.v1+json
+X-XSRF-TOKEN: {{xsrf_token}}
+
+###
+
+GET {{url}}/api/workspace/{{workspaceId}}/newsletter/subscriber
+Accept: application/vnd.api.v1+json
+X-XSRF-TOKEN: {{xsrf_token}}
+
+###
