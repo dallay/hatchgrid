@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/suspicious/noExplicitAny: In this context, null is used to test robustness */
 import { Logger } from "./Logger";
 import type {
 	LogEntry,
@@ -16,6 +15,24 @@ interface LoggerState {
 	config: LoggerConfiguration | null;
 	loggers: Map<string, Logger>;
 	levelCache: Map<string, LogLevel>;
+}
+
+/**
+ * Global feature flags and singleton references for logger.
+ */
+interface LoggerGlobalFlags {
+	__LOGGER_MANAGER__?: typeof LogManager;
+	__LOGGER_ENHANCED_ERROR_HANDLING__?: boolean;
+	__LOGGER_DEBUG__?: boolean;
+}
+
+declare global {
+	// eslint-disable-next-line no-var
+	var __LOGGER_MANAGER__: typeof LogManager | undefined;
+	// eslint-disable-next-line no-var
+	var __LOGGER_ENHANCED_ERROR_HANDLING__: boolean | undefined;
+	// eslint-disable-next-line no-var
+	var __LOGGER_DEBUG__: boolean | undefined;
 }
 
 /**
@@ -54,15 +71,15 @@ function cleanupLoggerStateAndReturn(): void {
 	loggerState.levelCache.clear();
 	if (
 		typeof globalThis !== "undefined" &&
-		(globalThis as Record<string, unknown>).__LOGGER_MANAGER__
+		(globalThis as LoggerGlobalFlags).__LOGGER_MANAGER__
 	) {
-		delete (globalThis as Record<string, unknown>).__LOGGER_MANAGER__;
+		delete (globalThis as LoggerGlobalFlags).__LOGGER_MANAGER__;
 	}
 }
 
 const configure = (config: LoggerConfiguration): void => {
 	// Enhanced error handling: validate config before applying
-	const enhancedErrorHandling = (globalThis as any)
+	const enhancedErrorHandling = (globalThis as LoggerGlobalFlags)
 		.__LOGGER_ENHANCED_ERROR_HANDLING__;
 
 	// If enhanced error handling is enabled, validate config
@@ -109,7 +126,7 @@ const configure = (config: LoggerConfiguration): void => {
 
 	// Register LogManager globally for test and runtime access
 	if (typeof globalThis !== "undefined") {
-		(globalThis as Record<string, unknown>).__LOGGER_MANAGER__ = LogManager;
+		(globalThis as LoggerGlobalFlags).__LOGGER_MANAGER__ = LogManager;
 	}
 
 	// Note: We don't clear the logger cache as Logger instances are stateless
@@ -125,7 +142,7 @@ const configure = (config: LoggerConfiguration): void => {
  */
 const getLogger = (name: string): Logger => {
 	// Enhanced error handling: normalize logger name
-	const enhancedErrorHandling = (globalThis as any)
+	const enhancedErrorHandling = (globalThis as LoggerGlobalFlags)
 		.__LOGGER_ENHANCED_ERROR_HANDLING__;
 	let normalizedName: string;
 	if (enhancedErrorHandling) {
@@ -166,7 +183,7 @@ const isLevelEnabled = (loggerName: LoggerName, level: LogLevel): boolean => {
 		return false;
 	}
 
-	const enhancedErrorHandling = (globalThis as any)
+	const enhancedErrorHandling = (globalThis as LoggerGlobalFlags)
 		.__LOGGER_ENHANCED_ERROR_HANDLING__;
 	if (enhancedErrorHandling) {
 		// Invalid loggerName: null, undefined, not a string, empty, or whitespace
@@ -203,7 +220,7 @@ const processLog = (entry: LogEntry): void => {
 	}
 
 	// Enhanced error handling: validate entry before processing
-	const enhancedErrorHandling = (globalThis as any)
+	const enhancedErrorHandling = (globalThis as LoggerGlobalFlags)
 		.__LOGGER_ENHANCED_ERROR_HANDLING__;
 	if (enhancedErrorHandling) {
 		// Null, undefined, or not an object
