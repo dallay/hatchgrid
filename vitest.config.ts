@@ -8,6 +8,7 @@ export default defineConfig({
 		include: [
 			"**/__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
 			"**/*.{spec,test}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
+			"client/packages/logger/src/**/*.ts",
 		],
 		exclude: [
 			"**/node_modules/**",

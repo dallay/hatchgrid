@@ -42,7 +42,7 @@ The landing page uses Biome for code formatting and linting. The configuration e
 
 ```json
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
   "extends": ["../../biome.json"],
   "files": {
     "ignoreUnknown": false,
