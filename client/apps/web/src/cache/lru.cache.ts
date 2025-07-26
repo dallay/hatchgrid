@@ -14,6 +14,8 @@ export interface CacheOptions {
 	ttl?: number;
 	/** Maximum number of entries. Default: 100 */
 	maxSize?: number;
+	/** Cleanup interval in milliseconds. Default: TTL/10, min 30s */
+	cleanupInterval?: number;
 }
 
 export interface CacheStats {
@@ -39,9 +41,10 @@ interface CacheEntry<V> {
  * - Evicts least recently used items when maxSize is reached.
  * - Removes expired items based on TTL.
  * - Tracks cache statistics (hits, misses, hit rate).
+ * - Periodic cleanup interval is configurable via options.cleanupInterval (default: TTL/10, min 30s)
  *
  * @example
- * const cache = new LRUCache<string>({ maxSize: 50, ttl: 60000 });
+ * const cache = new LRUCache<string>({ maxSize: 50, ttl: 60000, cleanupInterval: 10000 });
  * cache.set('foo', 'bar');
  * const value = cache.get('foo');
  */
@@ -70,7 +73,8 @@ export class LRUCache<V> {
 	constructor(options: CacheOptions = {}) {
 		this.maxSize = options.maxSize ?? 100;
 		this.ttl = options.ttl ?? 5 * 60 * 1000; // Default 5 min
-		this.cleanupInterval = Math.max(this.ttl / 10, 30_000); // Cleanup every 10% of TTL, min 30s
+		this.cleanupInterval =
+			options.cleanupInterval ?? Math.max(this.ttl / 10, 30_000); // Allow override, else default
 	}
 
 	/**
