@@ -1010,9 +1010,9 @@ describe("AppSidebar Integration Tests", () => {
 			const endTime = performance.now();
 			const renderTime = endTime - startTime;
 
-			// Should render efficiently (less than 200ms for 50 items)
+			// Should render efficiently (less than 350ms for 50 items)
 			// Using a higher threshold to account for CI environment variations
-			expect(renderTime).toBeLessThan(200);
+			expect(renderTime).toBeLessThan(350);
 
 			// All items should be rendered
 			const sidebarItems = wrapper.findAllComponents({

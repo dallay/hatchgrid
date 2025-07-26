@@ -1215,9 +1215,6 @@
 │   │   ├───email-testing.md
 │   │   ├───maildev-setup.md
 │   │   └───smtp-setup.md
-│   ├───endpoints/
-│   │   ├───HatchgridApplication.http
-│   │   └───http-client.env.json
 │   ├───frontend/
 │   │   ├───README.md
 │   │   ├───TRANSLATION_INTEGRATION.md
