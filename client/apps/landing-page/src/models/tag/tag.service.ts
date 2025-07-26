@@ -4,11 +4,13 @@
  */
 
 import { getCollection, getEntry } from "astro:content";
+import { LogManager } from "@hatchgrid/logger";
 import { parseEntityId } from "@/utils/collection.entity";
 import type { TagCriteria } from "./tag.criteria";
 import { toTag, toTags } from "./tag.mapper";
 import type Tag from "./tag.model";
 
+const logger = LogManager.getLogger("landing-page:tag-service");
 const tagsCache: Record<string, Tag[]> = {};
 
 /**
@@ -58,7 +60,7 @@ export async function getTags(criteria?: TagCriteria): Promise<Tag[]> {
 		tagsCache[cacheKey] = mappedTags;
 		return mappedTags;
 	} catch (error) {
-		console.error("Failed to fetch tags:", error);
+		logger.error("Failed to fetch tags", { error });
 		throw new Error("Failed to fetch tags");
 	}
 }
@@ -74,7 +76,7 @@ export async function getTagById(id: string): Promise<Tag | undefined> {
 		const entry = await getEntry("tags", id);
 		return entry ? toTag(entry) : undefined;
 	} catch (error) {
-		console.error(`Failed to fetch tag with id ${id}:`, error);
+		logger.error(`Failed to fetch tag with id ${id}`, { error });
 		throw new Error(`Failed to fetch tag with id ${id}`);
 	}
 }

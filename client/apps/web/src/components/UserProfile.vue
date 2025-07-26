@@ -28,12 +28,14 @@
 </template>
 
 <script setup lang="ts">
+import { LogManager } from "@hatchgrid/logger";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 // Removed unused AccountService type import
 import { useAuthStore } from "@/stores/auth";
 
+const logger = LogManager.getLogger("web:user-profile");
 // Use i18n for reactive translations
 const { t } = useI18n();
 
@@ -57,11 +59,11 @@ const handleLogout = async () => {
 	try {
 		await authStore.logoutAsync();
 		router.push("/");
-	} catch {
+	} catch (error) {
 		// Avoid logging sensitive details
 		// Show a generic error message to the user (replace with your notification system)
 		// Example: toast.error("Logout failed. Please try again.");
-		console.warn("Logout failed");
+		logger.warn("Logout failed", { error });
 	} finally {
 		isLoggingOut.value = false;
 	}

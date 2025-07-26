@@ -1,3 +1,4 @@
+import { LogManager } from "@hatchgrid/logger";
 import { deepmerge } from "@hatchgrid/utilities";
 import type { LocaleMessage } from "./types";
 
@@ -5,6 +6,7 @@ import type { LocaleMessage } from "./types";
  * In-memory cache for merged locale message objects.
  * Prevents redundant file system reads and merges for previously loaded locales.
  */
+const logger = LogManager.getLogger("web:load-locales");
 const localeCache = new Map<string, LocaleMessage>();
 
 /**
@@ -48,7 +50,7 @@ export async function getLocaleModules(locale: string): Promise<LocaleMessage> {
 			.map((module) => module.default);
 
 		if (messages.length === 0) {
-			console.warn(`No locale files found for locale: ${locale}`);
+			logger.warn(`No locale files found for locale: ${locale}`);
 			const emptyResult: LocaleMessage = {};
 			localeCache.set(locale, emptyResult);
 			return emptyResult;
@@ -58,7 +60,7 @@ export async function getLocaleModules(locale: string): Promise<LocaleMessage> {
 		localeCache.set(locale, result);
 		return result;
 	} catch (error) {
-		console.error(`Failed to load locale files for ${locale}:`, error);
+		logger.error(`Failed to load locale files for ${locale}`, { error });
 		const emptyResult: LocaleMessage = {};
 		localeCache.set(locale, emptyResult);
 		return emptyResult;
@@ -86,7 +88,7 @@ export function getLocaleModulesSync(locale: string): LocaleMessage {
 	}
 
 	if (messages.length === 0) {
-		console.warn(`No locale files found for locale: ${locale}`);
+		logger.warn(`No locale files found for locale: ${locale}`);
 		const emptyResult: LocaleMessage = {};
 		localeCache.set(locale, emptyResult);
 		return emptyResult;

@@ -3,6 +3,8 @@
  * This simulates the backend API responses for email submissions
  */
 
+import { LogManager } from "@hatchgrid/logger";
+
 export interface MockApiConfig {
 	delay?: number;
 	successRate?: number;
@@ -94,6 +96,7 @@ export class MockEmailApi {
 }
 
 // Global mock setup for fetch in development
+const logger = LogManager.getLogger("landing-page:mock-email-api");
 export function setupMockApi(config?: MockApiConfig) {
 	if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
 		const mockApi = new MockEmailApi(config);
@@ -132,7 +135,7 @@ export function setupMockApi(config?: MockApiConfig) {
 			return originalFetch(url, options);
 		};
 
-		console.log("🚀 Mock Email API enabled for development");
+		logger.info("Mock Email API enabled for development");
 		// return mockApi // This return is not strictly necessary if not used elsewhere after setup
 	}
 }

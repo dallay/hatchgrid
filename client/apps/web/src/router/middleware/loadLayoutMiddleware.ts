@@ -1,3 +1,4 @@
+import { LogManager } from "@hatchgrid/logger";
 import type { RouteLocationNormalized } from "vue-router";
 
 /**
@@ -9,6 +10,7 @@ import type { RouteLocationNormalized } from "vue-router";
  *
  * If the layout we want to display is not found, loads the default layout DashboardLayout.
  */
+const logger = LogManager.getLogger("web:load-layout-middleware");
 export async function loadLayoutMiddleware(route: RouteLocationNormalized) {
 	try {
 		// Get layout name from route meta, default to 'DashboardLayout' if not specified
@@ -27,14 +29,14 @@ export async function loadLayoutMiddleware(route: RouteLocationNormalized) {
 		// Store the loaded component in route meta for use in the main layout
 		route.meta.layoutComponent = layoutComponent.default;
 	} catch (error) {
-		console.error("Failed to load layout component:", error);
+		logger.error("Failed to load layout component", { error });
 
 		// Load default layout on error
 		try {
 			const defaultLayoutComponent = await import("@/layouts/AppLayout.vue");
 			route.meta.layoutComponent = defaultLayoutComponent.default;
 		} catch (defaultError) {
-			console.error("Failed to load default layout:", defaultError);
+			logger.error("Failed to load default layout", { error: defaultError });
 		}
 	}
 }

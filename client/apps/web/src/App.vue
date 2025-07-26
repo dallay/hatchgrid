@@ -6,12 +6,14 @@
 </template>
 
 <script setup>
+import { LogManager } from "@hatchgrid/logger";
 import { onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { RouterView } from "vue-router";
 import Toaster from "./components/ui/sonner/Sonner.vue";
 import AppLayout from "./layouts/AppLayout.vue";
 
+const logger = LogManager.getLogger("web:app");
 // Initialize CSRF token on app mount
 onMounted(async () => {
 	const MAX_RETRIES = 3;
@@ -30,16 +32,11 @@ onMounted(async () => {
 				signal: controller.signal,
 			});
 			success = true;
-			if (import.meta.env.DEV) {
-				console.log(`CSRF token initialized successfully (attempt ${attempt})`);
-			}
+			logger.info(`CSRF token initialized successfully (attempt ${attempt})`);
 		} catch (error) {
-			if (import.meta.env.DEV) {
-				console.error(
-					`Failed to initialize CSRF token (attempt ${attempt}):`,
-					error,
-				);
-			}
+			logger.error(`Failed to initialize CSRF token (attempt ${attempt})`, {
+				error,
+			});
 			// Wait briefly before retrying (exponential backoff)
 			await new Promise((resolve) => setTimeout(resolve, 300 * attempt));
 		} finally {
@@ -48,9 +45,7 @@ onMounted(async () => {
 	}
 	if (!success) {
 		// Consider fallback handling in production
-		if (import.meta.env.DEV) {
-			console.error("CSRF token initialization failed after maximum retries.");
-		}
+		logger.error("CSRF token initialization failed after maximum retries.");
 	}
 });
 </script>

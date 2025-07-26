@@ -1,3 +1,4 @@
+import { LogManager } from "@hatchgrid/logger";
 import { type Ref, ref } from "vue";
 
 /**
@@ -8,6 +9,7 @@ import { type Ref, ref } from "vue";
  * @param options - Optional configuration options
  * @returns A tuple containing the reactive state and a setter function
  */
+const logger = LogManager.getLogger("web:use-local-storage");
 export function useLocalStorage<T>(
 	key: string,
 	defaultValue: T,
@@ -24,7 +26,9 @@ export function useLocalStorage<T>(
 				try {
 					return JSON.parse(v) as T;
 				} catch (e) {
-					console.warn(`Error parsing JSON from localStorage key "${key}":`, e);
+					logger.warn(`Error parsing JSON from localStorage key "${key}"`, {
+						error: e,
+					});
 					return defaultValue;
 				}
 			},
@@ -40,7 +44,7 @@ export function useLocalStorage<T>(
 			}
 			return serializer.read(item);
 		} catch (error) {
-			console.warn(`Error reading localStorage key "${key}":`, error);
+			logger.warn(`Error reading localStorage key "${key}"`, { error });
 			return defaultValue;
 		}
 	}
@@ -49,7 +53,7 @@ export function useLocalStorage<T>(
 		try {
 			localStorage.setItem(key, serializer.write(value));
 		} catch (error) {
-			console.warn(`Error setting localStorage key "${key}":`, error);
+			logger.warn(`Error setting localStorage key "${key}"`, { error });
 		}
 	}
 

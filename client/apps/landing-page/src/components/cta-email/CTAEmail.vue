@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { LogManager } from "@hatchgrid/logger";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import type { HTMLAttributes } from "vue";
@@ -57,6 +58,7 @@ const props = withDefaults(defineProps<Props>(), {
 	lang: "en",
 });
 
+const logger = LogManager.getLogger("landing-page:cta-email");
 const t = useTranslations(props.lang);
 // Initialize composables
 const { validationSchema } = useEmailValidation({ lang: props.lang });
@@ -110,7 +112,7 @@ const onSubmit = handleSubmit(async (values) => {
 			resetForm();
 
 			// Emit success event for parent components
-			console.log("✅ Email successfully submitted:", {
+			logger.info("Email successfully submitted", {
 				email: values.email,
 				response: result.data,
 			});
@@ -120,7 +122,7 @@ const onSubmit = handleSubmit(async (values) => {
 	} catch (err) {
 		const errorMessage = err instanceof Error ? err.message : "Unknown error";
 		showErrorToast(errorMessage);
-		console.error("❌ Email submission failed:", err);
+		logger.error("Email submission failed", { error: err });
 	}
 });
 

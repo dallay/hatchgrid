@@ -1,3 +1,4 @@
+import { LogManager } from "@hatchgrid/logger";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
 import { useLocalStorage } from "../useLocalStorage";
@@ -90,7 +91,8 @@ describe("useLocalStorage", () => {
 
 	it("handles invalid JSON gracefully and returns default value", () => {
 		const key = "test-key-invalid-json";
-		const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+		const logger = LogManager.getLogger("web:use-local-storage");
+		const loggerSpy = vi.spyOn(logger, "warn").mockImplementation(() => {});
 
 		// Setup the mock to return invalid JSON
 		localStorageMock.getItem.mockReturnValueOnce("{invalid-json");
@@ -98,13 +100,14 @@ describe("useLocalStorage", () => {
 		const [state] = useLocalStorage(key, defaultValue);
 
 		expect(state.value).toEqual(defaultValue);
-		expect(consoleSpy).toHaveBeenCalled();
-		consoleSpy.mockRestore();
+		expect(loggerSpy).toHaveBeenCalled();
+		loggerSpy.mockRestore();
 	});
 
 	it("handles localStorage errors gracefully", () => {
 		const key = "test-key-error-get";
-		const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+		const logger = LogManager.getLogger("web:use-local-storage");
+		const loggerSpy = vi.spyOn(logger, "warn").mockImplementation(() => {});
 
 		// Setup the mock to throw an error
 		localStorageMock.getItem.mockImplementationOnce(() => {
@@ -114,13 +117,14 @@ describe("useLocalStorage", () => {
 		const [state] = useLocalStorage(key, defaultValue);
 
 		expect(state.value).toEqual(defaultValue);
-		expect(consoleSpy).toHaveBeenCalled();
-		consoleSpy.mockRestore();
+		expect(loggerSpy).toHaveBeenCalled();
+		loggerSpy.mockRestore();
 	});
 
 	it("handles setItem errors gracefully", async () => {
 		const key = "test-key-error-set";
-		const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+		const logger = LogManager.getLogger("web:use-local-storage");
+		const loggerSpy = vi.spyOn(logger, "warn").mockImplementation(() => {});
 
 		// Setup the mock to throw an error
 		localStorageMock.setItem.mockImplementationOnce(() => {
@@ -132,7 +136,7 @@ describe("useLocalStorage", () => {
 		setState({ foo: "error" });
 		await nextTick();
 
-		expect(consoleSpy).toHaveBeenCalled();
-		consoleSpy.mockRestore();
+		expect(loggerSpy).toHaveBeenCalled();
+		loggerSpy.mockRestore();
 	});
 });

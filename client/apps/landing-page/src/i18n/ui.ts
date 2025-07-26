@@ -1,6 +1,8 @@
+import { LogManager } from "@hatchgrid/logger";
 import type { Lang, UIDict, UIMultilingual } from "./types";
 
 // Use import.meta.glob to get all translation files
+const logger = LogManager.getLogger("landing-page:i18n-ui");
 const translationModules = import.meta.glob<
 	Record<string, Record<Lang, UIDict>>
 >("./translations/*.ts", { eager: true });
@@ -38,8 +40,8 @@ export const ui: UIMultilingual = Object.values(translationModules).reduce(
 
 // Enhanced debug log to check what was loaded
 if (process.env.NODE_ENV === "development") {
-	console.log(
-		"㊙︎ Loaded translations:",
+	logger.debug(
+		"Loaded translations",
 		Object.keys(ui)
 			.map((lang) => `${lang}: ${Object.keys(ui[lang as Lang]).length} keys`)
 			.join(", "),
