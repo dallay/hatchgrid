@@ -1011,7 +1011,6 @@
 │   │       │   │   │   │   ├───AppSidebarItem.test.ts
 │   │       │   │   │   │   ├───AppSidebarItem.vue
 │   │       │   │   │   │   ├───error-factory.ts
-│   │       │   │   │   │   ├───example.ts
 │   │       │   │   │   │   ├───index.ts
 │   │       │   │   │   │   ├───test-factories.ts
 │   │       │   │   │   │   ├───test-helpers.ts

@@ -125,6 +125,32 @@ const activeParentsCache = new LRUCache<string[]>({
 });
 
 /**
+ * Stable JSON stringify for objects/arrays (order-insensitive for keys)
+ */
+function stableStringify(obj: unknown): string {
+	if (Array.isArray(obj)) {
+		return `[${obj.map(stableStringify).join(",")}]`;
+	}
+	if (obj && typeof obj === "object") {
+		const record = obj as Record<string, unknown>;
+		const keys = Object.keys(record).sort();
+		return `{${keys.map((k) => `${JSON.stringify(k)}:${stableStringify(record[k])}`).join(",")}}`;
+	}
+	return JSON.stringify(obj);
+}
+
+/**
+ * Simple hash function for strings (djb2)
+ */
+function hashString(str: string): number {
+	let hash = 5381;
+	for (let i = 0; i < str.length; i++) {
+		hash = (hash << 5) + hash + str.charCodeAt(i);
+	}
+	return hash >>> 0;
+}
+
+/**
  * Finds all parent items that contain an active child
  * Used for auto-expanding parent menus
  * Uses caching to improve performance for repeated calls
@@ -136,8 +162,10 @@ export function findActiveParents(
 	items: readonly AppSidebarItem[],
 	currentRoute: string,
 ): string[] {
-	// More efficient cache key generation - avoid expensive string operations
-	const cacheKey = `${currentRoute}-${items.length}`;
+	// Generate a robust cache key based on the navigation structure and currentRoute
+	// This ensures cache invalidation when navigation data changes
+	const navStructure = stableStringify(items);
+	const cacheKey = `${currentRoute}-${hashString(navStructure)}`;
 
 	const cachedResult = activeParentsCache.get(cacheKey);
 	if (cachedResult) {
