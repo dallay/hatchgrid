@@ -5,23 +5,15 @@
 import { type ComputedRef, computed } from "vue";
 import type { AppSidebarItem, ValidationResult } from "../types";
 
-/**
- * Validates and sanitizes a sidebar item
- */
 export function useItemValidation(item: ComputedRef<AppSidebarItem>) {
-	// Validate item structure
 	const validationResult = computed((): ValidationResult => {
 		const errors: string[] = [];
 		const currentItem = item.value;
 
-		// Required field validation
-		if (!currentItem.title) {
-			errors.push("Title is required and must be a string");
-		} else if (currentItem.title.trim().length === 0) {
-			errors.push("Title cannot be empty");
+		if (!currentItem.title || currentItem.title.trim().length === 0) {
+			errors.push("Title is required and must be a non-empty string");
 		}
 
-		// Optional field validation
 		if (currentItem.url !== undefined) {
 			if (currentItem.url.trim().length === 0) {
 				errors.push("URL cannot be empty");
@@ -41,14 +33,12 @@ export function useItemValidation(item: ComputedRef<AppSidebarItem>) {
 			errors.push("isActive must be a boolean");
 		}
 
-		if (currentItem.visible !== undefined) {
-			const isValidVisible =
-				typeof currentItem.visible === "boolean" ||
-				typeof currentItem.visible === "function";
-
-			if (!isValidVisible) {
-				errors.push("visible must be a boolean or function");
-			}
+		if (
+			currentItem.visible !== undefined &&
+			typeof currentItem.visible !== "boolean" &&
+			typeof currentItem.visible !== "function"
+		) {
+			errors.push("visible must be a boolean or function");
 		}
 
 		if (
@@ -62,16 +52,11 @@ export function useItemValidation(item: ComputedRef<AppSidebarItem>) {
 			errors.push("items must be an array");
 		}
 
-		return {
-			isValid: errors.length === 0,
-			errors,
-		};
+		return { isValid: errors.length === 0, errors };
 	});
 
-	// Sanitized item with safe defaults
 	const sanitizedItem = computed((): AppSidebarItem => {
 		const currentItem = item.value;
-
 		return {
 			title: currentItem.title.trim(),
 			url:
@@ -90,29 +75,20 @@ export function useItemValidation(item: ComputedRef<AppSidebarItem>) {
 		};
 	});
 
-	// Safe title with fallback
-	const safeTitle = computed(() => {
-		const title = sanitizedItem.value.title;
-		return title && title.length > 0 ? title : "Navigation Item";
-	});
-
-	// Safe tooltip with fallback
-	const safeTooltip = computed(() => {
-		const tooltip = sanitizedItem.value.tooltip;
-		return tooltip && tooltip.length > 0 ? tooltip : safeTitle.value;
-	});
-
-	// Check if item has valid URL
-	const hasValidUrl = computed(() => {
-		const url = sanitizedItem.value.url;
-		return url && url.length > 0;
-	});
-
-	// Check if item has children
-	const hasChildren = computed(() => {
-		const items = sanitizedItem.value.items;
-		return Array.isArray(items) && items.length > 0;
-	});
+	const safeTitle = computed(
+		() => sanitizedItem.value.title || "Navigation Item",
+	);
+	const safeTooltip = computed(
+		() => sanitizedItem.value.tooltip || safeTitle.value,
+	);
+	const hasValidUrl = computed(
+		() => !!sanitizedItem.value.url && sanitizedItem.value.url.length > 0,
+	);
+	const hasChildren = computed(
+		() =>
+			Array.isArray(sanitizedItem.value.items) &&
+			sanitizedItem.value.items.length > 0,
+	);
 
 	return {
 		validationResult,
