@@ -140,13 +140,8 @@ export function useSafeItemProcessing(item: ComputedRef<AppSidebarItem>) {
 
 	const safeChildren = computed(() => {
 		try {
-			return (
-				safeItem.value.items?.map((child, index) => ({
-					...child,
-					// Ensure each child has a stable key
-					_key: child.url || `${child.title}-${index}`,
-				})) || []
-			);
+			// Return the original child objects unmodified
+			return safeItem.value.items ? [...safeItem.value.items] : [];
 		} catch (error) {
 			handleError(error as Error, "Failed to process sidebar children");
 			return [];
