@@ -1,6 +1,39 @@
 /**
- * Item validation composable
- * Provides validation and sanitization for sidebar items
+ * Item validation composable for sidebar navigation items.
+ *
+ * Provides validation and sanitization for sidebar items, ensuring required fields are present and types are correct.
+ *
+ * @param item - A computed reference to an `AppSidebarItem` object to be validated and sanitized.
+ * @returns An object containing:
+ *   - `validationResult`: Computed validation result with `isValid` and `errors`.
+ *   - `sanitizedItem`: Computed sanitized item with trimmed and defaulted fields.
+ *   - `safeTitle`: Computed safe title string for display.
+ *   - `safeTooltip`: Computed safe tooltip string for display.
+ *   - `hasValidUrl`: Computed boolean indicating if the item has a valid URL.
+ *   - `hasChildren`: Computed boolean indicating if the item has child items.
+ *   - `isValid`: Computed boolean for overall validity.
+ *   - `errors`: Computed array of validation error messages.
+ *
+ * @example
+ * import { computed } from 'vue';
+ * import { useItemValidation } from './useItemValidation';
+ *
+ * const item = computed(() => ({
+ *   title: 'Dashboard',
+ *   url: '/dashboard',
+ *   icon: SomeIcon,
+ *   isActive: true
+ * }));
+ *
+ * const {
+ *   validationResult,
+ *   sanitizedItem,
+ *   isValid,
+ *   errors
+ * } = useItemValidation(item);
+ *
+ * // Use `isValid.value` to check if the item is valid
+ * // Use `sanitizedItem.value` for rendering
  */
 import { type ComputedRef, computed } from "vue";
 import type { AppSidebarItem, ValidationResult } from "../types";
