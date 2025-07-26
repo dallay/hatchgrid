@@ -26,7 +26,9 @@ export function useItemValidation(item: ComputedRef<AppSidebarItem>) {
 		}
 
 		if (currentItem.tooltip !== undefined) {
-			errors.push("Tooltip must be a string");
+			if (typeof currentItem.tooltip !== "string") {
+				errors.push("Tooltip must be a string");
+			}
 		}
 
 		if (currentItem.isActive !== undefined) {
