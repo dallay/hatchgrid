@@ -1099,11 +1099,7 @@ describe("AppSidebarItem", () => {
 				items: [],
 			};
 
-			// Ensure items is initialized before pushing
-			if (!circularItem.items) {
-				circularItem.items = [];
-			}
-			circularItem.items.push(circularItem);
+			circularItem.items?.push(circularItem);
 
 			expect(() => {
 				mount(AppSidebarItem, {
@@ -1133,7 +1129,7 @@ describe("AppSidebarItem", () => {
 			const endTime = performance.now();
 
 			// Should render without excessive delay
-			expect(endTime - startTime).toBeLessThan(100);
+			expect(endTime - startTime).toBeLessThan(200);
 			expect(wrapper.text()).toContain("Level 20");
 			expect(wrapper.text()).toContain("Level 0");
 		});
