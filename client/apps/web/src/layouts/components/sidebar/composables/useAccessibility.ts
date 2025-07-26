@@ -18,24 +18,28 @@ export function useAccessibility(
 	item: ComputedRef<AppSidebarItem>,
 	options: ComputedRef<AccessibilityOptions> = computed(() => ({})),
 ) {
-	const { level = 0, isExpanded = false, hasChildren = false } = options.value;
+	// Use computed properties for reactivity
+	const level = computed(() => options.value.level ?? 0);
+	const isExpanded = computed(() => options.value.isExpanded ?? false);
+	const hasChildren = computed(() => options.value.hasChildren ?? false);
 
 	// Generate appropriate ARIA label
+
 	const ariaLabel = computed(() => {
 		const title = item.value.title || "Navigation Item";
 
-		if (!hasChildren) {
+		if (!hasChildren.value) {
 			return title;
 		}
 
-		const menuType = level === 0 ? "menu" : "submenu";
-		const expandedState = isExpanded ? "expanded" : "collapsed";
+		const menuType = level.value === 0 ? "menu" : "submenu";
+		const expandedState = isExpanded.value ? "expanded" : "collapsed";
 		return `${title} ${menuType}, ${expandedState}`;
 	});
 
 	// Determine appropriate role
 	const role = computed(() => {
-		if (hasChildren) return "button";
+		if (hasChildren.value) return "button";
 		return item.value.url ? "link" : "button";
 	});
 
@@ -46,12 +50,12 @@ export function useAccessibility(
 
 	// ARIA attributes for expanded state
 	const ariaExpanded = computed(() => {
-		return hasChildren ? isExpanded : undefined;
+		return hasChildren.value ? isExpanded.value : undefined;
 	});
 
 	// ARIA attributes for hierarchical navigation
 	const ariaLevel = computed(() => {
-		return level > 0 ? level + 1 : undefined;
+		return level.value > 0 ? level.value + 1 : undefined;
 	});
 
 	// Check if item has valid navigation target
