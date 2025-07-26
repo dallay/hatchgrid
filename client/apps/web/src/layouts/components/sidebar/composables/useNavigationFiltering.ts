@@ -2,6 +2,8 @@
  * Navigation filtering composable
  * Handles async filtering of navigation items with error recovery
  */
+
+import { debounce } from "@hatchgrid/utilities";
 import { computed, onMounted, ref, watch } from "vue";
 import type { AppSidebarItem } from "../types";
 import {
@@ -67,7 +69,7 @@ export function useNavigationFiltering(
 			// Performance monitoring in development
 			if (import.meta.env.DEV) {
 				const duration = performance.now() - startTime;
-				if (duration > 50) {
+				if (duration > 100) {
 					// Log if filtering takes more than 50ms
 					console.warn(
 						`Navigation filtering took ${duration.toFixed(2)}ms for ${safeItems.value.length} items`,
@@ -85,8 +87,11 @@ export function useNavigationFiltering(
 		}
 	};
 
-	// Watch for changes in items and re-filter
-	watch(items, filterItems, { deep: true });
+	// Debounced filter function
+	const debouncedFilterItems = debounce(filterItems, 300);
+
+	// Watch with debounced handler
+	watch(items, debouncedFilterItems, { deep: true });
 
 	// Initial filtering on mount
 	onMounted(filterItems);
