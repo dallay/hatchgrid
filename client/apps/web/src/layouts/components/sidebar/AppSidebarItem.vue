@@ -15,6 +15,7 @@
 import { ChevronRight } from "lucide-vue-next";
 import { computed, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
+import { LRUCache } from "@/cache/lru.cache";
 import {
 	Collapsible,
 	CollapsibleContent,
@@ -83,9 +84,8 @@ const roleAttribute = computed(() => {
 	return props.item.url ? "link" : "button";
 });
 
-// Memoized stable key generation for child items with cleanup
-const keyCache = new Map<string, string>();
 const MAX_CACHE_SIZE = 1000;
+const keyCache = new LRUCache<string, string>(MAX_CACHE_SIZE);
 
 const getChildKey = (childItem: AppSidebarItem, index: number): string => {
 	// Create cache key from item properties
@@ -96,16 +96,9 @@ const getChildKey = (childItem: AppSidebarItem, index: number): string => {
 		return cachedKey;
 	}
 
-	// Prevent memory leaks by limiting cache size
-	if (keyCache.size >= MAX_CACHE_SIZE) {
-		const firstKey = keyCache.keys().next().value;
-		if (firstKey) keyCache.delete(firstKey);
-	}
-
 	// Use URL as primary key, fallback to title-index combination
 	const key = childItem.url || `${props.level}-${childItem.title}-${index}`;
 	keyCache.set(cacheKey, key);
-
 	return key;
 };
 
@@ -123,11 +116,7 @@ const linkComponent = computed(() => (props.item.url ? "a" : "button"));
   <template v-if="level === 0">
     <SidebarMenuItem>
       <template v-if="hasChildren">
-        <Collapsible
-          as-child
-          :default-open="isActive"
-          class="group/collapsible"
-        >
+        <Collapsible as-child :default-open="isActive" class="group/collapsible">
           <div>
             <CollapsibleTrigger as-child>
               <SidebarMenuButton
@@ -180,10 +169,7 @@ const linkComponent = computed(() => (props.item.url ? "a" : "button"));
   <template v-else>
     <SidebarMenuSubItem>
       <template v-if="hasChildren">
-        <Collapsible
-          :default-open="isActive"
-          class="group/collapsible w-full"
-        >
+        <Collapsible :default-open="isActive" class="group/collapsible w-full">
           <CollapsibleTrigger as-child>
             <SidebarMenuSubButton
               :is-active="isActive"
@@ -215,11 +201,7 @@ const linkComponent = computed(() => (props.item.url ? "a" : "button"));
       </template>
 
       <template v-else>
-        <SidebarMenuSubButton
-          :is-active="isActive"
-          :as="linkComponent"
-          :href="item.url"
-        >
+        <SidebarMenuSubButton :is-active="isActive" :as="linkComponent" :href="item.url">
           <component :is="item.icon" v-if="item.icon" />
           <span>{{ item.title }}</span>
         </SidebarMenuSubButton>
