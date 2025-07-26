@@ -60,25 +60,25 @@ export function useItemValidation(item: ComputedRef<AppSidebarItem>) {
 		return { isValid: errors.length === 0, errors };
 	});
 
-	const sanitizedItem = computed((): AppSidebarItem => {
-		const currentItem = item.value;
-		return {
-			title: currentItem.title.trim(),
-			url:
-				typeof currentItem.url === "string"
-					? currentItem.url.trim() || undefined
-					: undefined,
-			icon: currentItem.icon,
-			isActive: Boolean(currentItem.isActive),
-			tooltip:
-				typeof currentItem.tooltip === "string" && currentItem.tooltip.trim()
-					? currentItem.tooltip.trim()
-					: currentItem.title.trim(),
-			visible: currentItem.visible ?? true,
-			canAccess: currentItem.canAccess,
-			items: Array.isArray(currentItem.items) ? currentItem.items : undefined,
-		};
-	});
+const sanitizedItem = computed((): AppSidebarItem => {
+  const currentItem = item.value;
+  return {
+    title: currentItem.title?.trim() || "",
+    url:
+      typeof currentItem.url === "string"
+        ? currentItem.url.trim() || undefined
+        : undefined,
+    icon: currentItem.icon,
+    isActive: Boolean(currentItem.isActive),
+    tooltip:
+      typeof currentItem.tooltip === "string" && currentItem.tooltip.trim()
+        ? currentItem.tooltip.trim()
+        : currentItem.title?.trim() || "",
+    visible: currentItem.visible ?? true,
+    canAccess: currentItem.canAccess,
+    items: Array.isArray(currentItem.items) ? currentItem.items : undefined,
+  };
+});
 
 	const safeTitle = computed(
 		() => sanitizedItem.value.title || "Navigation Item",
