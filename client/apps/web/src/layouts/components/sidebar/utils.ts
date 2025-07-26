@@ -351,12 +351,7 @@ function isAppSidebarItem(item: unknown): item is AppSidebarItem {
 export function createSidebarItem(
 	config: Partial<AppSidebarItem> & { title: string },
 ): Result<AppSidebarItem> {
-	const errors = validateSidebarItem(config as AppSidebarItem);
-
-	if (errors.length > 0) {
-		return { success: false, error: errors.join("; ") };
-	}
-
+	// Create a full object with defaults for missing fields
 	const item: AppSidebarItem = {
 		title: config.title,
 		url: config.url,
@@ -367,6 +362,12 @@ export function createSidebarItem(
 		canAccess: config.canAccess,
 		items: config.items,
 	};
+
+	const errors = validateSidebarItem(item);
+
+	if (errors.length > 0) {
+		return { success: false, error: errors.join("; ") };
+	}
 
 	return { success: true, data: item };
 }
