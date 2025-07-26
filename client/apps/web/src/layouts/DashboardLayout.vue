@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from "vue";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getNavigationItems } from "@/config/navigation";
