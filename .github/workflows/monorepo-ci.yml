@@ -141,7 +141,7 @@ jobs:
         # Pinned to v4 commit hash for security
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
       - name: Run OWASP Dependency Check
-        uses: dependency-check/Dependency-Check_Action@75ba02d6183445fe0761d26e836bde58b1560600
+        uses: dependency-check/Dependency-Check_Action@2ba636726705b0f74f126ebeaacaf2ad4600b967
         with:
           project: 'hatchgrid-monorepo'
           path: '.'
