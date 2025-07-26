@@ -1,7 +1,7 @@
 // LRUCache implementation for stable key generation
 export class LRUCache<K, V> {
-	private cache = new Map<K, V>();
-	private maxSize: number;
+	private readonly cache = new Map<K, V>();
+	private readonly maxSize: number;
 
 	constructor(maxSize: number) {
 		this.maxSize = maxSize;
