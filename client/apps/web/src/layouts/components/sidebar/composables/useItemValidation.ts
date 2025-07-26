@@ -31,7 +31,10 @@ export function useItemValidation(item: ComputedRef<AppSidebarItem>) {
 			}
 		}
 
-		if (currentItem.isActive !== undefined) {
+		if (
+			currentItem.isActive !== undefined &&
+			typeof currentItem.isActive !== "boolean"
+		) {
 			errors.push("isActive must be a boolean");
 		}
 

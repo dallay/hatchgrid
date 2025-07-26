@@ -70,7 +70,7 @@ export function useNavigationFiltering(
 			if (import.meta.env.DEV) {
 				const duration = performance.now() - startTime;
 				if (duration > 100) {
-					// Log if filtering takes more than 50ms
+					// Log if filtering takes more than 100ms
 					console.warn(
 						`Navigation filtering took ${duration.toFixed(2)}ms for ${safeItems.value.length} items`,
 					);
