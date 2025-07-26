@@ -80,6 +80,8 @@ export function getNavigationItems(): AppSidebarItem[] {
  * This could be used for different user roles or application modes
  */
 export function getMinimalNavigationItems(): AppSidebarItem[] {
+	const authStore = useAuthStore();
+
 	return [
 		{
 			title: "Home",
@@ -90,7 +92,7 @@ export function getMinimalNavigationItems(): AppSidebarItem[] {
 			title: "Profile",
 			url: "/account/settings",
 			icon: User,
-			visible: () => useAuthStore().isAuthenticated,
+			visible: () => authStore.isAuthenticated,
 		},
 	];
 }
