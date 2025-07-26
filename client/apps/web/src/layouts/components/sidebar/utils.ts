@@ -510,15 +510,26 @@ export function measureNavigationPerformance<T>(
 /**
  * Debounced cache clearing for better performance
  */
-let clearCacheTimeout: ReturnType<typeof setTimeout> | null = null;
 
-export function debouncedClearCache(delay = 1000): void {
-	if (clearCacheTimeout) {
-		clearTimeout(clearCacheTimeout);
+/**
+ * Debounced cache clearing for better performance and SSR/component safety
+ * Returns a cleanup function to cancel the timeout if needed
+ * Uses a shared timeout for true debouncing (module-level, SSR-safe)
+ */
+let debouncedCacheTimeout: ReturnType<typeof setTimeout> | null = null;
+export function debouncedClearCache(delay = 1000): () => void {
+	if (debouncedCacheTimeout) {
+		clearTimeout(debouncedCacheTimeout);
 	}
-
-	clearCacheTimeout = setTimeout(() => {
+	debouncedCacheTimeout = setTimeout(() => {
 		clearActiveParentsCache();
-		clearCacheTimeout = null;
+		debouncedCacheTimeout = null;
 	}, delay);
+	// Return cleanup function
+	return () => {
+		if (debouncedCacheTimeout) {
+			clearTimeout(debouncedCacheTimeout);
+			debouncedCacheTimeout = null;
+		}
+	};
 }
