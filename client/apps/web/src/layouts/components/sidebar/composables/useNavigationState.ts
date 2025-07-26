@@ -2,6 +2,8 @@
  * Navigation state management composable
  * Implements observer pattern for navigation state changes
  */
+
+import { debounce } from "@hatchgrid/utilities";
 import { computed, type Ref, reactive, watch } from "vue";
 import { useRoute } from "vue-router";
 import type { AppSidebarItem } from "../types";
@@ -170,14 +172,14 @@ export function useNavigationState(items: Ref<AppSidebarItem[]>) {
 		{ immediate: true },
 	);
 
-	// Watch for items changes
-	watch(
-		items,
-		(newItems) => {
-			navigationStateManager.updateRoute(route.path, newItems);
-		},
-		{ deep: true },
-	);
+	const debouncedUpdate = debounce((newItems: unknown) => {
+		navigationStateManager.updateRoute(
+			route.path,
+			newItems as AppSidebarItem[],
+		);
+	}, 100);
+
+	watch(items, debouncedUpdate, { deep: true });
 
 	// Reactive state
 	const state = computed(() => navigationStateManager.getState());

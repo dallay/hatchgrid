@@ -67,7 +67,7 @@ describe("Sidebar Utils", () => {
 			});
 			const item: AppSidebarItem = { title: "Test", visible: visibleFn };
 
-			// Should not throw, but return false or handle gracefully
+			// Should throw if visible function throws
 			expect(() => isVisible(item)).toThrow();
 		});
 
@@ -188,7 +188,7 @@ describe("Sidebar Utils", () => {
 			const accessFn = vi.fn().mockResolvedValue("truthy string");
 			const item: AppSidebarItem = { title: "Test", canAccess: accessFn };
 
-			// Should handle truthy values as true
+			// Should return the actual resolved value, not just boolean true
 			expect(await canAccess(item)).toBe("truthy string");
 		});
 	});

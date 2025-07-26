@@ -150,7 +150,7 @@ describe("AppSidebarItem Tooltip Integration", () => {
 		});
 
 		const menuButton = wrapper.findComponent({ name: "SidebarMenuButton" });
-		expect(menuButton.props("tooltip")).toBe("Navigation Item");
+		expect(menuButton.props("tooltip")).toBe("Untitled Item");
 	});
 
 	it("should handle tooltip for items with children", async () => {

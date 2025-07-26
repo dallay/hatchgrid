@@ -247,7 +247,7 @@ describe("AppSidebarItem", () => {
 		});
 
 		const menuButton = wrapper.findComponent({ name: "SidebarMenuButton" });
-		expect(menuButton.props("tooltip")).toBe("Navigation Item");
+		expect(menuButton.props("tooltip")).toBe("Untitled Item");
 	});
 
 	it("handles accessibility attributes correctly for collapsible items", async () => {
@@ -915,7 +915,7 @@ describe("AppSidebarItem", () => {
 			});
 
 			const menuButton = wrapper.findComponent({ name: "SidebarMenuButton" });
-			expect(menuButton.props("tooltip")).toBe("Navigation Item");
+			expect(menuButton.props("tooltip")).toBe("Untitled Item");
 		});
 
 		it("only shows tooltips for root level items (level 0)", async () => {

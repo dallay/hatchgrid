@@ -3,8 +3,14 @@
  * Provides consistent error handling and recovery strategies
  */
 
+export type SidebarErrorCode =
+	| "NAVIGATION_ERROR"
+	| "PERMISSION_ERROR"
+	| "VALIDATION_ERROR"
+	| "RENDER_ERROR";
+
 export interface SidebarError {
-	code: string;
+	code: SidebarErrorCode;
 	message: string;
 	recoverable: boolean;
 	timestamp: number;

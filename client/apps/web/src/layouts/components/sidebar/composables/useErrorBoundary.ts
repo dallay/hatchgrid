@@ -103,20 +103,20 @@ export function useSafeItemProcessing(item: ComputedRef<AppSidebarItem>) {
 
 	const safeItem = computed(() => {
 		try {
-			// Validate and sanitize the item
+			const currentItem = item.value;
+			const title = currentItem.title?.trim() || "Untitled Item";
+
+			// Validate and sanitize the item with better performance
 			const processedItem: AppSidebarItem = {
-				title: item.value.title?.trim() || "Untitled Item",
-				url: item.value.url?.trim() || undefined,
-				icon: item.value.icon,
-				isActive: Boolean(item.value.isActive),
-				tooltip:
-					item.value.tooltip?.trim() ||
-					item.value.title?.trim() ||
-					"Navigation Item",
-				visible: item.value.visible ?? true,
-				canAccess: item.value.canAccess,
-				items: item.value.items?.filter(
-					(child) =>
+				title,
+				url: currentItem.url?.trim() || undefined,
+				icon: currentItem.icon,
+				isActive: Boolean(currentItem.isActive),
+				tooltip: currentItem.tooltip?.trim() || title,
+				visible: currentItem.visible ?? true,
+				canAccess: currentItem.canAccess,
+				items: currentItem.items?.filter(
+					(child): child is AppSidebarItem =>
 						child &&
 						typeof child === "object" &&
 						typeof child.title === "string" &&

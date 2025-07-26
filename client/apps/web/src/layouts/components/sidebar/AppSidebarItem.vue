@@ -13,9 +13,9 @@
  * @component
  */
 import { ChevronRight } from "lucide-vue-next";
-import { computed, onUnmounted } from "vue";
+import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { LRUCache } from "@/cache/lru.cache";
+
 import {
 	Collapsible,
 	CollapsibleContent,
@@ -57,58 +57,33 @@ const filteredChildren = computed(() => safeChildren.value);
 // Check if item has children (using filtered children for better validation)
 const hasChildren = computed(() => filteredChildren.value.length > 0);
 
-// Memoized safe title with fallback - shared across computeds
-const safeTitle = computed(() => {
-	const title = safeItem.value.title?.trim();
-	return title && title.length > 0 ? title : "Navigation Item";
+// Single computed for all display properties to reduce reactivity overhead
+const displayProps = computed(() => {
+	const title = safeItem.value.title?.trim() || "Navigation Item";
+	const tooltip = safeItem.value.tooltip?.trim() || title;
+	const hasChildrenValue = filteredChildren.value.length > 0;
+
+	return {
+		title,
+		tooltip,
+		hasChildren: hasChildrenValue,
+		ariaLabel: hasChildrenValue
+			? `${title} ${props.level === 0 ? "menu" : "submenu"}, ${isActive.value ? "expanded" : "collapsed"}`
+			: title,
+		role: hasChildrenValue ? "button" : props.item.url ? "link" : "button",
+		component: props.item.url ? "a" : "button",
+	};
 });
 
-// Memoized tooltip text with fallback
-const tooltipText = computed(() => {
-	const tooltip = safeItem.value.tooltip?.trim();
-	return tooltip && tooltip.length > 0 ? tooltip : safeTitle.value;
-});
-
-// Memoized ARIA label computation with better accessibility
-const ariaLabel = computed(() => {
-	if (!hasChildren.value) return safeTitle.value;
-
-	const menuType = props.level === 0 ? "menu" : "submenu";
-	const expandedState = isActive.value ? "expanded" : "collapsed";
-	return `${safeTitle.value} ${menuType}, ${expandedState}`;
-});
-
-// Improved role determination for better screen reader support
-const roleAttribute = computed(() => {
-	if (hasChildren.value) return "button";
-	return props.item.url ? "link" : "button";
-});
-
-const MAX_CACHE_SIZE = 1000;
-const keyCache = new LRUCache<string, string>(MAX_CACHE_SIZE);
-
-const getChildKey = (childItem: AppSidebarItem, index: number): string => {
-	// Create cache key from item properties
-	const cacheKey = `${childItem.url || ""}-${childItem.title}-${index}-${props.level}`;
-
-	const cachedKey = keyCache.get(cacheKey);
-	if (cachedKey) {
-		return cachedKey;
-	}
-
-	// Use URL as primary key, fallback to title-index combination
-	const key = childItem.url || `${props.level}-${childItem.title}-${index}`;
-	keyCache.set(cacheKey, key);
-	return key;
+// Optimized key generation without caching overhead
+const getChildKey = (
+	childItem: AppSidebarItem,
+	index: number,
+	level: number,
+): string => {
+	// Use URL as primary key for uniqueness, fallback to deterministic combination
+	return childItem.url || `${level}-${childItem.title}-${index}`;
 };
-
-// Cleanup on unmount
-onUnmounted(() => {
-	keyCache.clear();
-});
-
-// Memoized component type determination
-const linkComponent = computed(() => (props.item.url ? "a" : "button"));
 </script>
 
 <template>
@@ -120,16 +95,16 @@ const linkComponent = computed(() => (props.item.url ? "a" : "button"));
           <div>
             <CollapsibleTrigger as-child>
               <SidebarMenuButton
-                :tooltip="tooltipText"
+                :tooltip="displayProps.tooltip"
                 :is-active="isActive"
-                :as="linkComponent"
+                :as="displayProps.component"
                 :href="item.url"
-                :role="roleAttribute"
+                :role="displayProps.role"
                 :aria-expanded="isActive"
-                :aria-label="ariaLabel"
+                :aria-label="displayProps.ariaLabel"
               >
                 <component :is="item.icon" v-if="item.icon" />
-                <span>{{ item.title }}</span>
+                <span>{{ displayProps.title }}</span>
                 <ChevronRight
                   class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
                   aria-hidden="true"
@@ -140,7 +115,7 @@ const linkComponent = computed(() => (props.item.url ? "a" : "button"));
               <SidebarMenuSub>
                 <AppSidebarItem
                   v-for="(childItem, index) in filteredChildren"
-                  :key="getChildKey(childItem, index)"
+                  :key="getChildKey(childItem, index, level + 1)"
                   :item="childItem"
                   :level="level + 1"
                 />
@@ -152,14 +127,14 @@ const linkComponent = computed(() => (props.item.url ? "a" : "button"));
 
       <template v-else>
         <SidebarMenuButton
-          :tooltip="tooltipText"
+          :tooltip="displayProps.tooltip"
           :is-active="isActive"
-          :as="linkComponent"
+          :as="displayProps.component"
           :href="item.url"
-          :role="roleAttribute"
+          :role="displayProps.role"
         >
           <component :is="item.icon" v-if="item.icon" />
-          <span>{{ item.title }}</span>
+          <span>{{ displayProps.title }}</span>
         </SidebarMenuButton>
       </template>
     </SidebarMenuItem>
@@ -173,14 +148,14 @@ const linkComponent = computed(() => (props.item.url ? "a" : "button"));
           <CollapsibleTrigger as-child>
             <SidebarMenuSubButton
               :is-active="isActive"
-              :as="linkComponent"
+              :as="displayProps.component"
               :href="item.url"
               :aria-expanded="isActive"
-              :aria-label="ariaLabel"
+              :aria-label="displayProps.ariaLabel"
               class="w-full"
             >
               <component :is="item.icon" v-if="item.icon" />
-              <span>{{ item.title }}</span>
+              <span>{{ displayProps.title }}</span>
               <ChevronRight
                 class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
                 aria-hidden="true"
@@ -191,7 +166,7 @@ const linkComponent = computed(() => (props.item.url ? "a" : "button"));
             <div class="ml-4 mt-1 space-y-1">
               <AppSidebarItem
                 v-for="(childItem, index) in filteredChildren"
-                :key="getChildKey(childItem, index)"
+                :key="getChildKey(childItem, index, level + 1)"
                 :item="childItem"
                 :level="level + 1"
               />
@@ -201,9 +176,9 @@ const linkComponent = computed(() => (props.item.url ? "a" : "button"));
       </template>
 
       <template v-else>
-        <SidebarMenuSubButton :is-active="isActive" :as="linkComponent" :href="item.url">
+        <SidebarMenuSubButton :is-active="isActive" :as="displayProps.component" :href="item.url">
           <component :is="item.icon" v-if="item.icon" />
-          <span>{{ item.title }}</span>
+          <span>{{ displayProps.title }}</span>
         </SidebarMenuSubButton>
       </template>
     </SidebarMenuSubItem>

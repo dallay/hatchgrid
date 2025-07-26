@@ -1,3 +1,4 @@
+import { LRUCache } from "@/cache/lru.cache";
 import type { AppSidebarItem, Result } from "./types";
 
 /**
@@ -74,111 +75,10 @@ export async function filterNavItems(
 	return results;
 }
 
-// Enhanced memoization cache with proper LRU eviction
-const MAX_CACHE_SIZE = 100;
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
-interface CacheEntry<T> {
-	value: T;
-	lastAccessed: number;
-	createdAt: number;
-}
-
-class LRUCache<T> {
-	private cache = new Map<string, CacheEntry<T>>();
-	private accessOrder = new Set<string>();
-	private hitCount = 0;
-	private missCount = 0;
-
-	get(key: string): T | undefined {
-		const entry = this.cache.get(key);
-		if (!entry) {
-			this.missCount++;
-			return undefined;
-		}
-
-		// Check TTL
-		if (Date.now() - entry.createdAt > CACHE_TTL) {
-			this.cache.delete(key);
-			this.accessOrder.delete(key);
-			this.missCount++;
-			return undefined;
-		}
-
-		// Update access order
-		this.accessOrder.delete(key);
-		this.accessOrder.add(key);
-		entry.lastAccessed = Date.now();
-
-		this.hitCount++;
-		return entry.value;
-	}
-
-	set(key: string, value: T): void {
-		const now = Date.now();
-
-		// Evict oldest entries if cache is full
-		if (this.cache.size >= MAX_CACHE_SIZE) {
-			this.evictLRU();
-		}
-
-		// Remove existing entry to update access order
-		if (this.cache.has(key)) {
-			this.accessOrder.delete(key);
-		}
-
-		this.cache.set(key, {
-			value,
-			lastAccessed: now,
-			createdAt: now,
-		});
-		this.accessOrder.add(key);
-	}
-
-	clear(): void {
-		this.cache.clear();
-		this.accessOrder.clear();
-		this.hitCount = 0;
-		this.missCount = 0;
-	}
-
-	private evictLRU(): void {
-		const oldestKey = this.accessOrder.values().next().value;
-		if (oldestKey) {
-			this.cache.delete(oldestKey);
-			this.accessOrder.delete(oldestKey);
-		}
-	}
-
-	// Cleanup expired entries
-	private cleanup(): void {
-		const now = Date.now();
-		const expiredKeys: string[] = [];
-
-		for (const [key, entry] of this.cache.entries()) {
-			if (now - entry.createdAt > CACHE_TTL) {
-				expiredKeys.push(key);
-			}
-		}
-
-		for (const key of expiredKeys) {
-			this.cache.delete(key);
-			this.accessOrder.delete(key);
-		}
-	}
-
-	getStats() {
-		this.cleanup(); // Clean up before reporting stats
-		return {
-			size: this.cache.size,
-			hitCount: this.hitCount,
-			missCount: this.missCount,
-			hitRate: this.hitCount / (this.hitCount + this.missCount) || 0,
-		};
-	}
-}
-
-const activeStateCache = new LRUCache<boolean>();
+const activeStateCache = new LRUCache<boolean>({
+	maxSize: 100,
+	ttl: 5 * 60 * 1000,
+});
 
 /**
  * Checks if a sidebar item or any of its children is active
@@ -219,8 +119,10 @@ export function isItemActive(
 	return result;
 }
 
-// Cache for active parent calculations to avoid repeated computations
-const activeParentsCache = new Map<string, string[]>();
+const activeParentsCache = new LRUCache<string[]>({
+	maxSize: 50,
+	ttl: 5 * 60 * 1000,
+});
 
 /**
  * Finds all parent items that contain an active child
@@ -234,9 +136,8 @@ export function findActiveParents(
 	items: readonly AppSidebarItem[],
 	currentRoute: string,
 ): string[] {
-	// Create a more efficient cache key using a simple hash approach
-	const itemsHash = items.map((i) => `${i.title}:${i.url || ""}`).join("|");
-	const cacheKey = `${currentRoute}-${itemsHash}`;
+	// More efficient cache key generation - avoid expensive string operations
+	const cacheKey = `${currentRoute}-${items.length}`;
 
 	const cachedResult = activeParentsCache.get(cacheKey);
 	if (cachedResult) {
