@@ -15,7 +15,7 @@ export function useItemValidation(item: ComputedRef<AppSidebarItem>) {
 		const currentItem = item.value;
 
 		// Required field validation
-		if (!currentItem.title || typeof currentItem.title !== "string") {
+		if (!currentItem.title) {
 			errors.push("Title is required and must be a string");
 		} else if (currentItem.title.trim().length === 0) {
 			errors.push("Title cannot be empty");
@@ -23,9 +23,7 @@ export function useItemValidation(item: ComputedRef<AppSidebarItem>) {
 
 		// Optional field validation
 		if (currentItem.url !== undefined) {
-			if (typeof currentItem.url !== "string") {
-				errors.push("URL must be a string");
-			} else if (currentItem.url.trim().length === 0) {
+			if (currentItem.url.trim().length === 0) {
 				errors.push("URL cannot be empty");
 			} else if (
 				!currentItem.url.startsWith("/") &&
@@ -35,17 +33,11 @@ export function useItemValidation(item: ComputedRef<AppSidebarItem>) {
 			}
 		}
 
-		if (
-			currentItem.tooltip !== undefined &&
-			typeof currentItem.tooltip !== "string"
-		) {
+		if (currentItem.tooltip !== undefined) {
 			errors.push("Tooltip must be a string");
 		}
 
-		if (
-			currentItem.isActive !== undefined &&
-			typeof currentItem.isActive !== "boolean"
-		) {
+		if (currentItem.isActive !== undefined) {
 			errors.push("isActive must be a boolean");
 		}
 
@@ -81,10 +73,7 @@ export function useItemValidation(item: ComputedRef<AppSidebarItem>) {
 		const currentItem = item.value;
 
 		return {
-			title:
-				typeof currentItem.title === "string"
-					? currentItem.title.trim()
-					: "Navigation Item",
+			title: currentItem.title.trim(),
 			url:
 				typeof currentItem.url === "string"
 					? currentItem.url.trim() || undefined
@@ -94,9 +83,7 @@ export function useItemValidation(item: ComputedRef<AppSidebarItem>) {
 			tooltip:
 				typeof currentItem.tooltip === "string" && currentItem.tooltip.trim()
 					? currentItem.tooltip.trim()
-					: typeof currentItem.title === "string"
-						? currentItem.title.trim()
-						: "Navigation Item",
+					: currentItem.title.trim(),
 			visible: currentItem.visible ?? true,
 			canAccess: currentItem.canAccess,
 			items: Array.isArray(currentItem.items) ? currentItem.items : undefined,
