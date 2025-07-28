@@ -7,7 +7,7 @@
  * @property {string | undefined | null} prevPageCursor - The cursor for the previous page, if available.
  * @property {string | undefined | null} nextPageCursor - The cursor for the next page, if available.
  */
-import type DataResponse from "./DataResponse.ts";
+import type DataResponse from "./DataResponse";
 
 export default interface PageResponse<T> extends DataResponse<T> {
 	readonly prevPageCursor: string | undefined | null;
