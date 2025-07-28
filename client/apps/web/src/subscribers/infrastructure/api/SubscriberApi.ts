@@ -5,6 +5,7 @@
 
 import axios, { type AxiosResponse, isAxiosError } from "axios";
 import type PageResponse from "@/shared/PageResponse";
+import type { SubscriberRepository } from "@/subscribers/domain";
 import type {
 	CountByStatusResponse,
 	CountByTagsResponse,
@@ -17,7 +18,6 @@ import {
 	countByTagsArraySchema,
 	subscribersArraySchema,
 } from "../../domain/models";
-import type { SubscriberRepository } from "../../domain/repositories/SubscriberRepository";
 
 /**
  * API response types that match the backend structure

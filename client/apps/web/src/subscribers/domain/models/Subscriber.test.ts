@@ -125,18 +125,17 @@ describe("Attributes interface", () => {
 		expect(Object.keys(attributes)).toHaveLength(0);
 	});
 
-  it("should handle Date objects and string dates correctly", () => {
-    const subscriberWithDateObject: Subscriber = {
-      id: "123e4567-e89b-12d3-a456-426614174000",
-      email: "test@example.com",
-      status: SubscriberStatus.ENABLED,
-      workspaceId: "123e4567-e89b-12d3-a456-426614174001",
-      createdAt: new Date("2024-01-01T00:00:00Z"),
-      updatedAt: "2024-01-01T00:00:00Z",
-    };
+	it("should handle Date objects and string dates correctly", () => {
+		const subscriberWithDateObject: Subscriber = {
+			id: "123e4567-e89b-12d3-a456-426614174000",
+			email: "test@example.com",
+			status: SubscriberStatus.ENABLED,
+			workspaceId: "123e4567-e89b-12d3-a456-426614174001",
+			createdAt: new Date("2024-01-01T00:00:00Z"),
+			updatedAt: "2024-01-01T00:00:00Z",
+		};
 
-    expect(subscriberWithDateObject.createdAt).toBeInstanceOf(Date);
-    expect(typeof subscriberWithDateObject.updatedAt).toBe('string');
-  });
+		expect(subscriberWithDateObject.createdAt).toBeInstanceOf(Date);
+		expect(typeof subscriberWithDateObject.updatedAt).toBe("string");
+	});
 });
-
