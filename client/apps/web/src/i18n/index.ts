@@ -1,5 +1,5 @@
 import { createI18n } from "vue-i18n";
-import { getLocaleModules, getLocaleModulesSync } from "./load.locales.ts";
+import { getLocaleModules, getLocaleModulesSync } from "./load.locales";
 
 export interface Language {
 	name: string;

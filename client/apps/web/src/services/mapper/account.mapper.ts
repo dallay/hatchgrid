@@ -1,6 +1,6 @@
 import { avatar } from "@hatchgrid/utilities";
-import type { Account } from "@/security/account.model.ts";
-import type { UserResponse } from "@/services/response/user.response.ts";
+import type { Account } from "@/security/account.model";
+import type { UserResponse } from "@/services/response/user.response";
 
 export function transformUserResponseToAccount(data: UserResponse): Account {
 	return {

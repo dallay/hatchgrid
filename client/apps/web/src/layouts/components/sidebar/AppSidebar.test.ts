@@ -9,7 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick, ref } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import AppSidebar from "./AppSidebar.vue";
-import type { AppSidebarItem } from "./types.ts";
+import type { AppSidebarItem } from "./types";
 
 // Mock the UI components
 vi.mock("@/components/ui/sidebar", () => ({

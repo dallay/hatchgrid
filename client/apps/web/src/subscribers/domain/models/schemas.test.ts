@@ -15,7 +15,7 @@ import {
 	subscriberSchema,
 	subscriberStatusSchema,
 	subscribersArraySchema,
-} from "./schemas.ts";
+} from "./schemas";
 
 describe("subscriberStatusSchema", () => {
 	it("should validate valid status values", () => {

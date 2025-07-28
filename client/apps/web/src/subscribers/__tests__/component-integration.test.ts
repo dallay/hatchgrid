@@ -8,7 +8,7 @@ import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Subscriber } from "@/subscribers"; // adjust import as needed
 import { SubscriberStatus } from "@/subscribers";
-import { repositoryMock } from "@/subscribers/__tests__/repository.mock.ts";
+import { repositoryMock } from "@/subscribers/__tests__/repository.mock";
 import { resetInitialization } from "@/subscribers/di";
 import type { SubscriberRepository } from "@/subscribers/domain";
 import { configureContainer, resetContainer } from "../di/container";
