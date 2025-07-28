@@ -1101,7 +1101,6 @@
 │   │       │   │   │   ├───components/
 │   │       │   │   │   │   ├───SubscriberList.test.ts
 │   │       │   │   │   │   ├───SubscriberList.vue
-│   │       │   │   │   │   ├───SubscriberListDemo.vue
 │   │       │   │   │   │   └───index.ts
 │   │       │   │   │   ├───views/
 │   │       │   │   │   │   ├───__tests__/

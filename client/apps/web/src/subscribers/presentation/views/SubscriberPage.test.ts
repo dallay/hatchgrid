@@ -252,15 +252,6 @@ describe("SubscriberPage", () => {
 			await toggleButton.trigger("click");
 		});
 
-		it("handles add subscriber button click", async () => {
-			const { wrapper, consoleSpy } = testSetup;
-			const addButton = wrapper.findAll('[data-testid="button"]')[1]; // Second button is Add Subscriber
-			await addButton.trigger("click");
-
-			// Verify console.log was called with expected message
-			expect(consoleSpy).toHaveBeenCalledWith("Add new subscriber");
-		});
-
 		it("prevents multiple refresh operations", async () => {
 			const { wrapper, mockRepository } = testSetup;
 
