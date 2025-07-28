@@ -7,6 +7,4 @@
  */
 import type ApiResponse from "./ApiResponse";
 
-export default interface DataResponse<T> extends ApiResponse<T> {
-	readonly data: T[];
-}
+export default interface DataResponse<T> extends ApiResponse<T> {}
