@@ -244,7 +244,10 @@ describe("Architecture Isolation", () => {
 					].some((layer) => isAbsoluteImportToLayer(importPath, layer));
 
 					if (isFromOtherLayer) {
-						expect(false).toBe(true); // Force failure with descriptive message
+						expect(false).toBe(true);
+						expect.fail(
+							`Domain file ${file} has forbidden import: ${importPath}`,
+						);
 					}
 				}
 			}
