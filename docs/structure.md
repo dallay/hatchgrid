@@ -1057,7 +1057,8 @@
 │   │       │   │   ├───__tests__/
 │   │       │   │   │   ├───architecture-isolation.test.ts
 │   │       │   │   │   ├───component-integration.test.ts
-│   │       │   │   │   └───integration.test.ts
+│   │       │   │   │   ├───integration.test.ts
+│   │       │   │   │   └───repository.mock.ts
 │   │       │   │   ├───composables/
 │   │       │   │   │   ├───index.ts
 │   │       │   │   │   └───useSubscribers.ts
