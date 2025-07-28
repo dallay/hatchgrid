@@ -4,6 +4,7 @@
 
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { createUseCases } from "@/subscribers/di";
 import {
 	getInitializedStore,
 	initializeSubscribersModule,
@@ -49,6 +50,9 @@ describe("Dependency Injection Initialization", () => {
 		it("should initialize the store with use cases", () => {
 			initializeSubscribersModule();
 			// If initializeSubscribersModule does not throw, store is initialized and functional
+			const store = getInitializedStore();
+			expect(store).toBeDefined();
+			expect(typeof store.fetchSubscribers).toBe("function");
 		});
 	});
 
@@ -136,5 +140,30 @@ describe("Dependency Injection Initialization", () => {
 
 			expect(isSubscribersModuleInitialized()).toBe(false);
 		});
+	});
+	it("should handle createUseCases failure", () => {
+		const mockCreateUseCases = vi.mocked(createUseCases);
+		mockCreateUseCases.mockImplementationOnce(() => {
+			throw new Error("Failed to create use cases");
+		});
+
+		expect(() => initializeSubscribersModule()).toThrow(
+			"Failed to initialize subscribers module: Failed to create use cases",
+		);
+		expect(isSubscribersModuleInitialized()).toBe(false);
+	});
+
+	it("should handle concurrent initialization attempts", async () => {
+		const promises = Array(5)
+			.fill(null)
+			.map(() =>
+				Promise.resolve().then(() => safeInitializeSubscribersModule()),
+			);
+
+		await Promise.all(promises);
+
+		// Should initialize only once despite concurrent attempts
+		expect(isSubscribersModuleInitialized()).toBe(true);
+		expect(vi.mocked(createUseCases)).toHaveBeenCalledTimes(1);
 	});
 });
