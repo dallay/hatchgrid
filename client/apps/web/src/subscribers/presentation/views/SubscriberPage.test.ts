@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { Subscriber } from "../../domain/models";
+import type { Subscriber } from "@/subscribers";
 import {
 	createControllablePromise,
 	createMockRepository,
@@ -189,6 +189,44 @@ describe("SubscriberPage", () => {
 			const alert = wrapper.find('[data-testid="alert"]');
 			expect(alert.exists()).toBe(true);
 			expect(wrapper.text()).toContain("Test error message");
+		});
+
+		it("shows network error message when a network error occurs", async () => {
+			const { wrapper, store, mockRepository } = testSetup;
+
+			// Simulate a network error (e.g., fetch throws a TypeError)
+			mockRepository.fetchAll = vi
+				.fn()
+				.mockRejectedValue(new TypeError("Failed to fetch"));
+
+			await store.fetchAllData("d2054881-b8c1-4bfa-93ce-a0e94d003ead");
+			await wrapper.vm.$nextTick();
+
+			const alert = wrapper.find('[data-testid="alert"]');
+			expect(alert.exists()).toBe(true);
+			expect(wrapper.text()).toMatch(/network|fetch/i);
+		});
+
+		it("shows validation error message when a validation error occurs", async () => {
+			const { wrapper, store, mockRepository } = testSetup;
+
+			// Simulate a validation error (custom error type)
+			class ValidationError extends Error {
+				constructor(message: string) {
+					super(message);
+					this.name = "ValidationError";
+				}
+			}
+			mockRepository.fetchAll = vi
+				.fn()
+				.mockRejectedValue(new ValidationError("Invalid subscriber data"));
+
+			await store.fetchAllData("d2054881-b8c1-4bfa-93ce-a0e94d003ead");
+			await wrapper.vm.$nextTick();
+
+			const alert = wrapper.find('[data-testid="alert"]');
+			expect(alert.exists()).toBe(true);
+			expect(wrapper.text()).toContain("Invalid subscriber data");
 		});
 	});
 
