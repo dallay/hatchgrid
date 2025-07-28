@@ -1,12 +1,14 @@
+import type { SubscriberStatus } from "@/subscribers";
+
 /**
  * Represents the count of subscribers for a specific status.
  *
  * @property count - The number of subscribers with the given status.
- * @property status - The status name (e.g., "active", "inactive").
+ * @property status - The status of the subscribers (e.g., ENABLED, DISABLED).
  */
 export interface CountByStatusResponse {
 	readonly count: number;
-	readonly status: string;
+	readonly status: SubscriberStatus;
 }
 
 /**

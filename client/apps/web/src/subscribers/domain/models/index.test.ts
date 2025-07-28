@@ -15,11 +15,9 @@ import {
 	countByStatusResponseSchema,
 	countByTagsArraySchema,
 	countByTagsResponseSchema,
-	// Types
 	type Subscriber,
 	type SubscriberSchemaType,
 	SubscriberStatus,
-	// Schemas
 	subscriberSchema,
 	subscriberStatusSchema,
 	subscribersArraySchema,
@@ -42,7 +40,7 @@ describe("Domain models index exports", () => {
 
 		const countByStatus: CountByStatusResponse = {
 			count: 10,
-			status: "ENABLED",
+			status: SubscriberStatus.ENABLED,
 		};
 
 		const countByTags: CountByTagsResponse = {
@@ -98,7 +96,10 @@ describe("Domain models index exports", () => {
 
 		// countByStatusResponseSchema
 		expect(() =>
-			countByStatusResponseSchema.parse({ status: "ENABLED", count: 1 }),
+			countByStatusResponseSchema.parse({
+				status: SubscriberStatus.ENABLED,
+				count: 1,
+			}),
 		).not.toThrow();
 		expect(() =>
 			countByStatusResponseSchema.parse({ status: 123, count: "bad" }),
@@ -118,7 +119,9 @@ describe("Domain models index exports", () => {
 
 		// countByStatusArraySchema
 		expect(() =>
-			countByStatusArraySchema.parse([{ status: "ENABLED", count: 1 }]),
+			countByStatusArraySchema.parse([
+				{ status: SubscriberStatus.ENABLED, count: 1 },
+			]),
 		).not.toThrow();
 		expect(() =>
 			countByStatusArraySchema.parse([{ status: 123, count: "bad" }]),

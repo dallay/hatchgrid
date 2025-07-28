@@ -85,7 +85,7 @@ describe("CountByStatusResponse interface", () => {
 	it("should accept valid count by status data", () => {
 		const response: CountByStatusResponse = {
 			count: 42,
-			status: "ENABLED",
+			status: SubscriberStatus.ENABLED,
 		};
 
 		expect(response.count).toBe(42);
