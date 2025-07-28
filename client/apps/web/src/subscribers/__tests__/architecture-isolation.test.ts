@@ -53,7 +53,7 @@ function extractImports(filePath: string): string[] {
 
 		// Static imports: import ... from '...'
 		const staticImportRegex =
-			/import\s+(?:(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)(?:\s*,\s*(?:\{[^}]*\}|\*\s+as\s+\w+|\w+))*\s+from\s+)?['"]([^'"]+)['"]/g;
+			/import\s+(?:(?:\{[^}]*}|\*\s+as\s+\w+|\w+)(?:\s*,\s*(?:\{[^}]*}|\*\s+as\s+\w+|\w+))*\s+from\s+)?['"]([^'"]+)['"]/g;
 		let match = staticImportRegex.exec(content);
 		while (match !== null) {
 			imports.push(match[1]);
@@ -88,7 +88,6 @@ function extractImports(filePath: string): string[] {
  */
 function isRelativeImportToLayer(
 	importPath: string,
-	_currentLayer: string,
 	targetLayer: string,
 ): boolean {
 	// Check for relative imports that go to another layer
@@ -143,7 +142,7 @@ describe("Architecture Isolation", () => {
 
 				for (const importPath of imports) {
 					if (
-						isRelativeImportToLayer(importPath, "domain", "infrastructure") ||
+						isRelativeImportToLayer(importPath, "infrastructure") ||
 						isAbsoluteImportToLayer(importPath, "infrastructure")
 					) {
 						violations.push(
@@ -165,7 +164,7 @@ describe("Architecture Isolation", () => {
 
 				for (const importPath of imports) {
 					if (
-						isRelativeImportToLayer(importPath, "domain", "presentation") ||
+						isRelativeImportToLayer(importPath, "presentation") ||
 						isAbsoluteImportToLayer(importPath, "presentation")
 					) {
 						violations.push(`${file} imports from presentation: ${importPath}`);
@@ -185,7 +184,7 @@ describe("Architecture Isolation", () => {
 
 				for (const importPath of imports) {
 					if (
-						isRelativeImportToLayer(importPath, "domain", "store") ||
+						isRelativeImportToLayer(importPath, "store") ||
 						isAbsoluteImportToLayer(importPath, "store")
 					) {
 						violations.push(`${file} imports from store: ${importPath}`);
@@ -205,7 +204,7 @@ describe("Architecture Isolation", () => {
 
 				for (const importPath of imports) {
 					if (
-						isRelativeImportToLayer(importPath, "domain", "di") ||
+						isRelativeImportToLayer(importPath, "di") ||
 						isAbsoluteImportToLayer(importPath, "di")
 					) {
 						violations.push(`${file} imports from DI: ${importPath}`);
@@ -266,11 +265,7 @@ describe("Architecture Isolation", () => {
 
 				for (const importPath of imports) {
 					if (
-						isRelativeImportToLayer(
-							importPath,
-							"infrastructure",
-							"presentation",
-						) ||
+						isRelativeImportToLayer(importPath, "presentation") ||
 						isAbsoluteImportToLayer(importPath, "presentation")
 					) {
 						violations.push(`${file} imports from presentation: ${importPath}`);
@@ -292,7 +287,7 @@ describe("Architecture Isolation", () => {
 
 				for (const importPath of imports) {
 					if (
-						isRelativeImportToLayer(importPath, "infrastructure", "store") ||
+						isRelativeImportToLayer(importPath, "store") ||
 						isAbsoluteImportToLayer(importPath, "store")
 					) {
 						violations.push(`${file} imports from store: ${importPath}`);
@@ -314,7 +309,7 @@ describe("Architecture Isolation", () => {
 
 				for (const importPath of imports) {
 					if (
-						isRelativeImportToLayer(importPath, "infrastructure", "domain") ||
+						isRelativeImportToLayer(importPath, "domain") ||
 						isAbsoluteImportToLayer(importPath, "domain")
 					) {
 						hasDomainImports = true;
@@ -325,7 +320,7 @@ describe("Architecture Isolation", () => {
 				if (hasDomainImports) break;
 			}
 
-			// Infrastructure should import from domain (this is expected and correct)
+			// Infrastructure should import from a domain (this is expected and correct)
 			expect(hasDomainImports).toBe(true);
 		});
 	});
@@ -342,11 +337,7 @@ describe("Architecture Isolation", () => {
 
 				for (const importPath of imports) {
 					if (
-						isRelativeImportToLayer(
-							importPath,
-							"presentation",
-							"infrastructure",
-						) ||
+						isRelativeImportToLayer(importPath, "infrastructure") ||
 						isAbsoluteImportToLayer(importPath, "infrastructure")
 					) {
 						violations.push(
@@ -421,7 +412,7 @@ describe("Architecture Isolation", () => {
 
 				for (const importPath of imports) {
 					if (
-						isRelativeImportToLayer(importPath, "store", "presentation") ||
+						isRelativeImportToLayer(importPath, "presentation") ||
 						isAbsoluteImportToLayer(importPath, "presentation")
 					) {
 						violations.push(`${file} imports from presentation: ${importPath}`);
@@ -441,7 +432,7 @@ describe("Architecture Isolation", () => {
 
 				for (const importPath of imports) {
 					if (
-						isRelativeImportToLayer(importPath, "store", "infrastructure") ||
+						isRelativeImportToLayer(importPath, "infrastructure") ||
 						isAbsoluteImportToLayer(importPath, "infrastructure")
 					) {
 						violations.push(
@@ -474,20 +465,20 @@ describe("Architecture Isolation", () => {
 
 				for (const importPath of imports) {
 					if (
-						isAbsoluteImportToLayer(importPath, "domain") ||
-						isRelativeImportToLayer(importPath, "di", "domain")
+						isRelativeImportToLayer(importPath, "domain") ||
+						isAbsoluteImportToLayer(importPath, "domain")
 					) {
 						layersImported.add("domain");
 					}
 					if (
-						isAbsoluteImportToLayer(importPath, "infrastructure") ||
-						isRelativeImportToLayer(importPath, "di", "infrastructure")
+						isRelativeImportToLayer(importPath, "infrastructure") ||
+						isAbsoluteImportToLayer(importPath, "infrastructure")
 					) {
 						layersImported.add("infrastructure");
 					}
 					if (
-						isAbsoluteImportToLayer(importPath, "store") ||
-						isRelativeImportToLayer(importPath, "di", "store")
+						isRelativeImportToLayer(importPath, "store") ||
+						isAbsoluteImportToLayer(importPath, "store")
 					) {
 						layersImported.add("store");
 					}
@@ -508,7 +499,7 @@ describe("Architecture Isolation", () => {
 
 				for (const importPath of imports) {
 					if (
-						isRelativeImportToLayer(importPath, "domain", "di") ||
+						isRelativeImportToLayer(importPath, "di") ||
 						isAbsoluteImportToLayer(importPath, "di")
 					) {
 						violations.push(`${file} imports from DI: ${importPath}`);
@@ -548,7 +539,7 @@ describe("Architecture Isolation", () => {
 					["infrastructure", "presentation", "store", "di"].some(
 						(layer) =>
 							isAbsoluteImportToLayer(imp, layer) ||
-							isRelativeImportToLayer(imp, "domain", layer),
+							isRelativeImportToLayer(imp, layer),
 					),
 				);
 				expect(invalidImports).toEqual([]);
@@ -561,7 +552,7 @@ describe("Architecture Isolation", () => {
 					["presentation", "store"].some(
 						(layer) =>
 							isAbsoluteImportToLayer(imp, layer) ||
-							isRelativeImportToLayer(imp, "infrastructure", layer),
+							isRelativeImportToLayer(imp, layer),
 					),
 				);
 				expect(invalidImports).toEqual([]);
@@ -573,7 +564,7 @@ describe("Architecture Isolation", () => {
 				const invalidImports = imports.filter(
 					(imp) =>
 						isAbsoluteImportToLayer(imp, "infrastructure") ||
-						isRelativeImportToLayer(imp, "presentation", "infrastructure") ||
+						isRelativeImportToLayer(imp, "infrastructure") ||
 						imp.includes("/domain/usecases/"),
 				);
 				expect(invalidImports).toEqual([]);
@@ -586,7 +577,7 @@ describe("Architecture Isolation", () => {
 					["presentation", "infrastructure"].some(
 						(layer) =>
 							isAbsoluteImportToLayer(imp, layer) ||
-							isRelativeImportToLayer(imp, "store", layer),
+							isRelativeImportToLayer(imp, layer),
 					),
 				);
 				expect(invalidImports).toEqual([]);
@@ -616,7 +607,7 @@ describe("Architecture Isolation", () => {
 						if (
 							targetLayer !== layer &&
 							(isAbsoluteImportToLayer(importPath, targetLayer) ||
-								isRelativeImportToLayer(importPath, layer, targetLayer) ||
+								isRelativeImportToLayer(importPath, targetLayer) ||
 								(importPath.includes("../domain/") &&
 									targetLayer === "domain") ||
 								(importPath.includes("../infrastructure/") &&
