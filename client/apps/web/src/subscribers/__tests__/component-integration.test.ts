@@ -152,12 +152,12 @@ describe("Subscribers Component Integration", () => {
 		});
 
 		it("should handle loading states", async () => {
-			// Mock a slow repository response
-			mockRepository.fetchAll = vi
-				.fn()
-				.mockImplementation(
-					() => new Promise((resolve) => setTimeout(resolve, 100)),
-				);
+			// Create a deferred promise
+			let resolveFetch: (value: any) => void;
+			const fetchPromise = new Promise((resolve) => {
+				resolveFetch = resolve;
+			});
+			mockRepository.fetchAll = vi.fn().mockImplementation(() => fetchPromise);
 
 			const wrapper = mount(SubscriberPage, {
 				global: {
@@ -167,9 +167,27 @@ describe("Subscribers Component Integration", () => {
 
 			await wrapper.vm.$nextTick();
 
-			// Should show loading state initially
-			// Note: This test would need to be adjusted based on the actual SubscriberPage implementation
-			expect(wrapper.vm).toBeDefined();
+			// Assert loading text is present
+			expect(wrapper.text()).toContain("Loading");
+
+			// Resolve fetchAll and wait for UI update
+			resolveFetch!([
+				{
+					id: "1",
+					email: "user1@example.com",
+					name: "User One",
+					status: SubscriberStatus.ENABLED,
+					workspaceId: "d2054881-b8c1-4bfa-93ce-a0e94d003ead",
+					createdAt: "2024-01-01T00:00:00Z",
+					updatedAt: "2024-01-01T00:00:00Z",
+				},
+			]);
+			await fetchPromise;
+			await wrapper.vm.$nextTick();
+
+			// Assert loading skeleton is gone
+			const loadingElAfter = wrapper.find('[data-testid="subscriber-loading"], .skeleton, .loading');
+			expect(loadingElAfter.exists()).toBe(false);
 		});
 	});
 
@@ -226,10 +244,7 @@ describe("Subscribers Component Integration", () => {
 		it("should propagate repository errors to components", async () => {
 			// Mock repository error
 			const repositoryError = new Error("Repository connection failed");
-			// ...existing code...
 			mockRepository.fetchAll = vi.fn().mockRejectedValue(repositoryError);
-			// ...existing code...
-
 			const wrapper = mount(SubscriberPage, {
 				global: {
 					plugins: [createPinia()],
