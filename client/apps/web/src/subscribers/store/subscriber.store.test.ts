@@ -387,6 +387,14 @@ describe("Subscriber Store", () => {
 			// Should have empty data for failed operation
 			expect(store.statusCounts).toEqual([]);
 		});
+
+		it("should handle invalid workspace ID in fetchAllData", async () => {
+			await expect(store.fetchAllData("")).rejects.toThrow("Workspace ID is required");
+
+			expect(mockUseCases.fetchSubscribers.execute).not.toHaveBeenCalled();
+			expect(mockUseCases.countByStatus.execute).not.toHaveBeenCalled();
+			expect(mockUseCases.countByTags.execute).not.toHaveBeenCalled();
+		});
 	});
 
 	describe("refreshData", () => {
