@@ -169,7 +169,7 @@ export const useSubscriberStore = defineStore("subscriber", () => {
 		onSuccess: (result: T) => void,
 		errorCode: string,
 		defaultErrorMessage: string,
-		workspaceId?: string,
+		workspaceId: string,
 	): Promise<void> => {
 		ensureInitialized();
 
