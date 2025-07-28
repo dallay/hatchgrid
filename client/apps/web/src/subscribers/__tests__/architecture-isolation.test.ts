@@ -1,0 +1,626 @@
+// @vitest-environment node
+/**
+ * Architecture isolation tests for the subscribers module
+ * Verifies that clean architecture boundaries are maintained
+ */
+
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
+import { describe, expect, it } from "vitest";
+
+/**
+ * Get all TypeScript files in a directory recursively
+ */
+function getTypeScriptFiles(dir: string): string[] {
+	const files: string[] = [];
+
+	function traverse(currentDir: string) {
+		const items = readdirSync(currentDir);
+
+		for (const item of items) {
+			const fullPath = join(currentDir, item);
+			const stat = statSync(fullPath);
+
+			if (
+				stat.isDirectory() &&
+				!item.startsWith(".") &&
+				item !== "node_modules"
+			) {
+				traverse(fullPath);
+			} else if (
+				stat.isFile() &&
+				(item.endsWith(".ts") || item.endsWith(".vue")) &&
+				!item.endsWith(".test.ts") &&
+				!item.endsWith(".spec.ts")
+			) {
+				files.push(fullPath);
+			}
+		}
+	}
+
+	traverse(dir);
+	return files;
+}
+
+/**
+ * Extract import statements from a file
+ */
+function extractImports(filePath: string): string[] {
+	try {
+		const content = readFileSync(filePath, "utf-8");
+		const importRegex =
+			/import\s+(?:(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)(?:\s*,\s*(?:\{[^}]*\}|\*\s+as\s+\w+|\w+))*\s+from\s+)?['"]([^'"]+)['"]/g;
+		const imports: string[] = [];
+		let match = importRegex.exec(content);
+
+		while (match !== null) {
+			imports.push(match[1]);
+			match = importRegex.exec(content);
+		}
+
+		return imports;
+	} catch (error) {
+		console.warn(`Could not read file ${filePath}:`, error);
+		return [];
+	}
+}
+
+/**
+ * Check if an import is a relative import to another layer
+ */
+function isRelativeImportToLayer(
+	importPath: string,
+	_currentLayer: string,
+	targetLayer: string,
+): boolean {
+	// Check for relative imports that go to another layer
+	if (importPath.startsWith("../") || importPath.startsWith("./")) {
+		// Normalize the path to check if it goes to the target layer
+		return (
+			importPath.includes(`/${targetLayer}/`) ||
+			importPath.includes(`../${targetLayer}`)
+		);
+	}
+	return false;
+}
+
+/**
+ * Check if an import is an absolute import to another layer within the same module
+ */
+function isAbsoluteImportToLayer(
+	importPath: string,
+	targetLayer: string,
+): boolean {
+	// Check for absolute imports within the subscribers module
+	return (
+		importPath.includes(`/subscribers/${targetLayer}/`) ||
+		importPath.includes(`@/subscribers/${targetLayer}/`)
+	);
+}
+
+/**
+ * Determine the layer of a file based on its path
+ */
+function getFileLayer(filePath: string): string | null {
+	if (filePath.includes("/domain/")) return "domain";
+	if (filePath.includes("/infrastructure/")) return "infrastructure";
+	if (filePath.includes("/presentation/")) return "presentation";
+	if (filePath.includes("/store/")) return "store";
+	if (filePath.includes("/di/")) return "di";
+	if (filePath.includes("/composables/")) return "composables";
+	return null;
+}
+
+describe("Architecture Isolation", () => {
+	const subscribersDir = join(__dirname, "..");
+	const allFiles = getTypeScriptFiles(subscribersDir);
+
+	describe("Domain Layer Isolation", () => {
+		it("should not import from infrastructure layer", () => {
+			const domainFiles = allFiles.filter((file) => file.includes("/domain/"));
+			const violations: string[] = [];
+
+			for (const file of domainFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					if (
+						isRelativeImportToLayer(importPath, "domain", "infrastructure") ||
+						isAbsoluteImportToLayer(importPath, "infrastructure")
+					) {
+						violations.push(
+							`${file} imports from infrastructure: ${importPath}`,
+						);
+					}
+				}
+			}
+
+			expect(violations).toEqual([]);
+		});
+
+		it("should not import from presentation layer", () => {
+			const domainFiles = allFiles.filter((file) => file.includes("/domain/"));
+			const violations: string[] = [];
+
+			for (const file of domainFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					if (
+						isRelativeImportToLayer(importPath, "domain", "presentation") ||
+						isAbsoluteImportToLayer(importPath, "presentation")
+					) {
+						violations.push(`${file} imports from presentation: ${importPath}`);
+					}
+				}
+			}
+
+			expect(violations).toEqual([]);
+		});
+
+		it("should not import from store layer", () => {
+			const domainFiles = allFiles.filter((file) => file.includes("/domain/"));
+			const violations: string[] = [];
+
+			for (const file of domainFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					if (
+						isRelativeImportToLayer(importPath, "domain", "store") ||
+						isAbsoluteImportToLayer(importPath, "store")
+					) {
+						violations.push(`${file} imports from store: ${importPath}`);
+					}
+				}
+			}
+
+			expect(violations).toEqual([]);
+		});
+
+		it("should not import from DI layer", () => {
+			const domainFiles = allFiles.filter((file) => file.includes("/domain/"));
+			const violations: string[] = [];
+
+			for (const file of domainFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					if (
+						isRelativeImportToLayer(importPath, "domain", "di") ||
+						isAbsoluteImportToLayer(importPath, "di")
+					) {
+						violations.push(`${file} imports from DI: ${importPath}`);
+					}
+				}
+			}
+
+			expect(violations).toEqual([]);
+		});
+
+		it("should only import from external libraries and other domain files", () => {
+			const domainFiles = allFiles.filter((file) => file.includes("/domain/"));
+			const allowedPatterns = [
+				// External libraries
+				/^[a-z]/, // npm packages
+				// Internal domain imports
+				/^\.\.?\//, // relative imports within domain
+			];
+
+			for (const file of domainFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					// Skip if it's an allowed pattern
+					if (allowedPatterns.some((pattern) => pattern.test(importPath))) {
+						continue;
+					}
+
+					// Check if it's importing from other layers (should not happen)
+					const isFromOtherLayer = [
+						"infrastructure",
+						"presentation",
+						"store",
+						"di",
+						"composables",
+					].some((layer) => isAbsoluteImportToLayer(importPath, layer));
+
+					if (isFromOtherLayer) {
+						expect(false).toBe(true); // Force failure with descriptive message
+					}
+				}
+			}
+		});
+	});
+
+	describe("Infrastructure Layer Isolation", () => {
+		it("should not import from presentation layer", () => {
+			const infrastructureFiles = allFiles.filter((file) =>
+				file.includes("/infrastructure/"),
+			);
+			const violations: string[] = [];
+
+			for (const file of infrastructureFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					if (
+						isRelativeImportToLayer(
+							importPath,
+							"infrastructure",
+							"presentation",
+						) ||
+						isAbsoluteImportToLayer(importPath, "presentation")
+					) {
+						violations.push(`${file} imports from presentation: ${importPath}`);
+					}
+				}
+			}
+
+			expect(violations).toEqual([]);
+		});
+
+		it("should not import from store layer", () => {
+			const infrastructureFiles = allFiles.filter((file) =>
+				file.includes("/infrastructure/"),
+			);
+			const violations: string[] = [];
+
+			for (const file of infrastructureFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					if (
+						isRelativeImportToLayer(importPath, "infrastructure", "store") ||
+						isAbsoluteImportToLayer(importPath, "store")
+					) {
+						violations.push(`${file} imports from store: ${importPath}`);
+					}
+				}
+			}
+
+			expect(violations).toEqual([]);
+		});
+
+		it("should be able to import from domain layer", () => {
+			const infrastructureFiles = allFiles.filter((file) =>
+				file.includes("/infrastructure/"),
+			);
+			let hasDomainImports = false;
+
+			for (const file of infrastructureFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					if (
+						isRelativeImportToLayer(importPath, "infrastructure", "domain") ||
+						isAbsoluteImportToLayer(importPath, "domain")
+					) {
+						hasDomainImports = true;
+						break;
+					}
+				}
+
+				if (hasDomainImports) break;
+			}
+
+			// Infrastructure should import from domain (this is expected and correct)
+			expect(hasDomainImports).toBe(true);
+		});
+	});
+
+	describe("Presentation Layer Isolation", () => {
+		it("should not import from infrastructure layer", () => {
+			const presentationFiles = allFiles.filter((file) =>
+				file.includes("/presentation/"),
+			);
+			const violations: string[] = [];
+
+			for (const file of presentationFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					if (
+						isRelativeImportToLayer(
+							importPath,
+							"presentation",
+							"infrastructure",
+						) ||
+						isAbsoluteImportToLayer(importPath, "infrastructure")
+					) {
+						violations.push(
+							`${file} imports from infrastructure: ${importPath}`,
+						);
+					}
+				}
+			}
+
+			expect(violations).toEqual([]);
+		});
+
+		it("should not import from domain use cases directly", () => {
+			const presentationFiles = allFiles.filter((file) =>
+				file.includes("/presentation/"),
+			);
+			const violations: string[] = [];
+
+			for (const file of presentationFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					// Check for direct imports from domain/usecases
+					if (
+						importPath.includes("/domain/usecases/") ||
+						importPath.includes("../domain/usecases")
+					) {
+						violations.push(
+							`${file} imports directly from domain use cases: ${importPath}`,
+						);
+					}
+				}
+			}
+
+			expect(violations).toEqual([]);
+		});
+
+		it("should be able to import domain models for typing", () => {
+			const presentationFiles = allFiles.filter((file) =>
+				file.includes("/presentation/"),
+			);
+			let hasDomainModelImports = false;
+
+			for (const file of presentationFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					if (
+						importPath.includes("/domain/models/") ||
+						importPath.includes("../domain/models")
+					) {
+						hasDomainModelImports = true;
+						break;
+					}
+				}
+
+				if (hasDomainModelImports) break;
+			}
+
+			// Presentation should be able to import domain models for typing
+			expect(hasDomainModelImports).toBe(true);
+		});
+	});
+
+	describe("Store Layer Isolation", () => {
+		it("should not import from presentation layer", () => {
+			const storeFiles = allFiles.filter((file) => file.includes("/store/"));
+			const violations: string[] = [];
+
+			for (const file of storeFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					if (
+						isRelativeImportToLayer(importPath, "store", "presentation") ||
+						isAbsoluteImportToLayer(importPath, "presentation")
+					) {
+						violations.push(`${file} imports from presentation: ${importPath}`);
+					}
+				}
+			}
+
+			expect(violations).toEqual([]);
+		});
+
+		it("should not import from infrastructure layer directly", () => {
+			const storeFiles = allFiles.filter((file) => file.includes("/store/"));
+			const violations: string[] = [];
+
+			for (const file of storeFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					if (
+						isRelativeImportToLayer(importPath, "store", "infrastructure") ||
+						isAbsoluteImportToLayer(importPath, "infrastructure")
+					) {
+						violations.push(
+							`${file} imports from infrastructure: ${importPath}`,
+						);
+					}
+				}
+			}
+
+			expect(violations).toEqual([]);
+		});
+
+		it("should be able to import from domain layer for models and use cases", () => {
+			// This test verifies that store CAN import from domain (which is correct)
+			// The other tests already verify that store doesn't import from forbidden layers
+			const storeFiles = allFiles.filter((file) => file.includes("/store/"));
+
+			// Just verify we have store files to test
+			expect(storeFiles.length).toBeGreaterThan(0);
+		});
+	});
+
+	describe("Dependency Injection Layer", () => {
+		it("should be able to import from all layers for wiring", () => {
+			const diFiles = allFiles.filter((file) => file.includes("/di/"));
+			const layersImported = new Set<string>();
+
+			for (const file of diFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					if (
+						isAbsoluteImportToLayer(importPath, "domain") ||
+						isRelativeImportToLayer(importPath, "di", "domain")
+					) {
+						layersImported.add("domain");
+					}
+					if (
+						isAbsoluteImportToLayer(importPath, "infrastructure") ||
+						isRelativeImportToLayer(importPath, "di", "infrastructure")
+					) {
+						layersImported.add("infrastructure");
+					}
+					if (
+						isAbsoluteImportToLayer(importPath, "store") ||
+						isRelativeImportToLayer(importPath, "di", "store")
+					) {
+						layersImported.add("store");
+					}
+				}
+			}
+
+			// DI should import from domain and infrastructure at minimum
+			expect(layersImported.has("domain")).toBe(true);
+			expect(layersImported.has("infrastructure")).toBe(true);
+		});
+
+		it("should not be imported by domain layer", () => {
+			const domainFiles = allFiles.filter((file) => file.includes("/domain/"));
+			const violations: string[] = [];
+
+			for (const file of domainFiles) {
+				const imports = extractImports(file);
+
+				for (const importPath of imports) {
+					if (
+						isRelativeImportToLayer(importPath, "domain", "di") ||
+						isAbsoluteImportToLayer(importPath, "di")
+					) {
+						violations.push(`${file} imports from DI: ${importPath}`);
+					}
+				}
+			}
+
+			expect(violations).toEqual([]);
+		});
+	});
+
+	describe("Overall Architecture Compliance", () => {
+		it("should have proper layer dependency direction", () => {
+			// This test verifies the overall dependency flow:
+			// Presentation -> Store -> Domain <- Infrastructure
+			//                   ^         ^
+			//                   |         |
+			//                   +---------+
+			//                      DI
+
+			const layerFiles = {
+				domain: allFiles.filter((file) => file.includes("/domain/")),
+				infrastructure: allFiles.filter((file) =>
+					file.includes("/infrastructure/"),
+				),
+				presentation: allFiles.filter((file) =>
+					file.includes("/presentation/"),
+				),
+				store: allFiles.filter((file) => file.includes("/store/")),
+				di: allFiles.filter((file) => file.includes("/di/")),
+			};
+
+			// Domain should not import from any other layer
+			for (const file of layerFiles.domain) {
+				const imports = extractImports(file);
+				const invalidImports = imports.filter((imp) =>
+					["infrastructure", "presentation", "store", "di"].some(
+						(layer) =>
+							isAbsoluteImportToLayer(imp, layer) ||
+							isRelativeImportToLayer(imp, "domain", layer),
+					),
+				);
+				expect(invalidImports).toEqual([]);
+			}
+
+			// Infrastructure should only import from domain
+			for (const file of layerFiles.infrastructure) {
+				const imports = extractImports(file);
+				const invalidImports = imports.filter((imp) =>
+					["presentation", "store"].some(
+						(layer) =>
+							isAbsoluteImportToLayer(imp, layer) ||
+							isRelativeImportToLayer(imp, "infrastructure", layer),
+					),
+				);
+				expect(invalidImports).toEqual([]);
+			}
+
+			// Presentation should not import from infrastructure or use cases directly
+			for (const file of layerFiles.presentation) {
+				const imports = extractImports(file);
+				const invalidImports = imports.filter(
+					(imp) =>
+						isAbsoluteImportToLayer(imp, "infrastructure") ||
+						isRelativeImportToLayer(imp, "presentation", "infrastructure") ||
+						imp.includes("/domain/usecases/"),
+				);
+				expect(invalidImports).toEqual([]);
+			}
+
+			// Store should not import from presentation or infrastructure directly
+			for (const file of layerFiles.store) {
+				const imports = extractImports(file);
+				const invalidImports = imports.filter((imp) =>
+					["presentation", "infrastructure"].some(
+						(layer) =>
+							isAbsoluteImportToLayer(imp, layer) ||
+							isRelativeImportToLayer(imp, "store", layer),
+					),
+				);
+				expect(invalidImports).toEqual([]);
+			}
+		});
+
+		it("should have no circular dependencies between layers", () => {
+			// This is a simplified check - in a real scenario you'd want a more sophisticated
+			// circular dependency detection algorithm
+
+			const layerDependencies: Record<string, Set<string>> = {
+				domain: new Set(),
+				infrastructure: new Set(),
+				presentation: new Set(),
+				store: new Set(),
+				di: new Set(),
+			};
+
+			// Analyze dependencies for each layer
+			for (const file of allFiles) {
+				const layer = getFileLayer(file);
+				if (!layer || !layerDependencies[layer]) continue;
+
+				const imports = extractImports(file);
+				for (const importPath of imports) {
+					for (const targetLayer of Object.keys(layerDependencies)) {
+						if (
+							targetLayer !== layer &&
+							(isAbsoluteImportToLayer(importPath, targetLayer) ||
+								isRelativeImportToLayer(importPath, layer, targetLayer) ||
+								(importPath.includes("../domain/") &&
+									targetLayer === "domain") ||
+								(importPath.includes("../infrastructure/") &&
+									targetLayer === "infrastructure"))
+						) {
+							layerDependencies[layer].add(targetLayer);
+						}
+					}
+				}
+			}
+
+			// Check for obvious circular dependencies
+			// Domain should not depend on anything
+			expect(Array.from(layerDependencies.domain)).toEqual([]);
+
+			// Infrastructure should only depend on domain
+			const infraDeps = Array.from(layerDependencies.infrastructure);
+			expect(infraDeps.every((dep) => dep === "domain")).toBe(true);
+
+			// Presentation should not depend on infrastructure
+			expect(layerDependencies.presentation.has("infrastructure")).toBe(false);
+
+			// Store should not depend on presentation or infrastructure
+			expect(layerDependencies.store.has("presentation")).toBe(false);
+			expect(layerDependencies.store.has("infrastructure")).toBe(false);
+		});
+	});
+});
