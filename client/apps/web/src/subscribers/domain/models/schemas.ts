@@ -21,7 +21,7 @@ export const attributesSchema = z
 /**
  * Schema for subscriber status enum
  */
-export const subscriberStatusSchema = z.nativeEnum(SubscriberStatus);
+export const subscriberStatusSchema = z.enum(SubscriberStatus);
 
 /**
  * Core subscriber schema with validation rules

@@ -19,11 +19,12 @@ export type {
 } from "./Subscriber";
 
 export { SubscriberStatus } from "./Subscriber";
+
 export type {
 	CountByStatusResponseSchemaType,
 	CountByTagsResponseSchemaType,
 	SubscriberSchemaType,
-} from "./schemas";
+} from "./schemas.ts";
 export {
 	attributesSchema,
 	countByStatusArraySchema,
@@ -33,4 +34,4 @@ export {
 	subscriberSchema,
 	subscriberStatusSchema,
 	subscribersArraySchema,
-} from "./schemas";
+} from "./schemas.ts";

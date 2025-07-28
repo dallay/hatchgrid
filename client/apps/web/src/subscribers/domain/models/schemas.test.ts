@@ -5,7 +5,7 @@
 
 import { describe, expect, it } from "vitest";
 import { ZodError } from "zod";
-import { SubscriberStatus } from "./Subscriber";
+import { SubscriberStatus } from "@/subscribers";
 import {
 	attributesSchema,
 	countByStatusArraySchema,
@@ -15,7 +15,7 @@ import {
 	subscriberSchema,
 	subscriberStatusSchema,
 	subscribersArraySchema,
-} from "./schemas";
+} from "./schemas.ts";
 
 describe("subscriberStatusSchema", () => {
 	it("should validate valid status values", () => {
