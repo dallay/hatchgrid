@@ -27,6 +27,7 @@ import type {
 	FetchSubscribers,
 	FetchSubscribersFilters,
 } from "../domain/usecases";
+import { ensureInitialized, errorUtils } from "./subscriber.store.internal";
 
 // Mock data
 const mockSubscribers: Subscriber[] = [
@@ -106,10 +107,9 @@ describe("Subscriber Store", () => {
 		it("should throw error when trying to use store before initialization", () => {
 			// Create a fresh Pinia instance for this test to avoid shared state
 			setActivePinia(createPinia());
-			const uninitializedStore = useSubscriberStore();
 
 			expect(() => {
-				uninitializedStore._internal.ensureInitialized();
+				ensureInitialized();
 			}).toThrow("Store must be initialized with use cases before use");
 		});
 
@@ -142,12 +142,11 @@ describe("Subscriber Store", () => {
 			expect(store.isLoading).toBe(false);
 		});
 
-		it("should calculate hasError correctly", () => {
+		it("should calculate hasError correctly", async () => {
 			expect(store.hasError).toBe(false);
 
-			store._internal.errorUtils.set(
-				store._internal.errorUtils.create("Test error"),
-			);
+			// Cause an error by triggering an action with invalid input
+			await store.fetchSubscribers("");
 			expect(store.hasError).toBe(true);
 
 			store.clearError();
@@ -583,10 +582,8 @@ describe("Subscriber Store", () => {
 			expect(store.loading.countingByTags).toBe(false);
 		});
 
-		it("should clear error", () => {
-			store._internal.errorUtils.set(
-				store._internal.errorUtils.create("Test error"),
-			);
+		it("should clear error", async () => {
+			await store.fetchSubscribers("");
 			expect(store.hasError).toBe(true);
 
 			store.clearError();
@@ -597,10 +594,7 @@ describe("Subscriber Store", () => {
 
 	describe("Error Handling", () => {
 		it("should create error with timestamp", () => {
-			const error = store._internal.errorUtils.create(
-				"Test message",
-				"TEST_CODE",
-			);
+			const error = errorUtils.create("Test message", "TEST_CODE");
 
 			expect(error.message).toBe("Test message");
 			expect(error.code).toBe("TEST_CODE");
@@ -608,7 +602,7 @@ describe("Subscriber Store", () => {
 		});
 
 		it("should create error without code", () => {
-			const error = store._internal.errorUtils.create("Test message");
+			const error = errorUtils.create("Test message");
 
 			expect(error.message).toBe("Test message");
 			expect(error.code).toBeUndefined();
@@ -616,10 +610,8 @@ describe("Subscriber Store", () => {
 		});
 
 		it("should clear error before new operations", async () => {
-			// Set an error
-			store._internal.errorUtils.set(
-				store._internal.errorUtils.create("Previous error"),
-			);
+			// Cause an error
+			await store.fetchSubscribers("");
 			expect(store.hasError).toBe(true);
 
 			// Perform successful operation

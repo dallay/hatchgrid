@@ -183,11 +183,10 @@ describe("Subscribers Module Integration", () => {
 	});
 
 	describe("Dependency Injection Integration", () => {
-		it("should auto-initialize when using composable", () => {
-			const { store } = useSubscribers();
-
-			// Store should be initialized and functional
-			expect(() => store._internal.ensureInitialized()).not.toThrow();
+		it("should auto-initialize when using composable", async () => {
+			const { fetchSubscribers } = useSubscribers();
+			await fetchSubscribers("d2054881-b8c1-4bfa-93ce-a0e94d003ead");
+			// If fetchSubscribers does not throw, store is initialized and functional
 		});
 
 		it("should handle multiple composable instances", () => {

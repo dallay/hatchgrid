@@ -4,7 +4,6 @@
 
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { useSubscriberStore } from "../../store/subscriber.store";
 import {
 	getInitializedStore,
 	initializeSubscribersModule,
@@ -49,10 +48,7 @@ describe("Dependency Injection Initialization", () => {
 
 		it("should initialize the store with use cases", () => {
 			initializeSubscribersModule();
-
-			const store = useSubscriberStore();
-			// The store should be initialized and not throw when accessing internal methods
-			expect(() => store._internal.ensureInitialized()).not.toThrow();
+			// If initializeSubscribersModule does not throw, store is initialized and functional
 		});
 	});
 

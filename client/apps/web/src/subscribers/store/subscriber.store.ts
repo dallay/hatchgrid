@@ -364,15 +364,6 @@ export const useSubscriberStore = defineStore("subscriber", () => {
 		getStatusCount,
 		getTagCount,
 		getTopTags,
-
-		// Internal helpers (exposed for testing)
-		_internal: {
-			ensureInitialized,
-			errorUtils,
-			loadingUtils,
-			validateWorkspaceId,
-			withAsyncAction,
-		},
 	};
 });
 
