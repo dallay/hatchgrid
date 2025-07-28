@@ -43,25 +43,43 @@ function getTypeScriptFiles(dir: string): string[] {
 }
 
 /**
- * Extract import statements from a file
+ * Extract import statements from a file, including static, dynamic, and require imports.
+ * For full reliability, consider using an AST parser.
  */
 function extractImports(filePath: string): string[] {
 	try {
 		const content = readFileSync(filePath, "utf-8");
-		const importRegex =
-			/import\s+(?:(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)(?:\s*,\s*(?:\{[^}]*\}|\*\s+as\s+\w+|\w+))*\s+from\s+)?['"]([^'"]+)['"]/g;
 		const imports: string[] = [];
-		let match = importRegex.exec(content);
 
+		// Static imports: import ... from '...'
+		const staticImportRegex =
+			/import\s+(?:(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)(?:\s*,\s*(?:\{[^}]*\}|\*\s+as\s+\w+|\w+))*\s+from\s+)?['"]([^'"]+)['"]/g;
+		let match = staticImportRegex.exec(content);
 		while (match !== null) {
 			imports.push(match[1]);
-			match = importRegex.exec(content);
+			match = staticImportRegex.exec(content);
+		}
+
+		// Dynamic imports: import('...')
+		const dynamicImportRegex = /import\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
+		let dynMatch = dynamicImportRegex.exec(content);
+		while (dynMatch !== null) {
+			imports.push(dynMatch[1]);
+			dynMatch = dynamicImportRegex.exec(content);
+		}
+
+		// require('...')
+		const requireRegex = /require\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
+		let reqMatch = requireRegex.exec(content);
+		while (reqMatch !== null) {
+			imports.push(reqMatch[1]);
+			reqMatch = requireRegex.exec(content);
 		}
 
 		return imports;
 	} catch (error) {
-		console.warn(`Could not read file ${filePath}:`, error);
-		return [];
+		// Re-throw to make test failures more visible
+		throw new Error(`Failed to read file ${filePath}: ${error}`);
 	}
 }
 
