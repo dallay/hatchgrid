@@ -15,7 +15,8 @@ export const attributesSchema = z
 		z.string(),
 		z.union([z.string(), z.array(z.string()), z.number(), z.boolean()]),
 	)
-	.optional();
+	.optional()
+	.default({});
 
 /**
  * Schema for subscriber status enum
@@ -27,14 +28,14 @@ export const subscriberStatusSchema = z.nativeEnum(SubscriberStatus);
  */
 export const subscriberSchema = z
 	.object({
-		id: z.string().uuid("Invalid subscriber ID format"),
-		email: z.string().email("Invalid email format"),
+		id: z.uuid("Invalid subscriber ID format"),
+		email: z.email("Invalid email format"),
 		name: z.string().optional(),
 		status: subscriberStatusSchema,
 		attributes: attributesSchema,
-		workspaceId: z.string().uuid("Invalid workspace ID format"),
-		createdAt: z.union([z.date(), z.string().datetime()]).optional(),
-		updatedAt: z.union([z.date(), z.string().datetime()]).optional(),
+		workspaceId: z.uuid("Invalid workspace ID format"),
+		createdAt: z.union([z.date(), z.iso.datetime()]).optional(),
+		updatedAt: z.union([z.date(), z.iso.datetime()]).optional(),
 	})
 	.readonly();
 

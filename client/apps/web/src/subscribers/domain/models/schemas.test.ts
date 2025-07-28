@@ -44,9 +44,9 @@ describe("attributesSchema", () => {
 		expect(result).toEqual(validAttributes);
 	});
 
-	it("should accept undefined attributes", () => {
+	it("should accept undefined attributes and default to empty object", () => {
 		const result = attributesSchema.parse(undefined);
-		expect(result).toBeUndefined();
+		expect(result).toEqual({});
 	});
 
 	it("should accept empty attributes object", () => {
@@ -76,8 +76,9 @@ describe("subscriberSchema", () => {
 	};
 
 	it("should validate valid subscriber data", () => {
+		const expected = { ...validSubscriber, attributes: {} };
 		const result = subscriberSchema.parse(validSubscriber);
-		expect(result).toEqual(validSubscriber);
+		expect(result).toEqual(expected);
 	});
 
 	it("should validate minimal subscriber data", () => {
@@ -87,9 +88,9 @@ describe("subscriberSchema", () => {
 			status: SubscriberStatus.ENABLED,
 			workspaceId: "123e4567-e89b-12d3-a456-426614174001",
 		};
-
+		const expected = { ...minimalSubscriber, attributes: {} };
 		const result = subscriberSchema.parse(minimalSubscriber);
-		expect(result).toEqual(minimalSubscriber);
+		expect(result).toEqual(expected);
 	});
 
 	it("should validate subscriber with attributes", () => {
@@ -249,9 +250,9 @@ describe("array schemas", () => {
 				workspaceId: "123e4567-e89b-12d3-a456-426614174001",
 			},
 		];
-
+		const expected = subscribers.map((s) => ({ ...s, attributes: {} }));
 		const result = subscribersArraySchema.parse(subscribers);
-		expect(result).toEqual(subscribers);
+		expect(result).toEqual(expected);
 	});
 
 	it("should validate count by status array", () => {
