@@ -45,7 +45,7 @@ export const subscriberSchema = z
 export const countByStatusResponseSchema = z
 	.object({
 		count: z.number().int().min(0, "Count must be non-negative"),
-		status: z.string().min(1, "Status cannot be empty"),
+		status: subscriberStatusSchema,
 	})
 	.readonly();
 

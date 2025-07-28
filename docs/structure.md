@@ -1090,8 +1090,6 @@
 │   │       │   │   │   │   ├───FetchSubscribers.test.ts
 │   │       │   │   │   │   ├───FetchSubscribers.ts
 │   │       │   │   │   │   └───index.ts
-│   │       │   │   │   ├───validations/
-│   │       │   │   │   │   └───Subscribers.validation.ts
 │   │       │   │   │   └───index.ts
 │   │       │   │   ├───infrastructure/
 │   │       │   │   │   ├───api/
