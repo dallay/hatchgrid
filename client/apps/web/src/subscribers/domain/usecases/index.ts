@@ -5,5 +5,5 @@
 
 export { CountByStatus } from "./CountByStatus";
 export { CountByTags } from "./CountByTags";
-export type { FetchSubscribersFilters } from "./FetchSubscribers";
 export { FetchSubscribers } from "./FetchSubscribers";
+export type { FetchSubscribersFilters } from "./FetchSubscribers";
