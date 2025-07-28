@@ -101,12 +101,18 @@ export interface ContainerConfig {
 
 /**
  * Configure the container with custom dependencies (useful for testing)
+ *
+ * ⚠️ This function should only be called during application startup or in test environments.
+ *    If use cases have already been instantiated, this will reset them to ensure consistency.
+ *    To avoid inconsistent state, always call `resetContainer()` before reconfiguring in tests,
+ *    or use this function before any use case is created.
+ *
  * @param config - Configuration options
  */
 export function configureContainer(config: ContainerConfig): void {
 	if (config.customRepository) {
 		repositoryInstance = config.customRepository;
-		// Reset use cases to force recreation with new repository
+		// Always reset use cases to force recreation with new repository
 		useCasesInstance = null;
 	}
 }
