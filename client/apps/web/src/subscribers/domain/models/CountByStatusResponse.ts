@@ -5,8 +5,8 @@
  * @property status - The status name (e.g., "active", "inactive").
  */
 export interface CountByStatusResponse {
-	count: number;
-	status: string;
+	readonly count: number;
+	readonly status: string;
 }
 
 /**
@@ -15,5 +15,5 @@ export interface CountByStatusResponse {
  * @property data - An array of objects, each containing a status and its subscriber count.
  */
 export interface SubscriberCountByStatusResponse {
-	data: CountByStatusResponse[];
+	readonly data: CountByStatusResponse[];
 }

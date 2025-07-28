@@ -74,6 +74,65 @@ describe("Domain models index exports", () => {
 		expect(typeof countByTagsArraySchema.parse).toBe("function");
 	});
 
+	it("should validate data with schemas and handle invalid data", () => {
+		// Valid data for each schema
+		const validSubscriber = {
+			id: "123e4567-e89b-12d3-a456-426614174000",
+			email: "test@example.com",
+			status: SubscriberStatus.ENABLED,
+			workspaceId: "123e4567-e89b-12d3-a456-426614174001",
+		};
+		expect(() => subscriberSchema.parse(validSubscriber)).not.toThrow();
+
+		// Invalid data for subscriberSchema
+		const invalidSubscriber = { id: "invalid", email: "not-an-email" };
+		expect(() => subscriberSchema.parse(invalidSubscriber)).toThrow();
+
+		// subscriberStatusSchema
+		expect(() => subscriberStatusSchema.parse("ENABLED")).not.toThrow();
+		expect(() => subscriberStatusSchema.parse("INVALID_STATUS")).toThrow();
+
+		// attributesSchema
+		expect(() => attributesSchema.parse({})).not.toThrow();
+		expect(() => attributesSchema.parse(null)).toThrow();
+
+		// countByStatusResponseSchema
+		expect(() =>
+			countByStatusResponseSchema.parse({ status: "ENABLED", count: 1 }),
+		).not.toThrow();
+		expect(() =>
+			countByStatusResponseSchema.parse({ status: 123, count: "bad" }),
+		).toThrow();
+
+		// countByTagsResponseSchema
+		expect(() =>
+			countByTagsResponseSchema.parse({ tag: "foo", count: 2 }),
+		).not.toThrow();
+		expect(() =>
+			countByTagsResponseSchema.parse({ tag: 123, count: "bad" }),
+		).toThrow();
+
+		// subscribersArraySchema
+		expect(() => subscribersArraySchema.parse([validSubscriber])).not.toThrow();
+		expect(() => subscribersArraySchema.parse([invalidSubscriber])).toThrow();
+
+		// countByStatusArraySchema
+		expect(() =>
+			countByStatusArraySchema.parse([{ status: "ENABLED", count: 1 }]),
+		).not.toThrow();
+		expect(() =>
+			countByStatusArraySchema.parse([{ status: 123, count: "bad" }]),
+		).toThrow();
+
+		// countByTagsArraySchema
+		expect(() =>
+			countByTagsArraySchema.parse([{ tag: "foo", count: 2 }]),
+		).not.toThrow();
+		expect(() =>
+			countByTagsArraySchema.parse([{ tag: 123, count: "bad" }]),
+		).toThrow();
+	});
+
 	it("should export schema types that match interface types", () => {
 		const testData = {
 			id: "123e4567-e89b-12d3-a456-426614174000",

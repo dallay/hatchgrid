@@ -5,8 +5,8 @@
  * @property tag - The tag name.
  */
 export interface CountByTagsResponse {
-	count: number;
-	tag: string;
+	readonly count: number;
+	readonly tag: string;
 }
 
 /**
@@ -15,5 +15,5 @@ export interface CountByTagsResponse {
  * @property data - An array of objects, each containing a tag and its subscriber count.
  */
 export interface SubscriberCountByTagsResponse {
-	data: CountByTagsResponse[];
+	readonly data: ReadonlyArray<CountByTagsResponse>;
 }
