@@ -1111,6 +1111,7 @@
 │   │       │   │   │   └───index.ts
 │   │       │   │   ├───store/
 │   │       │   │   │   ├───index.ts
+│   │       │   │   │   ├───subscriber.store.internal.ts
 │   │       │   │   │   ├───subscriber.store.test.ts
 │   │       │   │   │   └───subscriber.store.ts
 │   │       │   │   └───index.ts
