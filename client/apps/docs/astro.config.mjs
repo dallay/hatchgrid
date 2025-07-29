@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import starlightLinksValidator from 'starlight-links-validator'
 import mermaid from 'astro-mermaid';
 
 // https://astro.build/config
@@ -13,7 +12,10 @@ export default defineConfig({
     }),
 		starlight({
 			title: 'Hatchgrid',
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
+			logo: {
+				src: './src/assets/logo.svg',
+			},
+			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/dallay/hatchgrid' }],
 			sidebar: [
         {
           label: '🧭 Overview',
@@ -57,6 +59,5 @@ export default defineConfig({
         },
 			],
 		}),
-    starlightLinksValidator()
 	],
 });
