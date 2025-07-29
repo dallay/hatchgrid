@@ -153,6 +153,24 @@ describe("subscriberSchema", () => {
 			ZodError,
 		);
 	});
+
+	it("should return custom error message for invalid UUID", () => {
+		const invalidSubscriber = {
+			...validSubscriber,
+			id: "invalid-uuid",
+		};
+
+		try {
+			subscriberSchema.parse(invalidSubscriber);
+			expect.fail("Should have thrown ZodError");
+		} catch (error: unknown) {
+			expect(error).toBeInstanceOf(ZodError);
+			if (error instanceof ZodError) {
+				const messages = error.issues?.map((e) => e.message) || [];
+				expect(messages).toContain("Invalid subscriber ID format");
+			}
+		}
+	});
 });
 
 describe("countByStatusResponseSchema", () => {
