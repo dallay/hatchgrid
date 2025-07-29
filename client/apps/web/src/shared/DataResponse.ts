@@ -3,7 +3,7 @@
  *
  * @template T - The type of the data items in the response.
  * @extends ApiResponse<T>
- * @property {readonly T[]} data - The array of data items returned by the API.
+ * @remarks Inherits the `data` property from ApiResponse<T> containing an array of items.
  */
 import type ApiResponse from "./ApiResponse";
 
