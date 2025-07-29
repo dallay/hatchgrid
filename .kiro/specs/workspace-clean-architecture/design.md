@@ -10,7 +10,7 @@ This document outlines the design of the Workspace module within the Vue.js fron
 
 The Workspace module is structured into four primary layers, each with distinct responsibilities and dependencies:
 
-```
+```text
 src/workspace/
 ├── domain/           # Core business logic, entities, and interfaces
 ├── infrastructure/   # External API integrations and adapters
