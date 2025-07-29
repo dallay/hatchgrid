@@ -2,7 +2,7 @@ import { avatar } from "@hatchgrid/utilities";
 import axios, { type AxiosResponse, isAxiosError } from "axios";
 import type { Router } from "vue-router";
 import type { Account } from "@/security/account.model";
-import type { UserResponse } from "@/services/response/user.response.ts";
+import type { UserResponse } from "@/services/response/user.response";
 import type { useAuthStore } from "@/stores/auth";
 
 export interface ProfileInfo {

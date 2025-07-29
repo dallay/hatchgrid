@@ -1,7 +1,7 @@
 import { avatar } from "@hatchgrid/utilities";
 import axios, { type AxiosError } from "axios";
 import { defineStore } from "pinia";
-import { transformUserResponseToAccount } from "@/services/mapper/account.mapper.ts";
+import { transformUserResponseToAccount } from "@/services/mapper/account.mapper";
 import type { UserResponse } from "@/services/response/user.response";
 import type { Account } from "../security/account.model";
 
