@@ -17,15 +17,15 @@ export function useEmailValidation(options: EmailValidationOptions = {}) {
 
 	// Create validation schema based on options
 	const validationSchema = computed(() => {
-		let schema = z.string();
+		let schema = z.email({
+			message: customMessage || t("form.email.invalid"),
+		});
 
 		if (required) {
 			schema = schema.min(1, { message: t("form.email.required") });
 		}
 
-		return schema.email({
-			message: customMessage || t("form.email.invalid"),
-		});
+		return schema;
 	});
 
 	// Email validation function
@@ -42,7 +42,7 @@ export function useEmailValidation(options: EmailValidationOptions = {}) {
 			if (error instanceof z.ZodError) {
 				return {
 					isValid: false,
-					error: error.errors[0]?.message,
+					error: error.issues[0]?.message,
 				};
 			}
 			return {

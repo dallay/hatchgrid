@@ -9,7 +9,7 @@ on:
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
       - '.github/workflows/frontend-ci.yml'
-      - '.github/actions/setup-node/**'
+      - '.github/actions/setup/node/**'
   pull_request:
     paths:
       - 'client/**'
@@ -17,7 +17,10 @@ on:
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
       - '.github/workflows/frontend-ci.yml'
-      - '.github/actions/setup-node/**'
+      - '.github/actions/setup/node/**'
+
+env:
+  NODE_VERSION: '22'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -35,13 +38,16 @@ jobs:
     # Permissions are inherited from workflow level
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
-      - name: Setup Node.js and pnpm
-        uses: ./.github/actions/setup-node
+      - name: 🧩 Setup Node.js and pnpm
+        uses: ./.github/actions/setup/node
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
 
       - name: Run Biome with Reviewdog
-        uses: mongolyy/reviewdog-action-biome@bf7dffa9b14e8904941a18a28782b74fc40104f0
+        uses: mongolyy/reviewdog-action-biome@a7a10e692e815deb2ea9279f599fd7bc825138cc
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workdir: ./client
@@ -54,10 +60,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
       - name: Setup Node.js and pnpm
-        uses: ./.github/actions/setup-node
+        uses: ./.github/actions/setup/node
+        with:
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Build
         run: pnpm build
@@ -77,10 +85,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
       - name: Setup Node.js and pnpm
-        uses: ./.github/actions/setup-node
+        uses: ./.github/actions/setup/node
+        with:
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Test
         run: pnpm test

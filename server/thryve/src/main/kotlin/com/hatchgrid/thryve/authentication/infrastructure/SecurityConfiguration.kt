@@ -4,6 +4,7 @@ import com.hatchgrid.common.domain.Generated
 import com.hatchgrid.thryve.authentication.domain.Role
 import com.hatchgrid.thryve.authentication.infrastructure.csrf.SpaCsrfTokenRequestHandler
 import com.hatchgrid.thryve.authentication.infrastructure.filter.CookieCsrfFilter
+import com.hatchgrid.thryve.authentication.infrastructure.filter.JwtCookieOrHeaderFilter
 import java.time.Duration
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -136,6 +137,7 @@ class SecurityConfiguration(
                 cors.configurationSource(corsConfigurationSource())
             }
             .addFilterAt(CookieCsrfFilter(applicationSecurityProperties), SecurityWebFiltersOrder.REACTOR_CONTEXT)
+            .addFilterAt(JwtCookieOrHeaderFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
 //            .addFilterAfter(SpaWebFilter(), SecurityWebFiltersOrder.HTTPS_REDIRECT)
             .redirectToHttps {
                     httpsRedirect ->
@@ -159,7 +161,7 @@ class SecurityConfiguration(
                     auth ->
                 configureAuthorization(auth)
             }
-            .oauth2Login(withDefaults())
+            // .oauth2Login(withDefaults())
             .oauth2Client(withDefaults())
             .oauth2ResourceServer {
                     oauth2 ->
@@ -181,6 +183,7 @@ class SecurityConfiguration(
             .pathMatchers(
                 "/", "/api/health-check", "/api/register",
                 "/api/refresh-token", "/api/login", "/api/logout",
+                "actuator/info",
             ).permitAll()
             .pathMatchers(
                 "/swagger-ui/**", "/webjars/**", "/api-docs/**", "/swagger-ui.html",

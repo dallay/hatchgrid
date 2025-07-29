@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { sortBy } from "./sort-by";
 
 describe("sortBy", () => {

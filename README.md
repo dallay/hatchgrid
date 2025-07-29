@@ -47,14 +47,21 @@ The application uses PostgreSQL as its database. The connection is configured in
 
 ### Using Docker Compose
 
-The project includes a `compose.yaml` file that sets up a PostgreSQL database:
+The project includes a `compose.yaml` file that sets up the required infrastructure services:
+
+- **PostgreSQL**: Database server on port 5432
+- **Keycloak**: Authentication server on port 9080
+- **GreenMail**: Email testing server on port 3025 (SMTP) and 8080 (Web UI)
 
 ```bash
-# Start the database
-docker compose -f compose.yaml up -d
+# Start all infrastructure services
+docker compose up -d
 
-# Stop the database
-docker compose -f compose.yaml down
+# Stop all services
+docker compose down
+
+# Start only specific services
+docker compose up -d postgresql greenmail
 ```
 
 Alternatively, Spring Boot's Docker Compose support will automatically start the required containers when you run the application.
@@ -63,16 +70,49 @@ Alternatively, Spring Boot's Docker Compose support will automatically start the
 
 This project uses Liquibase for database migrations. The changelog file is located at:
 
-```
+```text
 src/main/resources/db/changelog/db.changelog-master.yaml
 ```
+
+## Git Hooks with Lefthook
+
+This project uses [Lefthook](https://github.com/evilmartians/lefthook) to manage Git hooks. Lefthook is a fast and powerful Git hooks manager that allows for parallel execution of commands and is configurable via a simple YAML file.
+
+### Installation
+
+To install Lefthook and enable the Git hooks, run the following command from the root of the repository:
+
+```bash
+pnpm install
+```
+
+The `prepare` script in `package.json` will automatically run `lefthook install`.
+
+### Pre-commit Hooks
+
+The following tasks are run automatically on `git commit`:
+
+- **Biome**: Runs the lint script defined in package.json using Biome. If linting issues are found, the commit will be blocked until they are fixed.
+- **Changed Files Summary**: Shows a summary of changed files.
+- **Git Update**: Updates the Git index to ensure all changes are included.
+
+### Pre-push Hooks
+
+The following tasks are run automatically on `git push` (now running in parallel for improved performance):
+
+- **Link Check**: Checks for broken links in Markdown files using Lychee.
+- **PNPM Check**: Runs the check script defined in package.json.
+- **Kotlin Static Analysis**: Runs Detekt for static code analysis.
+- **Secret Check**: Checks for secrets in the codebase.
+- **Tests**: Runs both frontend and backend tests.
+- **Builds**: Builds both frontend and backend projects (skipping tests as they're run separately).
 
 ## Development Workflow
 
 1. Make changes to the code
-2. Run tests: `./gradlew test`
-3. Build the application: `./gradlew build`
-4. Run the application: `./gradlew bootRun`
+2. Run tests: `./gradlew test` and `pnpm test`
+3. Build the application: `./gradlew build` and `pnpm build`
+4. Run the application: `./gradlew bootRun` and `pnpm dev`
 
 ## Testing
 
@@ -95,15 +135,21 @@ The project uses Testcontainers for integration tests, which automatically spin 
 - `src/main/kotlin` - Kotlin source files
 - `src/main/resources` - Configuration files and resources
 - `src/test/kotlin` - Test source files
+- `.github/actions` - Custom GitHub Actions for CI/CD
+  - `.github/actions/docker` - Specialized Docker composition actions
+  - `.github/actions/setup` - Setup actions for Java and Node.js
+- `.github/workflows` - GitHub Actions workflows for CI/CD
 
 ## Key Features
 
 - Spring Boot 3.4.5
 - Kotlin 1.9.25
 - Reactive programming with Spring WebFlux
-- OAuth2 Authorization Server
+- OAuth2 Authorization Server with Keycloak integration
 - Spring Security
 - Spring Data R2DBC for reactive database access
+- Email testing with GreenMail
+- Internationalization (i18n) support with message bundles
 - Liquibase for database migrations
 - Spring Boot Admin for application monitoring
 - Docker Compose support
@@ -124,3 +170,27 @@ The application includes Spring Boot Actuator endpoints for monitoring:
 - Health check: `/actuator/health`
 - Metrics: `/actuator/metrics`
 - Prometheus metrics: `/actuator/prometheus`
+
+## CI/CD Pipeline
+
+The project uses GitHub Actions for continuous integration and deployment:
+
+### Docker Composition Actions
+
+The CI/CD pipeline uses specialized Docker composition actions for building and pushing Docker images:
+
+- **Backend Docker Action**: Builds Spring Boot applications using Gradle's `bootBuildImage`
+- **Frontend Web App Action**: Builds Vue.js applications with multi-stage builds
+- **Frontend Landing Page Action**: Builds Astro static sites with optimized configurations
+- **Security Scanning Action**: Scans Docker images for vulnerabilities using Trivy
+
+For detailed documentation on these actions, see:
+
+- [Docker Composition Actions Documentation](docs/workflows/docker-composition-actions.md)
+- [Docker Actions Migration Guide](docs/workflows/docker-actions-migration-guide.md)
+
+### Workflows
+
+- `deploy.yml`: Builds and deploys all application components
+- `backend-ci.yml`: Runs tests and static analysis for backend code
+- `frontend-ci.yml`: Runs tests and static analysis for frontend code

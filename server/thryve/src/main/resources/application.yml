@@ -2,11 +2,22 @@ logging:
   pattern:
     console: "%d{dd-MM-yyyy HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
 spring:
+  application:
+    name: ${application.name}
+  profiles:
+    # The commented value for `active` can be replaced with valid Spring profiles to load.
+    # Otherwise, it will be filled in by gradle when building the JAR file
+    # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
+    active: '@spring.profiles.active@'
+    group:
+      dev:
+        - dev
+        - api-docs
+        # Uncomment to activate TLS for the dev profile
+        #- tls
   liquibase:
     change-log: classpath:db/changelog/master.yaml
     enabled: true
-  application:
-    name: ${application.name}
   main:
     allow-bean-definition-overriding: true
   security:
@@ -40,6 +51,19 @@ spring:
       caches:
         linkPreviews:
           spec: maximumSize=500,expireAfterWrite=5m
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:3025}
+    username: ${SMTP_USERNAME:developer}
+    password: ${SMTP_PASSWORD:secret}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+          ssl:
+            enable: false
 application:
   name: hatchgrid
   description: Hatchgrid is the future of newsletter creation and social media management. It's an app that uses AI to help you create newsletters and manage social media.
@@ -60,7 +84,7 @@ application:
         - account
         - api://default
     cors:
-      allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173, https://localhost:5173, http://localhost:3000, https://localhost:3000}
+      allowed-origins: ${CORS_ALLOWED_ORIGINS}
       allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
       allowed-headers: ${CORS_ALLOWED_HEADERS:Authorization,Content-Type,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers, X-Requested-With, X-Xsrf-Token, X-New-Header}
       exposed-headers: ${CORS_EXPOSED_HEADERS:Access-Control-Allow-Origin,Access-Control-Allow-Credentials}
@@ -72,7 +96,48 @@ management:
   endpoints:
     web:
       exposure:
-        include: info, health, beans, openapi, swagger-ui
+        include:
+          - health
+          - info
+          - prometheus
+        # Restrict sensitive endpoints in production
+        exclude:
+          - configprops
+          - env
+          - logfile
+          - loggers
+          - threaddump
+  info:
+    git:
+      mode: full
+    env:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        step: 60
+  observations:
+    key-values:
+      application: ${spring.application.name}
+  metrics:
+    enable:
+      http: true
+      jvm: true
+      logback: true
+      process: true
+      system: true
+    distribution:
+      percentiles-histogram:
+        all: true
+      percentiles:
+        all: 0, 0.5, 0.75, 0.95, 0.99, 1.0
+    data:
+      repository:
+        autotime:
+          enabled: true
+    tags:
+      application: ${spring.application.name}
 notification:
   email:
     sendgrid-api-key: ${SENDGRID_API_KEY:WILL_BE_REPLACED}
@@ -89,3 +154,7 @@ springdoc:
       app-name: ${application.name}
       client-id: ${application.security.oauth2.client-id}
       client-secret: ${application.security.oauth2.client-secret}
+# Properties to be exposed on the /info management endpoint
+info:
+  # Comma separated list of profiles that will trigger the ribbon to show
+  display-ribbon-on-profiles: 'dev'

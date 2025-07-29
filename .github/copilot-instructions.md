@@ -1,54 +1,194 @@
-# GitHub Copilot Instructions for Hatchgrid
 
-## Project Overview
-Hatchgrid is a Spring Boot application built with Kotlin and Gradle, providing a reactive backend infrastructure. The project uses modern Spring technologies including WebFlux, R2DBC, OAuth2, and follows a modular architecture approach with Spring Modulith.
+# Copilot & AI Agent Instructions for Hatchgrid
 
-## Technology Stack
-- **Language:** Kotlin 1.9.25 with coroutines
-- **Framework:** Spring Boot 3.4.5
-- **API:** Reactive REST APIs with Spring WebFlux
-- **Database:** PostgreSQL with R2DBC for reactive data access
-- **Database Migrations:** Liquibase
-- **Authentication:** OAuth2 (Authorization Server, Resource Server and Client)
-- **Testing:** JUnit 5, Testcontainers
-- **Documentation:** Spring REST Docs
-- **Monitoring:** Spring Boot Actuator, Prometheus
-- **Build Tool:** Gradle 8.x
+## 🏗️ Big Picture Architecture
+Hatchgrid is a modular monorepo for automating content publishing for creators. It includes:
+- **Backend:** Kotlin + Spring Boot (WebFlux, R2DBC, OAuth2, Liquibase, Keycloak)
+- **Frontend:** Vue 3 + TypeScript + Vite
+- **Static Site:** Astro + MDX
+- **Database:** PostgreSQL (RLS, migrations via Liquibase)
+- **CI/CD:** GitHub Actions, CodeQL, Docker, Prometheus
+- **Docs:** All conventions and architecture in `/docs/conventions` (see [README](../../README.md) for entry points)
 
-## Project Structure
-- `src/main/kotlin` - Primary Kotlin source files
-- `src/main/resources` - Configuration files, including:
-  - `application.yml` - Main application configuration
-  - `db/changelog` - Liquibase migration files
-- `src/test/kotlin` - Test source files
+## 📁 Key Project Structure
+- `server/` and `shared/` — Spring Boot backend, Kotlin modules, shared code
+- `client/apps/landing-page/` — Astro static site
+- `client/apps/web/` — Vue 3 frontend
+- `docs/` — All conventions, API, security, i18n, and architecture docs
+- `.github/` — CI/CD workflows, PR templates
 
-## Coding Conventions
-- Follow Kotlin coding conventions with 4-space indentation
-- Use functional and extension-based approaches where appropriate
-- Utilize Kotlin coroutines for asynchronous operations
-- Prefer immutability with `val` over `var`
-- Implement reactive patterns using Spring WebFlux and R2DBC
-- Document public APIs and complex functions with KDoc
+## 🧑‍💻 Critical Developer Workflows
+- **Build & Lint (root):** `pnpm run check && pnpm run test && pnpm run build`
+- **Backend:** `./gradlew detektAll --no-daemon --stacktrace && ./gradlew build`
+- **Frontend:** `pnpm run test` (unit), `pnpm run test:e2e` (integration), `pnpm run storybook` (UI)
+- **Database:** Use `compose.yaml` for local PostgreSQL; migrations in `src/main/resources/db/changelog/`
+- **Testing:** Backend uses JUnit 5, Testcontainers; Frontend uses Vitest, Vue Test Utils
+- **API Docs:** Generated via Spring REST Docs (`build/generated-snippets`)
+- **Monitoring:** `/actuator/health`, `/actuator/metrics`, `/actuator/prometheus`
 
-## Testing Guidelines
-- Write unit tests for all business logic
-- Use Testcontainers for integration tests with real PostgreSQL instances
-- Prefer reactive testing utilities (StepVerifier, WebTestClient)
-- Follow BDD-style naming for test methods (should_doSomething_when_condition)
-- Maintain test coverage for critical components
+## 📝 Project-Specific Conventions
+- **REST API:** See `docs/conventions/rest-api.md` for URL, method, error, and versioning standards
+- **Controllers:** Thin, dependency-injected, DTOs, global exception handler (`docs/conventions/controller-pattern.md`)
+- **Security:** OAuth2, RBAC, input validation, output encoding, dependency scanning (`docs/conventions/security.md`)
+- **UUIDs:** Use UUIDv4, stored as `binary(16)`, exposed in APIs (`docs/conventions/uuid-strategy.md`)
+- **i18n:** Resource bundles in `src/main/resources/i18n`, message keys are descriptive (`docs/conventions/i18n.md`)
+- **Offline First:** IndexedDB, Cache API, service worker, last-write-wins sync (`docs/conventions/offline-first.md`)
+- **Swagger:** Annotate controllers, models, and responses (`docs/conventions/swagger.md`)
+- **Code Style:** Prettier, ESLint, Stylelint, 4-space indent for Kotlin, composition API for Vue
+- **Commits:** Conventional Commits, small PRs, clear descriptions, link to issues (`docs/conventions/project-guidelines.md`)
 
-## Common Development Tasks
-- Database schema changes should be added as Liquibase migrations
-- Security configurations should follow the principle of least privilege
-- REST endpoints should follow RESTful conventions
-- New modules should integrate with the Spring Modulith architecture
+## 🧪 AI Agent Guidance
+- Always update `/docs` for any change in API, architecture, or config
+- Refuse changes that break tests, builds, or conventions
+- Propose only secure, modular, and extensible solutions
+- Add test stubs for new logic (unit/integration)
+- Prefer BDD-style test naming (`should_doSomething_when_condition`)
+- Use idiomatic patterns for Kotlin (coroutines, WebFlux, R2DBC) and Vue (composables, TypeScript)
+- Document public APIs and complex logic with KDoc/JSDoc
+- Respect architectural boundaries and service responsibilities
 
-## Best Practices
-- Include validation for all input data
-- Implement proper error handling with meaningful error messages
-- Configure appropriate logging at different levels
-- Use Spring's reactive patterns consistently
-- Follow the Single Responsibility Principle in class design
-- Utilize Spring Boot's auto-configuration capabilities when possible
-- Ensure proper security controls for all endpoints
-- Include monitoring endpoints via Spring Boot Actuator
+## 🧷 Merge Checklist
+- [ ] Tests written and passing
+- [ ] Builds passing (`pnpm` and `Gradle`)
+- [ ] `/docs` updated if relevant
+- [ ] Code format and lint clean
+- [ ] Secure, modular, and extensible
+
+## 📚 Reference Docs
+- See `/docs/conventions/README.md` for links to all conventions
+- See `/README.md` for setup, build, and run instructions
+
+---
+For any unclear or missing conventions, open a PR to `/docs/conventions` and update this file.
+
+These instructions serve as a guide for GitHub Copilot and any AI-powered developer assistant to contribute effectively and consistently to the Hatchgrid project.
+
+---
+
+## 🔍 Project Overview
+
+**Hatchgrid** is a modular, full-stack platform designed to automate content publishing for creators. It is built as a monorepo with a reactive Kotlin backend, a Vue 3 frontend, and Astro for static content delivery.
+
+---
+
+## 🧠 High-Level Architecture
+
+- **Monorepo** managed with `pnpm`
+- **Backend:** Kotlin + Spring Boot + R2DBC + Keycloak + Liquibase
+- **Frontend:** Vue 3 + TypeScript + Vite
+- **Static Site:** Astro + MDX + Sveltia CMS
+- **Auth:** OAuth2 via Keycloak (Authorization Server + Resource Server + Client)
+- **Database:** PostgreSQL + RLS + Liquibase for schema management
+- **CI/CD:** GitHub Actions (with coverage, build, quality gates, etc.)
+- **Infrastructure:** Docker, Prometheus, Grafana, CodeQL
+- **Documentation:** Located in `docs/`, maintained in markdown and version-controlled
+
+---
+
+## 📁 Project Structure
+
+- `apps/web/` - Vue 3 frontend
+- `apps/landing-page/` - Landing Page - Astro-based static site
+- `apps/backend/` - Spring Boot reactive backend
+- `shared/` - Shared components across applications
+- `docs/` - Project documentation (must be kept up-to-date)
+- `.github/` - CI/CD configurations
+
+---
+
+## 🧪 Required Build and Test Commands
+
+All changes must pass the following in the **project root**:
+
+```bash
+pnpm run check && pnpm run test && pnpm run build
+```
+
+For the **backend**:
+
+```bash
+./gradlew detektAll --no-daemon --stacktrace
+./gradlew build
+```
+
+If these commands fail, the pull request must not be merged.
+
+---
+
+## ✅ Development Principles
+
+- ✅ **All new features must include unit and integration tests**
+- ✅ **Documentation (`/docs`) must be updated with every relevant change**
+- ✅ **Every build must be green before merging to main**
+- ✅ **Prefer test-first or BDD-style development**
+- ✅ **Design modules for extension, not modification**
+
+---
+
+## 💡 Best Practices
+
+### Backend (Kotlin + Spring Boot)
+
+- Use `val` over `var` (immutability)
+- Follow modular design using Spring Modulith
+- Prefer coroutines for async operations
+- Use `WebFlux`, `R2DBC`, and `Liquibase` idiomatically
+- Follow `Single Responsibility Principle` in class design
+- Secure endpoints by default (Keycloak + OAuth2 scopes)
+- Follow reactive patterns consistently
+- Configure and expose metrics via Actuator + Prometheus
+
+### Frontend (Vue 3 + Vite)
+
+- Follow composition API and TypeScript best practices
+- Use `pnpm` workspaces to manage dependencies
+- Isolate logic in composables
+- Use ESLint + Prettier for consistency
+- Document components with JSDoc / TS comments
+
+---
+
+## 🧪 Testing Guidelines
+
+- **Backend:**
+  - Use JUnit 5 and Testcontainers
+  - Reactive testing: `StepVerifier`, `WebTestClient`
+  - Test class naming: `should_doSomething_when_condition`
+
+- **Frontend:**
+  - Use Vitest + Vue Test Utils
+  - Keep test coverage high, especially for components and composables
+
+---
+
+## 📚 Documentation Guidelines
+
+- Project documentation lives in `/docs`
+- Every change to behavior, APIs, architecture, or configuration **must** be reflected
+- Use markdown and commit with relevant PRs
+- Refer to this folder as the canonical reference for devs and agents
+
+---
+
+## 💬 AI Assistant Usage Guidelines
+
+All AI agents (Copilot, ChatGPT, etc.) must:
+
+- Respect the architectural choices (reactive, modular, OAuth2-secured)
+- Apply consistent coding conventions (documented above)
+- Prioritize security, performance, and testability
+- Suggest changes that **do not break existing tests or architecture**
+- Refuse to produce logic without corresponding test stubs
+- Propose changes **only** if the required checks and builds can pass
+
+---
+
+## 🧷 Summary Checklist Before Merging Code
+
+- [ ] Tests written and passing
+- [ ] Builds passing (`pnpm` and `Gradle`)
+- [ ] `docs/` updated if relevant
+- [ ] Code format and lint clean
+- [ ] Secure, modular, and extensible
+
+---

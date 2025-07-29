@@ -1,4 +1,36 @@
-# SSL Certificate and Keystore Generation Script
+# Infrastructure Services
+
+This directory contains the infrastructure configuration for the Hatchgrid application, including database, authentication, email testing, and SSL certificate management.
+
+## Services
+
+### PostgreSQL Database
+- **Location**: `postgresql/`
+- **Port**: 5432
+- **Configuration**: Database initialization scripts and Docker Compose setup
+
+### Keycloak Authentication
+- **Location**: `keycloak/`
+- **Port**: 9080 (HTTP), 9443 (HTTPS)
+- **Configuration**: Realm configuration and themes
+
+### GreenMail Email Testing
+- **Location**: `greenmail/`
+- **Ports**:
+  - 3025 (SMTP)
+  - 3110 (POP3)
+  - 3143 (IMAP)
+  - 3465 (SMTPS)
+  - 3993 (IMAPS)
+  - 3995 (POP3S)
+  - 8080 (Web Interface)
+- **Configuration**: Test email server for development and testing
+
+### SSL Certificates
+- **Location**: `ssl/`
+- **Configuration**: Local SSL certificates for HTTPS development
+
+## SSL Certificate and Keystore Generation Script
 
 This repository contains a script to generate SSL certificates and keystores using `mkcert`, and configure them for a Spring Boot application. The script will generate PEM files (`key.pem` and `cert.pem`), a PKCS12 keystore (`keystore.p12`), and optionally a Java KeyStore (JKS) (`keystore.jks`).
 

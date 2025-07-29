@@ -45,10 +45,63 @@ node_modules/
 pnpm-debug.log
 
 ### Frontend build artifacts ###
-client/*/dist/
-client/*/.output/
-client/*/.next/
-client/*/.astro/
-client/*/.svelte-kit/
-client/*/.cache/
-client/*/.parcel-cache/
+client/**/dist/
+client/**/.output/
+client/**/.next/
+client/**/.astro/
+client/**/.svelte-kit/
+client/**/.cache/
+client/**/.parcel-cache/
+client/**/coverage/
+client/**/node_modules/
+### Environment files ###
+.env
+.env.*
+!.env.example
+
+### Logs ###
+*.log
+logs/
+
+### Local SSL certificates ###
+/infra/ssl/**/*.pem
+/infra/ssl/**/*.key
+/infra/ssl/**/*.crt
+/infra/ssl/**/*.p12
+!/infra/ssl/README.md
+
+### Local development data ###
+/infra/postgresql/data/
+/infra/keycloak/data/
+
+### Generated documentation ###
+/docs/generated/
+/docs/api/
+
+### Temporary files ###
+.tmp/
+tmp/
+*.tmp
+*.bak
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows system files
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux system files
+*~
+.nfs*
+
+# Ignore at all levels
+**/.DS_Store
+**/Thumbs.db
+**/Desktop.ini
+
+# TypeScript cache
+**/*.tsbuildinfo

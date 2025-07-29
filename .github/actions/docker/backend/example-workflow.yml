@@ -1,0 +1,44 @@
+name: Backend Docker Build Example
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'server/**'
+      - '.github/actions/docker/backend/**'
+
+jobs:
+  build-backend:
+    name: Build Backend Docker Image
+    runs-on: ubuntu-latest
+    concurrency:
+      group: build-backend-${{ github.ref }}
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
+
+      - name: Build and push backend Docker image
+        id: build-backend
+        uses: ./.github/actions/docker/backend
+        with:
+          image-name: backend
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Optional Docker Hub authentication
+          # docker-username: ${{ secrets.DOCKER_USERNAME }}
+          # docker-password: ${{ secrets.DOCKER_PASSWORD }}
+          # Additional Gradle arguments if needed
+          gradle-args: "--no-daemon"
+          # Specify the module path
+          module-path: "server:thryve"
+
+      # Example of using the action outputs
+      - name: Display image information
+        run: |
+          echo "Built image: ${{ steps.build-backend.outputs.image-full-name }}"
+          echo "Applied tags: ${{ steps.build-backend.outputs.image-tags }}"

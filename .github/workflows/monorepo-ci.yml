@@ -46,9 +46,11 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        # Pinned to v4 commit hash for security
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
       - name: Run Labeler
-        uses: actions/labeler@v5
+        # Pinned to v5 commit hash for security
+        uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9 # v5
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
   codeql-analysis:
@@ -63,16 +65,20 @@ jobs:
         language: [ 'javascript', 'kotlin' ] # Add other languages as needed
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        # Pinned to v4 commit hash for security
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        # Pinned to v3 commit hash for security
+        uses: github/codeql-action/init@7c651bd38dd1af6b6a3150197b37799cb367fb05 # v3
         with:
           languages: ${{ matrix.language }}
           # queries: +security-extended,security-and-quality
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+        # Pinned to v3 commit hash for security
+        uses: github/codeql-action/autobuild@7c651bd38dd1af6b6a3150197b37799cb367fb05 # v3
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        # Pinned to v3 commit hash for security
+        uses: github/codeql-action/analyze@7c651bd38dd1af6b6a3150197b37799cb367fb05 # v3
 
   super-linter:
     name: Super Linter
@@ -83,14 +89,16 @@ jobs:
       statuses: write # Required to report status checks
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        # Pinned to v4 commit hash for security
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
       - name: Lint Code Base
-        uses: github/super-linter@v5 # Use the latest version
+        # Pinned to v5 commit hash for security
+        uses: github/super-linter@45fc0d88288beee4701c62761281edfee85655d7 # v5
         env:
-          VALIDATE_ALL_CODEBASE: false # Only lint changed files
+          VALIDATE_ALL_CODEBASE: true  # Lint entire codebase
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Configure specific linters if necessary, for example:
@@ -109,9 +117,11 @@ jobs:
       pull-requests: write # Required to comment on PRs
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        # Pinned to v4 commit hash for security
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
       - name: Dependency Review
-        uses: actions/dependency-review-action@v4
+        # Pinned to v4 commit hash for security
+        uses: actions/dependency-review-action@fa6368072a20f00d241e99c93d82db12512ca42d # v4
         with:
           # You can specify configuration options here, e.g.:
           # fail-on-severity: critical
@@ -128,7 +138,8 @@ jobs:
       # pull-requests: write # If you want to comment on PRs (optional)
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        # Pinned to v4 commit hash for security
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
       - name: Run OWASP Dependency Check
         uses: dependency-check/Dependency-Check_Action@75ba02d6183445fe0761d26e836bde58b1560600
         with:
@@ -138,11 +149,11 @@ jobs:
           # Optional: specify suppression file if you have one
           # suppressionPath: 'config/owasp/owasp-suppression.xml'
           # Optional: fail the build if vulnerabilities are found
-          # failOnCVSS: '7' # Fail if CVSS score is 7 or higher
         # Optional: Upload the report as an artifact
       - name: Upload OWASP Dependency Check Report
         if: always() # Ensure report is uploaded even if previous steps fail
-        uses: actions/upload-artifact@v4
+        # Pinned to v4 commit hash for security
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: owasp-dependency-check-report
           path: reports/dependency-check-report.html # Default path for HTML report
@@ -163,39 +174,58 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        # Pinned to v4 commit hash for security
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
 
       - name: Setup Java
-        uses: ./.github/actions/setup-java
+        uses: ./.github/actions/setup/java
+        with:
+          java-version: '21'
+          distribution: 'temurin'
 
       - name: Setup Node.js and pnpm
-        uses: ./.github/actions/setup-node
+        uses: ./.github/actions/setup/node
+        with:
+          node-version: '22'
 
       - name: Download backend artifacts
-        uses: actions/download-artifact@v4
+        # Pinned to v4 commit hash for security
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: backend-artifacts
           path: backend-artifacts
 
       - name: Download frontend artifacts
-        uses: actions/download-artifact@v4
+        # Pinned to v4 commit hash for security
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: frontend-artifacts
           path: frontend-artifacts
 
       - name: Run integration tests
         run: |
-          echo "Running integration tests for the entire monorepo"
-          # Add integration test commands here
-          # For example: ./gradlew integrationTest
+          cd backend
+          ./gradlew integrationTest
 
       - name: Generate integration report
         run: |
-          echo "Generating integration report"
-          # Add report generation commands here
+          mkdir -p integration-report
+          cp backend/build/reports/tests/integrationTest/* integration-report/ || true
+
+      - name: Cache Gradle
+        # Pinned to v4 commit hash for security
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/settings.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - name: Upload integration report
-        uses: actions/upload-artifact@v4
+        # Pinned to v4 commit hash for security
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: integration-report
           path: integration-report/
