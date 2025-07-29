@@ -139,11 +139,12 @@ const handleAddSubscriber = () => {
           size="sm"
           @click="handleRefresh"
           :disabled="isLoading || isRefreshing"
+          aria-label="Refresh subscribers"
         >
           <RefreshCw :class="{ 'animate-spin': isRefreshing }" class="h-4 w-4 mr-2" />
           Refresh
         </Button>
-        <Button size="sm" @click="handleAddSubscriber">
+        <Button size="sm" @click="handleAddSubscriber" aria-label="Add subscriber">
           <Plus class="h-4 w-4 mr-2" />
           Add Subscriber
         </Button>

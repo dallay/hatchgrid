@@ -217,6 +217,7 @@ describe("SubscriberPage", () => {
 					this.name = "ValidationError";
 				}
 			}
+
 			mockRepository.fetchAll = vi
 				.fn()
 				.mockRejectedValue(new ValidationError("Invalid subscriber data"));
@@ -344,6 +345,29 @@ describe("SubscriberPage", () => {
 			tagsPromise.resolve([]);
 
 			await allDataPromise;
+		});
+	});
+
+	describe("Accessibility", () => {
+		it("has proper ARIA labels for interactive elements", () => {
+			const { wrapper } = testSetup;
+			const refreshButton = wrapper.findAll('[data-testid="button"]')[0];
+			expect(refreshButton.attributes("aria-label")).toBeTruthy();
+		});
+
+		it("supports keyboard navigation", async () => {
+			const { wrapper } = testSetup;
+			const buttons = wrapper.findAll('[data-testid="button"]');
+
+			// Simulate tab navigation
+			for (const button of buttons) {
+				await button.trigger("focus");
+				if (button.element instanceof HTMLElement) {
+					expect(button.element.tabIndex).toBeGreaterThanOrEqual(0);
+				} else {
+					throw new Error("Button element is not an HTMLElement");
+				}
+			}
 		});
 	});
 });
