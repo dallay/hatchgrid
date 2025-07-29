@@ -86,10 +86,13 @@
 │   │   │   ├───design.md
 │   │   │   ├───requirements.md
 │   │   │   └───tasks.md
-│   │   └───user-settings-feature/
+│   │   ├───user-settings-feature/
+│   │   │   ├───design.md
+│   │   │   ├───requirements.md
+│   │   │   └───tasks.md
+│   │   └───workspace-clean-architecture/
 │   │       ├───design.md
-│   │       ├───requirements.md
-│   │       └───tasks.md
+│   │       └───requirements.md
 │   └───steering/
 │       ├───conventions/
 │       │   ├───astro-conventions.md
@@ -1046,9 +1049,11 @@
 │   │       │   │   │   └───user.response.ts
 │   │       │   │   └───account.service.ts
 │   │       │   ├───shared/
-│   │       │   │   ├───ApiResponse.ts
-│   │       │   │   ├───DataResponse.ts
-│   │       │   │   └───PageResponse.ts
+│   │       │   │   └───response/
+│   │       │   │       ├───ApiResponse.ts
+│   │       │   │       ├───CollectionResponse.ts
+│   │       │   │       ├───PageResponse.ts
+│   │       │   │       └───SingleItemResponse.ts
 │   │       │   ├───stores/
 │   │       │   │   ├───__tests__/
 │   │       │   │   │   └───auth.test.ts
