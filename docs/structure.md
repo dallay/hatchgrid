@@ -107,7 +107,7 @@
 │       └───tech.md
 ├───client/
 │   ├───apps/
-│   │   ├───hatchgrid-docs/
+│   │   ├───docs/
 │   │   │   ├───public/
 │   │   │   │   └───favicon.svg
 │   │   │   ├───src/
@@ -115,10 +115,59 @@
 │   │   │   │   │   └───houston.webp
 │   │   │   │   ├───content/
 │   │   │   │   │   └───docs/
-│   │   │   │   │       ├───guides/
-│   │   │   │   │       │   └───example.md
-│   │   │   │   │       ├───reference/
-│   │   │   │   │       │   └───example.md
+│   │   │   │   │       ├───configuration/
+│   │   │   │   │       │   ├───cicd/
+│   │   │   │   │       │   │   └───...
+│   │   │   │   │       │   ├───docker.mdx
+│   │   │   │   │       │   ├───environment-variables.mdx
+│   │   │   │   │       │   ├───index.mdx
+│   │   │   │   │       │   ├───keycloak.mdx
+│   │   │   │   │       │   └───postgres-rls.mdx
+│   │   │   │   │       ├───conventions/
+│   │   │   │   │       │   ├───biome-configuration.md
+│   │   │   │   │       │   ├───clean-code.md
+│   │   │   │   │       │   ├───commit-conventions.md
+│   │   │   │   │       │   ├───controller-pattern.md
+│   │   │   │   │       │   ├───deprecation-policy.md
+│   │   │   │   │       │   ├───email-testing.md
+│   │   │   │   │       │   ├───i18n.md
+│   │   │   │   │       │   ├───javascript-modules.md
+│   │   │   │   │       │   ├───offline-first.md
+│   │   │   │   │       │   ├───project-guidelines.md
+│   │   │   │   │       │   ├───rest-api.md
+│   │   │   │   │       │   ├───security.md
+│   │   │   │   │       │   ├───swagger.md
+│   │   │   │   │       │   └───uuid-strategy.md
+│   │   │   │   │       ├───core-concepts/
+│   │   │   │   │       │   ├───content-item.md
+│   │   │   │   │       │   ├───index.md
+│   │   │   │   │       │   ├───multilingual-support.md
+│   │   │   │   │       │   ├───publication-flow.md
+│   │   │   │   │       │   └───workspace.md
+│   │   │   │   │       ├───developer-guide/
+│   │   │   │   │       │   ├───backend/
+│   │   │   │   │       │   │   └───...
+│   │   │   │   │       │   ├───frontend/
+│   │   │   │   │       │   │   └───...
+│   │   │   │   │       │   ├───email-testing.md
+│   │   │   │   │       │   ├───index.md
+│   │   │   │   │       │   ├───maildev-setup.md
+│   │   │   │   │       │   ├───shared-modules.md
+│   │   │   │   │       │   └───smtp-setup.md
+│   │   │   │   │       ├───overview/
+│   │   │   │   │       │   └───index.md
+│   │   │   │   │       ├───quick-start/
+│   │   │   │   │       │   └───index.md
+│   │   │   │   │       ├───security/
+│   │   │   │   │       │   ├───authentication/
+│   │   │   │   │       │   │   └───...
+│   │   │   │   │       │   ├───csrf.md
+│   │   │   │   │       │   ├───index.md
+│   │   │   │   │       │   ├───pinning-github-actions-for-security.md
+│   │   │   │   │       │   └───rls.md
+│   │   │   │   │       ├───changelog.md
+│   │   │   │   │       ├───contributing.md
+│   │   │   │   │       ├───glossary.md
 │   │   │   │   │       └───index.mdx
 │   │   │   │   └───content.config.ts
 │   │   │   ├───.gitignore
@@ -1266,68 +1315,6 @@
 │   │   └───owasp-suppression.xml
 │   └───detekt.yml
 ├───docs/
-│   ├───architecture/
-│   │   ├───form-feature-folder-structure.png
-│   │   ├───hexagonal-architecture.md
-│   │   └───hexagonal-architecture.png
-│   ├───authentication/
-│   │   ├───README.md
-│   │   ├───authentication.md
-│   │   └───keycloak-setup.md
-│   ├───conventions/
-│   │   ├───.gitkeep
-│   │   ├───README.md
-│   │   ├───biome-configuration.md
-│   │   ├───commit-conventions.md
-│   │   ├───controller-pattern.md
-│   │   ├───deprecation-policy.md
-│   │   ├───email-testing.md
-│   │   ├───i18n.md
-│   │   ├───javascript-modules.md
-│   │   ├───offline-first.md
-│   │   ├───project-guidelines.md
-│   │   ├───rest-api.md
-│   │   ├───security.md
-│   │   ├───swagger.md
-│   │   └───uuid-strategy.md
-│   ├───development/
-│   │   ├───email-testing.md
-│   │   ├───maildev-setup.md
-│   │   └───smtp-setup.md
-│   ├───frontend/
-│   │   ├───README.md
-│   │   ├───TRANSLATION_INTEGRATION.md
-│   │   ├───auth-store.md
-│   │   ├───landing-page.md
-│   │   ├───layout-system.md
-│   │   ├───sidebar-navigation-system.md
-│   │   └───subscribers-clean-architecture.md
-│   ├───landing/
-│   │   ├───frontend-project-color-palette.md
-│   │   ├───high-converting-pricing-page.jpeg
-│   │   └───light-and-dark-colors.jpeg
-│   ├───logger/
-│   │   └───usage.md
-│   ├───workflows/
-│   │   ├───README.md
-│   │   ├───ci-guide.md
-│   │   ├───configuration-troubleshooting.md
-│   │   ├───custom-actions.md
-│   │   ├───docker-actions-migration-guide.md
-│   │   ├───docker-actions.md
-│   │   ├───docker-composition-actions.md
-│   │   ├───git-hooks-parallel-update.md
-│   │   ├───git-hooks-update.md
-│   │   ├───git-hooks.md
-│   │   └───github-actions-workflows.md
-│   ├───backend-internationalization-summary.md
-│   ├───clean_code.md
-│   ├───index.md
-│   ├───liquibase-migration-completed.md
-│   ├───liquibase-yaml-vs-xml.md
-│   ├───openapi.mdx
-│   ├───pinning-github-actions-for-security.md
-│   ├───shared-modules.md
 │   └───structure.md
 ├───gradle/
 │   ├───wrapper/
