@@ -28,7 +28,8 @@
 		"packages": [
 			"client/apps/*",
 			"client/packages/*",
-			"client/config"
+			"client/config",
+			"docs"
 		]
 	},
 	"scripts": {
@@ -55,6 +56,9 @@
 		"start": "run-p backend:run dev",
 		"check-updates": "pnpm --recursive exec -- pnpm outdated",
 		"test:all": "pnpm backend:test"
+	},
+	"dependencies": {
+		"zod": "^4.0.13"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.1.2",
