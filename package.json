@@ -29,7 +29,7 @@
 			"client/apps/*",
 			"client/packages/*",
 			"client/config",
-      "docs"
+			"docs"
 		]
 	},
 	"scripts": {
