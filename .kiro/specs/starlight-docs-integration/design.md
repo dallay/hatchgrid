@@ -2,7 +2,7 @@
 
 ## Overview
 
-This design outlines the integration of Astro's Starlight documentation framework into the Hatchgrid monorepo. The goal is to create a comprehensive, interactive documentation site that serves as a central knowledge hub for the project. The documentation site will be generated from the existing `/docs` directory, maintaining it as the single source of truth while providing a more accessible and feature-rich interface for users.
+This design outlines the integration of Astro's Starlight documentation framework into the Hatchgrid monorepo. The goal is to create a comprehensive, interactive documentation site that serves as a central knowledge hub for the project. The documentation site will be generated from the existing `docs/src/content/docs` directory, maintaining it as the single source of truth while providing a more accessible and feature-rich interface for users.
 
 The solution will leverage Astro's Starlight starter, which provides built-in features like dark mode, full-text search, and responsive design. We'll extend this with OpenAPI/Swagger integration to provide interactive API documentation alongside conceptual content.
 
@@ -217,7 +217,7 @@ jobs:
 
 ### Documentation Content Structure
 
-The documentation content will maintain its existing structure in the `/docs` directory:
+The documentation content will maintain its existing structure in the `docs/src/content/docs` directory:
 
 ```texr
 docs/
@@ -323,7 +323,7 @@ interface Sidebar {
 
 ### Single Source of Truth
 
-The existing `/docs` directory will remain the canonical source for documentation content. The Starlight integration will read from this directory rather than duplicating content.
+The existing `docs/src/content/docs` directory will remain the canonical source for documentation content. The Starlight integration will read from this directory rather than duplicating content.
 
 ### Content Symlinks
 

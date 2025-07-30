@@ -28,7 +28,8 @@
 		"packages": [
 			"client/apps/*",
 			"client/packages/*",
-			"client/config"
+			"client/config",
+      "docs"
 		]
 	},
 	"scripts": {
