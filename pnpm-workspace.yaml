@@ -2,6 +2,7 @@ packages:
   - client/apps/*
   - client/packages/*
   - client/config
+  - docs
 
 onlyBuiltDependencies:
   - '@biomejs/biome'
