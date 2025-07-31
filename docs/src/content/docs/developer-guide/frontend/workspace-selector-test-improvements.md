@@ -1,3 +1,7 @@
+---
+title: WorkspaceSelector Test Improvements
+description: Analysis of code quality improvements made to the WorkspaceSelector test file, including best practices and recommendations for future tests.
+---
 # WorkspaceSelector Test Improvements Analysis
 
 ## Overview
