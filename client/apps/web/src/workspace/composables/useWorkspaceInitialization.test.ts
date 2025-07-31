@@ -1,43 +1,44 @@
+import { createPinia, defineStore, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
-import {
-	useWorkspaceInitialization,
-} from "./useWorkspaceInitialization";
-
-interface MockWorkspaceStore {
-  loadAll: () => Promise<void>;
-  restorePersistedWorkspace: () => Promise<boolean>;
-  selectWorkspace: (id: string) => Promise<void>;
-  workspaces: Array<{ id: string }>;
-  hasError: boolean;
-  error: Error | null;
-  isWorkspaceSelected: boolean;
-  // Agrega aquí cualquier otra propiedad necesaria
-}
-
-function createMockStore(overrides: Partial<MockWorkspaceStore> = {}): MockWorkspaceStore {
-  return {
-	loadAll: vi.fn().mockResolvedValue(undefined),
-	restorePersistedWorkspace: vi.fn().mockResolvedValue(false),
-	selectWorkspace: vi.fn().mockResolvedValue(undefined),
-	workspaces: [],
-	hasError: false,
-	error: null,
-	isWorkspaceSelected: false,
-	...overrides,
-  };
-}
+import { useWorkspaceInitialization } from "./useWorkspaceInitialization";
 
 describe("useWorkspaceInitialization", () => {
-	let store: ReturnType<typeof createMockStore>;
+	let store: ReturnType<ReturnType<typeof getTestStore>>;
+
+	function getTestStore() {
+		return defineStore("workspace", {
+			state: () => ({
+				workspaces: [] as Array<{ id: string }>,
+				hasError: false,
+				error: null as Error | null,
+				isWorkspaceSelected: false,
+			}),
+			actions: {
+				async loadAll() {},
+				async restorePersistedWorkspace() {
+					return false;
+				},
+				async selectWorkspace(_id: string) {},
+			},
+		});
+	}
 
 	beforeEach(() => {
-		store = createMockStore();
+		setActivePinia(createPinia());
+		store = getTestStore()();
+		// Mock actions for spying
+		store.loadAll = vi.fn().mockResolvedValue(undefined);
+		store.restorePersistedWorkspace = vi.fn().mockResolvedValue(false);
+		store.selectWorkspace = vi.fn().mockResolvedValue(undefined);
 	});
 
 	it("should auto-initialize on mount if autoLoad or autoRestore is true", async () => {
 		const onInitialized = vi.fn();
-		const { initialize } = useWorkspaceInitialization(store, { autoLoad: true, onInitialized });
+		const { initialize } = useWorkspaceInitialization(store, {
+			autoLoad: true,
+			onInitialized,
+		});
 		await initialize();
 		expect(store.loadAll).toHaveBeenCalled();
 	});
@@ -121,6 +122,7 @@ describe("useWorkspaceInitialization", () => {
 	it("should not re-initialize if already initializing or initialized", async () => {
 		const { initialize, isInitializing, isInitialized } =
 			useWorkspaceInitialization(store);
+		// No need to assign to isInitializing.value/isInitialized.value directly, as they are refs returned by the composable
 		isInitializing.value = true;
 		await initialize();
 		expect(store.loadAll).not.toHaveBeenCalledTimes(2);
