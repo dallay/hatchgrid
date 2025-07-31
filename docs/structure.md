@@ -1356,6 +1356,10 @@
 │   │   └───owasp-suppression.xml
 │   └───detekt.yml
 ├───docs/
+│   ├───node_modules/
+│   │   ├───.bin/
+│   │   │   └───astro
+│   │   └───@astrojs/
 │   ├───public/
 │   │   └───favicon.svg
 │   ├───src/
