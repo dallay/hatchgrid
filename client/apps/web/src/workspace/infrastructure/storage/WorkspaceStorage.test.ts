@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useLocalStorage } from "@/composables/useLocalStorage";
-import { createWorkspaceStorage } from "./WorkspaceStorage";
+import { createWorkspaceStorage } from "@/workspace";
 
 vi.mock("@/composables/useLocalStorage", () => ({
 	useLocalStorage: vi.fn(() => [ref(null), vi.fn()]),
