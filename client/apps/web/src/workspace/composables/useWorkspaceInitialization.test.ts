@@ -4,17 +4,28 @@ import {
 	useWorkspaceInitialization,
 } from "./useWorkspaceInitialization";
 
-function createMockStore(overrides: Partial<any> = {}) {
-	return {
-		loadAll: vi.fn().mockResolvedValue(undefined),
-		restorePersistedWorkspace: vi.fn().mockResolvedValue(false),
-		selectWorkspace: vi.fn().mockResolvedValue(undefined),
-		workspaces: [],
-		hasError: false,
-		error: null,
-		isWorkspaceSelected: false,
-		...overrides,
-	};
+interface MockWorkspaceStore {
+  loadAll: () => Promise<void>;
+  restorePersistedWorkspace: () => Promise<boolean>;
+  selectWorkspace: (id: string) => Promise<void>;
+  workspaces: Array<{ id: string }>;
+  hasError: boolean;
+  error: Error | null;
+  isWorkspaceSelected: boolean;
+  // Agrega aquí cualquier otra propiedad necesaria
+}
+
+function createMockStore(overrides: Partial<MockWorkspaceStore> = {}): MockWorkspaceStore {
+  return {
+	loadAll: vi.fn().mockResolvedValue(undefined),
+	restorePersistedWorkspace: vi.fn().mockResolvedValue(false),
+	selectWorkspace: vi.fn().mockResolvedValue(undefined),
+	workspaces: [],
+	hasError: false,
+	error: null,
+	isWorkspaceSelected: false,
+	...overrides,
+  };
 }
 
 describe("useWorkspaceInitialization", () => {
