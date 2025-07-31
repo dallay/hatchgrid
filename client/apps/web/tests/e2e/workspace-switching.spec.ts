@@ -3,7 +3,7 @@
  * Tests the complete user flow from workspace selection to UI updates
  */
 
-import { expect, type Page, type Route, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 
 // Types
 interface MockWorkspace {

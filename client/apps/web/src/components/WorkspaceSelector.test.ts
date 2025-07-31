@@ -235,7 +235,7 @@ describe("WorkspaceSelector", () => {
 				emitCallback = options.onWorkspaceChange;
 				// Simulate selection with provided initial ID
 				if (emitCallback) {
-					setTimeout(() => emitCallback!("2"), 0);
+					setTimeout(() => emitCallback?.("2"), 0);
 				}
 				return {
 					activeWorkspace: ref(mockWorkspaces[1]),
@@ -258,7 +258,7 @@ describe("WorkspaceSelector", () => {
 				emitCallback = options.onWorkspaceChange;
 				// Simulate fallback to first workspace
 				if (emitCallback) {
-					setTimeout(() => emitCallback!(mockWorkspaces[0].id), 0);
+					setTimeout(() => emitCallback?.(mockWorkspaces[0].id), 0);
 				}
 				return {
 					activeWorkspace: ref(mockWorkspaces[0]),
@@ -289,7 +289,7 @@ describe("WorkspaceSelector", () => {
 
 				// Initial selection
 				if (emitCallback) {
-					setTimeout(() => emitCallback!(mockWorkspaces[0].id), 0);
+					setTimeout(() => emitCallback?.(mockWorkspaces[0].id), 0);
 				}
 
 				return {

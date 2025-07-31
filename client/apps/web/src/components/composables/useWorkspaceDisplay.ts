@@ -95,7 +95,6 @@ export function useWorkspaceDisplay({
 				return "empty";
 			case "no-selection":
 				return "inactive";
-			case "active":
 			default:
 				return "active";
 		}

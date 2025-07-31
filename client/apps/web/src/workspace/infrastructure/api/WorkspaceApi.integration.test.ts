@@ -236,7 +236,7 @@ describe("WorkspaceApi Integration Tests", () => {
 
 			// Assert
 			expect(result).toEqual(mockResponse);
-			expect(result!.data).toEqual(mockWorkspace);
+			expect(result?.data).toEqual(mockWorkspace);
 		});
 
 		it("should return null for 404 responses", async () => {
