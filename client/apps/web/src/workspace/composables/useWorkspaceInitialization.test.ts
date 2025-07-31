@@ -9,9 +9,14 @@ describe("useWorkspaceInitialization", () => {
 	function getTestStore() {
 		return defineStore("workspace", {
 			state: () => ({
-				workspaces: [] as Array<{ id: string }>,
+				workspaces: [] as any[],
+				currentWorkspace: null as any,
+				loading: {
+					loadingAll: false,
+					loadingById: false,
+				},
+				error: null as any,
 				hasError: false,
-				error: null as Error | null,
 				isWorkspaceSelected: false,
 			}),
 			actions: {
@@ -35,7 +40,7 @@ describe("useWorkspaceInitialization", () => {
 
 	it("should auto-initialize on mount if autoLoad or autoRestore is true", async () => {
 		const onInitialized = vi.fn();
-		const { initialize } = useWorkspaceInitialization(store, {
+		const { initialize } = useWorkspaceInitialization(store as any, {
 			autoLoad: true,
 			onInitialized,
 		});
@@ -45,7 +50,7 @@ describe("useWorkspaceInitialization", () => {
 
 	it("should not auto-initialize on mount if both autoLoad and autoRestore are false", async () => {
 		const onInitialized = vi.fn();
-		useWorkspaceInitialization(store, {
+		useWorkspaceInitialization(store as any, {
 			autoLoad: false,
 			autoRestore: false,
 			onInitialized,
@@ -57,7 +62,9 @@ describe("useWorkspaceInitialization", () => {
 	it("should call onInitialized with true if workspace is restored", async () => {
 		store.restorePersistedWorkspace = vi.fn().mockResolvedValue(true);
 		const onInitialized = vi.fn();
-		const { initialize } = useWorkspaceInitialization(store, { onInitialized });
+		const { initialize } = useWorkspaceInitialization(store as any, {
+			onInitialized,
+		});
 		await initialize();
 		expect(onInitialized).toHaveBeenCalledWith(true);
 	});
@@ -68,7 +75,9 @@ describe("useWorkspaceInitialization", () => {
 		store.selectWorkspace = vi.fn().mockResolvedValue(undefined);
 		store.isWorkspaceSelected = true;
 		const onInitialized = vi.fn();
-		const { initialize } = useWorkspaceInitialization(store, { onInitialized });
+		const { initialize } = useWorkspaceInitialization(store as any, {
+			onInitialized,
+		});
 		await initialize();
 		expect(store.selectWorkspace).toHaveBeenCalledWith("w1");
 		expect(onInitialized).toHaveBeenCalledWith(true);
@@ -79,7 +88,7 @@ describe("useWorkspaceInitialization", () => {
 		store.workspaces = [{ id: "w1" }];
 		store.selectWorkspace = vi.fn().mockResolvedValue(undefined);
 		const onInitialized = vi.fn();
-		const { initialize } = useWorkspaceInitialization(store, {
+		const { initialize } = useWorkspaceInitialization(store as any, {
 			selectFirstIfNone: false,
 			onInitialized,
 		});
@@ -94,7 +103,7 @@ describe("useWorkspaceInitialization", () => {
 		store.error = new Error("Load failed");
 		const onError = vi.fn();
 		const { initialize, initializationError } = useWorkspaceInitialization(
-			store,
+			store as any,
 			{ onError },
 		);
 		await initialize();
@@ -111,7 +120,7 @@ describe("useWorkspaceInitialization", () => {
 			isInitializing,
 			isInitialized,
 			initializationError,
-		} = useWorkspaceInitialization(store);
+		} = useWorkspaceInitialization(store as any);
 		await initialize();
 		resetInitialization();
 		expect(isInitializing.value).toBe(false);
@@ -120,16 +129,12 @@ describe("useWorkspaceInitialization", () => {
 	});
 
 	it("should not re-initialize if already initializing or initialized", async () => {
-		const { initialize, isInitializing, isInitialized } =
-			useWorkspaceInitialization(store);
-		// No need to assign to isInitializing.value/isInitialized.value directly, as they are refs returned by the composable
-		isInitializing.value = true;
+		const { initialize } = useWorkspaceInitialization(store as any);
+		// Test that multiple calls don't trigger multiple loads
 		await initialize();
-		expect(store.loadAll).not.toHaveBeenCalledTimes(2);
+		expect(store.loadAll).toHaveBeenCalledTimes(1);
 
-		isInitializing.value = false;
-		isInitialized.value = true;
 		await initialize();
-		expect(store.loadAll).not.toHaveBeenCalledTimes(2);
+		expect(store.loadAll).toHaveBeenCalledTimes(1); // Should still be 1, not 2
 	});
 });

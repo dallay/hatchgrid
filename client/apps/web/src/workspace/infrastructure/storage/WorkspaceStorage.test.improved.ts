@@ -4,6 +4,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ref } from "vue";
 import {
 	EmptyWorkspaceIdError,
 	InvalidWorkspaceIdError,
@@ -17,7 +18,7 @@ vi.mock("@/composables/useLocalStorage", () => ({
 
 describe("WorkspaceStorage", () => {
 	let storage: WorkspaceStorage;
-	let mockState: { value: string | null };
+	let mockState: any;
 	let mockSetState: ReturnType<typeof vi.fn>;
 
 	// Test constants for better maintainability
@@ -40,7 +41,7 @@ describe("WorkspaceStorage", () => {
 		vi.clearAllMocks();
 
 		// Initialize mock state with proper typing
-		mockState = { value: null };
+		mockState = ref<string | null>(null);
 		mockSetState = vi.fn((value: string | null) => {
 			mockState.value = value;
 		});
@@ -92,18 +93,18 @@ describe("WorkspaceStorage", () => {
 		});
 
 		it("should throw EmptyWorkspaceIdError for empty string", () => {
-			expect(() => storage.setSelectedWorkspaceId(TEST_DATA.EMPTY_STRING)).toThrow(
-				EmptyWorkspaceIdError,
-			);
-			expect(() => storage.setSelectedWorkspaceId(TEST_DATA.WHITESPACE_STRING)).toThrow(
-				EmptyWorkspaceIdError,
-			);
+			expect(() =>
+				storage.setSelectedWorkspaceId(TEST_DATA.EMPTY_STRING),
+			).toThrow(EmptyWorkspaceIdError);
+			expect(() =>
+				storage.setSelectedWorkspaceId(TEST_DATA.WHITESPACE_STRING),
+			).toThrow(EmptyWorkspaceIdError);
 		});
 
 		it("should throw InvalidWorkspaceIdError for invalid UUID", () => {
-			expect(() => storage.setSelectedWorkspaceId(TEST_DATA.INVALID_UUID)).toThrow(
-				InvalidWorkspaceIdError,
-			);
+			expect(() =>
+				storage.setSelectedWorkspaceId(TEST_DATA.INVALID_UUID),
+			).toThrow(InvalidWorkspaceIdError);
 		});
 
 		it("should trim whitespace from valid UUID", () => {

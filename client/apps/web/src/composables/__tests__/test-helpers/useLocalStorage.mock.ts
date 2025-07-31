@@ -1,6 +1,5 @@
-
-import { ref, type Ref } from "vue";
 import { vi } from "vitest";
+import { ref } from "vue";
 
 /**
  * Creates a mock of the `useLocalStorage` composable.
@@ -9,13 +8,13 @@ import { vi } from "vitest";
  * @returns A mocked `useLocalStorage` function.
  */
 export const createUseLocalStorageMock = <T>(initialValue: T | null = null) => {
-  const state: Ref<T | null> = ref(initialValue);
+	const state = ref<T | null>(initialValue);
 
-  const setState = (newValue: T | null) => {
-    state.value = newValue;
-  };
+	const setState = (newValue: T | null) => {
+		state.value = newValue;
+	};
 
-  const mock = vi.fn(() => [state, setState]);
+	const mock = vi.fn(() => [state, setState]);
 
-  return mock as unknown as () => [Ref<T | null>, (value: T | null) => void];
+	return mock as unknown as () => [typeof state, (value: T | null) => void];
 };

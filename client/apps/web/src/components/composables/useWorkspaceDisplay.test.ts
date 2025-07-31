@@ -18,11 +18,13 @@ describe("useWorkspaceDisplay", () => {
 		const loading = ref(true);
 		const hasWorkspaces = ref(false);
 
-		const { displayText, displaySubtext, showEmptyState } = useWorkspaceDisplay({
-			activeWorkspace,
-			loading,
-			hasWorkspaces,
-		});
+		const { displayText, displaySubtext, showEmptyState } = useWorkspaceDisplay(
+			{
+				activeWorkspace,
+				loading,
+				hasWorkspaces,
+			},
+		);
 
 		expect(displayText.value).toBe("Loading...");
 		expect(displaySubtext.value).toBe("Please wait");
@@ -45,7 +47,10 @@ describe("useWorkspaceDisplay", () => {
 	});
 
 	it("should show fallback text when no description", () => {
-		const workspaceWithoutDescription = { ...mockWorkspace, description: undefined };
+		const workspaceWithoutDescription = {
+			...mockWorkspace,
+			description: undefined,
+		};
 		const activeWorkspace = ref(workspaceWithoutDescription);
 		const loading = ref(false);
 		const hasWorkspaces = ref(true);
@@ -64,11 +69,13 @@ describe("useWorkspaceDisplay", () => {
 		const loading = ref(false);
 		const hasWorkspaces = ref(false);
 
-		const { displayText, displaySubtext, showEmptyState } = useWorkspaceDisplay({
-			activeWorkspace,
-			loading,
-			hasWorkspaces,
-		});
+		const { displayText, displaySubtext, showEmptyState } = useWorkspaceDisplay(
+			{
+				activeWorkspace,
+				loading,
+				hasWorkspaces,
+			},
+		);
 
 		expect(displayText.value).toBe("No workspace selected");
 		expect(displaySubtext.value).toBe("Select a workspace");
@@ -87,6 +94,8 @@ describe("useWorkspaceDisplay", () => {
 		});
 
 		expect(isWorkspaceActive(mockWorkspace)).toBe(true);
-		expect(isWorkspaceActive({ ...mockWorkspace, id: "different" })).toBe(false);
+		expect(isWorkspaceActive({ ...mockWorkspace, id: "different" })).toBe(
+			false,
+		);
 	});
 });

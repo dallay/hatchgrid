@@ -30,14 +30,9 @@ import {
 export class WorkspaceApi implements WorkspaceRepository {
 	private readonly httpClient: IHttpClient;
 
-	constructor(
-		httpClient?: IHttpClient,
-		config: HttpRequestConfig = {}
-	) {
+	constructor(httpClient?: IHttpClient, config: HttpRequestConfig = {}) {
 		this.httpClient = httpClient ?? new AxiosHttpClient(config);
 	}
-
-
 
 	/**
 	 * Retrieves all workspaces accessible to the current user.
@@ -49,7 +44,10 @@ export class WorkspaceApi implements WorkspaceRepository {
 	 */
 	async list(): Promise<CollectionResponse<Workspace>> {
 		try {
-			const data = await this.httpClient.get<CollectionResponse<Workspace>>("/api/workspace");
+			const data =
+				await this.httpClient.get<CollectionResponse<Workspace>>(
+					"/api/workspace",
+				);
 
 			// Validate response structure
 			validateCollectionResponse(data, "workspace");
@@ -87,7 +85,9 @@ export class WorkspaceApi implements WorkspaceRepository {
 		}
 
 		try {
-			const data = await this.httpClient.get<SingleItemResponse<Workspace>>(`/api/workspace/${id}`);
+			const data = await this.httpClient.get<SingleItemResponse<Workspace>>(
+				`/api/workspace/${id}`,
+			);
 
 			// Validate response structure
 			validateSingleItemResponse(data, "workspace");
@@ -96,7 +96,7 @@ export class WorkspaceApi implements WorkspaceRepository {
 			return data;
 		} catch (error) {
 			// Handle 404 responses specially - return null as per interface contract
-			if (error instanceof Error && error.message.includes('(404)')) {
+			if (error instanceof Error && error.message.includes("(404)")) {
 				return null;
 			}
 

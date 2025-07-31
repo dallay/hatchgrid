@@ -145,7 +145,9 @@ describe("WorkspaceApi Integration Tests", () => {
 			);
 
 			// Act & Assert
-			await expect(workspaceApi.list()).rejects.toThrow("Workspace API error during list workspaces");
+			await expect(workspaceApi.list()).rejects.toThrow(
+				"Workspace API error during list workspaces",
+			);
 		});
 
 		it("should not retry on client errors", async () => {
@@ -159,7 +161,9 @@ describe("WorkspaceApi Integration Tests", () => {
 			);
 
 			// Act & Assert
-			await expect(workspaceApi.list()).rejects.toThrow("Workspace API error during list workspaces");
+			await expect(workspaceApi.list()).rejects.toThrow(
+				"Workspace API error during list workspaces",
+			);
 			expect(callCount).toBe(1);
 		});
 
@@ -341,7 +345,9 @@ describe("WorkspaceApi Integration Tests", () => {
 			);
 
 			// Act & Assert
-			await expect(workspaceApi.getById(validId)).rejects.toThrow(`Workspace API error during get workspace ${validId}`);
+			await expect(workspaceApi.getById(validId)).rejects.toThrow(
+				`Workspace API error during get workspace ${validId}`,
+			);
 		});
 
 		it("should validate UUID format before making request", async () => {
@@ -364,7 +370,7 @@ describe("WorkspaceApi Integration Tests", () => {
 			server.use(
 				http.get(`/api/workspace/${validId}`, () => {
 					return HttpResponse.json(mockResponse);
-				})
+				}),
 			);
 
 			// Act
@@ -454,7 +460,9 @@ describe("WorkspaceApi Integration Tests", () => {
 			);
 
 			// Act & Assert
-			await expect(workspaceApi.list()).rejects.toThrow("Workspace API error during list workspaces");
+			await expect(workspaceApi.list()).rejects.toThrow(
+				"Workspace API error during list workspaces",
+			);
 		});
 	});
 });

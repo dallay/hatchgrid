@@ -37,8 +37,6 @@ export class ListWorkspaces {
 			}
 
 			// Wrap unknown errors in domain error with more context
-			const errorMessage =
-				error instanceof Error ? error.message : "Unknown error occurred";
 			throw new WorkspaceApiError("list workspaces", undefined, error);
 		}
 	}

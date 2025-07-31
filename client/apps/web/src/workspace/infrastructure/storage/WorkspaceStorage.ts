@@ -9,7 +9,10 @@ import { useLocalStorage } from "@/composables/useLocalStorage";
  * Domain-specific errors for workspace storage operations
  */
 export class WorkspaceStorageError extends Error {
-	constructor(message: string, public readonly code: string) {
+	constructor(
+		message: string,
+		public readonly code: string,
+	) {
 		super(message);
 		this.name = "WorkspaceStorageError";
 	}
@@ -17,7 +20,10 @@ export class WorkspaceStorageError extends Error {
 
 export class InvalidWorkspaceIdError extends WorkspaceStorageError {
 	constructor(workspaceId: string) {
-		super(`Invalid workspace ID format: ${workspaceId}`, "INVALID_WORKSPACE_ID");
+		super(
+			`Invalid workspace ID format: ${workspaceId}`,
+			"INVALID_WORKSPACE_ID",
+		);
 	}
 }
 
@@ -31,7 +37,8 @@ export class EmptyWorkspaceIdError extends WorkspaceStorageError {
  * Storage key for the selected workspace ID
  * Uses namespaced key to avoid conflicts with other applications
  */
-export const STORAGE_KEY_SELECTED_WORKSPACE = "hatchgrid:workspace:selected" as const;
+export const STORAGE_KEY_SELECTED_WORKSPACE =
+	"hatchgrid:workspace:selected" as const;
 
 /**
  * UUID v4 length constant for validation
@@ -41,13 +48,15 @@ const UUID_LENGTH = 36 as const;
 /**
  * Result type for operations that can fail
  */
-export type StorageResult<T> = {
-	success: true;
-	data: T;
-} | {
-	success: false;
-	error: WorkspaceStorageError;
-};
+export type StorageResult<T> =
+	| {
+			success: true;
+			data: T;
+	  }
+	| {
+			success: false;
+			error: WorkspaceStorageError;
+	  };
 
 /**
  * Interface for workspace storage operations
@@ -87,7 +96,8 @@ export interface WorkspaceStorage {
 /**
  * UUID validation utilities
  */
-const UUID_V4_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const UUID_V4_REGEX =
+	/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 /**
  * Validates if a string is a valid UUID v4 format
@@ -120,10 +130,9 @@ const validateWorkspaceId = (id: string | null | undefined): string | null => {
  * @returns WorkspaceStorage implementation
  */
 export const createWorkspaceStorage = (): WorkspaceStorage => {
-	const [selectedWorkspaceId, setSelectedWorkspaceId] = useLocalStorage<string | null>(
-		STORAGE_KEY_SELECTED_WORKSPACE,
-		null
-	);
+	const [selectedWorkspaceId, setSelectedWorkspaceId] = useLocalStorage<
+		string | null
+	>(STORAGE_KEY_SELECTED_WORKSPACE, null);
 
 	return {
 		getSelectedWorkspaceId(): string | null {
@@ -132,7 +141,10 @@ export const createWorkspaceStorage = (): WorkspaceStorage => {
 
 			// If we have a raw ID but validation failed, clean up storage
 			if (rawId && !validatedId) {
-				console.warn("[WorkspaceStorage] Invalid workspace ID found in storage, clearing:", rawId);
+				console.warn(
+					"[WorkspaceStorage] Invalid workspace ID found in storage, clearing:",
+					rawId,
+				);
 				setSelectedWorkspaceId(null);
 				return null;
 			}
@@ -166,21 +178,26 @@ export const createWorkspaceStorage = (): WorkspaceStorage => {
 				const validatedId = validateWorkspaceId(workspaceId);
 
 				if (!validatedId) {
-					const error = !workspaceId || workspaceId.trim() === ""
-						? new EmptyWorkspaceIdError()
-						: new InvalidWorkspaceIdError(workspaceId);
+					const error =
+						!workspaceId || workspaceId.trim() === ""
+							? new EmptyWorkspaceIdError()
+							: new InvalidWorkspaceIdError(workspaceId);
 					return { success: false, error };
 				}
 
 				setSelectedWorkspaceId(validatedId);
 				return { success: true, data: undefined };
 			} catch (error) {
-				const storageError = error instanceof WorkspaceStorageError
-					? error
-					: new WorkspaceStorageError("Unknown storage error", "UNKNOWN_ERROR");
+				const storageError =
+					error instanceof WorkspaceStorageError
+						? error
+						: new WorkspaceStorageError(
+								"Unknown storage error",
+								"UNKNOWN_ERROR",
+							);
 				return { success: false, error: storageError };
 			}
-		}
+		},
 	};
 };
 

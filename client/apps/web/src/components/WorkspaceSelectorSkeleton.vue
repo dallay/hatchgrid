@@ -22,15 +22,14 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
 
 interface Props {
-  /** Number of skeleton workspace items to show in dropdown */
-  skeletonCount?: number;
+	/** Number of skeleton workspace items to show in dropdown */
+	skeletonCount?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  skeletonCount: 3,
+	skeletonCount: 3,
 });
 
 const { isMobile } = useSidebar();

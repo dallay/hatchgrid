@@ -56,7 +56,7 @@ export interface WorkspaceInitializationState {
  */
 export const useWorkspaceInitialization = (
 	store: WorkspaceStore,
-	options: WorkspaceInitializationOptions = {}
+	options: WorkspaceInitializationOptions = {},
 ) => {
 	const {
 		autoLoad = true,
@@ -134,9 +134,11 @@ export const useWorkspaceInitialization = (
 
 			isInitialized.value = true;
 			onInitialized?.(hasSelectedWorkspace);
-
 		} catch (error) {
-			const initError = error instanceof Error ? error : new Error("Unknown initialization error");
+			const initError =
+				error instanceof Error
+					? error
+					: new Error("Unknown initialization error");
 			initializationError.value = initError;
 			onError?.(initError);
 		} finally {

@@ -73,7 +73,9 @@ describe("ListWorkspaces", () => {
 
 			// Act & Assert
 			await expect(listWorkspaces.execute()).rejects.toThrow(WorkspaceApiError);
-			await expect(listWorkspaces.execute()).rejects.toThrow("Workspace API error during list workspaces");
+			await expect(listWorkspaces.execute()).rejects.toThrow(
+				"Workspace API error during list workspaces",
+			);
 			expect(mockRepository.list).toHaveBeenCalledTimes(2);
 		});
 

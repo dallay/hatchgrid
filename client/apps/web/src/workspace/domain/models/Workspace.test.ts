@@ -43,13 +43,7 @@ describe("Workspace", () => {
 		});
 
 		it("should return false for non-object types", () => {
-			const nonObjects = [
-				"string",
-				123,
-				true,
-				[],
-				() => {},
-			];
+			const nonObjects = ["string", 123, true, [], () => {}];
 
 			for (const nonObject of nonObjects) {
 				expect(isWorkspace(nonObject)).toBe(false);
@@ -57,7 +51,13 @@ describe("Workspace", () => {
 		});
 
 		it("should return false when required string fields are missing", () => {
-			const requiredFields = ["id", "name", "ownerId", "createdAt", "updatedAt"];
+			const requiredFields = [
+				"id",
+				"name",
+				"ownerId",
+				"createdAt",
+				"updatedAt",
+			];
 
 			for (const field of requiredFields) {
 				const incompleteWorkspace = { ...validWorkspace };
@@ -67,7 +67,13 @@ describe("Workspace", () => {
 		});
 
 		it("should return false when required string fields are not strings", () => {
-			const requiredFields = ["id", "name", "ownerId", "createdAt", "updatedAt"];
+			const requiredFields = [
+				"id",
+				"name",
+				"ownerId",
+				"createdAt",
+				"updatedAt",
+			];
 			const nonStringValues = [123, true, null, undefined, {}, []];
 
 			for (const field of requiredFields) {

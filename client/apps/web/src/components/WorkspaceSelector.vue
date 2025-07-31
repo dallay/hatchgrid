@@ -16,7 +16,6 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -96,8 +95,6 @@ const handleRetry = async () => {
 	await baseHandleRetry();
 };
 
-
-
 // Search functionality with debouncing
 const {
 	searchQuery,
@@ -105,7 +102,6 @@ const {
 	isSearching,
 	filteredWorkspaces,
 	hasSearchQuery,
-	hasResults,
 	showNoResults,
 	searchStats,
 	setSearchQuery,
@@ -134,9 +130,7 @@ const {
 	displaySubtext,
 	showEmptyState,
 	showLoadingState,
-	displayState,
-	iconState,
-	isWorkspaceActive
+	isWorkspaceActive,
 } = useWorkspaceDisplay({
 	activeWorkspace,
 	loading: toRef(props, "loading"),
@@ -146,16 +140,18 @@ const {
 });
 
 // Computed properties for optimization
-const shouldShowSearch = computed(() =>
-	props.enableSearch && props.workspaces.length >= props.searchThreshold
+const shouldShowSearch = computed(
+	() => props.enableSearch && props.workspaces.length >= props.searchThreshold,
 );
 
 const workspacesToDisplay = computed(() =>
-	shouldShowSearch.value ? filteredWorkspaces.value : props.workspaces
+	shouldShowSearch.value ? filteredWorkspaces.value : props.workspaces,
 );
 
-const isDisabledOptimized = computed(() =>
-	props.loading || (workspacesToDisplay.value.length === 0 && !hasError.value)
+const isDisabledOptimized = computed(
+	() =>
+		props.loading ||
+		(workspacesToDisplay.value.length === 0 && !hasError.value),
 );
 
 // Enhanced select workspace with error handling and toast notifications
@@ -228,7 +224,7 @@ const selectWorkspace = (workspace: Workspace) => {
               <Search class="absolute left-2 top-2.5 size-4 text-muted-foreground" />
               <Input
                 :model-value="searchQuery"
-                @update:model-value="setSearchQuery"
+                @update:model-value="(value) => setSearchQuery(String(value))"
                 placeholder="Search workspaces..."
                 class="pl-8 pr-8 h-8 text-sm"
               />

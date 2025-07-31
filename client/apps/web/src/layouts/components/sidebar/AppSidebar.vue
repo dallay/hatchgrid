@@ -14,7 +14,6 @@
  * @component
  */
 
-
 import { computed, onMounted, ref } from "vue";
 import UserNav from "@/components/UserNav.vue";
 import type { SidebarProps } from "@/components/ui/sidebar";

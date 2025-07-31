@@ -42,7 +42,10 @@ export class GetWorkspaceById {
 			return response?.data ?? null;
 		} catch (error) {
 			// Re-throw domain errors as-is
-			if (error instanceof InvalidWorkspaceIdError || error instanceof WorkspaceApiError) {
+			if (
+				error instanceof InvalidWorkspaceIdError ||
+				error instanceof WorkspaceApiError
+			) {
 				throw error;
 			}
 

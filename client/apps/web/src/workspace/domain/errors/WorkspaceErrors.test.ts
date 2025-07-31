@@ -99,7 +99,9 @@ describe("WorkspaceErrors", () => {
 			const expectedFormat = "CollectionResponse<Workspace>";
 			const error = new InvalidResponseFormatError(expectedFormat);
 
-			expect(error.message).toBe(`Invalid response format: expected ${expectedFormat}`);
+			expect(error.message).toBe(
+				`Invalid response format: expected ${expectedFormat}`,
+			);
 			expect(error.code).toBe("INVALID_RESPONSE_FORMAT");
 			expect(error.name).toBe("InvalidResponseFormatError");
 			expect(error.cause).toBeUndefined();
@@ -110,7 +112,9 @@ describe("WorkspaceErrors", () => {
 			const cause = new Error("Parse error");
 			const error = new InvalidResponseFormatError(expectedFormat, cause);
 
-			expect(error.message).toBe(`Invalid response format: expected ${expectedFormat}`);
+			expect(error.message).toBe(
+				`Invalid response format: expected ${expectedFormat}`,
+			);
 			expect(error.code).toBe("INVALID_RESPONSE_FORMAT");
 			expect(error.cause).toBe(cause);
 		});
@@ -189,7 +193,7 @@ describe("WorkspaceErrors", () => {
 				new WorkspaceApiError("test-operation"),
 			];
 
-			const codes = errors.map(error => error.code);
+			const codes = errors.map((error) => error.code);
 			const uniqueCodes = new Set(codes);
 
 			expect(uniqueCodes.size).toBe(codes.length);

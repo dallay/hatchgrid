@@ -11,15 +11,19 @@ import { InvalidResponseFormatError } from "../../domain/errors/WorkspaceErrors"
  */
 export function validateCollectionResponse<T>(
 	response: unknown,
-	itemTypeName: string
+	itemTypeName: string,
 ): asserts response is CollectionResponse<T> {
-	if (!response || typeof response !== 'object') {
-		throw new InvalidResponseFormatError(`${itemTypeName} collection with data array`);
+	if (!response || typeof response !== "object") {
+		throw new InvalidResponseFormatError(
+			`${itemTypeName} collection with data array`,
+		);
 	}
 
 	const data = (response as any).data;
 	if (!Array.isArray(data)) {
-		throw new InvalidResponseFormatError(`${itemTypeName} collection with data array`);
+		throw new InvalidResponseFormatError(
+			`${itemTypeName} collection with data array`,
+		);
 	}
 }
 
@@ -28,15 +32,19 @@ export function validateCollectionResponse<T>(
  */
 export function validateSingleItemResponse<T>(
 	response: unknown,
-	itemTypeName: string
+	itemTypeName: string,
 ): asserts response is SingleItemResponse<T> {
-	if (!response || typeof response !== 'object') {
-		throw new InvalidResponseFormatError(`${itemTypeName} object with data property`);
+	if (!response || typeof response !== "object") {
+		throw new InvalidResponseFormatError(
+			`${itemTypeName} object with data property`,
+		);
 	}
 
 	const data = (response as any).data;
-	if (!data || typeof data !== 'object') {
-		throw new InvalidResponseFormatError(`${itemTypeName} object with data property`);
+	if (!data || typeof data !== "object") {
+		throw new InvalidResponseFormatError(
+			`${itemTypeName} object with data property`,
+		);
 	}
 }
 
@@ -44,16 +52,18 @@ export function validateSingleItemResponse<T>(
  * Additional validation for workspace-specific data structure
  */
 export function validateWorkspaceData(data: unknown): void {
-	if (!data || typeof data !== 'object') {
-		throw new InvalidResponseFormatError('workspace object');
+	if (!data || typeof data !== "object") {
+		throw new InvalidResponseFormatError("workspace object");
 	}
 
 	const workspace = data as any;
-	const requiredFields = ['id', 'name', 'ownerId', 'createdAt', 'updatedAt'];
+	const requiredFields = ["id", "name", "ownerId", "createdAt", "updatedAt"];
 
 	for (const field of requiredFields) {
 		if (!workspace[field]) {
-			throw new InvalidResponseFormatError(`workspace object with required field: ${field}`);
+			throw new InvalidResponseFormatError(
+				`workspace object with required field: ${field}`,
+			);
 		}
 	}
 }

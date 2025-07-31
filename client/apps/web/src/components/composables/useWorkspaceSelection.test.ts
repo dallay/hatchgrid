@@ -102,7 +102,7 @@ describe("useWorkspaceSelection", () => {
 	it("should validate workspace before selection", () => {
 		const workspaces = ref(mockWorkspaces);
 		const onWorkspaceChange = vi.fn();
-		const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
 		const { selectWorkspace } = useWorkspaceSelection({
 			workspaces,
@@ -113,7 +113,10 @@ describe("useWorkspaceSelection", () => {
 		const result = selectWorkspace(null);
 
 		expect(result).toBe(false);
-		expect(consoleSpy).toHaveBeenCalledWith('Invalid workspace selected:', null);
+		expect(consoleSpy).toHaveBeenCalledWith(
+			"Invalid workspace selected:",
+			null,
+		);
 
 		consoleSpy.mockRestore();
 	});

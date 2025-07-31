@@ -58,7 +58,9 @@ const defaultWorkspaceStoreFactory = createWorkspaceStoreFactory();
  * Main workspace store instance
  * Initialized lazily on first access
  */
-let workspaceStoreInstance: ReturnType<typeof defaultWorkspaceStoreFactory> | null = null;
+let workspaceStoreInstance: ReturnType<
+	typeof defaultWorkspaceStoreFactory
+> | null = null;
 
 /**
  * Gets the workspace store instance using lazy initialization
@@ -77,9 +79,7 @@ export const useWorkspaceStoreProvider = () => {
  * @param httpConfig - Optional HTTP client configuration
  * @returns The initialized workspace store
  */
-export const initializeWorkspaceStore = (
-	httpConfig?: HttpClientConfig,
-) => {
+export const initializeWorkspaceStore = (httpConfig?: HttpClientConfig) => {
 	const factory = httpConfig
 		? createWorkspaceStoreFactory(httpConfig)
 		: defaultWorkspaceStoreFactory;

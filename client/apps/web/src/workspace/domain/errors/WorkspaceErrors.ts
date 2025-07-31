@@ -9,7 +9,10 @@
 export abstract class WorkspaceError extends Error {
 	abstract readonly code: string;
 
-	constructor(message: string, public readonly cause?: unknown) {
+	constructor(
+		message: string,
+		public readonly cause?: unknown,
+	) {
 		super(message);
 		this.name = this.constructor.name;
 	}
@@ -19,7 +22,7 @@ export abstract class WorkspaceError extends Error {
  * Thrown when a workspace is not found
  */
 export class WorkspaceNotFoundError extends WorkspaceError {
-	readonly code = 'WORKSPACE_NOT_FOUND';
+	readonly code = "WORKSPACE_NOT_FOUND";
 
 	constructor(workspaceId: string, cause?: unknown) {
 		super(`Workspace with ID ${workspaceId} not found`, cause);
@@ -30,7 +33,7 @@ export class WorkspaceNotFoundError extends WorkspaceError {
  * Thrown when workspace ID format is invalid
  */
 export class InvalidWorkspaceIdError extends WorkspaceError {
-	readonly code = 'INVALID_WORKSPACE_ID';
+	readonly code = "INVALID_WORKSPACE_ID";
 
 	constructor(workspaceId: string, cause?: unknown) {
 		super(`Invalid workspace ID format: ${workspaceId}`, cause);
@@ -41,7 +44,7 @@ export class InvalidWorkspaceIdError extends WorkspaceError {
  * Thrown when API response format is invalid
  */
 export class InvalidResponseFormatError extends WorkspaceError {
-	readonly code = 'INVALID_RESPONSE_FORMAT';
+	readonly code = "INVALID_RESPONSE_FORMAT";
 
 	constructor(expectedFormat: string, cause?: unknown) {
 		super(`Invalid response format: expected ${expectedFormat}`, cause);
@@ -52,12 +55,12 @@ export class InvalidResponseFormatError extends WorkspaceError {
  * Thrown when workspace API operations fail
  */
 export class WorkspaceApiError extends WorkspaceError {
-	readonly code = 'WORKSPACE_API_ERROR';
+	readonly code = "WORKSPACE_API_ERROR";
 
 	constructor(
 		operation: string,
 		public readonly statusCode?: number,
-		cause?: unknown
+		cause?: unknown,
 	) {
 		super(`Workspace API error during ${operation}`, cause);
 	}

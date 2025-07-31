@@ -76,64 +76,67 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted } from "vue";
 import {
-  useWorkspaceInitialization,
-  createWorkspaceStoreWithDependencies,
-  workspaceStorage,
-} from '../index';
-import { WorkspaceApi } from '../infrastructure/api/WorkspaceApi';
-import { AxiosHttpClient } from '../infrastructure/http/HttpClient';
+	createWorkspaceStoreWithDependencies,
+	useWorkspaceInitialization,
+	workspaceStorage,
+} from "../index";
+import { WorkspaceApi } from "../infrastructure/api/WorkspaceApi";
+import { AxiosHttpClient } from "../infrastructure/http/HttpClient";
 
 // Create workspace store with dependencies
 const httpClient = new AxiosHttpClient();
 const workspaceApi = new WorkspaceApi(httpClient);
-const storeFactory = createWorkspaceStoreWithDependencies(workspaceApi, workspaceStorage);
+const storeFactory = createWorkspaceStoreWithDependencies(
+	workspaceApi,
+	workspaceStorage,
+);
 const store = storeFactory();
 
 // Initialize workspace functionality
 const {
-  isInitializing,
-  isInitialized,
-  initializationError,
-  initialize,
-  resetInitialization,
+	isInitializing,
+	isInitialized,
+	initializationError,
+	initialize,
+	resetInitialization,
 } = useWorkspaceInitialization(store, {
-  onInitialized: (hasSelectedWorkspace) => {
-    console.log('Workspace initialization complete:', { hasSelectedWorkspace });
-  },
-  onError: (error) => {
-    console.error('Workspace initialization failed:', error);
-  },
+	onInitialized: (hasSelectedWorkspace) => {
+		console.log("Workspace initialization complete:", { hasSelectedWorkspace });
+	},
+	onError: (error) => {
+		console.error("Workspace initialization failed:", error);
+	},
 });
 
 // Helper functions
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString();
+	return new Date(dateString).toLocaleDateString();
 };
 
 const selectWorkspace = async (workspaceId: string) => {
-  await store.selectWorkspace(workspaceId);
+	await store.selectWorkspace(workspaceId);
 };
 
 const reinitialize = async () => {
-  resetInitialization();
-  await initialize();
+	resetInitialization();
+	await initialize();
 };
 
 const clearSelection = () => {
-  store.clearWorkspaceSelection();
+	store.clearWorkspaceSelection();
 };
 
 const refreshWorkspaces = async () => {
-  await store.loadAll(true); // Force refresh
+	await store.loadAll(true); // Force refresh
 };
 
 // Auto-initialize on mount (this is also done by the composable, but shown for clarity)
 onMounted(() => {
-  if (!isInitialized.value && !isInitializing.value) {
-    initialize();
-  }
+	if (!isInitialized.value && !isInitializing.value) {
+		initialize();
+	}
 });
 </script>
 

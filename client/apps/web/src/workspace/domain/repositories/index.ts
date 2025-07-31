@@ -2,4 +2,4 @@
  * Workspace repository interfaces and types.
  */
 
-export type { WorkspaceRepository } from './WorkspaceRepository';
+export type { WorkspaceRepository } from "./WorkspaceRepository";

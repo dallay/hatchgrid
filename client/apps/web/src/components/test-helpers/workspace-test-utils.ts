@@ -1,79 +1,89 @@
 import { type MockedFunction, vi } from "vitest";
-import { computed, ref } from "vue";
+import { type ComputedRef, computed, type Ref, ref } from "vue";
 import type { Workspace } from "@/workspace/domain/models";
 
 // Define proper types for composable return values
 type WorkspaceSelectionComposable = {
-	activeWorkspace: ReturnType<typeof ref<Workspace | null>>;
-	hasWorkspaces: ReturnType<typeof computed<boolean>>;
+	activeWorkspace: Ref<Workspace | null>;
+	hasWorkspaces: ComputedRef<boolean>;
 	selectWorkspace: MockedFunction<(workspace: Workspace) => boolean>;
 };
 
 type WorkspaceDisplayComposable = {
-	displayText: ReturnType<typeof computed<string>>;
-	displaySubtext: ReturnType<typeof computed<string>>;
-	showEmptyState: ReturnType<typeof computed<boolean>>;
+	displayText: ComputedRef<string>;
+	displaySubtext: ComputedRef<string>;
+	showEmptyState: ComputedRef<boolean>;
 	isWorkspaceActive: MockedFunction<(workspace: Workspace) => boolean>;
 };
 
 type WorkspaceErrorHandlingComposable = {
-	hasError: ReturnType<typeof ref<boolean>>;
-	errorMessage: ReturnType<typeof ref<string>>;
-	isRetryable: ReturnType<typeof ref<boolean>>;
+	hasError: Ref<boolean>;
+	errorMessage: Ref<string>;
+	isRetryable: Ref<boolean>;
 	getErrorTitle: MockedFunction<() => string>;
 	getErrorDescription: MockedFunction<() => string>;
 	handleError: MockedFunction<(error: unknown, context?: string) => void>;
 	handleRetry: MockedFunction<() => Promise<void>>;
-	showSuccessToast: MockedFunction<(title: string, description?: string) => void>;
+	showSuccessToast: MockedFunction<
+		(title: string, description?: string) => void
+	>;
 };
 
 type WorkspaceSearchComposable = {
-	searchQuery: ReturnType<typeof ref<string>>;
-	filteredWorkspaces: ReturnType<typeof computed<Workspace[]>>;
+	searchQuery: Ref<string>;
+	filteredWorkspaces: ComputedRef<Workspace[]>;
 	clearSearch: MockedFunction<() => void>;
 };
+
+// Constants for better maintainability and consistency
+const DEFAULT_WORKSPACE_DATA = {
+	id: "test-workspace-id",
+	name: "Test Workspace",
+	description: "Test Description",
+	ownerId: "test-owner-id",
+	createdAt: "2023-01-01T00:00:00Z",
+	updatedAt: "2023-01-01T00:00:00Z",
+} as const;
 
 export const createMockWorkspace = (
 	overrides: Partial<Workspace> = {},
 ): Workspace => ({
-	id: "test-id",
-	name: "Test Workspace",
-	description: "Test Description",
-	ownerId: "test-owner",
-	createdAt: "2023-01-01T00:00:00Z",
-	updatedAt: "2023-01-01T00:00:00Z",
+	...DEFAULT_WORKSPACE_DATA,
 	...overrides,
 });
 
 export const createMockWorkspaces = (count = 2): Workspace[] =>
-	Array.from({ length: count }, (_, index) =>
-		createMockWorkspace({
-			id: `${index + 1}`,
-			name: `Test Workspace ${index + 1}`,
-			description: `${index === 0 ? "First" : "Second"} test workspace`,
-			ownerId: `owner${index + 1}`,
-			createdAt: `2023-01-0${index + 1}T00:00:00Z`,
-			updatedAt: `2023-01-0${index + 1}T00:00:00Z`,
-		}),
-	);
+	Array.from({ length: count }, (_, index) => {
+		const workspaceNumber = index + 1;
+		return createMockWorkspace({
+			id: `test-workspace-${workspaceNumber}`,
+			name: `Test Workspace ${workspaceNumber}`,
+			description: `Test workspace ${workspaceNumber} description`,
+			ownerId: `test-owner-${workspaceNumber}`,
+			createdAt: `2023-01-${workspaceNumber.toString().padStart(2, "0")}T00:00:00Z`,
+			updatedAt: `2023-01-${workspaceNumber.toString().padStart(2, "0")}T00:00:00Z`,
+		});
+	});
 
 export interface MockComposableSetup {
-	activeWorkspace?: Workspace | null;
-	hasWorkspaces?: boolean;
-	displayText?: string;
-	displaySubtext?: string;
-	showEmptyState?: boolean;
-	hasError?: boolean;
-	errorMessage?: string;
-	searchQuery?: string;
-	filteredWorkspaces?: Workspace[];
+	readonly activeWorkspace?: Workspace | null;
+	readonly hasWorkspaces?: boolean;
+	readonly displayText?: string;
+	readonly displaySubtext?: string;
+	readonly showEmptyState?: boolean;
+	readonly hasError?: boolean;
+	readonly errorMessage?: string;
+	readonly searchQuery?: string;
+	readonly filteredWorkspaces?: Workspace[];
 }
 
 export const setupWorkspaceMocks = (
 	mocks: {
 		useWorkspaceSelection: MockedFunction<() => WorkspaceSelectionComposable>;
 		useWorkspaceDisplay: MockedFunction<() => WorkspaceDisplayComposable>;
-		useWorkspaceErrorHandling: MockedFunction<() => WorkspaceErrorHandlingComposable>;
+		useWorkspaceErrorHandling: MockedFunction<
+			() => WorkspaceErrorHandlingComposable
+		>;
 		useWorkspaceSearch: MockedFunction<() => WorkspaceSearchComposable>;
 	},
 	setup: MockComposableSetup = {},
@@ -105,7 +115,9 @@ export const setupWorkspaceMocks = (
 		displayText: computed(() => displayText),
 		displaySubtext: computed(() => displaySubtext),
 		showEmptyState: computed(() => showEmptyState),
-		isWorkspaceActive: vi.fn(() => activeWorkspace !== null),
+		isWorkspaceActive: vi.fn(
+			(workspace: Workspace) => activeWorkspace?.id === workspace.id,
+		),
 	});
 
 	mocks.useWorkspaceErrorHandling.mockReturnValue({
@@ -127,8 +139,8 @@ export const setupWorkspaceMocks = (
 
 	return {
 		selectedWorkspace,
-		onWorkspaceSelected: computed(() => (id: string) => {
-			const workspace = filteredWorkspaces.find(w => w.id === id);
+		onWorkspaceSelected: ref((id: string) => {
+			const workspace = filteredWorkspaces.find((w) => w.id === id);
 			if (workspace) {
 				mocks.useWorkspaceSelection().selectWorkspace(workspace);
 			}

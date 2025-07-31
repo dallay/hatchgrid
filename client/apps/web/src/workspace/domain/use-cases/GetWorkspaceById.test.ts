@@ -82,8 +82,12 @@ describe("GetWorkspaceById", () => {
 				vi.mocked(mockRepository.getById).mockRejectedValue(error);
 
 				// Act & Assert
-				await expect(getWorkspaceById.execute(TEST_WORKSPACE_ID)).rejects.toThrow(WorkspaceApiError);
-				await expect(getWorkspaceById.execute(TEST_WORKSPACE_ID)).rejects.toThrow("Workspace API error during get workspace");
+				await expect(
+					getWorkspaceById.execute(TEST_WORKSPACE_ID),
+				).rejects.toThrow(WorkspaceApiError);
+				await expect(
+					getWorkspaceById.execute(TEST_WORKSPACE_ID),
+				).rejects.toThrow("Workspace API error during get workspace");
 				expect(mockRepository.getById).toHaveBeenCalledTimes(2);
 			});
 
@@ -93,7 +97,9 @@ describe("GetWorkspaceById", () => {
 				vi.mocked(mockRepository.getById).mockRejectedValue(domainError);
 
 				// Act & Assert
-				await expect(getWorkspaceById.execute(TEST_WORKSPACE_ID)).rejects.toThrow(domainError);
+				await expect(
+					getWorkspaceById.execute(TEST_WORKSPACE_ID),
+				).rejects.toThrow(domainError);
 				expect(mockRepository.getById).toHaveBeenCalledOnce();
 			});
 		});
@@ -113,7 +119,9 @@ describe("GetWorkspaceById", () => {
 
 				// Act & Assert
 				for (const invalidId of invalidIds) {
-					await expect(getWorkspaceById.execute(invalidId)).rejects.toThrow(InvalidWorkspaceIdError);
+					await expect(getWorkspaceById.execute(invalidId)).rejects.toThrow(
+						InvalidWorkspaceIdError,
+					);
 					await expect(getWorkspaceById.execute(invalidId)).rejects.toThrow(
 						`Invalid workspace ID format: ${invalidId}`,
 					);
@@ -188,10 +196,12 @@ describe("GetWorkspaceById", () => {
 				vi.mocked(mockRepository.getById).mockRejectedValue(repositoryError);
 
 				// Act & Assert
-				await expect(getWorkspaceById.execute(TEST_WORKSPACE_ID)).rejects.toThrow(WorkspaceApiError);
-				await expect(getWorkspaceById.execute(TEST_WORKSPACE_ID)).rejects.toThrow(
-					"Workspace API error during get workspace",
-				);
+				await expect(
+					getWorkspaceById.execute(TEST_WORKSPACE_ID),
+				).rejects.toThrow(WorkspaceApiError);
+				await expect(
+					getWorkspaceById.execute(TEST_WORKSPACE_ID),
+				).rejects.toThrow("Workspace API error during get workspace");
 				expect(mockRepository.getById).toHaveBeenCalledTimes(2);
 			});
 		});

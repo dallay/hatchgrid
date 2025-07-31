@@ -9,7 +9,7 @@ import { useWorkspaceSearch } from "./useWorkspaceSearch";
 
 // Mock the debounce utility
 vi.mock("@hatchgrid/utilities", () => ({
-	debounce: vi.fn((fn, delay) => {
+	debounce: vi.fn((fn) => {
 		// For testing, return the function immediately without debouncing
 		return fn;
 	}),

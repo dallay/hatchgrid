@@ -5,7 +5,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { CollectionResponse, SingleItemResponse } from "@/shared/response";
 import {
-	InvalidResponseFormatError,
 	InvalidWorkspaceIdError,
 	WorkspaceApiError,
 } from "../../domain/errors/WorkspaceErrors";
@@ -102,7 +101,9 @@ describe("WorkspaceApi", () => {
 		});
 
 		it("should return null for 404 errors", async () => {
-			const httpError = new Error("HTTP GET /api/workspace/123e4567-e89b-12d3-a456-426614174000 (404): Workspace not found");
+			const httpError = new Error(
+				"HTTP GET /api/workspace/123e4567-e89b-12d3-a456-426614174000 (404): Workspace not found",
+			);
 			vi.mocked(mockHttpClient.get).mockRejectedValue(httpError);
 
 			const result = await workspaceApi.getById(validId);
@@ -122,7 +123,9 @@ describe("WorkspaceApi", () => {
 		it("should throw WorkspaceApiError when response format is invalid", async () => {
 			vi.mocked(mockHttpClient.get).mockResolvedValue({ data: null });
 
-			await expect(workspaceApi.getById(validId)).rejects.toThrow(WorkspaceApiError);
+			await expect(workspaceApi.getById(validId)).rejects.toThrow(
+				WorkspaceApiError,
+			);
 		});
 
 		it("should throw WorkspaceApiError when workspace data is invalid", async () => {
@@ -131,7 +134,9 @@ describe("WorkspaceApi", () => {
 			};
 			vi.mocked(mockHttpClient.get).mockResolvedValue(invalidResponse);
 
-			await expect(workspaceApi.getById(validId)).rejects.toThrow(WorkspaceApiError);
+			await expect(workspaceApi.getById(validId)).rejects.toThrow(
+				WorkspaceApiError,
+			);
 		});
 	});
 });

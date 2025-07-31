@@ -24,18 +24,19 @@ export interface Workspace {
  * Enhanced with proper validation using domain validation functions.
  */
 export function isWorkspace(obj: unknown): obj is Workspace {
-	if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) {
+	if (typeof obj !== "object" || obj === null || Array.isArray(obj)) {
 		return false;
 	}
 
 	const workspace = obj as Record<string, unknown>;
 
 	return (
-		typeof workspace.id === 'string' &&
-		typeof workspace.name === 'string' &&
-		typeof workspace.ownerId === 'string' &&
-		typeof workspace.createdAt === 'string' &&
-		typeof workspace.updatedAt === 'string' &&
-		(workspace.description === undefined || typeof workspace.description === 'string')
+		typeof workspace.id === "string" &&
+		typeof workspace.name === "string" &&
+		typeof workspace.ownerId === "string" &&
+		typeof workspace.createdAt === "string" &&
+		typeof workspace.updatedAt === "string" &&
+		(workspace.description === undefined ||
+			typeof workspace.description === "string")
 	);
 }

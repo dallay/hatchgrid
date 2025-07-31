@@ -3,25 +3,25 @@ import { AlertTriangle, RefreshCw } from "lucide-vue-next";
 import { ref } from "vue";
 
 interface WorkspaceErrorBoundaryProps {
-  error?: Error | null;
-  retry?: () => void;
+	error?: Error | null;
+	retry?: () => void;
 }
 
 const props = withDefaults(defineProps<WorkspaceErrorBoundaryProps>(), {
-  error: null,
+	error: null,
 });
 
 const isRetrying = ref(false);
 
 const handleRetry = async () => {
-  if (!props.retry) return;
+	if (!props.retry) return;
 
-  isRetrying.value = true;
-  try {
-    await props.retry();
-  } finally {
-    isRetrying.value = false;
-  }
+	isRetrying.value = true;
+	try {
+		await props.retry();
+	} finally {
+		isRetrying.value = false;
+	}
 };
 </script>
 

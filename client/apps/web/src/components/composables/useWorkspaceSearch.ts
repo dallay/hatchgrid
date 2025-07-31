@@ -23,7 +23,8 @@ export function useWorkspaceSearch({
 	const isSearching = ref(false);
 
 	// Debounced search function
-	const updateDebouncedSearch = debounce((query: string) => {
+	const updateDebouncedSearch = debounce((...args: unknown[]) => {
+		const query = args[0] as string;
 		debouncedSearchQuery.value = query;
 		isSearching.value = false;
 	}, searchDelay);
