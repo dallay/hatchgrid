@@ -12,14 +12,17 @@
 		"pretest": "pnpm --filter @hatchgrid/utilities build",
 		"test": "vitest",
 		"test:ui": "vitest --ui",
-		"test:coverage": "vitest run --coverage"
+		"test:coverage": "vitest run --coverage",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
+		"test:e2e:debug": "playwright test --debug"
 	},
 	"dependencies": {
+		"@hatchgrid/logger": "workspace:*",
 		"@hatchgrid/utilities": "workspace:*",
 		"@internationalized/date": "^3.8.2",
 		"@tailwindcss/vite": "^4.1.11",
 		"@tanstack/vue-table": "^8.21.3",
-		"@hatchgrid/logger": "workspace:*",
 		"@unovis/ts": "^1.5.2",
 		"@unovis/vue": "^1.5.2",
 		"@vee-validate/zod": "^4.15.1",
@@ -53,6 +56,8 @@
 		"@vue/tsconfig": "^0.7.0",
 		"axios-mock-adapter": "^2.1.0",
 		"jsdom": "^26.1.0",
+		"msw": "^2.10.4",
+		"@playwright/test": "^1.49.1",
 		"typescript": "~5.8.3",
 		"unplugin-icons": "^22.1.0",
 		"unplugin-vue-components": "^28.8.0",

@@ -299,5 +299,8 @@ declare module 'vue' {
     TooltipTrigger: typeof import('./src/components/ui/tooltip/TooltipTrigger.vue')['default']
     UserNav: typeof import('./src/components/UserNav.vue')['default']
     UserProfile: typeof import('./src/components/UserProfile.vue')['default']
+    WorkspaceErrorBoundary: typeof import('./src/components/WorkspaceErrorBoundary.vue')['default']
+    WorkspaceSelector: typeof import('./src/components/WorkspaceSelector.vue')['default']
+    WorkspaceSelectorSkeleton: typeof import('./src/components/WorkspaceSelectorSkeleton.vue')['default']
   }
 }

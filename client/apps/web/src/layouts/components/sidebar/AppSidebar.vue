@@ -9,14 +9,13 @@
  * - Integration with existing Sidebar UI components
  * - Loading states and error handling
  * - Props validation with TypeScript
- * - Integration with TeamSwitcher and UserNav components
+ * - Integration with WorkspaceSelector and UserNav components
  *
  * @component
  */
 
-import { Command, GalleryVerticalEnd } from "lucide-vue-next";
-import { computed } from "vue";
-import TeamSwitcher from "@/components/TeamSwitcher.vue";
+
+import { computed, onMounted, ref } from "vue";
 import UserNav from "@/components/UserNav.vue";
 import type { SidebarProps } from "@/components/ui/sidebar";
 import {
@@ -28,6 +27,8 @@ import {
 	SidebarMenu,
 	SidebarMenuSkeleton,
 } from "@/components/ui/sidebar";
+import WorkspaceSelector from "@/components/WorkspaceSelector.vue";
+import { useWorkspaceStoreProvider } from "@/workspace/providers/workspaceStoreProvider";
 import AppSidebarItem from "./AppSidebarItem.vue";
 import { useNavigationFiltering } from "./composables/useNavigationFiltering";
 import type {
@@ -66,26 +67,44 @@ const sidebarProps = computed(() => {
 	return rest;
 });
 
-// Sample team data - in a real app, this would come from a store or API
-const teams = [
-	{
-		name: "Hatchgrid",
-		logo: Command,
-		plan: "Enterprise",
-	},
-	{
-		name: "Acme Inc.",
-		logo: GalleryVerticalEnd,
-		plan: "Startup",
-	},
-];
+// Workspace store integration
+const workspaceStore = useWorkspaceStoreProvider()();
+const workspaceLoading = ref(false);
+
+// Load workspaces on component mount
+onMounted(async () => {
+	workspaceLoading.value = true;
+	try {
+		await workspaceStore.loadAll();
+		// Try to restore persisted workspace selection
+		await workspaceStore.restorePersistedWorkspace();
+	} catch (error) {
+		console.error("Failed to load workspaces:", error);
+	} finally {
+		workspaceLoading.value = false;
+	}
+});
+
+// Handle workspace selection changes
+const handleWorkspaceChange = async (workspaceId: string) => {
+	try {
+		await workspaceStore.selectWorkspace(workspaceId);
+	} catch (error) {
+		console.error("Failed to select workspace:", error);
+	}
+};
 </script>
 
 <template>
   <Sidebar v-bind="sidebarProps">
-    <!-- Team Switcher Header -->
+    <!-- Workspace Selector Header -->
     <SidebarHeader>
-      <TeamSwitcher :teams="teams" />
+      <WorkspaceSelector
+        :workspaces="[...workspaceStore.workspaces]"
+        :initial-workspace-id="workspaceStore.currentWorkspace?.id"
+        :loading="workspaceLoading || workspaceStore.isLoading"
+        @workspace-change="handleWorkspaceChange"
+      />
     </SidebarHeader>
 
     <!-- Main Navigation Content -->
