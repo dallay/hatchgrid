@@ -4,7 +4,12 @@
  */
 
 import type { CollectionResponse, SingleItemResponse } from "@/shared/response";
-import { InvalidResponseFormatError } from "../../domain/errors/WorkspaceErrors";
+import { InvalidResponseFormatError } from "@/workspace/domain/errors";
+import type { Workspace } from "@/workspace/domain/models/Workspace";
+
+interface ResponseWithData {
+	data: unknown;
+}
 
 /**
  * Validates that a response conforms to the CollectionResponse structure
@@ -19,7 +24,7 @@ export function validateCollectionResponse<T>(
 		);
 	}
 
-	const data = (response as any).data;
+	const data = (response as ResponseWithData).data;
 	if (!Array.isArray(data)) {
 		throw new InvalidResponseFormatError(
 			`${itemTypeName} collection with data array`,
@@ -40,7 +45,7 @@ export function validateSingleItemResponse<T>(
 		);
 	}
 
-	const data = (response as any).data;
+	const data = (response as ResponseWithData).data;
 	if (!data || typeof data !== "object") {
 		throw new InvalidResponseFormatError(
 			`${itemTypeName} object with data property`,
@@ -56,8 +61,14 @@ export function validateWorkspaceData(data: unknown): void {
 		throw new InvalidResponseFormatError("workspace object");
 	}
 
-	const workspace = data as any;
-	const requiredFields = ["id", "name", "ownerId", "createdAt", "updatedAt"];
+	const workspace = data as Workspace;
+	const requiredFields: (keyof Workspace)[] = [
+		"id",
+		"name",
+		"ownerId",
+		"createdAt",
+		"updatedAt",
+	];
 
 	for (const field of requiredFields) {
 		if (!workspace[field]) {

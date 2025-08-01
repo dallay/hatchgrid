@@ -15,7 +15,7 @@ import {
 	it,
 } from "vitest";
 import type { CollectionResponse, SingleItemResponse } from "@/shared/response";
-import type { Workspace } from "../../domain/models/Workspace";
+import type { Workspace } from "@/workspace";
 import { WorkspaceApi } from "./WorkspaceApi";
 
 // Mock server setup
@@ -388,8 +388,8 @@ describe("WorkspaceApi Integration Tests", () => {
 				data: mockWorkspace,
 			};
 
-			let receivedUrl: string;
-			let receivedHeaders: Headers;
+			let receivedUrl: string | undefined;
+			let receivedHeaders: Headers | undefined;
 			server.use(
 				http.get(`/api/workspace/${validId}`, ({ request }) => {
 					receivedUrl = request.url;
@@ -402,8 +402,8 @@ describe("WorkspaceApi Integration Tests", () => {
 			await workspaceApi.getById(validId);
 
 			// Assert
-			expect(receivedUrl!).toContain(`/api/workspace/${validId}`);
-			expect(receivedHeaders!).toBeDefined();
+			expect(receivedUrl).toContain(`/api/workspace/${validId}`);
+			expect(receivedHeaders).toBeDefined();
 		});
 	});
 
