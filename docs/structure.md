@@ -1214,7 +1214,6 @@
 │   │       │   │   │   ├───index.ts
 │   │       │   │   │   ├───useWorkspaceStore.test.ts
 │   │       │   │   │   └───useWorkspaceStore.ts
-│   │       │   │   ├───README.md
 │   │       │   │   └───index.ts
 │   │       │   ├───App.vue
 │   │       │   ├───env.d.ts
