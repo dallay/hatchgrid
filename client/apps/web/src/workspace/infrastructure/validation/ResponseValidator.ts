@@ -71,7 +71,7 @@ export function validateWorkspaceData(data: unknown): void {
 	];
 
 	for (const field of requiredFields) {
-		if (!workspace[field]) {
+		if (typeof workspace[field] !== "string" || !workspace[field].trim()) {
 			throw new InvalidResponseFormatError(
 				`workspace object with required field: ${field}`,
 			);
