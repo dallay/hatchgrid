@@ -1,6 +1,7 @@
+import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { nextTick } from "vue";
+import { defineComponent, nextTick } from "vue";
 import type { Workspace } from "../domain/models";
 import type {
 	WorkspaceError,
@@ -64,23 +65,68 @@ describe("useWorkspaceInitialization", () => {
 
 	it("should auto-initialize on mount if autoLoad or autoRestore is true", async () => {
 		const onInitialized = vi.fn();
-		const { initialize } = useWorkspaceInitialization(mockStore, {
-			autoLoad: true,
-			onInitialized,
+
+		// Create a test component that uses the composable to test auto-initialization
+		const TestComponent = defineComponent({
+			setup() {
+				const initialization = useWorkspaceInitialization(mockStore, {
+					autoLoad: true,
+					onInitialized,
+				});
+				return { initialization };
+			},
+			template: "<div>Test</div>",
 		});
-		await initialize();
+
+		// Mount the component to trigger onMounted and auto-initialization
+		mount(TestComponent);
+
+		// Wait for the next tick to allow onMounted to execute
+		await nextTick();
+
 		expect(mockStore.loadAll).toHaveBeenCalled();
 	});
 
 	it("should not auto-initialize on mount if both autoLoad and autoRestore are false", async () => {
 		const onInitialized = vi.fn();
-		useWorkspaceInitialization(mockStore, {
-			autoLoad: false,
+
+		// Create a test component that uses the composable
+		const TestComponent = defineComponent({
+			setup() {
+				const initialization = useWorkspaceInitialization(mockStore, {
+					autoLoad: false,
+					autoRestore: false,
+					onInitialized,
+				});
+				return { initialization };
+			},
+			template: "<div>Test</div>",
+		});
+
+		// Mount the component
+		mount(TestComponent);
+
+		// Wait for the next tick
+		await nextTick();
+
+		expect(mockStore.loadAll).not.toHaveBeenCalled();
+	});
+
+	it("should allow manual initialization when initialize() is called explicitly", async () => {
+		const onInitialized = vi.fn();
+		const { initialize } = useWorkspaceInitialization(mockStore, {
+			autoLoad: false, // Disable auto-initialization to test manual call
 			autoRestore: false,
 			onInitialized,
 		});
-		await nextTick();
+
+		// Manually call initialize
+		await initialize();
+
+		// Since autoLoad is false, loadAll should not be called
+		// but the initialization process should still complete
 		expect(mockStore.loadAll).not.toHaveBeenCalled();
+		expect(onInitialized).toHaveBeenCalledWith(false);
 	});
 
 	it("should call onInitialized with true if workspace is restored", async () => {
