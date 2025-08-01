@@ -287,7 +287,6 @@ declare module 'vue' {
     TagsInputItem: typeof import('./src/components/ui/tags-input/TagsInputItem.vue')['default']
     TagsInputItemDelete: typeof import('./src/components/ui/tags-input/TagsInputItemDelete.vue')['default']
     TagsInputItemText: typeof import('./src/components/ui/tags-input/TagsInputItemText.vue')['default']
-    TeamSwitcher: typeof import('./src/components/TeamSwitcher.vue')['default']
     Textarea: typeof import('./src/components/ui/textarea/Textarea.vue')['default']
     ThemeSwitcher: typeof import('./src/components/ThemeSwitcher.vue')['default']
     Toggle: typeof import('./src/components/ui/toggle/Toggle.vue')['default']

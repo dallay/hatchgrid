@@ -12,6 +12,31 @@ import {
 } from "@/workspace/domain/errors";
 import type { WorkspaceError } from "@/workspace/store/useWorkspaceStore";
 
+// Centralized error codes for consistency and maintainability
+const ERROR_CODES = {
+	WORKSPACE_API_ERROR: "WORKSPACE_API_ERROR",
+	WORKSPACE_NOT_FOUND: "WORKSPACE_NOT_FOUND",
+	INVALID_WORKSPACE_ID: "INVALID_WORKSPACE_ID",
+	INVALID_UUID_FORMAT: "INVALID_UUID_FORMAT",
+	INVALID_RESPONSE_FORMAT: "INVALID_RESPONSE_FORMAT",
+	LOAD_ALL_WORKSPACES_ERROR: "LOAD_ALL_WORKSPACES_ERROR",
+	SELECT_WORKSPACE_ERROR: "SELECT_WORKSPACE_ERROR",
+	UNKNOWN_ERROR: "UNKNOWN_ERROR",
+} as const;
+
+// Error categories for consistent classification
+const VALIDATION_ERROR_CODES = [
+	ERROR_CODES.INVALID_WORKSPACE_ID,
+	ERROR_CODES.INVALID_UUID_FORMAT,
+	ERROR_CODES.INVALID_RESPONSE_FORMAT,
+] as const;
+
+const NON_RETRYABLE_ERROR_CODES = [
+	ERROR_CODES.INVALID_WORKSPACE_ID,
+	ERROR_CODES.INVALID_UUID_FORMAT,
+	ERROR_CODES.INVALID_RESPONSE_FORMAT,
+] as const;
+
 interface UseWorkspaceErrorHandlingOptions {
 	error: Ref<WorkspaceError | null>;
 	onRetry?: () => Promise<void> | void;
@@ -31,34 +56,31 @@ export function useWorkspaceErrorHandling({
 
 	const errorCode = computed(() => {
 		if (!error.value) return "";
-		return error.value.code || "UNKNOWN_ERROR";
+		return error.value.code || ERROR_CODES.UNKNOWN_ERROR;
 	});
 
 	const isRetryable = computed(() => {
 		if (!error.value?.code) return true;
 
 		// Don't allow retry for validation errors
-		const nonRetryableCodes = ["INVALID_WORKSPACE_ID", "INVALID_UUID_FORMAT"];
-
-		return !nonRetryableCodes.includes(error.value.code);
+		return !NON_RETRYABLE_ERROR_CODES.includes(
+			error.value.code as (typeof NON_RETRYABLE_ERROR_CODES)[number],
+		);
 	});
 
 	// Error classification helpers
 	const isNetworkError = computed(() => {
-		return errorCode.value === "WORKSPACE_API_ERROR";
+		return errorCode.value === ERROR_CODES.WORKSPACE_API_ERROR;
 	});
 
 	const isValidationError = computed(() => {
-		const validationCodes = [
-			"INVALID_WORKSPACE_ID",
-			"INVALID_UUID_FORMAT",
-			"INVALID_RESPONSE_FORMAT",
-		];
-		return validationCodes.includes(errorCode.value);
+		return VALIDATION_ERROR_CODES.includes(
+			errorCode.value as (typeof VALIDATION_ERROR_CODES)[number],
+		);
 	});
 
 	const isNotFoundError = computed(() => {
-		return errorCode.value === "WORKSPACE_NOT_FOUND";
+		return errorCode.value === ERROR_CODES.WORKSPACE_NOT_FOUND;
 	});
 
 	// Toast notification helpers
@@ -88,16 +110,18 @@ export function useWorkspaceErrorHandling({
 		if (!error.value) return "";
 
 		switch (errorCode.value) {
-			case "WORKSPACE_API_ERROR":
+			case ERROR_CODES.WORKSPACE_API_ERROR:
 				return "Please check your connection and try again.";
-			case "WORKSPACE_NOT_FOUND":
+			case ERROR_CODES.WORKSPACE_NOT_FOUND:
 				return "The workspace may have been deleted or you may not have access.";
-			case "INVALID_WORKSPACE_ID":
-			case "INVALID_UUID_FORMAT":
+			case ERROR_CODES.INVALID_WORKSPACE_ID:
+			case ERROR_CODES.INVALID_UUID_FORMAT:
 				return "Please select a valid workspace.";
-			case "LOAD_ALL_WORKSPACES_ERROR":
+			case ERROR_CODES.INVALID_RESPONSE_FORMAT:
+				return "The server response was invalid. Please try again.";
+			case ERROR_CODES.LOAD_ALL_WORKSPACES_ERROR:
 				return "Unable to load your workspaces. Please try refreshing.";
-			case "SELECT_WORKSPACE_ERROR":
+			case ERROR_CODES.SELECT_WORKSPACE_ERROR:
 				return "Unable to select the workspace. Please try again.";
 			default:
 				return "Please try again or contact support if the problem persists.";
@@ -109,16 +133,17 @@ export function useWorkspaceErrorHandling({
 		if (!error.value) return "";
 
 		switch (errorCode.value) {
-			case "WORKSPACE_API_ERROR":
+			case ERROR_CODES.WORKSPACE_API_ERROR:
 				return "Connection Error";
-			case "WORKSPACE_NOT_FOUND":
+			case ERROR_CODES.WORKSPACE_NOT_FOUND:
 				return "Workspace Not Found";
-			case "INVALID_WORKSPACE_ID":
-			case "INVALID_UUID_FORMAT":
+			case ERROR_CODES.INVALID_WORKSPACE_ID:
+			case ERROR_CODES.INVALID_UUID_FORMAT:
+			case ERROR_CODES.INVALID_RESPONSE_FORMAT:
 				return "Invalid Workspace";
-			case "LOAD_ALL_WORKSPACES_ERROR":
+			case ERROR_CODES.LOAD_ALL_WORKSPACES_ERROR:
 				return "Loading Failed";
-			case "SELECT_WORKSPACE_ERROR":
+			case ERROR_CODES.SELECT_WORKSPACE_ERROR:
 				return "Selection Failed";
 			default:
 				return "Workspace Error";
