@@ -57,11 +57,11 @@ describe("Workspace", () => {
 				"ownerId",
 				"createdAt",
 				"updatedAt",
-			];
+			] as const;
 
 			for (const field of requiredFields) {
-				const incompleteWorkspace = { ...validWorkspace };
-				delete (incompleteWorkspace as any)[field];
+				const { [field]: _, ...rest } = validWorkspace;
+				const incompleteWorkspace: Omit<Workspace, typeof field> = rest;
 				expect(isWorkspace(incompleteWorkspace)).toBe(false);
 			}
 		});
