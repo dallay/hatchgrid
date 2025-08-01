@@ -3,7 +3,7 @@
  * Tests the complete user flow from workspace selection to UI updates
  */
 
-import { expect, type Page, test } from "@playwright/test";
+import { expect, type Page, type Route, test } from "@playwright/test";
 
 // Types
 interface MockWorkspace {
@@ -31,7 +31,7 @@ const setupWorkspaceApiMocks = async (
 	page: Page,
 	workspaces: MockWorkspace[] = mockWorkspaces,
 ) => {
-	await page.route("/api/workspace", async (route: any) => {
+	await page.route("/api/workspace", async (route: Route) => {
 		await route.fulfill({
 			status: 200,
 			contentType: "application/json",
@@ -41,7 +41,7 @@ const setupWorkspaceApiMocks = async (
 		});
 	});
 
-	await page.route("/api/workspace/*", async (route: any) => {
+	await page.route("/api/workspace/*", async (route: Route) => {
 		const url = route.request().url();
 		const workspaceId = url.split("/").pop();
 		const workspace = workspaces.find((w) => w.id === workspaceId);
@@ -67,11 +67,11 @@ const setupWorkspaceApiMocks = async (
 };
 
 const setupErrorApiMock = async (
-	page: any,
+	page: Page,
 	status = 500,
 	message = "Internal server error",
 ) => {
-	await page.route("/api/workspace", async (route: any) => {
+	await page.route("/api/workspace", async (route: Route) => {
 		await route.fulfill({
 			status,
 			contentType: "application/json",
@@ -80,8 +80,8 @@ const setupErrorApiMock = async (
 	});
 };
 
-const setupDelayedApiMock = async (page: any, delay = 1000) => {
-	await page.route("/api/workspace", async (route: any) => {
+const setupDelayedApiMock = async (page: Page, delay = 1000) => {
+	await page.route("/api/workspace", async (route: Route) => {
 		await new Promise((resolve) => setTimeout(resolve, delay));
 		await route.fulfill({
 			status: 200,
@@ -108,26 +108,26 @@ const SELECTORS = {
 
 // Page object helpers
 const WorkspacePage = {
-	async waitForSelector(page: any) {
+	async waitForSelector(page: Page) {
 		await expect(page.locator(SELECTORS.workspaceSelector)).toBeVisible();
 	},
 
-	async selectWorkspace(page: any, workspaceId: string) {
+	async selectWorkspace(page: Page, workspaceId: string) {
 		await page.locator(SELECTORS.workspaceSelectorTrigger).click();
 		await expect(page.locator(SELECTORS.workspaceDropdown)).toBeVisible();
 		await page.locator(SELECTORS.workspaceItem(workspaceId)).click();
 	},
 
-	async getDisplayedWorkspaceName(page: any) {
+	async getDisplayedWorkspaceName(page: Page) {
 		return await page.locator(SELECTORS.workspaceDisplayText).textContent();
 	},
 
-	async waitForLoading(page: any) {
+	async waitForLoading(page: Page) {
 		await expect(page.locator(SELECTORS.workspaceLoading)).toBeVisible();
 		await expect(page.locator(SELECTORS.workspaceLoading)).not.toBeVisible();
 	},
 
-	async expectError(page: any, message?: string) {
+	async expectError(page: Page, message?: string) {
 		await expect(page.locator(SELECTORS.workspaceError)).toBeVisible();
 		if (message) {
 			await expect(page.locator(SELECTORS.workspaceError)).toContainText(
@@ -136,7 +136,7 @@ const WorkspacePage = {
 		}
 	},
 
-	async retryLoading(page: any) {
+	async retryLoading(page: Page) {
 		await page.locator(SELECTORS.workspaceRetryButton).click();
 	},
 };
