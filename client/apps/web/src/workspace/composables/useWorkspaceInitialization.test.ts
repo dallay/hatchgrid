@@ -1,68 +1,92 @@
-import { createPinia, defineStore, setActivePinia } from "pinia";
+import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
+import type { Workspace } from "../domain/models";
+import type {
+	WorkspaceError,
+	WorkspaceStore,
+} from "../store/useWorkspaceStore";
 import { useWorkspaceInitialization } from "./useWorkspaceInitialization";
 
 describe("useWorkspaceInitialization", () => {
-	let store: ReturnType<ReturnType<typeof getTestStore>>;
+	let mockStore: WorkspaceStore;
 
-	function getTestStore() {
-		return defineStore("workspace", {
-			state: () => ({
-				workspaces: [] as any[],
-				currentWorkspace: null as any,
-				loading: {
-					loadingAll: false,
-					loadingById: false,
-				},
-				error: null as any,
-				hasError: false,
-				isWorkspaceSelected: false,
-			}),
-			actions: {
-				async loadAll() {},
-				async restorePersistedWorkspace() {
-					return false;
-				},
-				async selectWorkspace(_id: string) {},
-			},
-		});
-	}
+	// Helper to create a mock workspace
+	const createMockWorkspace = (id: string): Workspace => ({
+		id,
+		name: `Workspace ${id}`,
+		description: `Description for workspace ${id}`,
+		ownerId: "owner-id",
+		createdAt: "2023-01-01T00:00:00Z",
+		updatedAt: "2023-01-01T00:00:00Z",
+	});
 
 	beforeEach(() => {
 		setActivePinia(createPinia());
-		store = getTestStore()();
-		// Mock actions for spying
-		store.loadAll = vi.fn().mockResolvedValue(undefined);
-		store.restorePersistedWorkspace = vi.fn().mockResolvedValue(false);
-		store.selectWorkspace = vi.fn().mockResolvedValue(undefined);
+
+		// Create a type-safe mock store
+		mockStore = {
+			// State
+			workspaces: [],
+			currentWorkspace: null,
+			loading: {
+				loadingAll: false,
+				loadingById: false,
+			},
+			error: null,
+
+			// Computed
+			isLoading: false,
+			hasError: false,
+			workspaceCount: 0,
+			isWorkspaceSelected: false,
+			workspaceById: () => () => undefined,
+
+			// Actions - will be mocked
+			resetState: vi.fn(),
+			clearError: vi.fn(),
+			loadAll: vi.fn().mockResolvedValue(undefined),
+			selectWorkspace: vi.fn().mockResolvedValue(undefined),
+			restorePersistedWorkspace: vi.fn().mockResolvedValue(false),
+			clearWorkspaceSelection: vi.fn(),
+			getPersistedWorkspaceId: vi.fn().mockReturnValue(null),
+			hasPersistedWorkspace: vi.fn().mockReturnValue(false),
+
+			// Cache management
+			invalidateCache: vi.fn(),
+			getCacheStats: vi.fn().mockReturnValue({}),
+			cleanupExpiredCache: vi.fn(),
+
+			// Test helpers
+			clearCurrentWorkspaceForTesting: vi.fn(),
+		} as unknown as WorkspaceStore;
 	});
 
 	it("should auto-initialize on mount if autoLoad or autoRestore is true", async () => {
 		const onInitialized = vi.fn();
-		const { initialize } = useWorkspaceInitialization(store as any, {
+		const { initialize } = useWorkspaceInitialization(mockStore, {
 			autoLoad: true,
 			onInitialized,
 		});
 		await initialize();
-		expect(store.loadAll).toHaveBeenCalled();
+		expect(mockStore.loadAll).toHaveBeenCalled();
 	});
 
 	it("should not auto-initialize on mount if both autoLoad and autoRestore are false", async () => {
 		const onInitialized = vi.fn();
-		useWorkspaceInitialization(store as any, {
+		useWorkspaceInitialization(mockStore, {
 			autoLoad: false,
 			autoRestore: false,
 			onInitialized,
 		});
 		await nextTick();
-		expect(store.loadAll).not.toHaveBeenCalled();
+		expect(mockStore.loadAll).not.toHaveBeenCalled();
 	});
 
 	it("should call onInitialized with true if workspace is restored", async () => {
-		store.restorePersistedWorkspace = vi.fn().mockResolvedValue(true);
+		mockStore.restorePersistedWorkspace = vi.fn().mockResolvedValue(true);
 		const onInitialized = vi.fn();
-		const { initialize } = useWorkspaceInitialization(store as any, {
+		const { initialize } = useWorkspaceInitialization(mockStore, {
 			onInitialized,
 		});
 		await initialize();
@@ -70,40 +94,62 @@ describe("useWorkspaceInitialization", () => {
 	});
 
 	it("should select first workspace if none is restored and selectFirstIfNone is true", async () => {
-		store.restorePersistedWorkspace = vi.fn().mockResolvedValue(false);
-		store.workspaces = [{ id: "w1" }];
-		store.selectWorkspace = vi.fn().mockResolvedValue(undefined);
-		store.isWorkspaceSelected = true;
+		mockStore.restorePersistedWorkspace = vi.fn().mockResolvedValue(false);
+		// Mock the workspaces array to have a workspace
+		Object.defineProperty(mockStore, "workspaces", {
+			value: [createMockWorkspace("w1")],
+			writable: true,
+		});
+		// Mock isWorkspaceSelected to return true after selection
+		Object.defineProperty(mockStore, "isWorkspaceSelected", {
+			value: true,
+			writable: true,
+		});
+
 		const onInitialized = vi.fn();
-		const { initialize } = useWorkspaceInitialization(store as any, {
+		const { initialize } = useWorkspaceInitialization(mockStore, {
 			onInitialized,
 		});
 		await initialize();
-		expect(store.selectWorkspace).toHaveBeenCalledWith("w1");
+		expect(mockStore.selectWorkspace).toHaveBeenCalledWith("w1");
 		expect(onInitialized).toHaveBeenCalledWith(true);
 	});
 
 	it("should not select first workspace if selectFirstIfNone is false", async () => {
-		store.restorePersistedWorkspace = vi.fn().mockResolvedValue(false);
-		store.workspaces = [{ id: "w1" }];
-		store.selectWorkspace = vi.fn().mockResolvedValue(undefined);
+		mockStore.restorePersistedWorkspace = vi.fn().mockResolvedValue(false);
+		Object.defineProperty(mockStore, "workspaces", {
+			value: [createMockWorkspace("w1")],
+			writable: true,
+		});
+
 		const onInitialized = vi.fn();
-		const { initialize } = useWorkspaceInitialization(store as any, {
+		const { initialize } = useWorkspaceInitialization(mockStore, {
 			selectFirstIfNone: false,
 			onInitialized,
 		});
 		await initialize();
-		expect(store.selectWorkspace).not.toHaveBeenCalled();
+		expect(mockStore.selectWorkspace).not.toHaveBeenCalled();
 		expect(onInitialized).toHaveBeenCalledWith(false);
 	});
 
 	it("should set initializationError if loadAll fails", async () => {
-		store.loadAll = vi.fn().mockResolvedValue(undefined);
-		store.hasError = true;
-		store.error = new Error("Load failed");
+		mockStore.loadAll = vi.fn().mockResolvedValue(undefined);
+		// Mock the store to have an error state
+		Object.defineProperty(mockStore, "hasError", {
+			value: true,
+			writable: true,
+		});
+		Object.defineProperty(mockStore, "error", {
+			value: {
+				message: "Load failed",
+				timestamp: new Date(),
+			} as WorkspaceError,
+			writable: true,
+		});
+
 		const onError = vi.fn();
 		const { initialize, initializationError } = useWorkspaceInitialization(
-			store as any,
+			mockStore,
 			{ onError },
 		);
 		await initialize();
@@ -113,14 +159,14 @@ describe("useWorkspaceInitialization", () => {
 	});
 
 	it("should reset initialization state", async () => {
-		store.loadAll = vi.fn().mockResolvedValue(undefined);
+		mockStore.loadAll = vi.fn().mockResolvedValue(undefined);
 		const {
 			initialize,
 			resetInitialization,
 			isInitializing,
 			isInitialized,
 			initializationError,
-		} = useWorkspaceInitialization(store as any);
+		} = useWorkspaceInitialization(mockStore);
 		await initialize();
 		resetInitialization();
 		expect(isInitializing.value).toBe(false);
@@ -129,12 +175,12 @@ describe("useWorkspaceInitialization", () => {
 	});
 
 	it("should not re-initialize if already initializing or initialized", async () => {
-		const { initialize } = useWorkspaceInitialization(store as any);
+		const { initialize } = useWorkspaceInitialization(mockStore);
 		// Test that multiple calls don't trigger multiple loads
 		await initialize();
-		expect(store.loadAll).toHaveBeenCalledTimes(1);
+		expect(mockStore.loadAll).toHaveBeenCalledTimes(1);
 
 		await initialize();
-		expect(store.loadAll).toHaveBeenCalledTimes(1); // Should still be 1, not 2
+		expect(mockStore.loadAll).toHaveBeenCalledTimes(1); // Should still be 1, not 2
 	});
 });

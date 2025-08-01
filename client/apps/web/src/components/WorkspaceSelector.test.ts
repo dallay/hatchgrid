@@ -1,11 +1,17 @@
 import { mount } from "@vue/test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { computed, nextTick, ref } from "vue";
+import type { Workspace } from "@/workspace/domain/models";
 import {
 	createMockWorkspaces,
 	type MockComposableSetup,
 	setupWorkspaceMocks,
 } from "./test-helpers/workspace-test-utils";
+
+// Type definitions for composable options
+interface WorkspaceSelectionOptions {
+	onWorkspaceChange?: (workspaceId: string) => void;
+}
 
 // Mock the composables before importing the component
 vi.mock("./composables/useWorkspaceSelection", () => ({
@@ -229,20 +235,22 @@ describe("WorkspaceSelector", () => {
 		});
 
 		it("should use initialWorkspaceId when provided", async () => {
-			let emitCallback: ((workspaceId: string) => void) | null = null;
+			let emitCallback: ((workspaceId: string) => void) | undefined;
 
-			mocks.useWorkspaceSelection.mockImplementation((options: any) => {
-				emitCallback = options.onWorkspaceChange;
-				// Simulate selection with provided initial ID
-				if (emitCallback) {
-					setTimeout(() => emitCallback?.("2"), 0);
-				}
-				return {
-					activeWorkspace: ref(mockWorkspaces[1]),
-					hasWorkspaces: computed(() => true),
-					selectWorkspace: vi.fn(),
-				};
-			});
+			mocks.useWorkspaceSelection.mockImplementation(
+				(options: WorkspaceSelectionOptions) => {
+					emitCallback = options.onWorkspaceChange;
+					// Simulate selection with provided initial ID
+					if (emitCallback) {
+						setTimeout(() => emitCallback?.("2"), 0);
+					}
+					return {
+						activeWorkspace: ref(mockWorkspaces[1]),
+						hasWorkspaces: computed(() => true),
+						selectWorkspace: vi.fn(),
+					};
+				},
+			);
 
 			const wrapper = createWrapper({ initialWorkspaceId: "2" });
 			await nextTick();
@@ -252,20 +260,22 @@ describe("WorkspaceSelector", () => {
 		});
 
 		it("should fallback to first workspace when initialWorkspaceId is invalid", async () => {
-			let emitCallback: ((workspaceId: string) => void) | null = null;
+			let emitCallback: ((workspaceId: string) => void) | undefined;
 
-			mocks.useWorkspaceSelection.mockImplementation((options: any) => {
-				emitCallback = options.onWorkspaceChange;
-				// Simulate fallback to first workspace
-				if (emitCallback) {
-					setTimeout(() => emitCallback?.(mockWorkspaces[0].id), 0);
-				}
-				return {
-					activeWorkspace: ref(mockWorkspaces[0]),
-					hasWorkspaces: computed(() => true),
-					selectWorkspace: vi.fn(),
-				};
-			});
+			mocks.useWorkspaceSelection.mockImplementation(
+				(options: WorkspaceSelectionOptions) => {
+					emitCallback = options.onWorkspaceChange;
+					// Simulate fallback to first workspace
+					if (emitCallback) {
+						setTimeout(() => emitCallback?.(mockWorkspaces[0].id), 0);
+					}
+					return {
+						activeWorkspace: ref(mockWorkspaces[0]),
+						hasWorkspaces: computed(() => true),
+						selectWorkspace: vi.fn(),
+					};
+				},
+			);
 
 			const wrapper = createWrapper({ initialWorkspaceId: "invalid-id" });
 			await nextTick();
@@ -277,27 +287,29 @@ describe("WorkspaceSelector", () => {
 		});
 
 		it("should handle user workspace selection correctly", async () => {
-			let emitCallback: ((workspaceId: string) => void) | null = null;
-			const selectWorkspaceFn = vi.fn((workspace: any) => {
+			let emitCallback: ((workspaceId: string) => void) | undefined;
+			const selectWorkspaceFn = vi.fn((workspace: Workspace) => {
 				if (emitCallback) {
 					emitCallback(workspace.id);
 				}
 			});
 
-			mocks.useWorkspaceSelection.mockImplementation((options: any) => {
-				emitCallback = options.onWorkspaceChange;
+			mocks.useWorkspaceSelection.mockImplementation(
+				(options: WorkspaceSelectionOptions) => {
+					emitCallback = options.onWorkspaceChange;
 
-				// Initial selection
-				if (emitCallback) {
-					setTimeout(() => emitCallback?.(mockWorkspaces[0].id), 0);
-				}
+					// Initial selection
+					if (emitCallback) {
+						setTimeout(() => emitCallback?.(mockWorkspaces[0].id), 0);
+					}
 
-				return {
-					activeWorkspace: ref(mockWorkspaces[0]),
-					hasWorkspaces: computed(() => true),
-					selectWorkspace: selectWorkspaceFn,
-				};
-			});
+					return {
+						activeWorkspace: ref(mockWorkspaces[0]),
+						hasWorkspaces: computed(() => true),
+						selectWorkspace: selectWorkspaceFn,
+					};
+				},
+			);
 
 			const wrapper = createWrapper();
 			await nextTick();
