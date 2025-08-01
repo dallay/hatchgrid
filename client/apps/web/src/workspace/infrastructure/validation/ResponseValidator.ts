@@ -56,7 +56,9 @@ export function validateSingleItemResponse<T>(
 /**
  * Additional validation for workspace-specific data structure
  */
-export function validateWorkspaceData(data: unknown): void {
+export function validateWorkspaceData(
+	data: unknown,
+): asserts data is Workspace {
 	if (!data || typeof data !== "object") {
 		throw new InvalidResponseFormatError("workspace object");
 	}
