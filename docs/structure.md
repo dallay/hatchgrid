@@ -1360,6 +1360,8 @@
 │   │   ├───content-assets.mjs
 │   │   ├───content-modules.mjs
 │   │   ├───content.d.ts
+│   │   ├───data-store.json
+│   │   ├───settings.json
 │   │   └───types.d.ts
 │   ├───dist/
 │   │   ├───_astro/
