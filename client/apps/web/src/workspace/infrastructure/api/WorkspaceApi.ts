@@ -35,6 +35,30 @@ export class WorkspaceApi implements WorkspaceRepository {
 	}
 
 	/**
+	 * Checks if an error represents a 404 Not Found response.
+	 * Handles various error formats from different HTTP clients.
+	 */
+	private isNotFoundError(error: unknown): boolean {
+		// Check for AxiosError with response status
+		if (typeof error === "object" && error !== null) {
+			const errorObj = error as Record<string, unknown>;
+
+			// Check for response.status property (AxiosError structure)
+			if (typeof errorObj.response === "object" && errorObj.response !== null) {
+				const response = errorObj.response as Record<string, unknown>;
+				return response.status === 404;
+			}
+
+			// Check for direct status property
+			if (typeof errorObj.status === "number") {
+				return errorObj.status === 404;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Retrieves all workspaces accessible to the current user.
 	 * Makes a GET request to /api/workspace endpoint with retry logic.
 	 *
@@ -96,7 +120,12 @@ export class WorkspaceApi implements WorkspaceRepository {
 			return data;
 		} catch (error) {
 			// Handle 404 responses specially - return null as per interface contract
-			if (error instanceof Error && error.message.includes("(404)")) {
+			if (
+				error instanceof Error &&
+				(error.message.includes("(404)") ||
+					error.message.includes("404") ||
+					this.isNotFoundError(error))
+			) {
 				return null;
 			}
 
