@@ -198,7 +198,7 @@ describe("WorkspaceApi Integration Tests", () => {
 				data: [mockWorkspace],
 			};
 
-			let receivedHeaders: Headers;
+			let receivedHeaders: Headers | undefined;
 			server.use(
 				http.get("/api/workspace", ({ request }) => {
 					receivedHeaders = request.headers;
@@ -212,7 +212,7 @@ describe("WorkspaceApi Integration Tests", () => {
 			// Assert
 			// Note: Authentication headers are handled by axios interceptors globally
 			// This test verifies the request structure is correct
-			expect(receivedHeaders!).toBeDefined();
+			expect(receivedHeaders).toBeDefined();
 		});
 	});
 
