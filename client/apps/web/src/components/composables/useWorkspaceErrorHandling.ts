@@ -40,11 +40,17 @@ const NON_RETRYABLE_ERROR_CODES = [
 interface UseWorkspaceErrorHandlingOptions {
 	error: Ref<WorkspaceError | null>;
 	onRetry?: () => Promise<void> | void;
+	onClearError?: () => void;
+	retrySuccessMessage?: string;
+	retrySuccessDescription?: string;
 }
 
 export function useWorkspaceErrorHandling({
 	error,
 	onRetry,
+	onClearError,
+	retrySuccessMessage = "Operation successful",
+	retrySuccessDescription = "The operation has been completed successfully.",
 }: UseWorkspaceErrorHandlingOptions) {
 	// Computed properties for error state
 	const hasError = computed(() => error.value !== null);
@@ -180,7 +186,7 @@ export function useWorkspaceErrorHandling({
 
 		try {
 			await onRetry();
-			showSuccessToast("Retry successful", "Workspaces have been reloaded.");
+			showSuccessToast(retrySuccessMessage, retrySuccessDescription);
 		} catch (err) {
 			handleError(err, "retry");
 		}
@@ -188,8 +194,14 @@ export function useWorkspaceErrorHandling({
 
 	// Clear error state
 	const clearError = () => {
-		// This should be handled by the store, but we can provide a helper
-		console.log("Error cleared");
+		if (onClearError) {
+			onClearError();
+		} else {
+			console.warn(
+				"clearError called but no onClearError callback provided. " +
+					"Consider passing an onClearError callback to properly clear the error state.",
+			);
+		}
 	};
 
 	return {

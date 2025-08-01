@@ -163,6 +163,8 @@ describe("useWorkspaceErrorHandling", () => {
 			const { handleRetry } = useWorkspaceErrorHandling({
 				error: mockError,
 				onRetry: mockOnRetry,
+				retrySuccessMessage: "Retry successful",
+				retrySuccessDescription: "Workspaces have been reloaded.",
 			});
 
 			await handleRetry();
@@ -172,6 +174,26 @@ describe("useWorkspaceErrorHandling", () => {
 				"Retry successful",
 				expect.objectContaining({
 					description: "Workspaces have been reloaded.",
+				}),
+			);
+		});
+
+		it("should handle successful retry with default messages", async () => {
+			const { toast } = await import("vue-sonner");
+			mockOnRetry.mockResolvedValue(undefined);
+
+			const { handleRetry } = useWorkspaceErrorHandling({
+				error: mockError,
+				onRetry: mockOnRetry,
+			});
+
+			await handleRetry();
+
+			expect(mockOnRetry).toHaveBeenCalledOnce();
+			expect(toast.success).toHaveBeenCalledWith(
+				"Operation successful",
+				expect.objectContaining({
+					description: "The operation has been completed successfully.",
 				}),
 			);
 		});
