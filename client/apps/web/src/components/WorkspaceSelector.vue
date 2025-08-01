@@ -185,21 +185,26 @@ const selectWorkspace = (workspace: Workspace) => {
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             :class="{
               'border-destructive/50 bg-destructive/10': hasError,
-              'opacity-50 cursor-not-allowed': isDisabledOptimized
+              'opacity-50 cursor-not-allowed': isDisabledOptimized,
             }"
           >
-            <div class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
-                 :class="{ 'bg-destructive': hasError }">
+            <div
+              class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
+              :class="{ 'bg-destructive': hasError }"
+            >
               <AlertTriangle v-if="hasError" class="size-4" />
               <AlertCircle v-else-if="showEmptyState" class="size-4" />
               <Building2 v-else class="size-4" />
             </div>
             <div class="grid flex-1 text-left text-sm leading-tight">
-              <span class="truncate font-medium" :class="{ 'text-destructive': hasError }">
-                {{ hasError ? 'Error loading workspaces' : displayText }}
+              <span
+                class="truncate font-medium"
+                :class="{ 'text-destructive': hasError }"
+              >
+                {{ hasError ? "Error loading workspaces" : displayText }}
               </span>
               <span class="truncate text-xs" :class="{ 'text-destructive/70': hasError }">
-                {{ hasError ? 'Click to retry' : displaySubtext }}
+                {{ hasError ? "Click to retry" : displaySubtext }}
               </span>
             </div>
             <ChevronsUpDown class="ml-auto" />
@@ -265,7 +270,9 @@ const selectWorkspace = (workspace: Workspace) => {
           <!-- Show loading state -->
           <div v-else-if="loading" class="p-2 text-sm text-muted-foreground">
             <div class="flex items-center gap-2">
-              <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+              <div
+                class="animate-spin rounded-full h-4 w-4 border-b-2 border-current"
+              ></div>
               <span>Loading workspaces...</span>
             </div>
           </div>
@@ -273,7 +280,9 @@ const selectWorkspace = (workspace: Workspace) => {
           <!-- Show searching state -->
           <div v-else-if="isSearching" class="p-2 text-sm text-muted-foreground">
             <div class="flex items-center gap-2">
-              <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+              <div
+                class="animate-spin rounded-full h-4 w-4 border-b-2 border-current"
+              ></div>
               <span>Searching...</span>
             </div>
           </div>
@@ -307,7 +316,7 @@ const selectWorkspace = (workspace: Workspace) => {
               :key="workspace.id"
               class="gap-2 p-2"
               :class="{ 'bg-accent': isWorkspaceActive(workspace) }"
-              :data-testid="'workspace-item'"
+              :data-testid="'workspace-item-' + workspace.id"
               @click="selectWorkspace(workspace)"
             >
               <div class="flex size-6 items-center justify-center rounded-sm border">
@@ -315,12 +324,18 @@ const selectWorkspace = (workspace: Workspace) => {
               </div>
               <div class="flex flex-col flex-1 min-w-0">
                 <span class="truncate font-medium">{{ workspace.name }}</span>
-                <span v-if="workspace.description" class="truncate text-xs text-muted-foreground">
+                <span
+                  v-if="workspace.description"
+                  class="truncate text-xs text-muted-foreground"
+                >
                   {{ workspace.description }}
                 </span>
               </div>
               <!-- Active indicator -->
-              <div v-if="isWorkspaceActive(workspace)" class="size-2 rounded-full bg-primary" />
+              <div
+                v-if="isWorkspaceActive(workspace)"
+                class="size-2 rounded-full bg-primary"
+              />
             </DropdownMenuItem>
           </template>
         </DropdownMenuContent>
