@@ -5,6 +5,7 @@
  */
 import { mount } from "@vue/test-utils";
 import { Bot, Home, Settings2, User } from "lucide-vue-next";
+import { createPinia, setActivePinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick, ref } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
@@ -66,17 +67,32 @@ vi.mock("./AppSidebarItem.vue", () => ({
 	},
 }));
 
-// Mock TeamSwitcher component
-vi.mock("@/components/TeamSwitcher.vue", () => ({
+// Mock WorkspaceSelector component
+vi.mock("@/components/WorkspaceSelector.vue", () => ({
 	default: {
-		name: "TeamSwitcher",
-		props: ["teams"],
+		name: "WorkspaceSelector",
+		props: ["workspaces", "loading", "error"],
 		template: `
-			<div class="team-switcher" :data-teams-count="teams.length">
-				Team Switcher
+			<div class="workspace-selector" :data-workspaces-count="workspaces.length">
+				Workspace Selector
 			</div>
 		`,
 	},
+}));
+
+// Mock workspace store provider
+const mockWorkspaceStore = {
+	loadAll: vi.fn().mockResolvedValue(undefined),
+	restorePersistedWorkspace: vi.fn().mockResolvedValue(false),
+	selectWorkspace: vi.fn().mockResolvedValue(undefined),
+	workspaces: [],
+	currentWorkspace: null,
+	isLoading: false,
+	error: null,
+};
+
+vi.mock("@/workspace/providers/workspaceStoreProvider", () => ({
+	useWorkspaceStoreProvider: vi.fn(() => () => mockWorkspaceStore),
 }));
 
 // Mock UserNav component
@@ -134,10 +150,22 @@ const router = createRouter({
 
 describe("AppSidebar Integration Tests", () => {
 	beforeEach(() => {
+		// Set up Pinia
+		setActivePinia(createPinia());
+
 		vi.clearAllMocks();
 		mockFilteredItems.value = [];
 		mockShouldShowLoading.value = false;
 		mockShouldShowError.value = false;
+
+		// Reset mock workspace store
+		mockWorkspaceStore.loadAll.mockClear();
+		mockWorkspaceStore.restorePersistedWorkspace.mockClear();
+		mockWorkspaceStore.selectWorkspace.mockClear();
+		mockWorkspaceStore.workspaces = [];
+		mockWorkspaceStore.currentWorkspace = null;
+		mockWorkspaceStore.isLoading = false;
+		mockWorkspaceStore.error = null;
 	});
 
 	afterEach(() => {

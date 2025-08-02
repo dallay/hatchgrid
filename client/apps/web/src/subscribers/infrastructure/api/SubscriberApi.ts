@@ -4,7 +4,7 @@
  */
 
 import axios, { type AxiosResponse, isAxiosError } from "axios";
-import type PageResponse from "@/shared/PageResponse";
+import type PageResponse from "@/shared/response/PageResponse.ts";
 import type { SubscriberRepository } from "@/subscribers/domain";
 import type {
 	CountByStatusResponse,

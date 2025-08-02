@@ -172,6 +172,13 @@ export class LRUCache<V> {
 	}
 
 	/**
+	 * Manually remove all expired entries from the cache.
+	 */
+	prune(): void {
+		this.cleanup();
+	}
+
+	/**
 	 * Get the current number of entries in the cache.
 	 */
 	get size(): number {
