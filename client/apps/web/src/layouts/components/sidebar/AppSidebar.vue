@@ -14,7 +14,7 @@
  * @component
  */
 
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted } from "vue";
 import UserNav from "@/components/UserNav.vue";
 import type { SidebarProps } from "@/components/ui/sidebar";
 import {
@@ -68,19 +68,15 @@ const sidebarProps = computed(() => {
 
 // Workspace store integration
 const workspaceStore = useWorkspaceStoreProvider()();
-const workspaceLoading = ref(false);
 
 // Load workspaces on component mount
 onMounted(async () => {
-	workspaceLoading.value = true;
 	try {
 		await workspaceStore.loadAll();
 		// Try to restore persisted workspace selection
 		await workspaceStore.restorePersistedWorkspace();
 	} catch (error) {
 		console.error("Failed to load workspaces:", error);
-	} finally {
-		workspaceLoading.value = false;
 	}
 });
 
@@ -101,7 +97,7 @@ const handleWorkspaceChange = async (workspaceId: string) => {
       <WorkspaceSelector
         :workspaces="[...workspaceStore.workspaces]"
         :initial-workspace-id="workspaceStore.currentWorkspace?.id"
-        :loading="workspaceLoading || workspaceStore.isLoading"
+        :loading="workspaceStore.isLoading"
         @workspace-change="handleWorkspaceChange"
       />
     </SidebarHeader>
