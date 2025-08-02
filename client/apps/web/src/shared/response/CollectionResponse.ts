@@ -1,4 +1,4 @@
-import type ApiResponse from "./ApiResponse.ts";
+import type ApiResponse from "./ApiResponse";
 
 /**
  * Represents an API response containing a collection (array) of items of type `T`.

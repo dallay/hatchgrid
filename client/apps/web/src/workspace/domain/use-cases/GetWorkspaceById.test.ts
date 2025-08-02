@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { SingleItemResponse } from "@/shared/response/SingleItemResponse.ts";
+import type { SingleItemResponse } from "@/shared/index.ts";
 import {
 	InvalidWorkspaceIdError,
 	WorkspaceApiError,

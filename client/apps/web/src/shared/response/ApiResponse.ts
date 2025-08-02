@@ -1,5 +1,5 @@
 /**
- * Represents a generic API response structure containing an array of data items.
+ * Represents a generic API response structure containing data of any type.
  *
  * @template T - The type of the data items contained in the response.
  * @property {T} data - The data contained in the response, which is of type T.

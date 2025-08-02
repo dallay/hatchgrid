@@ -16,4 +16,4 @@ import type ApiResponse from "./ApiResponse.ts";
  *   data: { id: "123", name: "Alice" }
  * };
  */
-export interface SingleItemResponse<T> extends ApiResponse<T> {}
+export default interface SingleItemResponse<T> extends ApiResponse<T> {}
