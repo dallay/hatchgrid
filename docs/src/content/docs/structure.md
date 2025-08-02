@@ -1547,7 +1547,6 @@ description: Overview of the project structure and organization.
 │   │   ├───pagefind/
 │   │   │   ├───fragment/
 │   │   │   │   ├───en_13f4839.pf_fragment
-│   │   │   │   ├───en_15d4d12.pf_fragment
 │   │   │   │   ├───en_1c15fa5.pf_fragment
 │   │   │   │   ├───en_1d5f54d.pf_fragment
 │   │   │   │   ├───en_20147ea.pf_fragment
@@ -1595,6 +1594,7 @@ description: Overview of the project structure and organization.
 │   │   │   │   ├───en_c71b784.pf_fragment
 │   │   │   │   ├───en_cc8c27a.pf_fragment
 │   │   │   │   ├───en_d636ce2.pf_fragment
+│   │   │   │   ├───en_d9d79ac.pf_fragment
 │   │   │   │   ├───en_dc5cbfe.pf_fragment
 │   │   │   │   ├───en_deb489f.pf_fragment
 │   │   │   │   ├───en_e04256b.pf_fragment
@@ -1611,18 +1611,18 @@ description: Overview of the project structure and organization.
 │   │   │   │   ├───en_faa6dce.pf_fragment
 │   │   │   │   └───en_fbfde01.pf_fragment
 │   │   │   ├───index/
-│   │   │   │   ├───en_24262fd.pf_index
-│   │   │   │   ├───en_887afc7.pf_index
+│   │   │   │   ├───en_8646f6f.pf_index
+│   │   │   │   ├───en_ae322d8.pf_index
 │   │   │   │   ├───en_b749ff2.pf_index
-│   │   │   │   ├───en_bcf6226.pf_index
-│   │   │   │   └───en_c0dca7d.pf_index
+│   │   │   │   ├───en_b792883.pf_index
+│   │   │   │   └───en_fee765b.pf_index
 │   │   │   ├───pagefind-entry.json
 │   │   │   ├───pagefind-highlight.js
 │   │   │   ├───pagefind-modular-ui.css
 │   │   │   ├───pagefind-modular-ui.js
 │   │   │   ├───pagefind-ui.css
 │   │   │   ├───pagefind-ui.js
-│   │   │   ├───pagefind.en_8b424c22f8.pf_meta
+│   │   │   ├───pagefind.en_fd5aafcbf5.pf_meta
 │   │   │   ├───pagefind.js
 │   │   │   ├───wasm.en.pagefind
 │   │   │   └───wasm.unknown.pagefind
