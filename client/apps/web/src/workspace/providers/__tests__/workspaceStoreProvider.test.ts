@@ -55,10 +55,50 @@ describe("workspaceStoreProvider", () => {
 			expect(typeof factory).toBe("function");
 		});
 
-		it("should handle errors during store creation", () => {
-			// This test is simplified since we can't easily mock the internal factory
+		it("should handle errors during store creation", async () => {
+			// Mock the factory to throw an error during store creation
+			const { createWorkspaceStoreWithDependencies } = await import(
+				"../../store/WorkspaceStoreFactory"
+			);
+			vi.mocked(createWorkspaceStoreWithDependencies).mockImplementationOnce(
+				() => {
+					throw new Error("Workspace store initialization failed");
+				},
+			);
+
 			const factory = createWorkspaceStoreFactory();
 			expect(typeof factory).toBe("function");
+
+			// The factory itself should be created successfully, but calling it should throw
+			expect(() => factory()).toThrow("Workspace store initialization failed");
+		});
+
+		it("should handle AxiosHttpClient creation errors", async () => {
+			// Mock AxiosHttpClient to throw during instantiation
+			const { AxiosHttpClient } = await import("../../infrastructure");
+			vi.mocked(AxiosHttpClient).mockImplementationOnce(() => {
+				throw new Error("HTTP client initialization failed");
+			});
+
+			const factory = createWorkspaceStoreFactory();
+			expect(typeof factory).toBe("function");
+
+			// Should throw when trying to create the store
+			expect(() => factory()).toThrow("Workspace store initialization failed");
+		});
+
+		it("should handle WorkspaceApi creation errors", async () => {
+			// Mock WorkspaceApi to throw during instantiation
+			const { WorkspaceApi } = await import("../../infrastructure");
+			vi.mocked(WorkspaceApi).mockImplementationOnce(() => {
+				throw new Error("Workspace API initialization failed");
+			});
+
+			const factory = createWorkspaceStoreFactory();
+			expect(typeof factory).toBe("function");
+
+			// Should throw when trying to create the store
+			expect(() => factory()).toThrow("Workspace store initialization failed");
 		});
 	});
 
