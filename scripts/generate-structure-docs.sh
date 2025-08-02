@@ -6,7 +6,7 @@ set -e
 mkdir -p docs
 
 # Output file
-doc_file="docs/structure.md"
+doc_file="docs/src/content/docs/structure.md"
 
 date_only="$(date -u '+%Y-%m-%d')"
 
