@@ -52,16 +52,29 @@ export const createMockWorkspace = (
 	...overrides,
 });
 
+/**
+ * Returns an ISO date string for a given year, month, and day.
+ * Useful for generating consistent test dates.
+ * @param day - Day of the month (1-31)
+ * @param month - Month (1-12), defaults to 1 (January)
+ * @param year - Year, defaults to 2023
+ * @returns ISO date string (e.g., 2023-01-05T00:00:00Z)
+ */
+export function getTestIsoDate(day: number, month = 1, year = 2023): string {
+	const paddedMonth = month.toString().padStart(2, "0");
+	const paddedDay = day.toString().padStart(2, "0");
+	return `${year}-${paddedMonth}-${paddedDay}T00:00:00Z`;
+}
 export const createMockWorkspaces = (count = 2): Workspace[] =>
 	Array.from({ length: count }, (_, index) => {
 		const workspaceNumber = index + 1;
 		return createMockWorkspace({
-			id: `test-workspace-${workspaceNumber}`,
+			id: crypto.randomUUID(),
 			name: `Test Workspace ${workspaceNumber}`,
 			description: `Test workspace ${workspaceNumber} description`,
 			ownerId: `test-owner-${workspaceNumber}`,
-			createdAt: `2023-01-${workspaceNumber.toString().padStart(2, "0")}T00:00:00Z`,
-			updatedAt: `2023-01-${workspaceNumber.toString().padStart(2, "0")}T00:00:00Z`,
+			createdAt: getTestIsoDate(workspaceNumber),
+			updatedAt: getTestIsoDate(workspaceNumber),
 		});
 	});
 
