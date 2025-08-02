@@ -52,6 +52,8 @@ interface WorkspaceSelectorProps {
 	enableSearch?: boolean;
 	/** Minimum number of workspaces required to show search */
 	searchThreshold?: number;
+	/** Whether the selector is disabled */
+	disabled?: boolean;
 }
 
 /**
@@ -175,18 +177,19 @@ const selectWorkspace = (workspace: Workspace) => {
   <WorkspaceSelectorSkeleton v-if="showLoadingState && !hasError" />
 
   <!-- Show main selector -->
-  <SidebarMenu v-else>
+  <SidebarMenu v-else data-testid="workspace-selector">
     <SidebarMenuItem>
       <DropdownMenu>
-        <DropdownMenuTrigger as-child>
+        <DropdownMenuTrigger as-child :disabled="props.disabled">
           <SidebarMenuButton
             size="lg"
-            :disabled="isDisabledOptimized"
+            :disabled="isDisabledOptimized || props.disabled"
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             :class="{
               'border-destructive/50 bg-destructive/10': hasError,
-              'opacity-50 cursor-not-allowed': isDisabledOptimized,
+              'opacity-50 cursor-not-allowed': isDisabledOptimized || props.disabled,
             }"
+            data-testid="workspace-selector-trigger"
           >
             <div
               class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
@@ -200,6 +203,7 @@ const selectWorkspace = (workspace: Workspace) => {
               <span
                 class="truncate font-medium"
                 :class="{ 'text-destructive': hasError }"
+                data-testid="workspace-display-text"
               >
                 {{ hasError ? "Error loading workspaces" : displayText }}
               </span>
@@ -215,6 +219,7 @@ const selectWorkspace = (workspace: Workspace) => {
           align="start"
           :side="isMobile ? 'bottom' : 'right'"
           :side-offset="4"
+          data-testid="workspace-dropdown"
         >
           <DropdownMenuLabel class="text-xs text-muted-foreground">
             Workspaces
@@ -246,7 +251,7 @@ const selectWorkspace = (workspace: Workspace) => {
           </div>
 
           <!-- Show error state -->
-          <div v-if="hasError" class="p-2">
+          <div v-if="hasError" class="p-2" data-testid="workspace-error">
             <Alert variant="destructive" class="mb-2">
               <AlertTriangle class="size-4" />
               <AlertDescription>
@@ -258,6 +263,7 @@ const selectWorkspace = (workspace: Workspace) => {
               v-if="isRetryable && onRetry"
               @click="handleRetry"
               class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+              data-testid="workspace-retry-button"
             >
               <RefreshCw class="size-3" />
               Try Again
@@ -268,7 +274,11 @@ const selectWorkspace = (workspace: Workspace) => {
           </div>
 
           <!-- Show loading state -->
-          <div v-else-if="loading" class="p-2 text-sm text-muted-foreground">
+          <div
+            v-else-if="loading"
+            class="p-2 text-sm text-muted-foreground"
+            data-testid="workspace-loading"
+          >
             <div class="flex items-center gap-2">
               <div
                 class="animate-spin rounded-full h-4 w-4 border-b-2 border-current"
@@ -299,7 +309,11 @@ const selectWorkspace = (workspace: Workspace) => {
           </div>
 
           <!-- Show empty state -->
-          <div v-else-if="workspacesToDisplay.length === 0" class="p-2">
+          <div
+            v-else-if="workspacesToDisplay.length === 0"
+            class="p-2"
+            data-testid="workspace-empty-state"
+          >
             <div class="flex items-center gap-2 text-sm text-muted-foreground">
               <AlertCircle class="size-4" />
               <span>No workspaces available</span>

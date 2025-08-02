@@ -16,11 +16,13 @@ The E2E tests validate the complete user flow for workspace management:
 ## Prerequisites
 
 1. Install Playwright browsers:
+
    ```bash
    npx playwright install
    ```
 
 2. Ensure the development server is running:
+
    ```bash
    pnpm dev
    ```
@@ -28,26 +30,31 @@ The E2E tests validate the complete user flow for workspace management:
 ## Running Tests
 
 ### Run all E2E tests
+
 ```bash
 pnpm test:e2e
 ```
 
 ### Run tests with UI mode (interactive)
+
 ```bash
 pnpm test:e2e:ui
 ```
 
 ### Debug tests
+
 ```bash
 pnpm test:e2e:debug
 ```
 
 ### Run specific test file
+
 ```bash
 npx playwright test workspace-switching.spec.ts
 ```
 
 ### Run tests in specific browser
+
 ```bash
 npx playwright test --project=chromium
 ```

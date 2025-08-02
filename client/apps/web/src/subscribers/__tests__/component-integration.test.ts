@@ -323,7 +323,9 @@ describe("Subscribers Component Integration", () => {
 			const renderTime = endTime - startTime;
 
 			// Make threshold configurable or more realistic
-			const PERFORMANCE_THRESHOLD = process.env.CI ? 1500 : 1000; // ms
+			const PERFORMANCE_THRESHOLD =
+				Number(process.env.PERF_THRESHOLD_MS) ||
+				(process.env.CI?.toLowerCase() === "true" ? 1500 : 1000); // ms
 			expect(renderTime).toBeLessThan(PERFORMANCE_THRESHOLD);
 			expect(wrapper.vm).toBeDefined();
 		});

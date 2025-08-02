@@ -164,10 +164,7 @@ describe("WorkspaceValidation", () => {
 		});
 
 		it("should return valid for workspace without description", () => {
-			const workspaceWithoutDescription: Omit<
-				typeof validWorkspace,
-				"description"
-			> = (({ description, ...rest }) => rest)(validWorkspace);
+			const { description, ...workspaceWithoutDescription } = validWorkspace;
 
 			const result = validateWorkspace(workspaceWithoutDescription);
 			expect(result.isValid).toBe(true);
