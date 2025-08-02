@@ -47,7 +47,7 @@ describe("ListWorkspaces", () => {
 			const result = await listWorkspaces.execute();
 
 			// Assert
-			expect(result).toEqual(mockWorkspaces);
+			expect(result).toEqual(mockResponse);
 			expect(mockRepository.list).toHaveBeenCalledOnce();
 		});
 
@@ -62,7 +62,7 @@ describe("ListWorkspaces", () => {
 			const result = await listWorkspaces.execute();
 
 			// Assert
-			expect(result).toEqual([]);
+			expect(result).toEqual(mockResponse);
 			expect(mockRepository.list).toHaveBeenCalledOnce();
 		});
 

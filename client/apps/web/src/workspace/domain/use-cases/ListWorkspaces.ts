@@ -1,3 +1,4 @@
+import type { CollectionResponse } from "@/shared/response";
 import { WorkspaceApiError } from "../errors/WorkspaceErrors.ts";
 import type { Workspace } from "../models/Workspace.ts";
 import type { WorkspaceRepository } from "../repositories/WorkspaceRepository.ts";
@@ -23,13 +24,13 @@ export class ListWorkspaces {
 	/**
 	 * Executes the use case to retrieve all accessible workspaces.
 	 *
-	 * @returns {Promise<Workspace[]>} Promise resolving to an array of workspaces
+	 * @returns {Promise<CollectionResponse<Workspace>>} Promise resolving to a collection response with workspaces
 	 * @throws {WorkspaceApiError} When the repository operation fails
 	 */
-	async execute(): Promise<Workspace[]> {
+	async execute(): Promise<CollectionResponse<Workspace>> {
 		try {
 			const response = await this.workspaceRepository.list();
-			return response.data;
+			return response;
 		} catch (error) {
 			// Re-throw all workspace domain errors as-is
 			if (error instanceof WorkspaceApiError) {

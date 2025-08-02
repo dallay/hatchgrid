@@ -1,3 +1,4 @@
+import type { SingleItemResponse } from "@/shared/response";
 import {
 	InvalidWorkspaceIdError,
 	WorkspaceApiError,
@@ -27,11 +28,11 @@ export class GetWorkspaceById {
 	 * Executes the use case to retrieve a workspace by its ID.
 	 *
 	 * @param {string} id - The UUID of the workspace to retrieve
-	 * @returns {Promise<Workspace | null>} Promise resolving to workspace data or null if not found
+	 * @returns {Promise<SingleItemResponse<Workspace> | null>} Promise resolving to workspace response or null if not found
 	 * @throws {InvalidWorkspaceIdError} When the ID format is invalid
 	 * @throws {WorkspaceApiError} When the repository operation fails
 	 */
-	async execute(id: string): Promise<Workspace | null> {
+	async execute(id: string): Promise<SingleItemResponse<Workspace> | null> {
 		// Validate that the ID is a valid UUID format
 		if (!isValidUUID(id)) {
 			throw new InvalidWorkspaceIdError(id);
@@ -39,7 +40,13 @@ export class GetWorkspaceById {
 
 		try {
 			const response = await this.workspaceRepository.getById(id);
-			return response?.data ?? null;
+
+			// Handle malformed responses
+			if (!response || !response.data) {
+				return null;
+			}
+
+			return response;
 		} catch (error) {
 			// Re-throw domain errors as-is
 			if (

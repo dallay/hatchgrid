@@ -13,7 +13,7 @@ import type { Workspace, WorkspaceStorage } from "@/workspace";
 import type {
 	GetWorkspaceById,
 	ListWorkspaces,
-} from "@/workspace/domain/usecases";
+} from "@/workspace/domain/use-cases";
 import {
 	createWorkspaceStore,
 	type WorkspaceStoreDependencies,

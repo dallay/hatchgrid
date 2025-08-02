@@ -19,4 +19,4 @@ export {
 export type { WorkspaceRepository } from "./repositories";
 
 // Use Cases
-export { GetWorkspaceById, ListWorkspaces } from "./usecases";
+export { GetWorkspaceById, ListWorkspaces } from "./use-cases";

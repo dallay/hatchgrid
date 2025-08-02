@@ -4,7 +4,7 @@
  */
 
 import type { WorkspaceRepository } from "../domain/repositories";
-import { GetWorkspaceById, ListWorkspaces } from "../domain/usecases";
+import { GetWorkspaceById, ListWorkspaces } from "../domain/use-cases";
 import { type WorkspaceStorage, workspaceStorage } from "../infrastructure";
 import {
 	createWorkspaceStore,

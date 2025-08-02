@@ -56,7 +56,7 @@ describe("GetWorkspaceById", () => {
 				const result = await getWorkspaceById.execute(TEST_WORKSPACE_ID);
 
 				// Assert
-				expect(result).toEqual(mockWorkspace);
+				expect(result).toEqual(mockResponse);
 				expect(mockRepository.getById).toHaveBeenCalledOnce();
 				expect(mockRepository.getById).toHaveBeenCalledWith(TEST_WORKSPACE_ID);
 			});

@@ -1,2 +1,2 @@
-export { GetWorkspaceById } from "./GetWorkspaceById.ts";
-export { ListWorkspaces } from "./ListWorkspaces.ts";
+export { GetWorkspaceById } from "./GetWorkspaceById";
+export { ListWorkspaces } from "./ListWorkspaces";
