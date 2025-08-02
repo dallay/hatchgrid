@@ -8,7 +8,7 @@ import { computed, type Ref, readonly, ref } from "vue";
 import type { CollectionResponse, SingleItemResponse } from "@/shared";
 import type { Workspace } from "../domain/models";
 import { isValidUUID } from "../domain/models/WorkspaceValidation";
-import type { GetWorkspaceById, ListWorkspaces } from "../domain/use-cases";
+import type { GetWorkspaceById, ListWorkspaces } from "../domain/usecases";
 import type { WorkspaceStorage } from "../infrastructure";
 
 /**

@@ -1,4 +1,8 @@
 import { createPinia, setActivePinia } from "pinia";
+import type {
+	GetWorkspaceById,
+	ListWorkspaces,
+} from "src/workspace/domain/usecases";
 import {
 	afterEach,
 	beforeEach,
@@ -10,10 +14,6 @@ import {
 } from "vitest";
 import type { CollectionResponse, SingleItemResponse } from "@/shared/response";
 import type { Workspace, WorkspaceStorage } from "@/workspace";
-import type {
-	GetWorkspaceById,
-	ListWorkspaces,
-} from "@/workspace/domain/use-cases";
 import {
 	createWorkspaceStore,
 	type WorkspaceStoreDependencies,
