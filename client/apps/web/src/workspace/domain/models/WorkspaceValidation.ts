@@ -7,58 +7,11 @@ import { z } from "zod";
 import type { Workspace } from "./Workspace";
 
 /**
- * Custom UUID validation that matches the original regex behavior.
- * This is more restrictive than Zod's default UUID validation.
- */
-const customUUIDValidator = (value: string) => {
-	// Early return for obvious invalid cases (performance optimization)
-	if (!value || value.length !== 36) {
-		return false;
-	}
-
-	// UUID regex pattern that matches the original validation
-	const UUID_REGEX =
-		/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-	return UUID_REGEX.test(value);
-};
-
-/**
- * Custom date validation that matches the original behavior.
- */
-const customDateValidator = (value: string) => {
-	// Early return for obvious invalid cases
-	if (!value || value.length < 19) {
-		return false;
-	}
-
-	const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
-	if (!ISO_DATE_REGEX.test(value)) {
-		return false;
-	}
-
-	const date = new Date(value);
-	if (Number.isNaN(date.getTime())) {
-		return false;
-	}
-
-	// For dates without Z, just check if they parse correctly
-	if (!value.endsWith("Z")) {
-		return true;
-	}
-
-	// For dates with Z, ensure they match the ISO string
-	const isoString = date.toISOString();
-	return isoString === value || isoString.startsWith(value.substring(0, 19));
-};
-
-/**
  * Zod schema for Workspace validation.
- * Provides comprehensive type-safe validation with automatic type inference.
+ * Uses Zod's native validators for better performance and maintainability.
  */
 export const WorkspaceSchema = z.object({
-	id: z
-		.string()
-		.refine(customUUIDValidator, "Workspace id must be a valid UUID"),
+	id: z.uuid("Workspace id must be a valid UUID"),
 	name: z
 		.string()
 		.min(1, "Workspace name must not be empty")
@@ -68,21 +21,13 @@ export const WorkspaceSchema = z.object({
 		.string()
 		.max(500, "Workspace description must be 500 characters or less")
 		.optional(),
-	ownerId: z
-		.string()
-		.refine(customUUIDValidator, "Workspace ownerId must be a valid UUID"),
-	createdAt: z
-		.string()
-		.refine(
-			customDateValidator,
-			"Workspace createdAt must be a valid ISO 8601 date",
-		),
-	updatedAt: z
-		.string()
-		.refine(
-			customDateValidator,
-			"Workspace updatedAt must be a valid ISO 8601 date",
-		),
+	ownerId: z.uuid("Workspace ownerId must be a valid UUID"),
+	createdAt: z.iso.datetime(
+		"Workspace createdAt must be a valid ISO 8601 date",
+	),
+	updatedAt: z.iso.datetime(
+		"Workspace updatedAt must be a valid ISO 8601 date",
+	),
 });
 
 /**
@@ -92,18 +37,18 @@ export const WorkspaceSchema = z.object({
 export type WorkspaceSchemaType = z.infer<typeof WorkspaceSchema>;
 
 /**
- * Validates if a string is a valid UUID using the same logic as the Zod schema.
+ * Validates if a string is a valid UUID using Zod's native UUID validation.
  * More reliable and consistent with the schema validation.
  */
 export function isValidUUID(value: string): boolean {
-	return customUUIDValidator(value);
+	return z.uuid().safeParse(value).success;
 }
 
 /**
- * Validates if a string is a valid ISO 8601 date using the same logic as the Zod schema.
+ * Validates if a string is a valid ISO 8601 date using Zod's native datetime validation.
  */
 export function isValidISODate(value: string): boolean {
-	return customDateValidator(value);
+	return z.iso.datetime().safeParse(value).success;
 }
 
 /**
@@ -200,14 +145,7 @@ export function validateWorkspace(data: unknown): {
 			return VALIDATION_MESSAGES.OBJECT_REQUIRED;
 		}
 
-		// Handle UUID validation errors (custom refinement)
-		if (issue.code === "custom" && message.includes("UUID")) {
-			if (field === "id") return VALIDATION_MESSAGES.ID_VALID_UUID_REQUIRED;
-			if (field === "ownerId")
-				return VALIDATION_MESSAGES.OWNER_ID_VALID_UUID_REQUIRED;
-		}
-
-		// Handle UUID validation errors (built-in)
+		// Handle UUID validation errors
 		if (message.includes("uuid") || message.includes("UUID")) {
 			if (field === "id") return VALIDATION_MESSAGES.ID_VALID_UUID_REQUIRED;
 			if (field === "ownerId")
@@ -221,16 +159,8 @@ export function validateWorkspace(data: unknown): {
 				return VALIDATION_MESSAGES.DESCRIPTION_LENGTH_INVALID;
 		}
 
-		// Handle date validation errors (custom refinement)
-		if (issue.code === "custom" && message.includes("ISO 8601")) {
-			if (field === "createdAt")
-				return VALIDATION_MESSAGES.CREATED_AT_VALID_DATE_REQUIRED;
-			if (field === "updatedAt")
-				return VALIDATION_MESSAGES.UPDATED_AT_VALID_DATE_REQUIRED;
-		}
-
-		// Handle date validation errors (built-in)
-		if (message.includes("ISO 8601")) {
+		// Handle datetime validation errors
+		if (message.includes("datetime") || message.includes("ISO 8601")) {
 			if (field === "createdAt")
 				return VALIDATION_MESSAGES.CREATED_AT_VALID_DATE_REQUIRED;
 			if (field === "updatedAt")
