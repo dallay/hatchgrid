@@ -325,7 +325,7 @@ const WorkspacePage = {
 	async selectWorkspaceByName(page: Page, workspaceName: string) {
 		await this.waitForPageLoad(page);
 
-		const dropdown = await this.openWorkspaceDropdown(page);
+		await this.openWorkspaceDropdown(page);
 
 		// Look for the workspace item by text content
 		const workspaceItem = page
@@ -429,7 +429,7 @@ test.describe("Workspace Switching E2E", () => {
 			await expect(selector).toBeVisible();
 
 			// Try to open the dropdown
-			const dropdown = await WorkspacePage.openWorkspaceDropdown(page);
+			await WorkspacePage.openWorkspaceDropdown(page);
 
 			// If dropdown opens, check for workspace options
 			const dropdownItems = page.locator(SELECTORS.anyDropdownItem);
@@ -437,7 +437,7 @@ test.describe("Workspace Switching E2E", () => {
 
 			// We should have at least some dropdown items
 			expect(itemCount).toBeGreaterThan(0);
-		} catch (error) {
+		} catch (_error) {
 			// If no workspace selector is found, that's also a valid state
 			// The application might not have implemented this feature yet
 			console.log("Workspace selector not found - this may be expected");
@@ -447,9 +447,6 @@ test.describe("Workspace Switching E2E", () => {
 	test("should persist state across page reloads", async ({ page }) => {
 		// Wait for initial load
 		await WorkspacePage.waitForPageLoad(page);
-
-		// Get initial URL
-		const initialUrl = page.url();
 
 		// Reload the page
 		await page.reload();
