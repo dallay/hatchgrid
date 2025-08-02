@@ -32,11 +32,17 @@ export function isWorkspace(obj: unknown): obj is Workspace {
 
 	return (
 		typeof workspace.id === "string" &&
+		workspace.id.length > 0 &&
 		typeof workspace.name === "string" &&
+		workspace.name.length > 0 &&
 		typeof workspace.ownerId === "string" &&
+		workspace.ownerId.length > 0 &&
 		typeof workspace.createdAt === "string" &&
+		workspace.createdAt.length > 0 &&
 		typeof workspace.updatedAt === "string" &&
+		workspace.updatedAt.length > 0 &&
 		(workspace.description === undefined ||
-			typeof workspace.description === "string")
+			(typeof workspace.description === "string" &&
+				workspace.description.length >= 0))
 	);
 }

@@ -21,7 +21,7 @@
  * await workspaceStore.selectWorkspace("workspace-id");
  * ```
  *
- * @see {@link ./README.md} For comprehensive documentation
+ * @see {@link docs/src/content/docs/core-concepts/workspace.md} For comprehensive documentation
  * @version 1.0.0
  * @author Hatchgrid Development Team
  */
@@ -36,8 +36,6 @@ export {
 } from "./composables/index.ts";
 export type { Workspace, WorkspaceRepository } from "./domain/index.ts";
 export { GetWorkspaceById, ListWorkspaces } from "./domain/index.ts";
-// Example components (for development and documentation)
-export { default as WorkspaceInitializationExample } from "./examples/WorkspaceInitializationExample.vue";
 // Infrastructure layer exports
 export {
 	createWorkspaceStorage,
