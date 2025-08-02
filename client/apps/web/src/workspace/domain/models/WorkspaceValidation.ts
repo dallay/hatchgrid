@@ -5,17 +5,6 @@
 
 import type { Workspace } from "./Workspace";
 
-// Consider migrating to Zod schema for better type safety and maintainability:
-// import { z } from 'zod';
-//
-// export const WorkspaceSchema = z.object({
-//   id: z.string().uuid(),
-//   name: z.string().min(1).max(100).transform(s => s.trim()),
-//   description: z.string().max(500).optional(),
-//   ownerId: z.string().uuid(),
-//   createdAt: z.string().datetime(),
-//   updatedAt: z.string().datetime(),
-// });
 
 /**
  * UUID validation regex pattern.
