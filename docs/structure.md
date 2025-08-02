@@ -1183,8 +1183,6 @@
 │   │       │   │   │   │   ├───ListWorkspaces.ts
 │   │       │   │   │   │   └───index.ts
 │   │       │   │   │   └───index.ts
-│   │       │   │   ├───examples/
-│   │       │   │   │   └───WorkspaceInitializationExample.vue
 │   │       │   │   ├───infrastructure/
 │   │       │   │   │   ├───api/
 │   │       │   │   │   │   ├───WorkspaceApi.integration.test.ts
