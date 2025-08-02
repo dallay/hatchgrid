@@ -548,32 +548,6 @@ description: Overview of the project structure and organization.
 │   │       ├───.vscode/
 │   │       │   └───extensions.json
 │   │       ├───playwright-report/
-│   │       │   ├───data/
-│   │       │   │   ├───24be14c5f904f9051d1e726411f307e6a6c7a144.zip
-│   │       │   │   ├───251c4ba04a40952f3fbee2e1001012948a95b03a.zip
-│   │       │   │   ├───4012a6ddfa0235f7b61351d7a357f4285a21463a.zip
-│   │       │   │   ├───41b400157c534498c226e55836b1e136619dca7c.zip
-│   │       │   │   ├───accc2ea09fea090cf150512ccc0b3b6235cad313.zip
-│   │       │   │   ├───ae5508fce0167672ae4f7f23bf2190a70a233128.zip
-│   │       │   │   ├───c1b0b2204ab53c971b4c602fecb8217d9ccc8f1b.zip
-│   │       │   │   └───f218f0574b2acd6096633a2699b7e644a750ae81.zip
-│   │       │   ├───trace/
-│   │       │   │   ├───assets/
-│   │       │   │   │   ├───codeMirrorModule-3kZ8GVgK.js
-│   │       │   │   │   └───defaultSettingsView-Ds-bson8.js
-│   │       │   │   ├───codeMirrorModule.C3UTv-Ge.css
-│   │       │   │   ├───codicon.DCmgc-ay.ttf
-│   │       │   │   ├───defaultSettingsView.NYBT19Ch.css
-│   │       │   │   ├───index.CFOW-Ezb.css
-│   │       │   │   ├───index.CG3BNeDq.js
-│   │       │   │   ├───index.html
-│   │       │   │   ├───playwright-logo.svg
-│   │       │   │   ├───snapshot.html
-│   │       │   │   ├───sw.bundle.js
-│   │       │   │   ├───uiMode.BatfzHMG.css
-│   │       │   │   ├───uiMode.BijnIl3L.js
-│   │       │   │   ├───uiMode.html
-│   │       │   │   └───xtermModule.Beg8tuEN.css
 │   │       │   └───index.html
 │   │       ├───public/
 │   │       │   └───vite.svg
@@ -1247,22 +1221,7 @@ description: Overview of the project structure and organization.
 │   │       │   ├───style.css
 │   │       │   └───vite-env.d.ts
 │   │       ├───test-results/
-│   │       │   ├───workspace-switching-Worksp-14f61-dle-authentication-properly-chromium/
-│   │       │   │   └───trace.zip
-│   │       │   ├───workspace-switching-Worksp-43ad7-dle-API-responses-correctly-chromium/
-│   │       │   │   └───trace.zip
-│   │       │   ├───workspace-switching-Worksp-5912d-functionality-if-accessible-chromium/
-│   │       │   │   └───trace.zip
-│   │       │   ├───workspace-switching-Worksp-59576-space-page-access-correctly-chromium/
-│   │       │   │   └───trace.zip
-│   │       │   ├───workspace-switching-Worksp-624cd-d-handle-slow-API-responses-chromium/
-│   │       │   │   └───trace.zip
-│   │       │   ├───workspace-switching-Worksp-6b688-y-workspace-list-gracefully-chromium/
-│   │       │   │   └───trace.zip
-│   │       │   ├───workspace-switching-Worksp-b3b70-t-state-across-page-reloads-chromium/
-│   │       │   │   └───trace.zip
-│   │       │   └───workspace-switching-Worksp-dccb8-andle-API-errors-gracefully-chromium/
-│   │       │       └───trace.zip
+│   │       │   └───.last-run.json
 │   │       ├───tests/
 │   │       │   └───e2e/
 │   │       │       ├───README.md
@@ -1588,6 +1547,7 @@ description: Overview of the project structure and organization.
 │   │   ├───pagefind/
 │   │   │   ├───fragment/
 │   │   │   │   ├───en_13f4839.pf_fragment
+│   │   │   │   ├───en_15d4d12.pf_fragment
 │   │   │   │   ├───en_1c15fa5.pf_fragment
 │   │   │   │   ├───en_1d5f54d.pf_fragment
 │   │   │   │   ├───en_20147ea.pf_fragment
@@ -1634,7 +1594,6 @@ description: Overview of the project structure and organization.
 │   │   │   │   ├───en_c6caae9.pf_fragment
 │   │   │   │   ├───en_c71b784.pf_fragment
 │   │   │   │   ├───en_cc8c27a.pf_fragment
-│   │   │   │   ├───en_cee6c7c.pf_fragment
 │   │   │   │   ├───en_d636ce2.pf_fragment
 │   │   │   │   ├───en_dc5cbfe.pf_fragment
 │   │   │   │   ├───en_deb489f.pf_fragment
@@ -1652,18 +1611,18 @@ description: Overview of the project structure and organization.
 │   │   │   │   ├───en_faa6dce.pf_fragment
 │   │   │   │   └───en_fbfde01.pf_fragment
 │   │   │   ├───index/
-│   │   │   │   ├───en_5d41412.pf_index
-│   │   │   │   ├───en_74de7b6.pf_index
-│   │   │   │   ├───en_81e7615.pf_index
-│   │   │   │   ├───en_8b0aa67.pf_index
-│   │   │   │   └───en_f4a73a6.pf_index
+│   │   │   │   ├───en_24262fd.pf_index
+│   │   │   │   ├───en_887afc7.pf_index
+│   │   │   │   ├───en_b749ff2.pf_index
+│   │   │   │   ├───en_bcf6226.pf_index
+│   │   │   │   └───en_c0dca7d.pf_index
 │   │   │   ├───pagefind-entry.json
 │   │   │   ├───pagefind-highlight.js
 │   │   │   ├───pagefind-modular-ui.css
 │   │   │   ├───pagefind-modular-ui.js
 │   │   │   ├───pagefind-ui.css
 │   │   │   ├───pagefind-ui.js
-│   │   │   ├───pagefind.en_2b36c334cb.pf_meta
+│   │   │   ├───pagefind.en_8b424c22f8.pf_meta
 │   │   │   ├───pagefind.js
 │   │   │   ├───wasm.en.pagefind
 │   │   │   └───wasm.unknown.pagefind

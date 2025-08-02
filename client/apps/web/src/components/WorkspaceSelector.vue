@@ -86,6 +86,7 @@ const {
 	handleError,
 	handleRetry: baseHandleRetry,
 	showSuccessToast,
+	showErrorToast,
 } = useWorkspaceErrorHandling({
 	error: toRef(props, "error"),
 	onRetry: props.onRetry,
@@ -168,6 +169,10 @@ const selectWorkspace = (workspace: Workspace) => {
 		}
 	} catch (error) {
 		handleError(error, "workspace selection");
+		showErrorToast(
+			"Failed to switch workspace",
+			error instanceof Error ? error.message : undefined,
+		);
 	}
 };
 </script>
