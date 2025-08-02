@@ -22,18 +22,25 @@ export function useWorkspaceSearch({
 	const debouncedSearchQuery = ref("");
 	const isSearching = ref(false);
 
-	// Debounced search function
-	const updateDebouncedSearch = debounce((...args: unknown[]) => {
+	// Type-safe debounced search function
+	const updateDebouncedSearchCore = (...args: unknown[]) => {
 		const query = args[0] as string;
 		debouncedSearchQuery.value = query;
 		isSearching.value = false;
-	}, searchDelay);
+	};
+
+	const updateDebouncedSearch = debounce(updateDebouncedSearchCore, searchDelay);
+
+	// Type-safe wrapper for calling the debounced function
+	const callUpdateDebouncedSearch = (query: string) => {
+		updateDebouncedSearch(query);
+	};
 
 	// Update search query and trigger debounced update
 	const setSearchQuery = (query: string) => {
 		searchQuery.value = query;
 		isSearching.value = query.length >= minSearchLength;
-		updateDebouncedSearch(query);
+		callUpdateDebouncedSearch(query);
 	};
 
 	// Clear search
