@@ -4,6 +4,7 @@
  */
 
 import { useLocalStorage } from "@/composables/useLocalStorage";
+import { InvalidWorkspaceIdError } from "@/workspace/domain/errors/WorkspaceErrors";
 
 /**
  * Domain-specific errors for workspace storage operations
@@ -15,15 +16,6 @@ export class WorkspaceStorageError extends Error {
 	) {
 		super(message);
 		this.name = "WorkspaceStorageError";
-	}
-}
-
-export class InvalidWorkspaceIdError extends WorkspaceStorageError {
-	constructor(workspaceId: string) {
-		super(
-			`Invalid workspace ID format: ${workspaceId}`,
-			"INVALID_WORKSPACE_ID",
-		);
 	}
 }
 
