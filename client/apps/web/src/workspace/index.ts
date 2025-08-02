@@ -26,31 +26,33 @@
  * @author Hatchgrid Development Team
  */
 
-// Domain layer exports
-
-// Composables exports
+// Application layer exports (use cases and composables)
 export {
 	useWorkspaceInitialization,
 	type WorkspaceInitializationOptions,
 	type WorkspaceInitializationState,
 } from "./composables/index.ts";
+// Domain layer exports (innermost - core business logic)
 export type { Workspace, WorkspaceRepository } from "./domain/index.ts";
 export { GetWorkspaceById, ListWorkspaces } from "./domain/index.ts";
-// Infrastructure layer exports
+
+// Infrastructure layer exports (external adapters and storage)
 export {
 	createWorkspaceStorage,
 	STORAGE_KEY_SELECTED_WORKSPACE,
 	type WorkspaceStorage,
 	workspaceStorage,
 } from "./infrastructure/index.ts";
-// Provider layer exports
+
+// Provider layer exports (dependency injection)
 export {
 	createWorkspaceStoreFactory,
 	initializeWorkspaceStore,
 	resetWorkspaceStore,
 	useWorkspaceStoreProvider,
 } from "./providers/index.ts";
-// Store layer exports
+
+// Store layer exports (outermost - state management)
 export type {
 	LoadingStates,
 	WorkspaceError,
