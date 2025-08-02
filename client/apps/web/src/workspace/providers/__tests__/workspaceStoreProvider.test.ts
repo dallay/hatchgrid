@@ -109,10 +109,51 @@ describe("workspaceStoreProvider", () => {
 			expect(store1).toBe(store2);
 		});
 
-		it("should create store lazily", () => {
-			// This test is simplified since we can't easily test the internal factory calls
-			const store = useWorkspaceStoreProvider();
-			expect(store).toBeDefined();
+		it("should create store lazily", async () => {
+			// Reset to ensure clean state
+			resetWorkspaceStore();
+
+			// Mock the factory to track when it's called
+			const mockFactory = vi.fn().mockReturnValue(() => ({
+				workspaces: [],
+				currentWorkspace: null,
+				loading: { loadingAll: false, loadingById: false },
+				error: null,
+				isLoading: false,
+				hasError: false,
+				workspaceCount: 0,
+				isWorkspaceSelected: false,
+				loadAll: vi.fn(),
+				selectWorkspace: vi.fn(),
+				resetState: vi.fn(),
+			}));
+
+			// Mock the factory creation to return our tracked factory
+			const { createWorkspaceStoreWithDependencies } = vi.mocked(
+				await import("../../store/WorkspaceStoreFactory"),
+			);
+			createWorkspaceStoreWithDependencies.mockImplementation(mockFactory);
+
+			// At this point, the store should not be initialized yet
+			// We can't directly access the internal state, but we can verify behavior
+
+			// First call should trigger initialization
+			const store1 = useWorkspaceStoreProvider();
+			expect(store1).toBeDefined();
+			expect(mockFactory).toHaveBeenCalledTimes(1);
+
+			// Second call should return the same instance without re-initialization
+			const store2 = useWorkspaceStoreProvider();
+			expect(store2).toBe(store1);
+			expect(mockFactory).toHaveBeenCalledTimes(1); // Still only called once
+
+			// Third call should also return the same instance
+			const store3 = useWorkspaceStoreProvider();
+			expect(store3).toBe(store1);
+			expect(mockFactory).toHaveBeenCalledTimes(1); // Still only called once
+
+			// Verify that the factory was only called when the store was first accessed
+			expect(mockFactory).toHaveBeenCalledTimes(1);
 		});
 	});
 
