@@ -58,7 +58,11 @@ vi.mock("@/components/ui/alert", () => ({
 	AlertDescription: { template: "<div><slot /></div>" },
 }));
 
-// Import the component AFTER the mocks
+import { useWorkspaceDisplay } from "./composables/useWorkspaceDisplay";
+import { useWorkspaceErrorHandling } from "./composables/useWorkspaceErrorHandling";
+import { useWorkspaceSearch } from "./composables/useWorkspaceSearch";
+import { useWorkspaceSelection } from "./composables/useWorkspaceSelection";
+// Import the component and mocked modules AFTER the mocks
 import WorkspaceSelector from "./WorkspaceSelector.vue";
 
 const mockWorkspaces = createMockWorkspaces();
@@ -117,26 +121,13 @@ describe("WorkspaceSelector", () => {
 		});
 	};
 
-	beforeEach(async () => {
+	beforeEach(() => {
 		vi.clearAllMocks();
 
 		// Setup default mocks for all tests
 		setupMocks();
 
-		// Connect our mock functions to the mocked modules
-		const { useWorkspaceSelection } = await import(
-			"./composables/useWorkspaceSelection"
-		);
-		const { useWorkspaceDisplay } = await import(
-			"./composables/useWorkspaceDisplay"
-		);
-		const { useWorkspaceErrorHandling } = await import(
-			"./composables/useWorkspaceErrorHandling"
-		);
-		const { useWorkspaceSearch } = await import(
-			"./composables/useWorkspaceSearch"
-		);
-
+		// Connect our mock functions to the mocked modules using static imports
 		vi.mocked(useWorkspaceSelection).mockImplementation(
 			mocks.useWorkspaceSelection,
 		);
