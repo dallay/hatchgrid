@@ -26,9 +26,13 @@ const handleRetry = async () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center p-4 text-center">
-    <AlertTriangle class="size-8 text-destructive mb-2" />
-    <h3 class="font-medium text-sm mb-1">Workspace Error</h3>
+  <div
+    class="flex flex-col items-center justify-center p-4 text-center"
+    role="alert"
+    aria-live="polite"
+  >
+    <AlertTriangle class="size-8 text-destructive mb-2" aria-hidden="true" />
+    <h3 class="font-medium text-sm mb-1" id="error-title">Workspace Error</h3>
     <p class="text-xs text-muted-foreground mb-3">
       {{ error?.message || "Failed to load workspaces" }}
     </p>
@@ -36,10 +40,17 @@ const handleRetry = async () => {
       v-if="retry"
       @click="handleRetry"
       :disabled="isRetrying"
+      :aria-label="
+        isRetrying ? 'Retrying workspace operation' : 'Retry workspace operation'
+      "
       class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
     >
-      <RefreshCw :class="{ 'animate-spin': isRetrying }" class="size-3" />
-      {{ isRetrying ? 'Retrying...' : 'Try Again' }}
+      <RefreshCw
+        :class="{ 'animate-spin': isRetrying }"
+        class="size-3"
+        aria-hidden="true"
+      />
+      {{ isRetrying ? "Retrying..." : "Try Again" }}
     </button>
   </div>
 </template>

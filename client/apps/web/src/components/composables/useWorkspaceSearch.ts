@@ -29,7 +29,10 @@ export function useWorkspaceSearch({
 		isSearching.value = false;
 	};
 
-	const updateDebouncedSearch = debounce(updateDebouncedSearchCore, searchDelay);
+	const updateDebouncedSearch = debounce(
+		updateDebouncedSearchCore,
+		searchDelay,
+	);
 
 	// Type-safe wrapper for calling the debounced function
 	const callUpdateDebouncedSearch = (query: string) => {
