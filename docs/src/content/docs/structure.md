@@ -63,27 +63,11 @@ description: Overview of the project structure and organization.
 │   ├───settings/
 │   │   └───mcp.json
 │   ├───specs/
-│   │   ├───client-logger-package/
-│   │   │   ├───design.md
-│   │   │   ├───requirements.md
-│   │   │   └───tasks.md
-│   │   ├───docker-pipeline-restructure/
-│   │   │   ├───design.md
-│   │   │   ├───requirements.md
-│   │   │   └───tasks.md
-│   │   ├───dynamic-sidebar-navigation/
-│   │   │   ├───design.md
-│   │   │   ├───requirements.md
-│   │   │   └───tasks.md
 │   │   ├───email-verification-flow/
 │   │   │   ├───design.md
 │   │   │   ├───requirements.md
 │   │   │   └───tasks.md
-│   │   ├───starlight-docs-integration/
-│   │   │   ├───design.md
-│   │   │   ├───requirements.md
-│   │   │   └───tasks.md
-│   │   ├───subscribers-clean-architecture/
+│   │   ├───hexagonal-architecture-migration/
 │   │   │   ├───design.md
 │   │   │   ├───requirements.md
 │   │   │   └───tasks.md
@@ -91,11 +75,7 @@ description: Overview of the project structure and organization.
 │   │   │   ├───design.md
 │   │   │   ├───requirements.md
 │   │   │   └───tasks.md
-│   │   ├───user-settings-feature/
-│   │   │   ├───design.md
-│   │   │   ├───requirements.md
-│   │   │   └───tasks.md
-│   │   └───workspace-clean-architecture/
+│   │   └───user-settings-feature/
 │   │       ├───design.md
 │   │       ├───requirements.md
 │   │       └───tasks.md
@@ -1872,6 +1852,8 @@ description: Overview of the project structure and organization.
 │   │   │       │   │   ├───liquibase-migration-completed.md
 │   │   │       │   │   └───liquibase-yaml-vs-xml.md
 │   │   │       │   ├───frontend/
+│   │   │       │   │   ├───architecture/
+│   │   │       │   │   │   └───frontend-architecture.md
 │   │   │       │   │   ├───auth-store.md
 │   │   │       │   │   ├───internationalization.md
 │   │   │       │   │   ├───landing-page.md
