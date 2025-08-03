@@ -2,6 +2,7 @@ packages:
   - client/apps/*
   - client/packages/*
   - client/config
+  - docs
 
 onlyBuiltDependencies:
   - '@biomejs/biome'
@@ -9,6 +10,7 @@ onlyBuiltDependencies:
   - esbuild
   - lefthook
   - maplibre-gl
+  - msw
   - pre-commit
   - pre-commit-hooks
   - sharp

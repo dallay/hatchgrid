@@ -1,6 +1,6 @@
 # Hatchgrid Documentation & Source of Truth
 
-All project documentation and canonical development guidelines are maintained in the `/docs` folder at the root of the repository. This folder serves as the single source of truth for architecture, conventions, API specifications, and workflow standards.
+All project documentation and canonical development guidelines are maintained in the `docs/src/content/docs` folder at the root of the repository. This folder serves as the single source of truth for architecture, conventions, API specifications, and workflow standards.
 
 ## Architecture Principles
 
@@ -33,8 +33,8 @@ All project documentation and canonical development guidelines are maintained in
 **Documentation Policy:**
 
 - All documentation must be written in English.
-- Documentation files (except for project-level README.md) must be placed inside the `/docs` folder at the root of the project.
-- Each new documentation `.md` file should be placed in its corresponding subfolder within `/docs` (e.g., conventions, authentication, frontend, landing, etc.) according to its topic.
-- The `/docs` folder is the canonical source of truth for all project documentation, conventions, and technical specifications.
+- Documentation files (except for project-level README.md) must be placed inside the `docs/src/content/docs` folder at the root of the project.
+- Each new documentation `.md` file should be placed in its corresponding subfolder within `docs/src/content/docs` (e.g., conventions, authentication, frontend, landing, etc.) according to its topic.
+- The `docs/src/content/docs` folder is the canonical source of truth for all project documentation, conventions, and technical specifications.
 
-**Note:** For the latest and most accurate information, always refer to the `/docs` folder in the root of the project. Any change to architecture, APIs, or conventions must be reflected here.
+**Note:** For the latest and most accurate information, always refer to the `docs/src/content/docs` folder in the root of the project. Any change to architecture, APIs, or conventions must be reflected here.

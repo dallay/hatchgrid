@@ -1,6 +1,7 @@
 import { Authority } from "@/security/authority";
 
-const Subscribers = () => import("@/audience/subscriber/Subscribers.vue");
+const Subscribers = () =>
+	import("@/subscribers/presentation/views/SubscriberPage.vue");
 
 export default [
 	{

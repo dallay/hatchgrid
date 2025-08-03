@@ -2,6 +2,7 @@ import { createRouter as createVueRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 
 const ErrorPage = () => import("@/error/error.vue");
+const WorkspaceDashboard = () => import("@/views/WorkspaceDashboard.vue");
 
 import account from "@/router/account";
 import audience from "@/router/audience";
@@ -16,6 +17,12 @@ export const createRouter = () =>
 				path: "/",
 				name: "Home",
 				component: HomeView,
+				meta: { authorities: [Authority.USER], layout: "DashboardLayout" },
+			},
+			{
+				path: "/workspace",
+				name: "WorkspaceDashboard",
+				component: WorkspaceDashboard,
 				meta: { authorities: [Authority.USER], layout: "DashboardLayout" },
 			},
 			{

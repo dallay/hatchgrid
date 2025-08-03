@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import type { UserResponse } from "@/services/response/user.response.ts";
+import type { UserResponse } from "@/services/response/user.response";
 import { transformUserResponseToAccount } from "./account.mapper";
 
 vi.mock("@hatchgrid/utilities", () => ({
