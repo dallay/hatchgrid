@@ -5,19 +5,19 @@
 	"type": "module",
 	"scripts": {
 		"dev": "pnpm --filter @hatchgrid/utilities build && vite",
-		"dev:e2e": "pnpm --filter @hatchgrid/utilities build && vite --port 5173",
+		"dev:e2e": "pnpm --filter @hatchgrid/utilities build && vite --port 9876",
 		"build": "pnpm --filter @hatchgrid/utilities build && vue-tsc -b && vite build",
 		"check": "vue-tsc -b",
 		"format": "biome format . --write",
 		"preview": "vite preview",
-		"postinstall": "playwright install --with-deps",
+		"postinstall": "node -e \"if (!process.env.CI && !process.env.CLOUDFLARE_ENV) require('child_process').spawn('playwright', ['install', '--with-deps'], { stdio: 'inherit' }).on('error', () => console.log('Playwright install skipped'))\"",
 		"pretest": "pnpm --filter @hatchgrid/utilities build",
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"test:coverage": "vitest run --coverage",
-		"test:e2e": "start-server-and-test dev:e2e http://localhost:5173 'playwright test'",
-		"test:e2e:ui": "start-server-and-test dev:e2e http://localhost:5173 'playwright test --ui'",
-		"test:e2e:debug": "start-server-and-test dev:e2e http://localhost:5173 'playwright test --debug'"
+		"test:e2e": "start-server-and-test dev:e2e http://localhost:9876 'playwright test'",
+		"test:e2e:ui": "start-server-and-test dev:e2e http://localhost:9876 'playwright test --ui'",
+		"test:e2e:debug": "start-server-and-test dev:e2e http://localhost:9876 'playwright test --debug'"
 	},
 	"dependencies": {
 		"@hatchgrid/logger": "workspace:*",
