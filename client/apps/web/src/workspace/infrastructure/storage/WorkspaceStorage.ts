@@ -3,6 +3,7 @@
  * Provides safe read/write operations for workspace selection persistence
  */
 
+import { z } from "zod";
 import { useLocalStorage } from "@/composables/useLocalStorage";
 import { InvalidWorkspaceIdError } from "@/workspace/domain/errors/WorkspaceErrors";
 
@@ -33,9 +34,10 @@ export const STORAGE_KEY_SELECTED_WORKSPACE =
 	"hatchgrid:workspace:selected" as const;
 
 /**
- * UUID v4 length constant for validation
+ * UUID validation schema using Zod
+ * Provides consistent UUID validation across the application
  */
-const UUID_LENGTH = 36 as const;
+const uuidSchema = z.uuid();
 
 /**
  * Result type for operations that can fail
@@ -86,21 +88,17 @@ export interface WorkspaceStorage {
 }
 
 /**
- * UUID validation utilities
+ * UUID validation utilities using Zod
+ * Provides consistent and reliable UUID validation
  */
-const UUID_V4_REGEX =
-	/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 /**
- * Validates if a string is a valid UUID v4 format
+ * Validates if a string is a valid UUID using Zod
  * @param id The string to validate
- * @returns True if the string is a valid UUID v4
+ * @returns True if the string is a valid UUID
  */
 const isValidUUID = (id: string): boolean => {
-	if (typeof id !== "string" || id.length !== UUID_LENGTH) {
-		return false;
-	}
-	return UUID_V4_REGEX.test(id);
+	return uuidSchema.safeParse(id).success;
 };
 
 /**

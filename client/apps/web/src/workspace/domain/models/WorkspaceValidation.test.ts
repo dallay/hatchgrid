@@ -7,7 +7,7 @@ import {
 	isValidWorkspaceName,
 	validateWorkspace,
 } from "@/workspace/domain";
-import type { Workspace } from "./Workspace.ts";
+import type { Workspace } from "./Workspace";
 
 describe("WorkspaceValidation", () => {
 	describe("isValidUUID", () => {
