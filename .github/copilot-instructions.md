@@ -8,7 +8,7 @@ Hatchgrid is a modular monorepo for automating content publishing for creators. 
 - **Static Site:** Astro + MDX
 - **Database:** PostgreSQL (RLS, migrations via Liquibase)
 - **CI/CD:** GitHub Actions, CodeQL, Docker, Prometheus
-- **Docs:** All conventions and architecture in `/docs/conventions` (see [README](../../README.md) for entry points)
+- **Docs:** All conventions and architecture in `docs/src/content/docs/conventions` (see [README](../../README.md) for entry points)
 
 ## 📁 Key Project Structure
 - `server/` and `shared/` — Spring Boot backend, Kotlin modules, shared code
@@ -38,7 +38,7 @@ Hatchgrid is a modular monorepo for automating content publishing for creators. 
 - **Commits:** Conventional Commits, small PRs, clear descriptions, link to issues (`docs/conventions/project-guidelines.md`)
 
 ## 🧪 AI Agent Guidance
-- Always update `/docs` for any change in API, architecture, or config
+- Always update `docs/src/content/docs` for any change in API, architecture, or config
 - Refuse changes that break tests, builds, or conventions
 - Propose only secure, modular, and extensible solutions
 - Add test stubs for new logic (unit/integration)
@@ -50,16 +50,16 @@ Hatchgrid is a modular monorepo for automating content publishing for creators. 
 ## 🧷 Merge Checklist
 - [ ] Tests written and passing
 - [ ] Builds passing (`pnpm` and `Gradle`)
-- [ ] `/docs` updated if relevant
+- [ ] `docs/src/content/docs` updated if relevant
 - [ ] Code format and lint clean
 - [ ] Secure, modular, and extensible
 
 ## 📚 Reference Docs
-- See `/docs/conventions/README.md` for links to all conventions
+- See `docs/src/content/docs/conventions/README.md` for links to all conventions
 - See `/README.md` for setup, build, and run instructions
 
 ---
-For any unclear or missing conventions, open a PR to `/docs/conventions` and update this file.
+For any unclear or missing conventions, open a PR to `docs/src/content/docs/conventions` and update this file.
 
 These instructions serve as a guide for GitHub Copilot and any AI-powered developer assistant to contribute effectively and consistently to the Hatchgrid project.
 
@@ -118,7 +118,7 @@ If these commands fail, the pull request must not be merged.
 ## ✅ Development Principles
 
 - ✅ **All new features must include unit and integration tests**
-- ✅ **Documentation (`/docs`) must be updated with every relevant change**
+- ✅ **Documentation (`docs/src/content/docs`) must be updated with every relevant change**
 - ✅ **Every build must be green before merging to main**
 - ✅ **Prefer test-first or BDD-style development**
 - ✅ **Design modules for extension, not modification**
@@ -163,7 +163,7 @@ If these commands fail, the pull request must not be merged.
 
 ## 📚 Documentation Guidelines
 
-- Project documentation lives in `/docs`
+- Project documentation lives in `docs/src/content/docs`
 - Every change to behavior, APIs, architecture, or configuration **must** be reflected
 - Use markdown and commit with relevant PRs
 - Refer to this folder as the canonical reference for devs and agents

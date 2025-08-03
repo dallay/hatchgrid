@@ -1,4 +1,4 @@
-// filepath: client/apps/web/src/composables/useRouteGuards.ts
+// filepath: client/apps/web/src/composables/useRouteGuards
 import type { Router } from "vue-router";
 import AccountService from "@/services/account.service";
 import { useAuthStore } from "@/stores/auth";
