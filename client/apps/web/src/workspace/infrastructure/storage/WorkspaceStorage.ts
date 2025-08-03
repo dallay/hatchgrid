@@ -125,21 +125,22 @@ export const createWorkspaceStorage = (): WorkspaceStorage => {
 	>(STORAGE_KEY_SELECTED_WORKSPACE, null);
 
 	/**
-	 * Helper method to validate workspace ID and return appropriate error if invalid
+	 * Helper method to validate workspace ID and return result with validated ID or error
 	 * @param workspaceId The workspace ID to validate
-	 * @returns WorkspaceStorageError if invalid, null if valid
+	 * @returns Object with validatedId (if valid) or error (if invalid)
 	 */
-	const validateAndGetError = (
+	const validateAndGetResult = (
 		workspaceId: string,
-	): WorkspaceStorageError | null => {
+	): { validatedId: string } | { error: WorkspaceStorageError } => {
 		const validatedId = validateWorkspaceId(workspaceId);
 		if (!validatedId) {
-			if (!workspaceId || workspaceId.trim() === "") {
-				return new EmptyWorkspaceIdError();
-			}
-			return new InvalidWorkspaceIdError(workspaceId);
+			const error =
+				!workspaceId || workspaceId.trim() === ""
+					? new EmptyWorkspaceIdError()
+					: new InvalidWorkspaceIdError(workspaceId);
+			return { error };
 		}
-		return null;
+		return { validatedId };
 	};
 
 	return {
@@ -161,15 +162,11 @@ export const createWorkspaceStorage = (): WorkspaceStorage => {
 		},
 
 		setSelectedWorkspaceId(workspaceId: string): void {
-			const error = validateAndGetError(workspaceId);
-			if (error) {
-				throw error;
+			const result = validateAndGetResult(workspaceId);
+			if ("error" in result) {
+				throw result.error;
 			}
-			const validatedId = validateWorkspaceId(workspaceId);
-			// At this point, validatedId cannot be null since validateAndGetError would have returned an error
-			if (validatedId) {
-				setSelectedWorkspaceId(validatedId);
-			}
+			setSelectedWorkspaceId(result.validatedId);
 		},
 
 		clearSelectedWorkspaceId(): void {
@@ -182,15 +179,11 @@ export const createWorkspaceStorage = (): WorkspaceStorage => {
 
 		trySetSelectedWorkspaceId(workspaceId: string): StorageResult<void> {
 			try {
-				const error = validateAndGetError(workspaceId);
-				if (error) {
-					return { success: false, error };
+				const result = validateAndGetResult(workspaceId);
+				if ("error" in result) {
+					return { success: false, error: result.error };
 				}
-				const validatedId = validateWorkspaceId(workspaceId);
-				// At this point, validatedId cannot be null since validateAndGetError would have returned an error
-				if (validatedId) {
-					setSelectedWorkspaceId(validatedId);
-				}
+				setSelectedWorkspaceId(result.validatedId);
 				return { success: true, data: undefined };
 			} catch (error) {
 				const storageError =
