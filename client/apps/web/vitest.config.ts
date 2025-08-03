@@ -12,7 +12,7 @@ export default defineConfig({
 			"**/__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
 			"**/*.{spec,test}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
 		],
-		exclude: ["**/node_modules/**", "**/components.d.ts"],
+		exclude: ["**/node_modules/**", "**/components.d.ts", "**/tests/e2e/**"],
 	},
 	resolve: {
 		alias: {

@@ -14,6 +14,7 @@ import "@/style.css";
 import { useRouteGuards } from "@/composables/useRouteGuards";
 import AccountService from "@/services/account.service";
 import { useAuthStore } from "@/stores/auth";
+import { initializeWorkspaceStore } from "@/workspace/providers/workspaceStoreProvider";
 
 const app = createApp(App);
 
@@ -22,6 +23,16 @@ app.use(router);
 app.use(i18n);
 setupAxiosInterceptors(router);
 useRouteGuards(router);
+
+// Initialize workspace store with default configuration
+// This is optional - the store will be created lazily if not called
+try {
+	initializeWorkspaceStore();
+} catch (error) {
+	// Log the error and prevent app startup failure
+	// You may want to show a user-friendly notification here as well
+	console.error("Failed to initialize workspace store:", error);
+}
 
 const authStore = useAuthStore();
 const accountService = new AccountService(authStore, router);
