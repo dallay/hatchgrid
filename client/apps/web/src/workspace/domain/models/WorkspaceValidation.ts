@@ -185,9 +185,8 @@ export function createValidatedWorkspace(data: unknown): Workspace {
 		throw new Error(`Invalid workspace data: ${validation.errors.join(", ")}`);
 	}
 
-	// If validation passes, we can safely parse the data
-	const result = WorkspaceSchema.safeParse(data);
-	return result.success ? (result.data as Workspace) : (data as Workspace);
+	// If validation passes, we can safely parse and transform the data
+	return WorkspaceSchema.parse(data);
 }
 
 /**

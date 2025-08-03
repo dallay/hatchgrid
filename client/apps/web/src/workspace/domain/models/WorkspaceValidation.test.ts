@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import type { Workspace } from "./Workspace.ts";
 import {
 	createValidatedWorkspace,
 	isValidISODate,
@@ -8,6 +7,7 @@ import {
 	isValidWorkspaceName,
 	validateWorkspace,
 } from "@/workspace/domain";
+import type { Workspace } from "./Workspace.ts";
 
 describe("WorkspaceValidation", () => {
 	describe("isValidUUID", () => {
@@ -18,7 +18,7 @@ describe("WorkspaceValidation", () => {
 				"6ba7b810-9dad-11d1-80b4-00c04fd430c8",
 				"f47ac10b-58cc-4372-a567-0e02b2c3d479",
 				"6ba7b811-9dad-11d1-80b4-00c04fd430c8",
-        "00000000-0000-0000-0000-000000000000" // (nil UUID) is valid per RFC 4122
+				"00000000-0000-0000-0000-000000000000", // (nil UUID) is valid per RFC 4122
 			];
 
 			for (const uuid of validUUIDs) {
