@@ -10,7 +10,6 @@
 		"check": "vue-tsc -b",
 		"format": "biome format . --write",
 		"preview": "vite preview",
-		"postinstall": "node -e \"if (!process.env.CI && !process.env.CLOUDFLARE_ENV) require('child_process').spawn('playwright', ['install', '--with-deps'], { stdio: 'inherit' }).on('error', () => console.log('Playwright install skipped'))\"",
 		"pretest": "pnpm --filter @hatchgrid/utilities build",
 		"test": "vitest",
 		"test:ui": "vitest --ui",
