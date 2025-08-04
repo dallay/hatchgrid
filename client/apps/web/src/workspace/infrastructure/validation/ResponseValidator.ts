@@ -5,7 +5,7 @@
 
 import type { CollectionResponse, SingleItemResponse } from "@/shared/response";
 import { InvalidResponseFormatError } from "@/workspace/domain/errors";
-import type { Workspace } from "@/workspace/domain/models/Workspace";
+import type { Workspace } from "../../domain/models";
 
 interface ResponseWithData {
 	data: unknown;

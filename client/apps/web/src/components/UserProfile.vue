@@ -32,7 +32,7 @@ import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 // Removed unused AccountService type import
-import { useAuthStore } from "@/stores/auth";
+import { useAuthStore } from "@/authentication/infrastructure/store";
 
 // Use i18n for reactive translations
 const { t } = useI18n();

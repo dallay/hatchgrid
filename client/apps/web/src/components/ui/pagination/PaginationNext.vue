@@ -5,7 +5,7 @@ import type { PaginationNextProps } from "reka-ui";
 import { PaginationNext, useForwardProps } from "reka-ui";
 import type { HTMLAttributes } from "vue";
 import { type ButtonVariants, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils/utils";
 
 const props = withDefaults(
 	defineProps<

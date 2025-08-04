@@ -18,7 +18,11 @@ export type {
 	Subscriber,
 } from "./Subscriber";
 
-export { SubscriberStatus } from "./Subscriber";
+export {
+	getSubscriberDisplayName,
+	isActiveSubscriber,
+	SubscriberStatus,
+} from "./Subscriber";
 
 export type {
 	CountByStatusResponseSchemaType,

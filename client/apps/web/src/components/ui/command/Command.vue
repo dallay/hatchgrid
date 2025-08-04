@@ -3,7 +3,7 @@ import { reactiveOmit } from "@vueuse/core";
 import type { ListboxRootEmits, ListboxRootProps } from "reka-ui";
 import { ListboxRoot, useFilter, useForwardPropsEmits } from "reka-ui";
 import { type HTMLAttributes, reactive, ref, watch } from "vue";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils/utils";
 import { provideCommandContext } from ".";
 
 const props = withDefaults(

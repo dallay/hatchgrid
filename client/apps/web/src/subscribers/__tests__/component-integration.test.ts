@@ -9,11 +9,15 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Subscriber } from "@/subscribers"; // adjust import as needed
 import { SubscriberStatus } from "@/subscribers";
 import { repositoryMock } from "@/subscribers/__tests__/repository.mock";
-import { resetInitialization } from "@/subscribers/di";
+import { configureStoreFactory, resetInitialization } from "@/subscribers/di";
 import type { SubscriberRepository } from "@/subscribers/domain";
-import { configureContainer, resetContainer } from "../di/container";
-import SubscriberList from "../presentation/components/SubscriberList.vue";
-import SubscriberPage from "../presentation/views/SubscriberPage.vue";
+import {
+	configureContainer,
+	resetContainer,
+} from "../infrastructure/di/container";
+import { useSubscriberStore } from "../infrastructure/store/subscriber.store";
+import SubscriberList from "../infrastructure/views/components/SubscriberList.vue";
+import SubscriberPage from "../infrastructure/views/views/SubscriberPage.vue";
 
 describe("Subscribers Component Integration", () => {
 	let mockRepository: SubscriberRepository;
@@ -24,6 +28,7 @@ describe("Subscribers Component Integration", () => {
 		resetInitialization();
 		mockRepository = repositoryMock();
 		configureContainer({ customRepository: mockRepository });
+		configureStoreFactory(() => useSubscriberStore());
 		vi.clearAllMocks();
 	});
 

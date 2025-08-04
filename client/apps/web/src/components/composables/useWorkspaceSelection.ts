@@ -7,7 +7,7 @@ import { computed, type Ref, readonly, shallowRef, unref, watch } from "vue";
 import type { Workspace } from "@/workspace/domain/models";
 
 interface UseWorkspaceSelectionOptions {
-	workspaces: Ref<Workspace[]>;
+	workspaces: Ref<readonly Workspace[]>;
 	initialWorkspaceId?: Ref<string | undefined>;
 	onWorkspaceChange?: (workspaceId: string) => void;
 }

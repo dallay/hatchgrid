@@ -9,7 +9,7 @@ import {
 } from "reka-ui";
 import { type HTMLAttributes, provide } from "vue";
 import type { toggleVariants } from "@/components/ui/toggle";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils/utils";
 
 type ToggleGroupVariants = VariantProps<typeof toggleVariants>;
 

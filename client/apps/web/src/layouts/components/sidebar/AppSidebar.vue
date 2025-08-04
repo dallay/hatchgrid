@@ -14,7 +14,8 @@
  * @component
  */
 
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
+
 import UserNav from "@/components/UserNav.vue";
 import type { SidebarProps } from "@/components/ui/sidebar";
 import {
@@ -27,7 +28,9 @@ import {
 	SidebarMenuSkeleton,
 } from "@/components/ui/sidebar";
 import WorkspaceSelector from "@/components/WorkspaceSelector.vue";
-import { useWorkspaceStoreProvider } from "@/workspace/providers/workspaceStoreProvider";
+import { useWorkspaceStoreProvider } from "@/workspace/infrastructure/providers/workspaceStoreProvider";
+import type { WorkspaceError } from "@/workspace/infrastructure/store/useWorkspaceStore";
+
 import AppSidebarItem from "./AppSidebarItem.vue";
 import { useNavigationFiltering } from "./composables/useNavigationFiltering";
 import type {
@@ -69,23 +72,44 @@ const sidebarProps = computed(() => {
 // useWorkspaceStoreProvider() returns a hook factory; () invokes the hook to get the store
 const workspaceStore = useWorkspaceStoreProvider()();
 
+// Error state management
+const workspaceError = ref<WorkspaceError | null>(null);
+
 // Load workspaces on component mount
 onMounted(async () => {
 	try {
+		workspaceError.value = null;
 		await workspaceStore.loadAll();
 		// Try to restore persisted workspace selection
 		await workspaceStore.restorePersistedWorkspace();
 	} catch (error) {
+		const errorMessage =
+			error instanceof Error ? error.message : "Failed to load workspaces";
+		workspaceError.value = {
+			message: errorMessage,
+			code: "WORKSPACE_LOAD_ERROR",
+			timestamp: new Date(),
+		};
 		console.error("Failed to load workspaces:", error);
+		// Could emit an event or use a toast notification here
 	}
 });
 
 // Handle workspace selection changes
 const handleWorkspaceChange = async (workspaceId: string) => {
 	try {
+		workspaceError.value = null;
 		await workspaceStore.selectWorkspace(workspaceId);
 	} catch (error) {
+		const errorMessage =
+			error instanceof Error ? error.message : "Failed to select workspace";
+		workspaceError.value = {
+			message: errorMessage,
+			code: "WORKSPACE_SELECT_ERROR",
+			timestamp: new Date(),
+		};
 		console.error("Failed to select workspace:", error);
+		// Could show user-friendly error message
 	}
 };
 </script>
@@ -95,9 +119,10 @@ const handleWorkspaceChange = async (workspaceId: string) => {
     <!-- Workspace Selector Header -->
     <SidebarHeader>
       <WorkspaceSelector
-        :workspaces="[...workspaceStore.workspaces]"
+        :workspaces="workspaceStore.workspaces"
         :initial-workspace-id="workspaceStore.currentWorkspace?.id"
         :loading="workspaceStore.isLoading"
+        :error="workspaceError"
         @workspace-change="handleWorkspaceChange"
       />
     </SidebarHeader>
@@ -113,7 +138,11 @@ const handleWorkspaceChange = async (workspaceId: string) => {
 
           <!-- Error state -->
           <template v-else-if="shouldShowError">
-            <div class="flex items-center gap-2 p-2 text-sm text-muted-foreground">
+            <div
+              class="flex items-center gap-2 p-2 text-sm text-muted-foreground"
+              role="alert"
+              aria-live="polite"
+            >
               <span>Failed to load navigation</span>
             </div>
           </template>

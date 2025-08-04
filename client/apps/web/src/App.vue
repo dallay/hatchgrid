@@ -1,18 +1,22 @@
 <template>
   <AppLayout>
+    <Ribbon />
     <RouterView />
   </AppLayout>
   <Toaster />
 </template>
 
 <script setup>
-import { onMounted } from "vue";
-import { useI18n } from "vue-i18n";
+import { inject, onMounted } from "vue";
 import { RouterView } from "vue-router";
+import Ribbon from "@/components/ribbon/ribbon.vue";
 import Toaster from "./components/ui/sonner/Sonner.vue";
 import AppLayout from "./layouts/AppLayout.vue";
 
-// Initialize CSRF token on app mount
+// Inject authentication service
+const authenticationService = inject("authenticationService");
+
+// Initialize CSRF token and authentication on app mount
 onMounted(async () => {
 	const MAX_RETRIES = 3;
 	const TIMEOUT_MS = 5000;
@@ -50,6 +54,20 @@ onMounted(async () => {
 		// Consider fallback handling in production
 		if (import.meta.env.DEV) {
 			console.error("CSRF token initialization failed after maximum retries.");
+		}
+	}
+
+	// Initialize authentication service after CSRF token is ready
+	if (authenticationService) {
+		try {
+			await authenticationService.update();
+			if (import.meta.env.DEV) {
+				console.log("Authentication service initialized successfully");
+			}
+		} catch (error) {
+			if (import.meta.env.DEV) {
+				console.warn("Failed to initialize authentication service:", error);
+			}
 		}
 	}
 });

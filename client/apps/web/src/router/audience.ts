@@ -1,7 +1,7 @@
-import { Authority } from "@/security/authority";
+import { Authority } from "@/authentication/domain/models";
 
 const Subscribers = () =>
-	import("@/subscribers/presentation/views/SubscriberPage.vue");
+	import("@/subscribers/infrastructure/views/views/SubscriberPage.vue");
 
 export default [
 	{
