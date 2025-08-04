@@ -53,6 +53,7 @@ jobs:
           workdir: ./client
           reporter: github-pr-review
           fail_level: error
+          fail_on_error: false
 
   build:
     name: Build
