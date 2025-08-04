@@ -52,9 +52,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workdir: ./client
           reporter: github-pr-review
-          fail_level: error
-reporter: github-pr-review
-fail_on_error: true
+          fail_on_error: true
 
   build:
     name: Build
