@@ -1,6 +1,5 @@
 import { createPinia } from "pinia";
 import { createApp } from "vue";
-import { setupAxiosInterceptors } from "@/config/axios-interceptor";
 import {
 	DEFAULT_LOCALE,
 	i18n,
@@ -9,16 +8,29 @@ import {
 	setLocale,
 } from "@/i18n";
 import router from "@/router";
+import { setupAxiosInterceptors } from "@/shared/config/axios-interceptor";
 import App from "./App.vue";
 import "@/style.css";
+import {
+	LoginUseCase,
+	LogoutUseCase,
+	RegisterUseCase,
+} from "@/authentication/application";
+import { AccountApi } from "@/authentication/infrastructure/api";
+import { AuthenticationService } from "@/authentication/infrastructure/services";
+import { useAuthStore } from "@/authentication/infrastructure/store";
 import { useRouteGuards } from "@/composables/useRouteGuards";
-import AccountService from "@/services/account.service";
-import { useAuthStore } from "@/stores/auth";
-import { initializeWorkspaceStore } from "@/workspace/providers/workspaceStoreProvider";
+import { configureStoreFactory } from "@/subscribers/infrastructure/di";
+import { useSubscriberStore } from "@/subscribers/infrastructure/store";
+import { initializeWorkspaceStore } from "@/workspace/infrastructure/providers/workspaceStoreProvider";
 
 const app = createApp(App);
 
 app.use(createPinia());
+
+// Configure subscribers store factory for dependency injection
+configureStoreFactory(() => useSubscriberStore());
+
 app.use(router);
 app.use(i18n);
 setupAxiosInterceptors(router);
@@ -34,9 +46,58 @@ try {
 	console.error("Failed to initialize workspace store:", error);
 }
 
-const authStore = useAuthStore();
-const accountService = new AccountService(authStore, router);
-app.provide("accountService", accountService);
+// Dependency container type for better type safety
+interface DependencyContainer {
+	authStore: ReturnType<typeof useAuthStore>;
+	accountApi: AccountApi;
+	authenticationService: AuthenticationService;
+	loginUseCase: LoginUseCase;
+	logoutUseCase: LogoutUseCase;
+	registerUseCase: RegisterUseCase;
+}
+
+// Create dependency injection container
+const createDependencyContainer = (): DependencyContainer => {
+	const authStore = useAuthStore();
+	const accountApi = new AccountApi();
+	const loginUseCase = new LoginUseCase(accountApi);
+	const logoutUseCase = new LogoutUseCase(accountApi);
+	const registerUseCase = new RegisterUseCase(accountApi);
+	const authenticationService = new AuthenticationService(
+		authStore,
+		accountApi,
+		logoutUseCase,
+		router,
+	);
+
+	return {
+		authStore,
+		accountApi,
+		authenticationService,
+		loginUseCase,
+		logoutUseCase,
+		registerUseCase,
+	};
+};
+
+// Create dependencies lazily to improve startup performance
+let dependencyContainer: DependencyContainer | null = null;
+
+const getDependencies = (): DependencyContainer => {
+	if (!dependencyContainer) {
+		dependencyContainer = createDependencyContainer();
+	}
+	return dependencyContainer;
+};
+
+// Provide lazy dependency access
+app.provide("getDependencies", getDependencies);
+
+// For backward compatibility, provide individual dependencies
+const dependencies = getDependencies();
+Object.entries(dependencies).forEach(([key, value]) => {
+	app.provide(key, value);
+});
 
 const userPreferredLocale =
 	localStorage.getItem(LANGUAGE_STORAGE_KEY) ??

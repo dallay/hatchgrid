@@ -10,7 +10,7 @@ import {
 	WorkspaceApiError,
 	WorkspaceNotFoundError,
 } from "@/workspace/domain/errors";
-import type { WorkspaceError } from "@/workspace/store/useWorkspaceStore";
+import type { WorkspaceError } from "@/workspace/infrastructure/store/useWorkspaceStore";
 
 // Centralized error codes for consistency and maintainability
 const ERROR_CODES = {

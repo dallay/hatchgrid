@@ -3,37 +3,36 @@
  * Provides clean interface for using the subscribers feature
  */
 
-// Composable exports
-export { useSubscribers } from "./composables";
-export type { InitializationOptions } from "./di";
-// Dependency injection exports
+export type { FetchSubscribersFilters } from "./application";
+// Application layer exports (use cases and composables)
+export { useSubscribers } from "./application";
+// Domain layer exports
+export type {
+	Attributes,
+	CountByStatusResponse,
+	CountByTagsResponse,
+	Subscriber,
+} from "./domain";
+export { SubscriberStatus } from "./domain";
+
+// Infrastructure layer exports (store, DI, views)
+export type {
+	InitializationOptions,
+	LoadingStates,
+	SubscriberError,
+	SubscriberStore,
+	SubscriberStoreState,
+	SubscriberUseCases,
+} from "./infrastructure";
 export {
 	getInitializedStore,
 	initializeSubscribersModule,
 	initializeWithOptions,
 	isSubscribersModuleInitialized,
 	safeInitializeSubscribersModule,
-} from "./di";
-// Domain model exports
-export type {
-	Attributes,
-	CountByStatusResponse,
-	CountByTagsResponse,
-	Subscriber,
-} from "./domain/models";
-export { SubscriberStatus } from "./domain/models";
-// Use case exports (for advanced usage)
-export type { FetchSubscribersFilters } from "./domain/usecases";
+	useSubscriberStore,
+} from "./infrastructure";
 
-// Presentation component exports
-export { default as SubscriberList } from "./presentation/components/SubscriberList.vue";
-export { default as SubscriberPage } from "./presentation/views/SubscriberPage.vue";
-export type {
-	LoadingStates,
-	SubscriberError,
-	SubscriberStore,
-	SubscriberStoreState,
-	SubscriberUseCases,
-} from "./store/subscriber.store";
-// Store exports
-export { useSubscriberStore } from "./store/subscriber.store";
+// View component exports
+export { default as SubscriberList } from "./infrastructure/views/components/SubscriberList.vue";
+export { default as SubscriberPage } from "./infrastructure/views/views/SubscriberPage.vue";

@@ -1,5 +1,5 @@
 import type { CollectionResponse } from "@/shared/response";
-import { WorkspaceApiError } from "../errors/WorkspaceErrors.ts";
+import { WorkspaceApiError } from "../errors/WorkspaceErrors";
 import type { Workspace } from "../models/Workspace.ts";
 import type { WorkspaceRepository } from "../repositories/WorkspaceRepository.ts";
 

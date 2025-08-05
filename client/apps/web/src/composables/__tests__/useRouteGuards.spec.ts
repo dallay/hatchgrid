@@ -14,17 +14,17 @@ import type {
 } from "vue-router";
 
 // Mock the dependencies at the module level
-vi.mock("@/stores/auth");
-vi.mock("@/services/account.service");
+vi.mock("@/authentication/infrastructure/store");
+vi.mock("@/authentication/infrastructure/services");
 
+import { AuthenticationService } from "@/authentication/infrastructure/services";
+import { useAuthStore } from "@/authentication/infrastructure/store";
 // Import after mocking
 import { useRouteGuards } from "@/composables/useRouteGuards";
-import AccountService from "@/services/account.service";
-import { useAuthStore } from "@/stores/auth";
 
 // Type the mocked modules
 const mockUseAuthStore = vi.mocked(useAuthStore);
-const MockAccountService = vi.mocked(AccountService);
+const MockAuthenticationService = vi.mocked(AuthenticationService);
 
 // Helper function to create mock route objects
 const createMockRoute = (
@@ -45,7 +45,7 @@ const createMockRoute = (
 describe("useRouteGuards", () => {
 	let router: Router;
 	let mockAuthStore: ReturnType<typeof useAuthStore>;
-	let mockAccountService: InstanceType<typeof AccountService>;
+	let mockAuthenticationService: InstanceType<typeof AuthenticationService>;
 	let guardCallback: (
 		to: RouteLocationNormalized,
 		from: RouteLocationNormalized,
@@ -61,15 +61,17 @@ describe("useRouteGuards", () => {
 			authenticated: false,
 		} as ReturnType<typeof useAuthStore>;
 
-		// Create mock account service
-		mockAccountService = {
+		// Create mock authentication service
+		mockAuthenticationService = {
 			update: vi.fn(),
 			hasAnyAuthorityAndCheckAuth: vi.fn(),
-		} as unknown as InstanceType<typeof AccountService>;
+		} as unknown as InstanceType<typeof AuthenticationService>;
 
 		// Setup mocks
 		mockUseAuthStore.mockReturnValue(mockAuthStore);
-		MockAccountService.mockImplementation(() => mockAccountService);
+		MockAuthenticationService.mockImplementation(
+			() => mockAuthenticationService,
+		);
 
 		// Create router mock that captures the guard callback
 		router = {
@@ -96,14 +98,14 @@ describe("useRouteGuards", () => {
 		await guardCallback(to, from, next);
 
 		expect(next).toHaveBeenCalledWith();
-		expect(mockAccountService.update).not.toHaveBeenCalled();
+		expect(mockAuthenticationService.update).not.toHaveBeenCalled();
 	});
 
 	it("should redirect to /login if not authenticated and not on a public page", async () => {
 		const next = vi.fn();
 		mockAuthStore.authenticated = false;
 		(
-			mockAccountService.update as MockedFunction<() => Promise<void>>
+			mockAuthenticationService.update as MockedFunction<() => Promise<void>>
 		).mockRejectedValue(new Error("not authenticated"));
 
 		useRouteGuards(router);
@@ -113,7 +115,7 @@ describe("useRouteGuards", () => {
 
 		await guardCallback(to, from, next);
 
-		expect(mockAccountService.update).toHaveBeenCalled();
+		expect(mockAuthenticationService.update).toHaveBeenCalled();
 		expect(next).toHaveBeenCalledWith({
 			path: "/login",
 			query: { redirect: "/dashboard" },
@@ -124,10 +126,10 @@ describe("useRouteGuards", () => {
 		const next = vi.fn();
 		mockAuthStore.authenticated = true;
 		(
-			mockAccountService.update as MockedFunction<() => Promise<void>>
+			mockAuthenticationService.update as MockedFunction<() => Promise<void>>
 		).mockResolvedValue(undefined);
 		(
-			mockAccountService.hasAnyAuthorityAndCheckAuth as MockedFunction<
+			mockAuthenticationService.hasAnyAuthorityAndCheckAuth as MockedFunction<
 				(authorities: string[]) => Promise<boolean>
 			>
 		).mockResolvedValue(false);
@@ -139,9 +141,9 @@ describe("useRouteGuards", () => {
 
 		await guardCallback(to, from, next);
 
-		expect(mockAccountService.hasAnyAuthorityAndCheckAuth).toHaveBeenCalledWith(
-			["ROLE_ADMIN"],
-		);
+		expect(
+			mockAuthenticationService.hasAnyAuthorityAndCheckAuth,
+		).toHaveBeenCalledWith(["ROLE_ADMIN"]);
 		expect(next).toHaveBeenCalledWith({ path: "/forbidden" });
 	});
 
@@ -149,10 +151,10 @@ describe("useRouteGuards", () => {
 		const next = vi.fn();
 		mockAuthStore.authenticated = true;
 		(
-			mockAccountService.update as MockedFunction<() => Promise<void>>
+			mockAuthenticationService.update as MockedFunction<() => Promise<void>>
 		).mockResolvedValue(undefined);
 		(
-			mockAccountService.hasAnyAuthorityAndCheckAuth as MockedFunction<
+			mockAuthenticationService.hasAnyAuthorityAndCheckAuth as MockedFunction<
 				(authorities: string[]) => Promise<boolean>
 			>
 		).mockResolvedValue(true);
@@ -164,9 +166,9 @@ describe("useRouteGuards", () => {
 
 		await guardCallback(to, from, next);
 
-		expect(mockAccountService.hasAnyAuthorityAndCheckAuth).toHaveBeenCalledWith(
-			["ROLE_ADMIN"],
-		);
+		expect(
+			mockAuthenticationService.hasAnyAuthorityAndCheckAuth,
+		).toHaveBeenCalledWith(["ROLE_ADMIN"]);
 		expect(next).toHaveBeenCalledWith();
 	});
 
@@ -174,10 +176,10 @@ describe("useRouteGuards", () => {
 		const next = vi.fn();
 		mockAuthStore.authenticated = false;
 		(
-			mockAccountService.update as MockedFunction<() => Promise<void>>
+			mockAuthenticationService.update as MockedFunction<() => Promise<void>>
 		).mockResolvedValue(undefined);
 		(
-			mockAccountService.hasAnyAuthorityAndCheckAuth as MockedFunction<
+			mockAuthenticationService.hasAnyAuthorityAndCheckAuth as MockedFunction<
 				(authorities: string[]) => Promise<boolean>
 			>
 		).mockResolvedValue(false);
@@ -189,9 +191,9 @@ describe("useRouteGuards", () => {
 
 		await guardCallback(to, from, next);
 
-		expect(mockAccountService.hasAnyAuthorityAndCheckAuth).toHaveBeenCalledWith(
-			["ROLE_ADMIN"],
-		);
+		expect(
+			mockAuthenticationService.hasAnyAuthorityAndCheckAuth,
+		).toHaveBeenCalledWith(["ROLE_ADMIN"]);
 		expect(next).toHaveBeenCalledWith({
 			path: "/login",
 			query: { redirect: "/admin" },
@@ -232,6 +234,6 @@ describe("useRouteGuards", () => {
 		await guardCallback(to, from, next);
 
 		expect(next).toHaveBeenCalledWith();
-		expect(mockAccountService.update).not.toHaveBeenCalled();
+		expect(mockAuthenticationService.update).not.toHaveBeenCalled();
 	});
 });

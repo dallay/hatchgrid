@@ -1,30 +1,17 @@
 import { createRouter as createVueRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
 
-const ErrorPage = () => import("@/error/error.vue");
-const WorkspaceDashboard = () => import("@/views/WorkspaceDashboard.vue");
+const ErrorPage = () => import("@/error/Error.vue");
 
-import account from "@/router/account";
+import authRoutes from "@/authentication/infrastructure/routing/auth.routes";
+import dashboardRoutes from "@/dashboard/infrastructure/routing/dashboard.routes";
 import audience from "@/router/audience";
-import { Authority } from "@/security/authority";
 import { loadLayoutMiddleware } from "./middleware/loadLayoutMiddleware";
 
 export const createRouter = () =>
 	createVueRouter({
 		history: createWebHistory(),
 		routes: [
-			{
-				path: "/",
-				name: "Home",
-				component: HomeView,
-				meta: { authorities: [Authority.USER], layout: "DashboardLayout" },
-			},
-			{
-				path: "/workspace",
-				name: "WorkspaceDashboard",
-				component: WorkspaceDashboard,
-				meta: { authorities: [Authority.USER], layout: "DashboardLayout" },
-			},
+			...dashboardRoutes,
 			{
 				path: "/forbidden",
 				name: "Forbidden",
@@ -37,7 +24,7 @@ export const createRouter = () =>
 				component: ErrorPage,
 				meta: { error404: true },
 			},
-			...account,
+			...authRoutes,
 			...audience,
 		],
 	});

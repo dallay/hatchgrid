@@ -1,68 +1,36 @@
 /**
- * @fileoverview Workspace Module - Clean Architecture Implementation
- *
- * This module provides comprehensive workspace management functionality following
- * clean architecture principles. It includes domain models, use cases, infrastructure
- * adapters, state management, and presentation components.
- *
- * ## Architecture Layers:
- * - **Domain**: Core business logic, entities, and interfaces
- * - **Infrastructure**: External API integrations and adapters
- * - **Store**: State management with Pinia
- * - **Providers**: Dependency injection and store factories
- * - **Composables**: Reusable composition functions
- *
- * ## Quick Start:
- * ```typescript
- * import { useWorkspaceStoreProvider } from "@/workspace";
- *
- * const workspaceStore = useWorkspaceStoreProvider();
- * await workspaceStore.loadAll();
- * await workspaceStore.selectWorkspace("workspace-id");
- * ```
- *
- * @see {@link docs/src/content/docs/core-concepts/workspace.md} For comprehensive documentation
- * @version 1.0.0
- * @author Hatchgrid Development Team
+ * Workspace module public API
+ * Provides clean interface for using the workspace feature
  */
 
-// Application layer exports (use cases and composables)
+// Application layer exports (composables and services)
 export {
 	useWorkspaceInitialization,
+	WorkspaceApplicationService,
 	type WorkspaceInitializationOptions,
 	type WorkspaceInitializationState,
-} from "./composables/index.ts";
-// Domain layer exports (innermost - core business logic)
-export type { Workspace, WorkspaceRepository } from "./domain/index.ts";
-export { GetWorkspaceById, ListWorkspaces } from "./domain/index.ts";
+} from "./application";
+// Domain layer exports (models, use cases, repositories)
+export type { Workspace, WorkspaceRepository } from "./domain";
+export { GetWorkspaceById, ListWorkspaces } from "./domain";
 
-// Infrastructure layer exports (external adapters and storage)
+// Infrastructure layer exports (store, API, storage, providers)
 export {
 	createWorkspaceStorage,
-	STORAGE_KEY_SELECTED_WORKSPACE,
-	type WorkspaceStorage,
-	workspaceStorage,
-} from "./infrastructure/index.ts";
-
-// Provider layer exports (dependency injection)
-export {
-	createWorkspaceStoreFactory,
-	initializeWorkspaceStore,
-	resetWorkspaceStore,
-	useWorkspaceStoreProvider,
-} from "./providers/index.ts";
-
-// Store layer exports (outermost - state management)
-export type {
-	LoadingStates,
-	WorkspaceError,
-	WorkspaceStore,
-	WorkspaceStoreDependencies,
-	WorkspaceStoreState,
-	WorkspaceUseCases,
-} from "./store/index.ts";
-export {
 	createWorkspaceStore,
+	createWorkspaceStoreFactory,
 	createWorkspaceStoreWithDependencies,
+	initializeWorkspaceStore,
+	type LoadingStates,
+	resetWorkspaceStore,
+	STORAGE_KEY_SELECTED_WORKSPACE,
 	useWorkspaceStore,
-} from "./store/index.ts";
+	useWorkspaceStoreProvider,
+	type WorkspaceError,
+	type WorkspaceStorage,
+	type WorkspaceStore,
+	type WorkspaceStoreDependencies,
+	type WorkspaceStoreState,
+	type WorkspaceUseCases,
+	workspaceStorage,
+} from "./infrastructure";
