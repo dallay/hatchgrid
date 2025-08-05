@@ -1,4 +1,4 @@
-import { LRUCache } from "@/cache/lru.cache";
+import { LRUCache } from "@/shared/cache/lru.cache";
 import type { AppSidebarItem, Result } from "./types";
 
 /**

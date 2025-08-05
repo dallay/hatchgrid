@@ -31,7 +31,9 @@ function getTypeScriptFiles(dir: string): string[] {
 				stat.isFile() &&
 				(item.endsWith(".ts") || item.endsWith(".vue")) &&
 				!item.endsWith(".test.ts") &&
-				!item.endsWith(".spec.ts")
+				!item.endsWith(".spec.ts") &&
+				!item.includes("test-utils.ts") &&
+				!fullPath.includes("__tests__")
 			) {
 				files.push(fullPath);
 			}
@@ -93,6 +95,35 @@ function isRelativeImportToLayer(
 	// Check for relative imports that go to another layer
 	if (importPath.startsWith("../") || importPath.startsWith("./")) {
 		// Normalize the path to check if it goes to the target layer
+		if (targetLayer === "infrastructure") {
+			// For infrastructure, also check for imports to specific infra subdirectories
+			return (
+				importPath.includes(`/${targetLayer}/`) ||
+				importPath.includes(`../${targetLayer}`) ||
+				importPath.includes("../api/") ||
+				importPath.includes("../store/") ||
+				importPath.includes("../views/") ||
+				importPath.includes("../components/")
+			);
+		}
+		if (targetLayer === "application") {
+			// For application, check for composables and application directories
+			return (
+				importPath.includes(`/${targetLayer}/`) ||
+				importPath.includes(`../${targetLayer}`) ||
+				importPath.includes("../composables/") ||
+				importPath.includes("../application/")
+			);
+		}
+		if (targetLayer === "presentation") {
+			// For presentation, check for views and components
+			return (
+				importPath.includes(`/${targetLayer}/`) ||
+				importPath.includes(`../${targetLayer}`) ||
+				importPath.includes("../views/") ||
+				importPath.includes("../components/")
+			);
+		}
 		return (
 			importPath.includes(`/${targetLayer}/`) ||
 			importPath.includes(`../${targetLayer}`)
@@ -109,6 +140,41 @@ function isAbsoluteImportToLayer(
 	targetLayer: string,
 ): boolean {
 	// Check for absolute imports within the subscribers module
+	if (targetLayer === "infrastructure") {
+		// Infrastructure includes api, store, views, and components subdirectories
+		return (
+			importPath.includes(`/subscribers/${targetLayer}/`) ||
+			importPath.includes(`@/subscribers/${targetLayer}/`) ||
+			importPath.includes("/subscribers/api/") ||
+			importPath.includes("@/subscribers/api/") ||
+			importPath.includes("/subscribers/store/") ||
+			importPath.includes("@/subscribers/store/") ||
+			importPath.includes("/subscribers/views/") ||
+			importPath.includes("@/subscribers/views/") ||
+			importPath.includes("/subscribers/components/") ||
+			importPath.includes("@/subscribers/components/")
+		);
+	}
+	if (targetLayer === "application") {
+		// Application includes composables and application directories
+		return (
+			importPath.includes(`/subscribers/${targetLayer}/`) ||
+			importPath.includes(`@/subscribers/${targetLayer}/`) ||
+			importPath.includes("/subscribers/composables/") ||
+			importPath.includes("@/subscribers/composables/")
+		);
+	}
+	if (targetLayer === "presentation") {
+		// Presentation includes views and components
+		return (
+			importPath.includes(`/subscribers/${targetLayer}/`) ||
+			importPath.includes(`@/subscribers/${targetLayer}/`) ||
+			importPath.includes("/subscribers/views/") ||
+			importPath.includes("@/subscribers/views/") ||
+			importPath.includes("/subscribers/components/") ||
+			importPath.includes("@/subscribers/components/")
+		);
+	}
 	return (
 		importPath.includes(`/subscribers/${targetLayer}/`) ||
 		importPath.includes(`@/subscribers/${targetLayer}/`)
@@ -120,11 +186,21 @@ function isAbsoluteImportToLayer(
  */
 function getFileLayer(filePath: string): string | null {
 	if (filePath.includes("/domain/")) return "domain";
-	if (filePath.includes("/infrastructure/")) return "infrastructure";
+	if (filePath.includes("/infrastructure/")) {
+		// Vue files in infrastructure/views are actually presentation layer
+		if (filePath.includes("/views/") && filePath.endsWith(".vue")) {
+			return "presentation";
+		}
+		return "infrastructure";
+	}
 	if (filePath.includes("/presentation/")) return "presentation";
+	if (filePath.includes("/application/")) return "application";
 	if (filePath.includes("/store/")) return "store";
 	if (filePath.includes("/di/")) return "di";
-	if (filePath.includes("/composables/")) return "composables";
+	if (filePath.includes("/composables/")) return "application"; // Composables are application layer
+	if (filePath.includes("/api/")) return "infrastructure"; // API is part of infrastructure
+	if (filePath.includes("/views/")) return "presentation"; // Views are presentation layer
+	if (filePath.includes("/components/")) return "presentation"; // Components are presentation layer
 	return null;
 }
 
@@ -376,8 +452,8 @@ describe("Architecture Isolation", () => {
 		});
 
 		it("should be able to import domain models for typing", () => {
-			const presentationFiles = allFiles.filter((file) =>
-				file.includes("/presentation/"),
+			const presentationFiles = allFiles.filter(
+				(file) => file.includes("/views/") || file.includes("/components/"),
 			);
 			let hasDomainModelImports = false;
 
@@ -387,7 +463,8 @@ describe("Architecture Isolation", () => {
 				for (const importPath of imports) {
 					if (
 						importPath.includes("/domain/models/") ||
-						importPath.includes("../domain/models")
+						importPath.includes("../domain/models") ||
+						importPath.includes("../../../../domain/models")
 					) {
 						hasDomainModelImports = true;
 						break;
@@ -590,13 +667,13 @@ describe("Architecture Isolation", () => {
 
 			const layerDependencies: Record<string, Set<string>> = {
 				domain: new Set(),
+				application: new Set(),
 				infrastructure: new Set(),
 				presentation: new Set(),
 				store: new Set(),
 				di: new Set(),
-			};
-
-			// Analyze dependencies for each layer
+				composables: new Set(),
+			}; // Analyze dependencies for each layer
 			for (const file of allFiles) {
 				const layer = getFileLayer(file);
 				if (!layer || !layerDependencies[layer]) continue;
@@ -619,6 +696,7 @@ describe("Architecture Isolation", () => {
 				}
 			}
 
+			// Check for obvious circular dependencies
 			// Check for obvious circular dependencies
 			// Domain should not depend on anything
 			expect(Array.from(layerDependencies.domain)).toEqual([]);

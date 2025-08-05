@@ -9,7 +9,12 @@ import { SubscriberStatus, useSubscribers } from "@/subscribers";
 import { repositoryMock } from "@/subscribers/__tests__/repository.mock";
 import { resetInitialization } from "@/subscribers/di";
 import type { SubscriberRepository } from "@/subscribers/domain";
-import { configureContainer, resetContainer } from "../di/container";
+import { configureStoreFactory } from "@/subscribers/infrastructure/di/initialization";
+import { useSubscriberStore } from "@/subscribers/infrastructure/store/subscriber.store";
+import {
+	configureContainer,
+	resetContainer,
+} from "../infrastructure/di/container";
 
 describe("Subscribers Module Integration", () => {
 	let mockRepository: SubscriberRepository;
@@ -20,6 +25,10 @@ describe("Subscribers Module Integration", () => {
 		resetInitialization();
 		mockRepository = repositoryMock();
 		configureContainer({ customRepository: mockRepository });
+
+		// Configure store factory to return the real Pinia store
+		configureStoreFactory(() => useSubscriberStore());
+
 		vi.clearAllMocks();
 	});
 

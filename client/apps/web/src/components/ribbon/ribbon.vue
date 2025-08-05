@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { useAuthStore } from "@/stores/auth";
+import { useAuthStore } from "@/authentication/infrastructure/store";
 
 const store = useAuthStore();
 const { t: t$ } = useI18n();

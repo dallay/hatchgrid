@@ -14,7 +14,7 @@ import {
 	ChartLegend,
 	defaultColors,
 } from "@/components/ui/chart";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils/utils";
 import type { BaseChartProps } from ".";
 
 const props = withDefaults(

@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import type { Workspace } from "@/workspace/domain/models";
-import type { WorkspaceError } from "@/workspace/store/useWorkspaceStore";
+import type { WorkspaceError } from "@/workspace/infrastructure/store/useWorkspaceStore";
 import { useWorkspaceDisplay } from "./composables/useWorkspaceDisplay";
 import { useWorkspaceErrorHandling } from "./composables/useWorkspaceErrorHandling";
 import { useWorkspaceSearch } from "./composables/useWorkspaceSearch";
@@ -39,7 +39,7 @@ import WorkspaceSelectorSkeleton from "./WorkspaceSelectorSkeleton.vue";
  */
 interface WorkspaceSelectorProps {
 	/** Array of available workspaces to display */
-	workspaces: Workspace[];
+	workspaces: readonly Workspace[];
 	/** Optional initially selected workspace ID */
 	initialWorkspaceId?: string;
 	/** Loading state indicator */

@@ -7,7 +7,7 @@ import {
 	useForwardProps,
 } from "reka-ui";
 import type { HTMLAttributes } from "vue";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils/utils";
 import { navigationMenuTriggerStyle } from ".";
 
 const props = defineProps<

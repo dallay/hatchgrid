@@ -23,6 +23,7 @@ application:
   name: hatchgrid
   description: Hatchgrid is the future of newsletter creation and social media management. It's an app that uses AI to help you create newsletters and manage social media.
   version: 0.0.1-SNAPSHOT
+  display-ribbon-on-profiles: dev
   security:
     oauth2:
       base-url: ${OAUTH2_SERVER_URL:http://localhost:9080}

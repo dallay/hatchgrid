@@ -2,7 +2,7 @@
 import { createTestingPinia } from "@pinia/testing";
 import { shallowMount, type VueWrapper } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
-import { useAuthStore } from "@/stores/auth";
+import { useAuthStore } from "@/authentication/infrastructure/store";
 import Ribbon from "./ribbon.vue";
 
 vi.mock("vue-i18n", () => ({

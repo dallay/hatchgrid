@@ -5,7 +5,7 @@ import {
 	WorkspaceApiError,
 	WorkspaceNotFoundError,
 } from "@/workspace/domain/errors";
-import type { WorkspaceError } from "@/workspace/store/useWorkspaceStore";
+import type { WorkspaceError } from "@/workspace/infrastructure/store/useWorkspaceStore";
 import { useWorkspaceErrorHandling } from "./useWorkspaceErrorHandling";
 
 // Mock vue-sonner

@@ -7,7 +7,7 @@ import {
 	useForwardPropsEmits,
 } from "reka-ui";
 import type { HTMLAttributes } from "vue";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils/utils";
 
 const props = withDefaults(
 	defineProps<PinInputRootProps & { class?: HTMLAttributes["class"] }>(),

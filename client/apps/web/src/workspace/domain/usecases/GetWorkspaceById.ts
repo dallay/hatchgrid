@@ -2,9 +2,9 @@ import type { SingleItemResponse } from "@/shared/response";
 import {
 	InvalidWorkspaceIdError,
 	WorkspaceApiError,
-} from "../errors/WorkspaceErrors.ts";
+} from "../errors/WorkspaceErrors";
 import type { Workspace } from "../models/Workspace.ts";
-import { isValidUUID } from "../models/WorkspaceValidation.ts";
+import { isValidUUID } from "../models/WorkspaceValidation";
 import type { WorkspaceRepository } from "../repositories/WorkspaceRepository.ts";
 
 /**

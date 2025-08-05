@@ -6,7 +6,7 @@ import {
 	type ProgressRootProps,
 } from "reka-ui";
 import type { HTMLAttributes } from "vue";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils/utils";
 
 const props = withDefaults(
 	defineProps<ProgressRootProps & { class?: HTMLAttributes["class"] }>(),

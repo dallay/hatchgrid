@@ -8,7 +8,7 @@ import { computed, type Ref, ref } from "vue";
 import type { Workspace } from "@/workspace/domain/models";
 
 interface UseWorkspaceSearchOptions {
-	workspaces: Ref<Workspace[]>;
+	workspaces: Ref<readonly Workspace[]>;
 	searchDelay?: number;
 	minSearchLength?: number;
 }
