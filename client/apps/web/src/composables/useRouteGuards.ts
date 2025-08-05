@@ -1,4 +1,3 @@
-// filepath: client/apps/web/src/composables/useRouteGuards
 import type { Router } from "vue-router";
 import { LogoutUseCase } from "@/authentication/application";
 import { AccountApi } from "@/authentication/infrastructure/api";
@@ -6,19 +5,42 @@ import { AuthenticationService } from "@/authentication/infrastructure/services"
 import { useAuthStore } from "@/authentication/infrastructure/store";
 
 /**
- * Sets up maintainable route guards for authentication and authorization.
- * @param router Vue Router instance
- * @param injectedAuthService Optional AuthenticationService instance for testability
+ * Sets up route guards for a Vue Router instance to handle authentication and authorization.
+ *
+ * @param {Router} router - The Vue Router instance to which the guards will be applied.
+ * @param {AuthenticationService} [authService] - Optional custom authentication service.
+ * If not provided, a default instance will be created.
+ *
+ * @remarks
+ * - Redirects unauthenticated users to the login page.
+ * - Checks if the user has the required authorities for protected routes.
+ * - Handles public pages without authentication checks.
+ * - Updates the authentication state before resolving routes.
+ *
+ * @example
+ * ```typescript
+ * import { createRouter, createWebHistory } from "vue-router";
+ * import { useRouteGuards } from "@/composables/useRouteGuards";
+ *
+ * const router = createRouter({
+ *   history: createWebHistory(),
+ *   routes: [
+ *     { path: "/login", component: LoginPage },
+ *     { path: "/dashboard", component: DashboardPage, meta: { authorities: ["ADMIN"] } },
+ *   ],
+ * });
+ *
+ * useRouteGuards(router);
  */
 export function useRouteGuards(
 	router: Router,
-	injectedAuthService?: AuthenticationService,
+	authService?: AuthenticationService,
 ) {
 	const authStore = useAuthStore();
 	const accountApi = new AccountApi();
 	const logoutUseCase = new LogoutUseCase(accountApi);
 	const authenticationService =
-		injectedAuthService ??
+		authService ??
 		new AuthenticationService(authStore, accountApi, logoutUseCase, router);
 	const publicPages = ["/login", "/register"];
 

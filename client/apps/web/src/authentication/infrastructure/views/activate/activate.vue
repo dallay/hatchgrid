@@ -1,3 +1,35 @@
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
+import type { AuthenticationError } from "@/authentication";
+import { activateAccount } from "@/authentication/application";
+
+type ActivationState = "loading" | "success" | "error";
+
+const route = useRoute();
+const activationState = ref<ActivationState>("loading");
+const errorMessage = ref<string>("");
+
+onMounted(async () => {
+	const activationKey = route.query.key as string;
+
+	if (!activationKey) {
+		activationState.value = "error";
+		errorMessage.value = "Activation key is missing from the URL.";
+		return;
+	}
+
+	try {
+		await activateAccount(activationKey);
+		activationState.value = "success";
+	} catch (error) {
+		activationState.value = "error";
+		errorMessage.value =
+			(error as AuthenticationError).message ||
+			"Failed to activate account. Please try again or contact support.";
+	}
+});
+</script>
 <template>
   <div class="w-full h-screen flex items-center justify-center px-4">
     <div class="text-center max-w-md">
@@ -40,40 +72,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
-import { activateAccount } from "../../../application/activate";
-import type { AuthenticationError } from "../../../domain/errors";
-
-type ActivationState = "loading" | "success" | "error";
-
-const route = useRoute();
-const activationState = ref<ActivationState>("loading");
-const errorMessage = ref<string>("");
-
-onMounted(async () => {
-	const activationKey = route.query.key as string;
-
-	if (!activationKey) {
-		activationState.value = "error";
-		errorMessage.value = "Activation key is missing from the URL.";
-		return;
-	}
-
-	try {
-		await activateAccount(activationKey);
-		activationState.value = "success";
-	} catch (error) {
-		activationState.value = "error";
-		errorMessage.value =
-			(error as AuthenticationError).message ||
-			"Failed to activate account. Please try again or contact support.";
-	}
-});
-</script>
-
-<style scoped>
-/* Component-specific styles if needed */
-</style>
