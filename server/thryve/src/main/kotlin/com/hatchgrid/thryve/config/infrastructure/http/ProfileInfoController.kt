@@ -34,7 +34,7 @@ class ProfileInfoController(private val environment: Environment) {
 
         return mapOf(
             "activeProfiles" to activeProfiles,
-            "display-ribbon-on-profiles" to displayRibbonOnProfiles
+            "display-ribbon-on-profiles" to displayRibbonOnProfiles,
         )
     }
 }
