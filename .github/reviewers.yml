@@ -1,0 +1,17 @@
+reviewers:
+  defaults:
+    - team:astrum
+
+  groups:
+    astrum:
+      - team:astrum
+
+files:
+  '**':
+    - team:astrum
+
+options:
+  ignore_draft: true
+  ignored_keywords:
+    - DO NOT REVIEW
+  enable_group_assignment: false
