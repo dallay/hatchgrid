@@ -17,7 +17,7 @@ on:
         required: true
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 permissions:
@@ -152,10 +152,15 @@ jobs:
   backend:
     name: Backend
     uses: ./.github/workflows/backend-ci.yml
+    secrets:
+      NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   frontend:
     name: Frontend
     uses: ./.github/workflows/frontend-ci.yml
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   integration:
     name: Integration
@@ -192,16 +197,6 @@ jobs:
           name: frontend-artifacts
           path: frontend-artifacts
 
-      - name: Run integration tests
-        run: |
-          cd backend
-          ./gradlew integrationTest
-
-      - name: Generate integration report
-        run: |
-          mkdir -p integration-report
-          cp backend/build/reports/tests/integrationTest/* integration-report/ || true
-
       - name: Cache Gradle
         # Pinned to v4 commit hash for security
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
@@ -212,6 +207,16 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/settings.gradle.kts') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+
+      - name: Run integration tests
+        run: |
+          cd backend
+          ./gradlew integrationTest
+
+      - name: Generate integration report
+        run: |
+          mkdir -p integration-report
+          cp backend/build/reports/tests/integrationTest/* integration-report/ || true
 
       - name: Upload integration report
         # Pinned to v4 commit hash for security
