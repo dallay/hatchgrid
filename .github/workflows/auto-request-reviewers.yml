@@ -10,10 +10,12 @@ permissions:
 
 jobs:
   request:
+    name: Auto Request Review
     runs-on: ubuntu-latest
     steps:
-      - uses: necojackarc/auto-request-review@e08cdffa277d50854744de3f76230260e61c67f4
+      - name: Auto-assign reviewers
+        uses: necojackarc/auto-request-review@v0.13.0
         with:
-          skip-draft: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config: .github/reviewers.yml
+          use_local: true
