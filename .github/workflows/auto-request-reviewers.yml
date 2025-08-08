@@ -1,0 +1,17 @@
+name: Auto request CODEOWNERS review
+
+on:
+  pull_request_target:
+    types: [opened, ready_for_review, reopened, synchronize]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  request:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: necojackarc/auto-request-review@e08cdffa277d50854744de3f76230260e61c67f4 #v0.7.0
+        with:
+          skip-draft: true
