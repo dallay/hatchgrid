@@ -1,101 +1,25 @@
-# Pull Request Labeler Configuration
-# Automatically labels PRs based on file paths
-
-# Backend related changes
-backend:
-- changed-files:
-  - any-glob-to-any-file:
-    - 'server/**/*'
-    - 'shared/**/*'
-    - 'build.gradle.kts'
-    - 'settings.gradle.kts'
-    - 'gradle/**/*'
-    - '.github/workflows/backend-ci.yml'
-    - '.github/actions/setup/java/**/*'
-
-# Frontend related changes
-frontend:
-- changed-files:
-  - any-glob-to-any-file:
-    - 'client/**/*'
-    - 'package.json'
-    - 'pnpm-lock.yaml'
-    - 'pnpm-workspace.yaml'
-    - '.github/workflows/frontend-ci.yml'
-    - '.github/actions/setup/node/**/*'
-
-# Infrastructure related changes
-infrastructure:
-- changed-files:
-  - any-glob-to-any-file:
-    - 'infra/**/*'
-    - 'compose.yaml'
-    - '.github/workflows/deploy.yml'
-
-# Documentation changes
-documentation:
-- changed-files:
-  - any-glob-to-any-file:
-    - '**/*.md'
-    - 'docs/**/*'
-
-# CI/CD workflow changes
-ci-cd:
-- changed-files:
-  - any-glob-to-any-file: '.github/workflows/**/*'
-
-# Configuration changes
-configuration:
-- changed-files:
-  - any-glob-to-any-file:
-    - 'config/**/*'
-    - '**/*.yml'
-    - '**/*.yaml'
-    - '**/*.json'
-    - '**/*.toml'
-
-# Database related changes
-database:
-- changed-files:
-  - any-glob-to-any-file:
-    - '**/db/**/*'
-    - '**/*Repository*'
-    - '**/*Entity*'
-
-# Security related changes
-security:
-- changed-files:
-  - any-glob-to-any-file:
-    - '**/security/**/*'
-    - '**/auth/**/*'
-    - '**/keycloak/**/*'
-
-# Dependency updates
-dependencies:
-- changed-files:
-  - any-glob-to-any-file:
-    - 'gradle/libs.versions.toml'
-    - 'package.json'
-    - 'pnpm-lock.yaml'
-- head-branch:
-    - '^deps'
-    - 'renovate'
-    - 'dependabot'
-
-# Feature branches
-feature:
-- head-branch:
-    - '^feature'
-    - 'feature'
-
-# Bugfix branches
-bugfix:
-- head-branch:
-    - '^fix'
-    - 'bugfix'
-    - 'hotfix'
-
-# Release branches
-release:
-- head-branch: 'release'
-- base-branch: 'main'
+area:backend:
+  - "server/**"
+  - "shared/**"
+area:frontend:web:
+  - "client/apps/web/**"
+  - "client/packages/**"
+area:frontend:landing:
+  - "client/apps/landing-page/**"
+area:docs:
+  - "docs/**"
+  - "**/*.md"
+  - "**/*.mdx"
+area:ci:
+  - ".github/**"
+type:docs:
+  - "docs/**"
+  - "**/*.md"
+  - "**/*.mdx"
+type:chore:
+  - "**/*.yml"
+  - "**/*.yaml"
+  - "**/*.json"
+  - ".editorconfig"
+  - ".prettier*"
+  - ".eslintrc*"

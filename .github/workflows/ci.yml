@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    if: ${{ hashFiles('**/build.gradle*') != '' || hashFiles('**/settings.gradle*') != '' || hashFiles('**/pom.xml') != '' }}
+    name: Backend (JVM)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+      - name: Build & Test
+        run: |
+          ./gradlew --version
+          ./gradlew build --no-daemon --stacktrace
+      - name: Publish reports (if any)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-reports
+          path: |
+            **/build/reports/**
+            **/build/test-results/**
+
+  frontend:
+    if: ${{ hashFiles('**/pnpm-lock.yaml') != '' || hashFiles('**/package.json') != '' }}
+    name: Frontend (pnpm + JS/TS)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+      - name: Lint/Typecheck/Unit tests (recursive)
+        run: |
+          pnpm -r run lint --if-present
+          pnpm -r run typecheck --if-present
+          pnpm -r run test --if-present
+      - name: Build (recursive)
+        run: pnpm -r run build --if-present
+      - name: Upload coverage (if any)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-coverage
+          path: |
+            coverage/**
+            **/coverage/**
+
+  markdown:
+    name: Markdown lint (docs)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Markdownlint
+        uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: |
+            **/*.md
+            **/*.mdx
