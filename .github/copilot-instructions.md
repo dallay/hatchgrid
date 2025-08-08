@@ -26,7 +26,7 @@ Goal: generate code, documentation, and tests consistent with Hatchgrid's archit
 - Backend: `./gradlew build`
 - Frontend: `pnpm -r run lint && pnpm -r run test && pnpm -r run build`
 - Tests: required for new logic (JUnit5/Testcontainers, Vitest/Vue Test Utils)
-- Test naming: `should_doSomething_when_condition`
+- Test naming: `should do something when condition`
 - Docs: update `docs/src/content/docs` for API, architecture, or config changes
 - Security: never expose secrets; validate inputs; use typed params; avoid SQL injection; sanitize outputs
 
