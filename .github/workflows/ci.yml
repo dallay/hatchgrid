@@ -19,7 +19,7 @@ jobs:
     name: Backend (JVM)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
       - name: Setup Java 21
         uses: actions/setup-java@v4
         with:
@@ -44,14 +44,14 @@ jobs:
     name: Frontend (pnpm + JS/TS)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4
         with:
           version: 10
       - name: Install deps
@@ -76,7 +76,7 @@ jobs:
     name: Markdown lint (docs)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
       - name: Markdownlint
         uses: DavidAnson/markdownlint-cli2-action@v16
         with:
