@@ -1,25 +1,25 @@
-area:backend:
-  - "server/**"
-  - "shared/**"
-area:frontend:web:
-  - "client/apps/web/**"
-  - "client/packages/**"
-area:frontend:landing:
-  - "client/apps/landing-page/**"
-area:docs:
-  - "docs/**"
-  - "**/*.md"
-  - "**/*.mdx"
-area:ci:
-  - ".github/**"
-type:docs:
-  - "docs/**"
-  - "**/*.md"
-  - "**/*.mdx"
-type:chore:
-  - "**/*.yml"
-  - "**/*.yaml"
-  - "**/*.json"
-  - ".editorconfig"
-  - ".prettier*"
-  - ".eslintrc*"
+'area:backend':
+  - 'server/**'
+  - 'shared/**'
+'area:frontend:web':
+  - 'client/apps/web/**'
+  - 'client/packages/**'
+'area:frontend:landing':
+  - 'client/apps/landing-page/**'
+'area:docs':
+  - 'docs/**'
+  - '**/*.md'
+  - '**/*.mdx'
+'area:ci':
+  - '.github/**'
+'type:docs':
+  - 'docs/**'
+  - '**/*.md'
+  - '**/*.mdx'
+'type:chore':
+  - '**/*.yml'
+  - '**/*.yaml'
+  - '**/*.json'
+  - '.editorconfig'
+  - '.prettier*'
+  - '.eslintrc*'
