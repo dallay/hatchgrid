@@ -103,6 +103,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4
+        if: secrets.CODECOV_TOKEN != ''
         with:
           files: ./coverage/lcov.info # Adjust path if necessary, common for JS projects
           # flags: frontend # Optional

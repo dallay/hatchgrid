@@ -14,4 +14,8 @@ options:
   ignore_draft: true
   ignored_keywords:
     - DO NOT REVIEW
+    - WIP
+    - DRAFT
+    - NO REVIEW
+    - SKIP REVIEW
   enable_group_assignment: false

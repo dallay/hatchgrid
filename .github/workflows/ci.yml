@@ -52,7 +52,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript', 'kotlin' ] # Add other languages as needed
+        language: [ 'javascript', 'java' ] # Add other languages as needed
     steps:
       - name: Checkout repository
         # Pinned to v4 commit hash for security
@@ -162,8 +162,8 @@ jobs:
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-  integration:
-    name: Integration
+  test:
+    name: Test
     needs: [backend, frontend]
     runs-on: ubuntu-latest
 
@@ -208,22 +208,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Run integration tests
+      - name: Run tests
         run: |
           cd backend
-          ./gradlew integrationTest
+          ./gradlew test
 
-      - name: Generate integration report
+      - name: Generate test report
         run: |
-          mkdir -p integration-report
-          cp backend/build/reports/tests/integrationTest/* integration-report/ || true
+          mkdir -p test-report
+          cp backend/build/reports/tests/test/* test-report/ || true
 
-      - name: Upload integration report
+      - name: Upload test report
         # Pinned to v4 commit hash for security
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: integration-report
-          path: integration-report/
+          name: test-report
+          path: test-report/
           retention-days: 7
 
   markdown:
