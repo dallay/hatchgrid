@@ -18,6 +18,7 @@ internal class AccountResourceCookieAuthIntegrationTest : ControllerIntegrationT
         super.setUp()
         startInfrastructure()
         accessToken = getAccessToken(email, password)
+            ?: error("Failed to obtain access token for test user $email. Check Keycloak/Testcontainers setup.")
     }
 
     @Test
