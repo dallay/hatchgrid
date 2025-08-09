@@ -7,17 +7,24 @@ on:
 permissions:
   pull-requests: write
   contents: read
-
+env:
+  CI_GITHUB_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
 jobs:
   request:
     name: Auto Request Review
     runs-on: ubuntu-latest
     steps:
+      - name: "🔍 CI_GITHUB_TOKEN"
+        if: env.CI_GITHUB_TOKEN == ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "CI_GITHUB_TOKEN=${GITHUB_TOKEN}" >> $GITHUB_ENV
       - name: Auto-assign reviewers
-        uses: necojackarc/auto-request-review@e89da1a8cd7c8c16d9de9c6e763290b6b0e3d424 #v0.13.0
+        uses: necojackarc/auto-request-review@e89da1a8cd7c8c16d9de9c6e763290b6b0e3d424
         with:
           config: .github/reviewers.yml
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ env.CI_GITHUB_TOKEN }}
+          use_local: true
       - name: Harden Runner
         uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 #v2
         with:
