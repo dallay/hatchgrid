@@ -6,6 +6,8 @@ import com.hatchgrid.common.domain.vo.credential.Credential
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import java.util.*
+import kotlin.test.assertEquals
 import kotlinx.coroutines.runBlocking
 import net.datafaker.Faker
 import org.junit.jupiter.api.Test
@@ -26,6 +28,7 @@ class RegisterUserCommandHandlerTest {
         val password = Credential.generateRandomCredentialPassword()
         val firstname = faker.name().firstName()
         val lastname = faker.name().lastName()
+        val expectedUserId = UUID.randomUUID()
 
         val command = RegisterUserCommand(
             email = email,
@@ -34,19 +37,22 @@ class RegisterUserCommandHandlerTest {
             lastname = lastname,
         )
 
-        // We can stub the call to ensure it doesn't throw
-        coEvery { userRegistrator.registerNewUser(any(), any(), any(), any()) } returns Unit
+        // Mock the registrator to return a UUID
+        coEvery { userRegistrator.registerNewUser(any(), any(), any(), any()) } returns expectedUserId
 
         // When
-        handler.handle(command)
+        val actualUserId = handler.handle(command)
 
-        // Then - verify that the registrator is invoked with correctly mapped VOs
+        // Then - verify the returned UUID
+        assertEquals(expectedUserId, actualUserId)
+
+        // Verify that the registrator is invoked with correctly mapped VOs
         coVerify(exactly = 1) {
             userRegistrator.registerNewUser(
-                email = match { it.email == email },
+                email = match { it.value == email },
                 credential = match { it.credentialValue == password },
-                firstName = match { it.firstname == firstname },
-                lastName = match { it.lastname == lastname },
+                firstName = match { it?.value == firstname },
+                lastName = match { it?.value == lastname },
             )
         }
     }

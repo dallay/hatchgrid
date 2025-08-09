@@ -1,6 +1,7 @@
 package com.hatchgrid.thryve.users.application.register
 
-import com.hatchgrid.common.domain.bus.command.Command
+import com.hatchgrid.common.domain.bus.command.CommandWithResult
+import java.util.*
 
 /**
  * Represents a command to register a new user.
@@ -16,7 +17,7 @@ data class RegisterUserCommand(
     val password: String,
     val firstname: String,
     val lastname: String
-) : Command {
+) : CommandWithResult<UUID> {
     override fun toString(): String =
         "RegisterUserCommand(email='$email', password='***REDACTED***', firstname='$firstname', lastname='$lastname')"
 }

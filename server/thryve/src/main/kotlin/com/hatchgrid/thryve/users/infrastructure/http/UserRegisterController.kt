@@ -29,7 +29,7 @@ import org.springframework.web.bind.support.WebExchangeBindException
 @RestController
 @RequestMapping(value = [API], produces = ["application/vnd.api.v1+json"])
 class UserRegisterController(
-    private val mediator: Mediator,
+    mediator: Mediator,
 ) : ApiController(mediator) {
 
     @Operation(summary = "Register endpoint")
@@ -46,9 +46,9 @@ class UserRegisterController(
             StringEscapeUtils.escapeJava(registerUserRequest.email),
         )
         return try {
-            dispatch(registerUserRequest.toRegisterUserCommand())
+            val userId = dispatch(registerUserRequest.toRegisterUserCommand())
             ResponseEntity.created(
-                URI.create("/users/${registerUserRequest.email}"),
+                URI.create("/users/$userId"),
             ).build()
         } catch (error: WebExchangeBindException) {
             log.debug("Validation error during user registration: {}", error.message)

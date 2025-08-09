@@ -10,6 +10,7 @@ import com.hatchgrid.thryve.users.infrastructure.http.request.RegisterUserReques
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import java.util.UUID
 import kotlinx.coroutines.runBlocking
 import net.datafaker.Faker
 import org.junit.jupiter.api.DisplayName
@@ -42,8 +43,9 @@ class UserRegisterControllerTest {
         fun `should register user successfully and return 201 with location header`(): Unit =
             runBlocking {
                 // Given
+                val expectedUserId = UUID.randomUUID()
                 val request = RegisterUserRequest(email, password, firstname, lastname)
-                coEvery { mediator.send(any<RegisterUserCommand>()) } returns Unit
+                coEvery { mediator.send(any<RegisterUserCommand>()) } returns expectedUserId
 
                 // When & Then
                 webTestClient.post().uri(ENDPOINT)
@@ -51,7 +53,7 @@ class UserRegisterControllerTest {
                     .bodyValue(request)
                     .exchange()
                     .expectStatus().isCreated
-                    .expectHeader().location("/users/$email")
+                    .expectHeader().location("/users/$expectedUserId")
                     .expectBody().isEmpty
 
                 // Verify the command was sent with correct parameters
@@ -364,9 +366,10 @@ class UserRegisterControllerTest {
             val longPassword = "ComplexPassword123!" + "x".repeat(50) // Long but valid password
             val longFirstname = "A".repeat(50)
             val longLastname = "B".repeat(50)
+            val expectedUserId = UUID.randomUUID()
             val request = RegisterUserRequest(longEmail, longPassword, longFirstname, longLastname)
 
-            coEvery { mediator.send(any<RegisterUserCommand>()) } returns Unit
+            coEvery { mediator.send(any<RegisterUserCommand>()) } returns expectedUserId
 
             // When & Then
             webTestClient.post().uri(ENDPOINT)
@@ -374,7 +377,7 @@ class UserRegisterControllerTest {
                 .bodyValue(request)
                 .exchange()
                 .expectStatus().isCreated
-                .expectHeader().location("/users/$longEmail")
+                .expectHeader().location("/users/$expectedUserId")
 
             coVerify(exactly = 1) { mediator.send(any<RegisterUserCommand>()) }
         }
@@ -385,9 +388,10 @@ class UserRegisterControllerTest {
             // Given
             val specialFirstname = "José-María"
             val specialLastname = "O'Connor-Smith"
+            val expectedUserId = UUID.randomUUID()
             val request = RegisterUserRequest(email, password, specialFirstname, specialLastname)
 
-            coEvery { mediator.send(any<RegisterUserCommand>()) } returns Unit
+            coEvery { mediator.send(any<RegisterUserCommand>()) } returns expectedUserId
 
             // When & Then
             webTestClient.post().uri(ENDPOINT)

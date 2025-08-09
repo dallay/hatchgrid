@@ -1,11 +1,12 @@
 package com.hatchgrid.thryve.users.application.register
 
 import com.hatchgrid.common.domain.Service
-import com.hatchgrid.common.domain.bus.command.CommandHandler
+import com.hatchgrid.common.domain.bus.command.CommandWithResultHandler
 import com.hatchgrid.common.domain.vo.credential.Credential
 import com.hatchgrid.common.domain.vo.email.Email
 import com.hatchgrid.common.domain.vo.name.FirstName
 import com.hatchgrid.common.domain.vo.name.LastName
+import java.util.*
 import org.slf4j.LoggerFactory
 
 /**
@@ -21,7 +22,7 @@ import org.slf4j.LoggerFactory
 @Service
 class RegisterUserCommandHandler(
     private val userRegistrator: UserRegistrator
-) : CommandHandler<RegisterUserCommand> {
+) : CommandWithResultHandler<RegisterUserCommand, UUID> {
 
     /**
      * Handles the registration of a new user.
@@ -32,11 +33,12 @@ class RegisterUserCommandHandler(
      *
      * @param command The command containing user registration details such as email,
      * password, first name, and last name.
+     * @return The UUID of the created user.
      */
-    override suspend fun handle(command: RegisterUserCommand) {
+    override suspend fun handle(command: RegisterUserCommand): UUID {
         log.debug("Handling registration for user with email: {}", command.email)
 
-        userRegistrator.registerNewUser(
+        return userRegistrator.registerNewUser(
             email = Email(command.email),
             credential = Credential.create(command.password),
             firstName = command.firstname.takeIf { it.isNotBlank() }?.let { FirstName(it) },

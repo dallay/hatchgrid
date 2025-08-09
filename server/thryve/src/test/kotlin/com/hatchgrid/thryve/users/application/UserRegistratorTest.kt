@@ -43,10 +43,14 @@ class UserRegistratorTest {
 
         @Test
         fun `should register new user successfully and publish events`(): Unit = runBlocking {
-            userRegistrator.registerNewUser(
+            val userId = userRegistrator.registerNewUser(
                 Email(email), Credential.create(password), FirstName(firstname),
                 LastName(lastname),
             )
+
+            // Verify UUID is returned
+            assertTrue(userId.toString().isNotBlank(), "Expected valid UUID to be returned")
+
             val publishedEvents = eventPublisher.getEvents()
             assertFalse(publishedEvents.isEmpty(), "Expected at least one event to be published")
             assertTrue(
@@ -61,10 +65,13 @@ class UserRegistratorTest {
         fun `should throw UserStoreException when trying to register user with existing email`(): Unit =
             runBlocking {
                 // Register first user
-                userRegistrator.registerNewUser(
+                val firstUserId = userRegistrator.registerNewUser(
                     Email(email), Credential.create(password), FirstName(firstname),
                     LastName(lastname),
                 )
+
+                // Verify first registration returned UUID
+                assertTrue(firstUserId.toString().isNotBlank(), "Expected valid UUID for first user")
 
                 // When & Then - Attempting to register second user with same email should throw exception
                 val exception = assertThrows<UserStoreException> {
@@ -100,24 +107,29 @@ class UserRegistratorTest {
         @Test
         fun `should register multiple users with different emails successfully`(): Unit =
             runBlocking {
-                userRegistrator.registerNewUser(
+                val userId1 = userRegistrator.registerNewUser(
                     Email(faker.internet().emailAddress()),
                     Credential.create(Credential.generateRandomCredentialPassword()),
                     FirstName("John"),
                     LastName("Doe"),
                 )
-                userRegistrator.registerNewUser(
+                val userId2 = userRegistrator.registerNewUser(
                     Email(faker.internet().emailAddress()),
                     Credential.create(Credential.generateRandomCredentialPassword()),
                     FirstName("Jane"),
                     LastName("Smith"),
                 )
-                userRegistrator.registerNewUser(
+                val userId3 = userRegistrator.registerNewUser(
                     Email(faker.internet().emailAddress()),
                     Credential.create(Credential.generateRandomCredentialPassword()),
                     FirstName("Bob"),
                     LastName("Johnson"),
                 )
+
+                // Verify all registrations returned UUIDs
+                assertTrue(userId1.toString().isNotBlank(), "Expected valid UUID for user 1")
+                assertTrue(userId2.toString().isNotBlank(), "Expected valid UUID for user 2")
+                assertTrue(userId3.toString().isNotBlank(), "Expected valid UUID for user 3")
 
                 // Then - All users should be registered and events published
                 val publishedEvents = eventPublisher.getEvents()
@@ -148,6 +160,8 @@ class UserRegistratorTest {
                 // Given
                 val mockCreatedUser: User = mockk()
                 val userCreatedEvent: UserCreatedEvent = mockk()
+                val expectedUserId = UUID.randomUUID()
+                val mockUserId: com.hatchgrid.thryve.users.domain.UserId = mockk()
 
                 // Create objects once and reuse them to ensure the same instances are used
                 val emailObj = Email(testUser.email.value)
@@ -164,16 +178,20 @@ class UserRegistratorTest {
                     )
                 } returns mockCreatedUser
                 every { mockCreatedUser.pullDomainEvents() } returns listOf(userCreatedEvent)
+                every { mockCreatedUser.id } returns mockUserId
+                every { mockUserId.value } returns expectedUserId
 
                 // When
-                userRegistrator.registerNewUser(
+                val actualUserId = userRegistrator.registerNewUser(
                     email = emailObj,
                     credential = credentialObj,
                     firstName = firstNameObj,
                     lastName = lastNameObj,
                 )
 
-                // Then
+                // Then - verify returned UUID
+                assertEquals(expectedUserId, actualUserId, "Expected returned UUID to match mock")
+
                 coVerify(exactly = 1) {
                     userCreator.create(
                         email = emailObj,
@@ -183,6 +201,7 @@ class UserRegistratorTest {
                     )
                 }
                 verify(exactly = 1) { mockCreatedUser.pullDomainEvents() }
+                verify(exactly = 1) { mockCreatedUser.id }
 
                 val publishedEvents = eventPublisher.getEvents()
                 assertEquals(1, publishedEvents.size, "Expected exactly 1 event to be published")
@@ -355,6 +374,8 @@ class UserRegistratorTest {
             val userCreatorMock: UserCreator = mockk()
             val mockUser: User = mockk()
             val registrator = UserRegistrator(userCreatorMock, eventPublisher)
+            val expectedUserId = UUID.randomUUID()
+            val mockUserId: com.hatchgrid.thryve.users.domain.UserId = mockk()
 
             val testUser =
                 User.create(UUID.randomUUID().toString(), email, firstname, lastname, password)
@@ -373,16 +394,20 @@ class UserRegistratorTest {
                 )
             } returns mockUser
             every { mockUser.pullDomainEvents() } returns emptyList()
+            every { mockUser.id } returns mockUserId
+            every { mockUserId.value } returns expectedUserId
 
             // When
-            registrator.registerNewUser(
+            val actualUserId = registrator.registerNewUser(
                 email = emailObj,
                 credential = credential,
                 firstName = firstNameObj,
                 lastName = lastNameObj,
             )
 
-            // Then - Should succeed without throwing exception
+            // Then - verify returned UUID
+            assertEquals(expectedUserId, actualUserId, "Expected returned UUID to match mock")
+
             val publishedEvents = eventPublisher.getEvents()
             assertTrue(
                 publishedEvents.isEmpty(),
@@ -397,6 +422,7 @@ class UserRegistratorTest {
                 )
             }
             verify(exactly = 1) { mockUser.pullDomainEvents() }
+            verify(exactly = 1) { mockUser.id }
         }
     }
 }

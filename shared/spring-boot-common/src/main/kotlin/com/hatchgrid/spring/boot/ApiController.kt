@@ -3,6 +3,7 @@ package com.hatchgrid.spring.boot
 import com.hatchgrid.common.domain.bus.Mediator
 import com.hatchgrid.common.domain.bus.command.Command
 import com.hatchgrid.common.domain.bus.command.CommandHandlerExecutionError
+import com.hatchgrid.common.domain.bus.command.CommandWithResult
 import com.hatchgrid.common.domain.bus.query.Query
 import com.hatchgrid.common.domain.bus.query.QueryHandlerExecutionError
 import com.hatchgrid.common.domain.bus.query.Response
@@ -33,6 +34,17 @@ abstract class ApiController(
      */
     @Throws(CommandHandlerExecutionError::class)
     protected suspend fun dispatch(command: Command) = mediator.send(command)
+
+    /**
+     * Dispatches a command with result using the mediator.
+     *
+     * @param TResult The type of the result returned by the command.
+     * @param command The command to be dispatched.
+     * @return The result from the command handler.
+     * @throws CommandHandlerExecutionError if an error occurs while handling the command.
+     */
+    @Throws(CommandHandlerExecutionError::class)
+    protected suspend fun <TResult> dispatch(command: CommandWithResult<TResult>): TResult = mediator.send(command)
 
     /**
      * Sends a query using the mediator and returns the response.

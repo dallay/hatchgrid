@@ -9,6 +9,7 @@ import com.hatchgrid.common.domain.vo.name.FirstName
 import com.hatchgrid.common.domain.vo.name.LastName
 import com.hatchgrid.thryve.users.domain.UserCreator
 import com.hatchgrid.thryve.users.domain.event.UserCreatedEvent
+import java.util.*
 import org.slf4j.LoggerFactory
 
 /**
@@ -35,10 +36,16 @@ class UserRegistrator(
      * @param credential The credential (password) for the new user.
      * @param firstName The first name of the new user (nullable).
      * @param lastName The last name of the new user (nullable).
+     * @return The UUID of the created user.
      *
      * Fails if user creation violates business rules or an unexpected error occurs.
      */
-    suspend fun registerNewUser(email: Email, credential: Credential, firstName: FirstName?, lastName: LastName?) {
+    suspend fun registerNewUser(
+        email: Email,
+        credential: Credential,
+        firstName: FirstName?,
+        lastName: LastName?
+    ): UUID {
         log.debug("Registering new user with email: {}", email.value)
 
         val createdUser = userCreator.create(
@@ -53,6 +60,8 @@ class UserRegistrator(
         domainEvents.filterIsInstance<UserCreatedEvent>().forEach {
             eventBroadcaster.publish(it)
         }
+
+        return createdUser.id.value
     }
 
     companion object {
