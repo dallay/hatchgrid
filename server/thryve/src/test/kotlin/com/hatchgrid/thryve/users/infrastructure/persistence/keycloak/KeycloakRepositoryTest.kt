@@ -86,6 +86,8 @@ class KeycloakRepositoryTest {
         val response = mockk<Response>()
         val location = URI.create("/auth/admin/realms/$REALM/users/$userId")
         every { response.location } returns location
+        every { response.status } returns 201
+        every { response.close() } just Runs
         every { keycloakUserResource.create(any()) } returns response
 
         // When
@@ -117,6 +119,8 @@ class KeycloakRepositoryTest {
         val response = mockk<Response>()
         val location = URI.create("/auth/admin/realms/$REALM/users/$userId")
         every { response.location } returns location
+        every { response.status } returns 201
+        every { response.close() } just Runs
         every { keycloakUserResource.create(any()) } returns response
 
         // When

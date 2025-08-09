@@ -56,59 +56,24 @@ class KeycloakRepository(
 
         return withContext(ioDispatcher) {
             try {
-                val password = credential.value
-                val credentialRepresentation = CredentialRepresentation().apply {
-                    type = CredentialRepresentation.PASSWORD
-                    value = password
-                }
-
                 if (checkIfUserAlreadyExists(email)) {
                     val errorMessage =
                         "User with email: ${email.value} or username: ${email.value} already exists."
                     throw UserStoreException(errorMessage.trimIndent())
-                } else {
-                    log.debug(
-                        "Trying to create user with email: {} and username: {}",
-                        email.value.replace("\n", "").replace("\r", ""),
-                        email.value.replace("\n", "").replace("\r", ""),
-                    )
-                    val userRepresentation =
-                        getUserRepresentation(email, firstName, lastName, credentialRepresentation)
-                    userRepresentation.username = email.value
-                    val response = keycloakRealm.users().create(userRepresentation)
-                    val userId = response.location.path.replace(".*/([^/]+)$".toRegex(), "$1")
-
-                    // Persist our local representation in users table
-                    runCatching {
-                        val id = java.util.UUID.fromString(userId)
-                        val fullName = listOfNotNull(firstName?.value, lastName?.value)
-                            .joinToString(" ").trim()
-                        userStoreR2dbcRepository.create(id, email.value, fullName)
-                    }.onFailure {
-                        log.error("Failed to persist local user row for {}", email.value, it)
-                    }
-
-                    User.create(
-                        id = userId,
-                        email = email.value,
-                        firstName = firstName?.value ?: "",
-                        lastName = lastName?.value ?: "",
-                        password = password,
-                    )
                 }
-            } catch (exception: BusinessRuleValidationException) {
-                log.error(
-                    "Error creating user with email: {} and username: {}",
-                    email.value.replace("\n", "").replace("\r", ""),
-                    email.value.replace("\n", "").replace("\r", ""),
-                    exception,
+
+                val userId = createKeycloakUser(email, credential, firstName, lastName)
+                persistLocalUser(userId, email, firstName, lastName)
+
+                User.create(
+                    id = userId,
+                    email = email.value,
+                    firstName = firstName?.value ?: "",
+                    lastName = lastName?.value ?: "",
+                    password = credential.value,
                 )
-                when (exception) {
-                    is UserStoreException -> throw exception
-                    is CredentialException -> throw UserStoreException(message, exception)
-                    is UserException -> throw UserStoreException(message, exception)
-                    else -> throw UserStoreException(message, exception)
-                }
+            } catch (exception: BusinessRuleValidationException) {
+                handleBusinessRuleException(exception, email, message)
             } catch (exception: ClientErrorException) {
                 log.error(
                     "Error creating user with email: {}",
@@ -118,6 +83,88 @@ class KeycloakRepository(
                 throw UserStoreException(message, exception)
             }
         }
+    }
+
+    private suspend fun createKeycloakUser(
+        email: Email,
+        credential: Credential,
+        firstName: FirstName?,
+        lastName: LastName?
+    ): String {
+        val credentialRepresentation = CredentialRepresentation().apply {
+            type = CredentialRepresentation.PASSWORD
+            value = credential.value
+        }
+
+        log.debug(
+            "Trying to create user with email: {} and username: {}",
+            email.value.replace("\n", "").replace("\r", ""),
+            email.value.replace("\n", "").replace("\r", ""),
+        )
+
+        val userRepresentation = getUserRepresentation(email, firstName, lastName, credentialRepresentation)
+
+        return keycloakRealm.users().create(userRepresentation).use { response ->
+            when (response.status) {
+                HTTP_CREATED -> {
+                    val location = response.location
+                        ?: throw UserStoreException(
+                            "User creation succeeded but no location header returned",
+                        )
+                    location.path.replace(".*/([^/]+)$".toRegex(), "$1")
+                }
+                HTTP_CONFLICT -> {
+                    log.warn("User creation conflict for email: {}", email.value)
+                    throw UserStoreException("User with email: ${email.value} already exists")
+                }
+                else -> {
+                    log.error(
+                        "Unexpected response status {} when creating user with email: {}",
+                        response.status,
+                        email.value,
+                    )
+                    throw UserStoreException(
+                        "Failed to create user with email: ${email.value}, status: ${response.status}",
+                    )
+                }
+            }
+        }
+    }
+
+    private suspend fun persistLocalUser(
+        userId: String,
+        email: Email,
+        firstName: FirstName?,
+        lastName: LastName?
+    ) {
+        runCatching {
+            val id = java.util.UUID.fromString(userId)
+            val fullName = listOfNotNull(firstName?.value, lastName?.value)
+                .joinToString(" ").trim()
+            userStoreR2dbcRepository.create(id, email.value, fullName)
+        }.onFailure {
+            log.error("Failed to persist local user row for {}", email.value, it)
+        }
+    }
+
+    private fun handleBusinessRuleException(
+        exception: BusinessRuleValidationException,
+        email: Email,
+        message: String
+    ): Nothing {
+        log.error(
+            "Error creating user with email: {} and username: {}",
+            email.value.replace("\n", "").replace("\r", ""),
+            email.value.replace("\n", "").replace("\r", ""),
+            exception,
+        )
+        val wrappedException = when (exception) {
+            is UserStoreException -> exception
+            is CredentialException -> UserStoreException(message, exception)
+            is UserException -> UserStoreException(message, exception)
+            else -> UserStoreException(message, exception)
+        }
+        throw wrappedException
     }
 
     private suspend fun checkIfUserAlreadyExists(email: Email): Boolean {
@@ -169,6 +216,8 @@ class KeycloakRepository(
 
     companion object {
         private const val USER_GROUP_NAME = "Users"
+        private const val HTTP_CREATED = 201
+        private const val HTTP_CONFLICT = 409
         private val log = LoggerFactory.getLogger(KeycloakRepository::class.java)
     }
 }
