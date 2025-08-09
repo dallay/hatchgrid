@@ -39,8 +39,8 @@ class RegisterUserCommandHandler(
         userRegistrator.registerNewUser(
             email = Email(command.email),
             credential = Credential.create(command.password),
-            firstName = FirstName(command.firstname),
-            lastName = LastName(command.lastname),
+            firstName = command.firstname.takeIf { it.isNotBlank() }?.let { FirstName(it) },
+            lastName = command.lastname.takeIf { it.isNotBlank() }?.let { LastName(it) },
         )
     }
 
