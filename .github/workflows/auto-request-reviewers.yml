@@ -1,0 +1,27 @@
+name: Auto request CODEOWNERS review
+
+on:
+  pull_request_target:
+    types: [opened, ready_for_review, reopened, synchronize]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  request:
+    name: Auto Request Review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-assign reviewers
+        uses: necojackarc/auto-request-review@e89da1a8cd7c8c16d9de9c6e763290b6b0e3d424 #v0.13.0
+        with:
+          config: .github/reviewers.yml
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Harden Runner
+        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 #v2
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443

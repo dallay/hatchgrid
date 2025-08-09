@@ -15,9 +15,10 @@ description: Overview of the project structure and organization.
 ```plaintext
 ├───.github/
 │   ├───ISSUE_TEMPLATE/
-│   │   ├───backend_task.md
-│   │   ├───frontend_view.md
-│   │   └───full_feature_request.md
+│   │   ├───bug_report.yml
+│   │   ├───config.yml
+│   │   ├───documentation_request.yml
+│   │   └───feature_request.yml
 │   ├───actions/
 │   │   ├───docker/
 │   │   │   ├───backend/
@@ -38,13 +39,18 @@ description: Overview of the project structure and organization.
 │   │       └───node/
 │   │           └───action.yml
 │   ├───workflows/
+│   │   ├───auto-request-reviewers.yml
 │   │   ├───backend-ci.yml
+│   │   ├───ci.yml
 │   │   ├───cleanup-cache.yml
+│   │   ├───codeql.yml
 │   │   ├───deploy.yml
 │   │   ├───frontend-ci.yml
 │   │   ├───issue-labeler.yml
-│   │   ├───monorepo-ci.yml
+│   │   ├───labeler.yml
+│   │   ├───require-linked-issue.yml
 │   │   ├───semantic-pull-request.yml
+│   │   ├───stale.yml
 │   │   └───test-pnpm.yml
 │   ├───CODEOWNERS
 │   ├───FUNDING.yml
@@ -53,7 +59,8 @@ description: Overview of the project structure and organization.
 │   ├───copilot-instructions.md
 │   ├───dependabot.yml
 │   ├───issue-labeler-config.yml
-│   └───labeler.yml
+│   ├───labeler.yml
+│   └───reviewers.yml
 ├───.kiro/
 │   ├───hooks/
 │   │   ├───code-quality-analyzer.kiro.hook
@@ -1580,11 +1587,11 @@ description: Overview of the project structure and organization.
 │   │   │   │   ├───en_1c15fa5.pf_fragment
 │   │   │   │   ├───en_1d5f54d.pf_fragment
 │   │   │   │   ├───en_20147ea.pf_fragment
-│   │   │   │   ├───en_2071711.pf_fragment
 │   │   │   │   ├───en_21855d4.pf_fragment
 │   │   │   │   ├───en_2206737.pf_fragment
 │   │   │   │   ├───en_2a76e5a.pf_fragment
 │   │   │   │   ├───en_2b7fa1a.pf_fragment
+│   │   │   │   ├───en_2c14c53.pf_fragment
 │   │   │   │   ├───en_3567191.pf_fragment
 │   │   │   │   ├───en_366cc8c.pf_fragment
 │   │   │   │   ├───en_377d81b.pf_fragment
@@ -1642,18 +1649,18 @@ description: Overview of the project structure and organization.
 │   │   │   │   ├───en_faa6dce.pf_fragment
 │   │   │   │   └───en_fbfde01.pf_fragment
 │   │   │   ├───index/
-│   │   │   │   ├───en_23e1352.pf_index
-│   │   │   │   ├───en_31fe7d4.pf_index
-│   │   │   │   ├───en_8f55fdc.pf_index
-│   │   │   │   ├───en_9cc0b7b.pf_index
-│   │   │   │   └───en_cf51fc4.pf_index
+│   │   │   │   ├───en_171420e.pf_index
+│   │   │   │   ├───en_8866452.pf_index
+│   │   │   │   ├───en_c658bb9.pf_index
+│   │   │   │   ├───en_d666ed1.pf_index
+│   │   │   │   └───en_e3b4a4e.pf_index
 │   │   │   ├───pagefind-entry.json
 │   │   │   ├───pagefind-highlight.js
 │   │   │   ├───pagefind-modular-ui.css
 │   │   │   ├───pagefind-modular-ui.js
 │   │   │   ├───pagefind-ui.css
 │   │   │   ├───pagefind-ui.js
-│   │   │   ├───pagefind.en_541285df3c.pf_meta
+│   │   │   ├───pagefind.en_2011fca552.pf_meta
 │   │   │   ├───pagefind.js
 │   │   │   ├───wasm.en.pagefind
 │   │   │   └───wasm.unknown.pagefind
@@ -1685,14 +1692,7 @@ description: Overview of the project structure and organization.
 │   │   │   │   └───pet.DiJN-eMV_A0IIg.svg
 │   │   │   └───data-store.json
 │   │   ├───.bin/
-│   │   │   ├───astro
-│   │   │   ├───jiti
-│   │   │   ├───rollup
-│   │   │   ├───terser
-│   │   │   ├───tsc
-│   │   │   ├───tsserver
-│   │   │   ├───vite
-│   │   │   └───yaml
+│   │   │   └───astro
 │   │   ├───.vite/
 │   │   │   └───deps/
 │   │   │       ├───_metadata.json
@@ -1850,6 +1850,8 @@ description: Overview of the project structure and organization.
 │   │   └───@astrojs/
 │   ├───public/
 │   │   └───favicon.svg
+│   ├───snippets/
+│   │   └───readme-badges.md
 │   ├───src/
 │   │   ├───assets/
 │   │   │   ├───logo.svg
@@ -2417,8 +2419,11 @@ description: Overview of the project structure and organization.
 ├───.gitleaks.toml
 ├───.gitmessage
 ├───.nvmrc
+├───CODE_OF_CONDUCT.md
+├───CONTRIBUTING.md
 ├───LICENSE
 ├───README.md
+├───SECURITY.md
 ├───biome.json
 ├───commitlint.config.mjs
 ├───compose.yaml

@@ -1,6 +1,10 @@
 name: Frontend CI
 
 on:
+  workflow_call:
+    secrets:
+      CODECOV_TOKEN:
+        required: false
   push:
     branches: [ main ]
     paths:
@@ -83,7 +87,8 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
@@ -98,6 +103,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4
+        if: secrets.CODECOV_TOKEN != ''
         with:
           files: ./coverage/lcov.info # Adjust path if necessary, common for JS projects
           # flags: frontend # Optional

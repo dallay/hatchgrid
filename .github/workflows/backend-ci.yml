@@ -1,7 +1,11 @@
 name: Backend CI
-env:
-  NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 on:
+  workflow_call:
+    secrets:
+      NVD_API_KEY:
+        required: false
+      CODECOV_TOKEN:
+        required: false
   push:
     branches: [ main ]
     paths:
@@ -65,7 +69,8 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
-
+    env:
+      NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
@@ -88,6 +93,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4
+        if: secrets.CODECOV_TOKEN != ''
         with:
           files: ./server/thryve/build/reports/kover/report.xml # Updated path for Kover
           # flags: backend # Optional: add flags to distinguish reports
