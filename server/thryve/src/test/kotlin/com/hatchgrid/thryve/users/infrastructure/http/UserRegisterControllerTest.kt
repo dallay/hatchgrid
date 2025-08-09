@@ -11,7 +11,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import java.util.UUID
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -41,7 +41,7 @@ class UserRegisterControllerTest {
         @Test
         @DisplayName("Should register user successfully and return 201 with location header")
         fun `should register user successfully and return 201 with location header`(): Unit =
-            runBlocking {
+            runTest {
                 // Given
                 val expectedUserId = UUID.randomUUID()
                 val request = RegisterUserRequest(email, password, firstname, lastname)
@@ -76,7 +76,7 @@ class UserRegisterControllerTest {
         @Test
         @DisplayName("Should handle password complexity validation error and return 400")
         fun `should handle password complexity validation error and return 400`(): Unit =
-            runBlocking {
+            runTest {
                 // Given
                 val request = RegisterUserRequest(email, "weakpassword", firstname, lastname)
                 coEvery {
@@ -96,7 +96,7 @@ class UserRegisterControllerTest {
 
         @Test
         @DisplayName("Should handle business rule validation error and return 400")
-        fun `should handle business rule validation error and return 400`(): Unit = runBlocking {
+        fun `should handle business rule validation error and return 400`(): Unit = runTest {
             // Given
             val request = RegisterUserRequest(email, password, firstname, lastname)
             val businessException =
@@ -116,7 +116,7 @@ class UserRegisterControllerTest {
 
         @Test
         @DisplayName("Should handle data integrity violation and return 400")
-        fun `should handle data integrity violation and return 400`(): Unit = runBlocking {
+        fun `should handle data integrity violation and return 400`(): Unit = runTest {
             // Given
             val request = RegisterUserRequest(email, password, firstname, lastname)
             coEvery { mediator.send(any<RegisterUserCommand>()) } throws DataIntegrityViolationException(
@@ -136,7 +136,7 @@ class UserRegisterControllerTest {
 
         @Test
         @DisplayName("Should return 400 for invalid email format")
-        fun `should return 400 for invalid email format`(): Unit = runBlocking {
+        fun `should return 400 for invalid email format`(): Unit = runTest {
             // Given
             val request = RegisterUserRequest(
                 email = "invalid-email",
@@ -158,7 +158,7 @@ class UserRegisterControllerTest {
 
         @Test
         @DisplayName("Should return 400 for password too short")
-        fun `should return 400 for password too short`(): Unit = runBlocking {
+        fun `should return 400 for password too short`(): Unit = runTest {
             // Given
             val request = RegisterUserRequest(
                 email = email,
@@ -179,7 +179,7 @@ class UserRegisterControllerTest {
 
         @Test
         @DisplayName("Should return 400 for blank firstname")
-        fun `should return 400 for blank firstname`(): Unit = runBlocking {
+        fun `should return 400 for blank firstname`(): Unit = runTest {
             // Given
             val request = RegisterUserRequest(
                 email = email,
@@ -200,7 +200,7 @@ class UserRegisterControllerTest {
 
         @Test
         @DisplayName("Should return 400 for blank lastname")
-        fun `should return 400 for blank lastname`(): Unit = runBlocking {
+        fun `should return 400 for blank lastname`(): Unit = runTest {
             // Given
             val request = RegisterUserRequest(
                 email = email,
@@ -226,7 +226,7 @@ class UserRegisterControllerTest {
         @Test
         @DisplayName("Should handle domain validation error from command and return 400")
         fun `should handle domain validation error from command and return 400`(): Unit =
-            runBlocking {
+            runTest {
                 // Given
                 val request = RegisterUserRequest(email, password, firstname, lastname)
                 val errorMessage = "User already exists"
@@ -248,7 +248,7 @@ class UserRegisterControllerTest {
         @Test
         @DisplayName("Should handle duplicate email validation error from command and return 400")
         fun `should handle duplicate email validation error from command and return 400`(): Unit =
-            runBlocking {
+            runTest {
                 // Given
                 val request = RegisterUserRequest(email, password, firstname, lastname)
                 val errorMessage = "Email is invalid or duplicate"
@@ -270,7 +270,7 @@ class UserRegisterControllerTest {
         @Test
         @DisplayName("Should handle constraint violation error from command and return 400")
         fun `should handle constraint violation error from command and return 400`(): Unit =
-            runBlocking {
+            runTest {
                 // Given
                 val request = RegisterUserRequest(email, password, firstname, lastname)
                 val errorMessage = "Constraint validation failed"
@@ -292,7 +292,7 @@ class UserRegisterControllerTest {
         @Test
         @DisplayName("Should handle password validation wrapped in CommandHandlerExecutionError")
         fun `should handle password validation wrapped in CommandHandlerExecutionError`(): Unit =
-            runBlocking {
+            runTest {
                 // Given
                 val request = RegisterUserRequest(email, password, firstname, lastname)
                 val credentialException =
@@ -317,7 +317,7 @@ class UserRegisterControllerTest {
 
         @Test
         @DisplayName("Should handle server error from command and return 500")
-        fun `should handle server error from command and return 500`(): Unit = runBlocking {
+        fun `should handle server error from command and return 500`(): Unit = runTest {
             // Given
             val request = RegisterUserRequest(email, password, firstname, lastname)
             val errorMessage = "Database connection failed"
@@ -338,7 +338,7 @@ class UserRegisterControllerTest {
 
         @Test
         @DisplayName("Should handle unexpected error and return 500")
-        fun `should handle unexpected error and return 500`(): Unit = runBlocking {
+        fun `should handle unexpected error and return 500`(): Unit = runTest {
             // Given
             val request = RegisterUserRequest(email, password, firstname, lastname)
             coEvery { mediator.send(any<RegisterUserCommand>()) } throws RuntimeException("Unexpected error")
@@ -360,7 +360,7 @@ class UserRegisterControllerTest {
     inner class EdgeCaseTests {
         @Test
         @DisplayName("Should handle maximum length valid inputs")
-        fun `should handle maximum length valid inputs`(): Unit = runBlocking {
+        fun `should handle maximum length valid inputs`(): Unit = runTest {
             // Given
             val longEmail = "very.long.email.address@very-long-domain-name.com"
             val longPassword = "ComplexPassword123!" + "x".repeat(50) // Long but valid password
@@ -384,7 +384,7 @@ class UserRegisterControllerTest {
 
         @Test
         @DisplayName("Should handle special characters in names")
-        fun `should handle special characters in names`(): Unit = runBlocking {
+        fun `should handle special characters in names`(): Unit = runTest {
             // Given
             val specialFirstname = "José-María"
             val specialLastname = "O'Connor-Smith"
