@@ -44,6 +44,7 @@
 		"build:landing": "pnpm --filter @hatchgrid/landing-page build",
 		"preview:landing": "pnpm --filter @hatchgrid/landing-page preview",
 		"build:web": "pnpm --filter @hatchgrid/web build",
+		"build:docs": "pnpm --filter @hatchgrid/docs build",
 		"test": "pnpm --recursive run test",
 		"test:ui": "pnpm --recursive run test:ui",
 		"test:coverage": "pnpm --recursive run test:coverage",
