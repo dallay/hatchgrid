@@ -31,7 +31,11 @@ class SendEmailVerification(private val keycloakRepository: KeycloakRepository) 
      */
     override suspend fun consume(event: UserCreatedEvent) {
         log.debug("Sending email verification to user with id: {}", event.id)
-        keycloakRepository.verify(event.id)
+        runCatching {
+            keycloakRepository.verify(event.id)
+        }.onFailure { ex ->
+            log.warn("Failed to verify email for user id {}: {}", event.id, ex.message)
+        }
     }
     companion object {
         private val log = LoggerFactory.getLogger(SendEmailVerification::class.java)
