@@ -7,7 +7,7 @@ import com.hatchgrid.common.domain.vo.name.LastName
 import com.hatchgrid.thryve.users.domain.User
 import com.hatchgrid.thryve.users.domain.UserCreator
 import com.hatchgrid.thryve.users.domain.UserStoreException
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 class InMemoryUserRepository(
@@ -17,7 +17,10 @@ class InMemoryUserRepository(
     /**
      * Create a new user.
      *
-     * @param user The user object to be created.
+     * @param email The user's email.
+     * @param credential The user's credential.
+     * @param firstName Optional first name.
+     * @param lastName Optional last name.
      * @return The created User object.
      * @throws UserStoreException if a user with the same email or username already exists.
      */
@@ -42,12 +45,5 @@ class InMemoryUserRepository(
         return user
     }
 
-    private fun checkIfUserExist(email: Email): Boolean {
-        return getUserByEmail(email.value) != null ||
-            getUserByUsername(email.value) != null
-    }
-
-    private fun getUserByEmail(email: String): User? = users.values.firstOrNull { it.email.value == email }
-
-    private fun getUserByUsername(username: String): User? = users.values.firstOrNull { it.username.value == username }
+    private fun checkIfUserExist(email: Email): Boolean = users.containsKey(email.value)
 }
