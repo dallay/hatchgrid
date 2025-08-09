@@ -135,6 +135,12 @@ class CreateDefaultWorkspaceOnUserCreation(
 
     companion object {
         private val log = LoggerFactory.getLogger(CreateDefaultWorkspaceOnUserCreation::class.java)
-        private const val NO_WORKSPACE_MESSAGE = "User account will remain valid but without a workspace."
+        @SuppressWarnings("MultilineRawStringIndentation")
+        private val NO_WORKSPACE_MESSAGE = """
+           User account will remain valid but without a workspace.
+           The user will need to manually create a workspace via the application interface or API before accessing workspace-related features.
+           Administrators may assist by creating a workspace for the user if needed.
+           Refer to the documentation or contact support for further guidance.
+        """.trimIndent()
     }
 }
