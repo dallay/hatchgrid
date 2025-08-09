@@ -9,12 +9,17 @@ import com.hatchgrid.thryve.workspace.WorkspaceStub
 import com.hatchgrid.thryve.workspace.application.create.CreateWorkspaceCommand
 import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
 import io.kotest.common.runBlocking
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.clearAllMocks
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.just
+import io.mockk.mockk
+import java.util.*
 import net.datafaker.Faker
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.*
 
 @UnitTest
 class CreateDefaultWorkspaceOnUserCreationTest {
@@ -36,11 +41,10 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         val firstname = faker.name().firstName()
         val lastname = faker.name().lastName()
         val userCreatedEvent = UserCreatedEvent(
-            userId = userId,
+            id = userId,
             email = faker.internet().emailAddress(),
-            username = faker.internet().username(),
             firstname = firstname,
-            lastname = lastname
+            lastname = lastname,
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
@@ -51,12 +55,14 @@ class CreateDefaultWorkspaceOnUserCreationTest {
 
         // Then
         coVerify(exactly = 1) { workspaceFinderRepository.findByOwnerId(UserId(userId)) }
-        coVerify(exactly = 1) { 
-            mediator.send(match<CreateWorkspaceCommand> { command ->
-                command.ownerId == userId &&
-                command.name == "$firstname $lastname's Workspace" &&
-                command.description == "Default workspace created automatically upon user registration"
-            })
+        coVerify(exactly = 1) {
+            mediator.send(
+                match<CreateWorkspaceCommand> { command ->
+                    command.ownerId == userId &&
+                        command.name == "$firstname $lastname's Workspace" &&
+                        command.description == "Default workspace created automatically upon user registration"
+                },
+            )
         }
     }
 
@@ -66,11 +72,10 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         val userId = UUID.randomUUID().toString()
         val firstname = faker.name().firstName()
         val userCreatedEvent = UserCreatedEvent(
-            userId = userId,
+            id = userId,
             email = faker.internet().emailAddress(),
-            username = faker.internet().username(),
             firstname = firstname,
-            lastname = null
+            lastname = null,
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
@@ -80,10 +85,12 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         consumer.consume(userCreatedEvent)
 
         // Then
-        coVerify(exactly = 1) { 
-            mediator.send(match<CreateWorkspaceCommand> { command ->
-                command.name == "$firstname's Workspace"
-            })
+        coVerify(exactly = 1) {
+            mediator.send(
+                match<CreateWorkspaceCommand> { command ->
+                    command.name == "$firstname's Workspace"
+                },
+            )
         }
     }
 
@@ -93,11 +100,10 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         val userId = UUID.randomUUID().toString()
         val lastname = faker.name().lastName()
         val userCreatedEvent = UserCreatedEvent(
-            userId = userId,
+            id = userId,
             email = faker.internet().emailAddress(),
-            username = faker.internet().username(),
             firstname = null,
-            lastname = lastname
+            lastname = lastname,
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
@@ -107,10 +113,12 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         consumer.consume(userCreatedEvent)
 
         // Then
-        coVerify(exactly = 1) { 
-            mediator.send(match<CreateWorkspaceCommand> { command ->
-                command.name == "$lastname's Workspace"
-            })
+        coVerify(exactly = 1) {
+            mediator.send(
+                match<CreateWorkspaceCommand> { command ->
+                    command.name == "$lastname's Workspace"
+                },
+            )
         }
     }
 
@@ -119,11 +127,10 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         // Given
         val userId = UUID.randomUUID().toString()
         val userCreatedEvent = UserCreatedEvent(
-            userId = userId,
+            id = userId,
             email = faker.internet().emailAddress(),
-            username = faker.internet().username(),
             firstname = null,
-            lastname = null
+            lastname = null,
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
@@ -133,10 +140,12 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         consumer.consume(userCreatedEvent)
 
         // Then
-        coVerify(exactly = 1) { 
-            mediator.send(match<CreateWorkspaceCommand> { command ->
-                command.name == "My Workspace"
-            })
+        coVerify(exactly = 1) {
+            mediator.send(
+                match<CreateWorkspaceCommand> { command ->
+                    command.name == "My Workspace"
+                },
+            )
         }
     }
 
@@ -145,11 +154,10 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         // Given
         val userId = UUID.randomUUID().toString()
         val userCreatedEvent = UserCreatedEvent(
-            userId = userId,
+            id = userId,
             email = faker.internet().emailAddress(),
-            username = faker.internet().username(),
             firstname = faker.name().firstName(),
-            lastname = faker.name().lastName()
+            lastname = faker.name().lastName(),
         )
 
         val existingWorkspaces = WorkspaceStub.dummyRandomWorkspaces(2, UUID.fromString(userId))
@@ -168,11 +176,10 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         // Given
         val userId = UUID.randomUUID().toString()
         val userCreatedEvent = UserCreatedEvent(
-            userId = userId,
+            id = userId,
             email = faker.internet().emailAddress(),
-            username = faker.internet().username(),
             firstname = faker.name().firstName(),
-            lastname = faker.name().lastName()
+            lastname = faker.name().lastName(),
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
@@ -194,11 +201,10 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         // Given
         val userId = UUID.randomUUID().toString()
         val userCreatedEvent = UserCreatedEvent(
-            userId = userId,
+            id = userId,
             email = faker.internet().emailAddress(),
-            username = faker.internet().username(),
             firstname = faker.name().firstName(),
-            lastname = faker.name().lastName()
+            lastname = faker.name().lastName(),
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
@@ -220,11 +226,10 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         // Given
         val userId = UUID.randomUUID().toString()
         val userCreatedEvent = UserCreatedEvent(
-            userId = userId,
+            id = userId,
             email = faker.internet().emailAddress(),
-            username = faker.internet().username(),
             firstname = faker.name().firstName(),
-            lastname = faker.name().lastName()
+            lastname = faker.name().lastName(),
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } throws RuntimeException("Repository error")
@@ -247,11 +252,10 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         val firstname = "  John  "
         val lastname = "  Doe  "
         val userCreatedEvent = UserCreatedEvent(
-            userId = userId,
+            id = userId,
             email = faker.internet().emailAddress(),
-            username = faker.internet().username(),
             firstname = firstname,
-            lastname = lastname
+            lastname = lastname,
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
@@ -261,10 +265,12 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         consumer.consume(userCreatedEvent)
 
         // Then
-        coVerify(exactly = 1) { 
-            mediator.send(match<CreateWorkspaceCommand> { command ->
-                command.name == "John Doe's Workspace"
-            })
+        coVerify(exactly = 1) {
+            mediator.send(
+                match<CreateWorkspaceCommand> { command ->
+                    command.name == "John Doe's Workspace"
+                },
+            )
         }
     }
 }

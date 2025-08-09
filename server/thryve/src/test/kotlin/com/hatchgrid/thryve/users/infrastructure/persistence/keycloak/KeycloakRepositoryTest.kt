@@ -2,15 +2,20 @@ package com.hatchgrid.thryve.users.infrastructure.persistence.keycloak
 
 import com.hatchgrid.UnitTest
 import com.hatchgrid.common.domain.vo.credential.Credential
+import com.hatchgrid.common.domain.vo.email.Email
+import com.hatchgrid.common.domain.vo.name.FirstName
+import com.hatchgrid.common.domain.vo.name.LastName
 import com.hatchgrid.thryve.authentication.infrastructure.ApplicationSecurityProperties
-import com.hatchgrid.thryve.users.domain.User
 import com.hatchgrid.thryve.users.domain.UserStoreException
+import com.hatchgrid.thryve.users.infrastructure.persistence.UserStoreR2dbcRepository
 import io.kotest.matchers.shouldBe
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldContain
+import io.mockk.*
+import jakarta.ws.rs.ClientErrorException
+import jakarta.ws.rs.WebApplicationException
 import jakarta.ws.rs.core.Response
+import java.net.URI
 import kotlinx.coroutines.runBlocking
 import net.datafaker.Faker
 import org.junit.jupiter.api.BeforeEach
@@ -18,8 +23,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.admin.client.resource.RealmResource
+import org.keycloak.admin.client.resource.UserResource
 import org.keycloak.admin.client.resource.UsersResource
-import org.keycloak.representations.idm.CredentialRepresentation
 import org.keycloak.representations.idm.UserRepresentation
 
 private const val REALM = "realm"
@@ -34,7 +39,9 @@ class KeycloakRepositoryTest {
     private lateinit var keycloak: Keycloak
     private lateinit var keycloakRealm: RealmResource
     private lateinit var keycloakUserResource: UsersResource
+    private lateinit var userResource: UserResource
     private lateinit var keycloakRepository: KeycloakRepository
+    private lateinit var userStoreR2dbcRepository: UserStoreR2dbcRepository
 
     @BeforeEach
     fun setUp() {
@@ -47,137 +54,187 @@ class KeycloakRepositoryTest {
         keycloak = mockk()
         keycloakRealm = mockk()
         keycloakUserResource = mockk()
-        coEvery { keycloak.realm(any()) } returns keycloakRealm
-        coEvery { keycloakRealm.users() } returns keycloakUserResource
+        userResource = mockk()
 
-        keycloakRepository = KeycloakRepository(applicationSecurityProperties, keycloak)
-    }
+        every { keycloak.realm(any()) } returns keycloakRealm
+        every { keycloakRealm.users() } returns keycloakUserResource
 
-    @Test
-    fun `should create user and return user with ID`() = runBlocking {
-        // Arrange
-        val user = createUser()
-        val userRepresentation = createUserRepresentation(user)
-        val response = createResponse(userRepresentation)
+        userStoreR2dbcRepository = mockk()
+        coEvery { userStoreR2dbcRepository.create(any(), any(), any()) } returns Unit
 
-        coEvery { keycloakUserResource.searchByEmail(any(), any()) } returns listOf()
-        coEvery { keycloakUserResource.searchByUsername(any(), any()) } returns listOf()
-        coEvery { keycloakUserResource.create(any()) } returns response
-
-        // Act
-        val createdUser = keycloakRepository.create(user)
-
-        // Assert
-        createdUser.id.value shouldBe user.id.value
-
-        // Verify that the expected methods were called
-        coVerify { keycloakUserResource.searchByEmail(any(), eq(true)) }
-        coVerify { keycloakUserResource.searchByUsername(any(), eq(true)) }
-        coVerify { keycloakUserResource.create(any()) }
-    }
-
-    @Test
-    fun `should not create user if email already exists`() = runBlocking {
-        // Arrange
-        val user = createUser()
-        val userRepresentation = createUserRepresentation(user)
-
-        coEvery { keycloakUserResource.searchByEmail(any(), any()) } returns listOf(userRepresentation)
-        coEvery { keycloakUserResource.searchByUsername(any(), any()) } returns listOf()
-        coEvery { keycloakUserResource.create(any()) } returns createResponse(userRepresentation)
-
-        // Act & Assert
-        val exception = assertThrows<UserStoreException> {
-            keycloakRepository.create(user)
-        }
-        exception.message shouldBe
-            "User with email: ${user.email.value} or username: ${user.username.value} already exists."
-
-        // Verify that the expected methods were called
-        coVerify { keycloakUserResource.searchByEmail(any(), eq(true)) }
-        coVerify(exactly = 0) { keycloakUserResource.create(any()) }
-    }
-
-    @Test
-    fun `should not create user if username already exists`() = runBlocking {
-        // Arrange
-        val user = createUser()
-        val userRepresentation = createUserRepresentation(user)
-
-        coEvery { keycloakUserResource.searchByEmail(any(), any()) } returns listOf()
-        coEvery { keycloakUserResource.searchByUsername(any(), any()) } returns listOf(
-            userRepresentation,
+        keycloakRepository = KeycloakRepository(
+            applicationSecurityProperties,
+            keycloak,
+            userStoreR2dbcRepository,
         )
-        coEvery { keycloakUserResource.create(any()) } returns createResponse(userRepresentation)
-
-        // Act & Assert
-        val exception = assertThrows<UserStoreException> {
-            keycloakRepository.create(user)
-        }
-        exception.message shouldBe
-            "User with email: ${user.email.value} or username: ${user.username.value} already exists."
-
-        // Verify that the expected methods were called
-        coVerify { keycloakUserResource.searchByEmail(any(), eq(true)) }
-        coVerify { keycloakUserResource.searchByUsername(any(), eq(true)) }
-        coVerify(exactly = 0) { keycloakUserResource.create(any()) }
     }
 
     @Test
-    fun `should not create user if keycloak returns error`() = runBlocking {
-        // Arrange
-        val user = createUser()
+    fun `should create user successfully when user does not exist`() = runBlocking {
+        // Given
+        val email = Email(faker.internet().emailAddress())
+        val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
+        val firstName = FirstName(faker.name().firstName())
+        val lastName = LastName(faker.name().lastName())
+        val userId = faker.internet().uuid()
 
-        coEvery { keycloakUserResource.searchByEmail(any(), any()) } returns listOf()
-        coEvery { keycloakUserResource.searchByUsername(any(), any()) } returns listOf()
-        coEvery {
-            keycloakUserResource.create(any())
-        } throws UserStoreException("Error creating user with email: ${user.email.value}")
+        // Mock user doesn't exist
+        every { keycloakUserResource.searchByEmail(email.value, true) } returns emptyList()
+        every { keycloakUserResource.searchByUsername(email.value, true) } returns emptyList()
 
-        // Act & Assert
+        // Mock successful creation
+        val response = mockk<Response>()
+        val location = URI.create("/auth/admin/realms/$REALM/users/$userId")
+        every { response.location } returns location
+        every { keycloakUserResource.create(any()) } returns response
+
+        // When
+        val result = keycloakRepository.create(email, credential, firstName, lastName)
+
+        // Then
+        result shouldNotBe null
+        result.email.value shouldBe email.value
+        result.name?.firstName?.value shouldBe firstName.value
+        result.name?.lastName?.value shouldBe lastName.value
+
+        verify { keycloakUserResource.create(any()) }
+        verify { keycloakUserResource.searchByEmail(email.value, true) }
+        verify { keycloakUserResource.searchByUsername(email.value, true) }
+    }
+
+    @Test
+    fun `should create user successfully with null first and last name`() = runBlocking {
+        // Given
+        val email = Email(faker.internet().emailAddress())
+        val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
+        val userId = faker.internet().uuid()
+
+        // Mock user doesn't exist
+        every { keycloakUserResource.searchByEmail(email.value, true) } returns emptyList()
+        every { keycloakUserResource.searchByUsername(email.value, true) } returns emptyList()
+
+        // Mock successful creation
+        val response = mockk<Response>()
+        val location = URI.create("/auth/admin/realms/$REALM/users/$userId")
+        every { response.location } returns location
+        every { keycloakUserResource.create(any()) } returns response
+
+        // When
+        val result = keycloakRepository.create(email, credential, null, null)
+
+        // Then
+        result shouldNotBe null
+        result.email.value shouldBe email.value
+        result.name?.firstName?.value shouldBe null
+        result.name?.lastName?.value shouldBe null
+
+        verify { keycloakUserResource.create(any()) }
+    }
+
+    @Test
+    fun `should throw UserStoreException when user already exists by email`() = runBlocking {
+        // Given
+        val email = Email(faker.internet().emailAddress())
+        val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
+        val firstName = FirstName(faker.name().firstName())
+        val lastName = LastName(faker.name().lastName())
+
+        val existingUser = UserRepresentation().apply {
+            this.email = email.value
+            username = email.value
+        }
+
+        // Mock user exists by email
+        every { keycloakUserResource.searchByEmail(email.value, true) } returns listOf(existingUser)
+        every { keycloakUserResource.searchByUsername(email.value, true) } returns emptyList()
+
+        // When & Then
         val exception = assertThrows<UserStoreException> {
-            keycloakRepository.create(user)
+            keycloakRepository.create(email, credential, firstName, lastName)
         }
-        exception.message shouldBe "Error creating user with email: ${user.email.value}"
 
-        // Verify that the expected methods were called
-        coVerify { keycloakUserResource.searchByEmail(any(), eq(true)) }
-        coVerify { keycloakUserResource.searchByUsername(any(), eq(true)) }
-        coVerify { keycloakUserResource.create(any()) }
+        exception.message shouldContain "already exists"
+        verify(exactly = 0) { keycloakUserResource.create(any()) }
     }
 
-    private fun createUser(
-        email: String = faker.internet().emailAddress(),
-        firstName: String = faker.name().firstName(),
-        lastName: String = faker.name().lastName(),
-        password: String = faker.internet().password(8, 80, true, true, true),
-    ): User = User.create(email, firstName, lastName, password)
+    @Test
+    fun `should throw UserStoreException when user already exists by username`() = runBlocking {
+        // Given
+        val email = Email(faker.internet().emailAddress())
+        val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
+        val firstName = FirstName(faker.name().firstName())
+        val lastName = LastName(faker.name().lastName())
 
-    private fun createUserRepresentation(user: User): UserRepresentation {
-        val userRepresentation = UserRepresentation()
-        userRepresentation.id = user.id.value.toString()
-        userRepresentation.email = user.email.value
-        userRepresentation.firstName = user.name?.firstName?.value
-        userRepresentation.lastName = user.name?.lastName?.value
-        userRepresentation.isEnabled = true
-        userRepresentation.isEmailVerified = true
-        userRepresentation.credentials = createCredentialRepresentation(user.credentials)
-        return userRepresentation
-    }
-
-    private fun createCredentialRepresentation(credentials: MutableList<Credential>): List<CredentialRepresentation> {
-        return credentials.map {
-            val credentialRepresentation = CredentialRepresentation()
-            credentialRepresentation.type = CredentialRepresentation.PASSWORD
-            credentialRepresentation.value = it.value
-            credentialRepresentation.isTemporary = false
-            credentialRepresentation
+        val existingUser = UserRepresentation().apply {
+            this.email = email.value
+            username = email.value
         }
+
+        // Mock user exists by username
+        every { keycloakUserResource.searchByEmail(email.value, true) } returns emptyList()
+        every { keycloakUserResource.searchByUsername(email.value, true) } returns listOf(existingUser)
+
+        // When & Then
+        val exception = assertThrows<UserStoreException> {
+            keycloakRepository.create(email, credential, firstName, lastName)
+        }
+
+        exception.message shouldContain "already exists"
+        verify(exactly = 0) { keycloakUserResource.create(any()) }
     }
 
-    private fun createResponse(userRepresentation: UserRepresentation): Response {
-        val userId = userRepresentation.id
-        val responsePath = "/auth/admin/realms/$REALM/users/$userId"
-        return Response.status(201).header("Location", responsePath).build()
+    @Test
+    fun `should throw UserStoreException when Keycloak returns client error`(): Unit = runBlocking {
+        // Given
+        val email = Email(faker.internet().emailAddress())
+        val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
+        val firstName = FirstName(faker.name().firstName())
+        val lastName = LastName(faker.name().lastName())
+
+        // Mock user doesn't exist
+        every { keycloakUserResource.searchByEmail(email.value, true) } returns emptyList()
+        every { keycloakUserResource.searchByUsername(email.value, true) } returns emptyList()
+
+        // Mock Keycloak error
+        val clientError = ClientErrorException("Bad Request", 400)
+        every { keycloakUserResource.create(any()) } throws clientError
+
+        // When & Then
+        val exception = assertThrows<UserStoreException> {
+            keycloakRepository.create(email, credential, firstName, lastName)
+        }
+
+        exception.message shouldContain "Error creating user"
+        exception.cause shouldBe clientError
+    }
+
+    @Test
+    fun `should send verification email successfully`() = runBlocking {
+        // Given
+        val userId = faker.internet().uuid()
+        every { keycloakUserResource.get(userId) } returns userResource
+        every { userResource.sendVerifyEmail() } just Runs
+
+        // When
+        keycloakRepository.verify(userId)
+
+        // Then
+        verify { keycloakUserResource.get(userId) }
+        verify { userResource.sendVerifyEmail() }
+    }
+
+    @Test
+    fun `should handle WebApplicationException gracefully when sending verification email`() = runBlocking {
+        // Given
+        val userId = faker.internet().uuid()
+        every { keycloakUserResource.get(userId) } returns userResource
+        every { userResource.sendVerifyEmail() } throws WebApplicationException("Email service unavailable", 503)
+
+        // When & Then (should not throw exception)
+        keycloakRepository.verify(userId)
+
+        // Verify the method was called despite the exception
+        verify { keycloakUserResource.get(userId) }
+        verify { userResource.sendVerifyEmail() }
     }
 }
