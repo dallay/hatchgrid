@@ -38,11 +38,20 @@ class KeycloakRepository(
     /**
      * Create a new user.
      *
+     * This method handles user creation atomically by relying on Keycloak's built-in uniqueness
+     * constraints rather than performing separate existence checks that could lead to race conditions.
+     *
+     * Race condition handling:
+     * - If a user with the same email/username is created concurrently, Keycloak will return
+     *   HTTP 409 (Conflict), which is handled gracefully by throwing UserStoreException
+     * - The method does not perform pre-existence checks to avoid TOCTOU (Time-of-Check-Time-of-Use) issues
+     *
      * @param email The email of the user to be created.
      * @param credential The credential of the user to be created.
      * @param firstName The first name of the user to be created, nullable if not provided.
      * @param lastName The last name of the user to be created, nullable if not provided.
      * @return The created user.
+     * @throws UserStoreException if user creation fails, including when user already exists
      */
     override suspend fun create(
         email: Email,
@@ -56,12 +65,6 @@ class KeycloakRepository(
 
         return withContext(ioDispatcher) {
             try {
-                if (checkIfUserAlreadyExists(email)) {
-                    val errorMessage =
-                        "User with email: ${email.value} or username: ${email.value} already exists."
-                    throw UserStoreException(errorMessage.trimIndent())
-                }
-
                 val userId = createKeycloakUser(email, credential, firstName, lastName)
                 persistLocalUser(userId, email, firstName, lastName)
 
@@ -167,20 +170,6 @@ class KeycloakRepository(
         throw wrappedException
     }
 
-    private suspend fun checkIfUserAlreadyExists(email: Email): Boolean {
-        return withContext(ioDispatcher) {
-            val userByEmail = getUserByEmail(email.value)
-            // In the future, we might want to use a different username strategy
-            val userByUsername = getUserByUsername(email.value)
-            log.debug(
-                "Checking if user already exists with email: {} and username: {}",
-                email.value.replace("\n", "").replace("\r", ""),
-                email.value.replace("\n", "").replace("\r", ""),
-            )
-            userByEmail != null || userByUsername != null
-        }
-    }
-
     private fun getUserRepresentation(
         email: Email,
         firstName: FirstName?,
@@ -196,12 +185,6 @@ class KeycloakRepository(
         groups = listOf(USER_GROUP_NAME)
         credentials = listOf(credential)
     }
-
-    private fun getUserByEmail(email: String): UserRepresentation? =
-        keycloakRealm.users().searchByEmail(email, true).firstOrNull()
-
-    private fun getUserByUsername(username: String): UserRepresentation? =
-        keycloakRealm.users().searchByUsername(username, true).firstOrNull()
 
     suspend fun verify(userId: String) {
         log.info("Verifying user with id: {}", userId)
