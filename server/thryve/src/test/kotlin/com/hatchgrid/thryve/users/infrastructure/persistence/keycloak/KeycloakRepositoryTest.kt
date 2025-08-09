@@ -23,7 +23,7 @@ import jakarta.ws.rs.WebApplicationException
 import jakarta.ws.rs.core.Response
 import java.net.URI
 import java.util.UUID
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -76,7 +76,7 @@ class KeycloakRepositoryTest {
     }
 
     @Test
-    fun `should create user successfully when user does not exist`() = runBlocking {
+    fun `should create user successfully when user does not exist`() = runTest {
         // Given
         val email = Email(faker.internet().emailAddress())
         val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
@@ -137,7 +137,7 @@ class KeycloakRepositoryTest {
     }
 
     @Test
-    fun `should create user successfully with null first and last name`() = runBlocking {
+    fun `should create user successfully with null first and last name`() = runTest {
         // Given
         val email = Email(faker.internet().emailAddress())
         val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
@@ -167,7 +167,7 @@ class KeycloakRepositoryTest {
     }
 
     @Test
-    fun `should throw UserStoreException when user already exists (409 conflict)`() = runBlocking {
+    fun `should throw UserStoreException when user already exists (409 conflict)`() = runTest {
         // Given
         val email = Email(faker.internet().emailAddress())
         val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
@@ -193,7 +193,7 @@ class KeycloakRepositoryTest {
     }
 
     @Test
-    fun `should throw UserStoreException when Keycloak returns client error`(): Unit = runBlocking {
+    fun `should throw UserStoreException when Keycloak returns client error`(): Unit = runTest {
         // Given
         val email = Email(faker.internet().emailAddress())
         val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
@@ -214,7 +214,7 @@ class KeycloakRepositoryTest {
     }
 
     @Test
-    fun `should send verification email successfully`() = runBlocking {
+    fun `should send verification email successfully`() = runTest {
         // Given
         val userId = faker.internet().uuid()
         every { keycloakUserResource.get(userId) } returns userResource
@@ -229,7 +229,7 @@ class KeycloakRepositoryTest {
     }
 
     @Test
-    fun `should handle WebApplicationException gracefully when sending verification email`() = runBlocking {
+    fun `should handle WebApplicationException gracefully when sending verification email`() = runTest {
         // Given
         val userId = faker.internet().uuid()
         every { keycloakUserResource.get(userId) } returns userResource
