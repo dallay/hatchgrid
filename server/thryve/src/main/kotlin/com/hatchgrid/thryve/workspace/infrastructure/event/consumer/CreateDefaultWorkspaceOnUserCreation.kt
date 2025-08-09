@@ -15,6 +15,8 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ResponseStatusException
 
+private const val MAX_LENGTH_WORKSPACE_NAME = 100
+
 /**
  * Event consumer that automatically creates a default workspace when a new user is created.
  *
@@ -121,7 +123,8 @@ class CreateDefaultWorkspaceOnUserCreation(
      * @return Generated workspace name
      */
     private fun generateDefaultWorkspaceName(firstname: String?, lastname: String?): String {
-        return when {
+        val maxLength = MAX_LENGTH_WORKSPACE_NAME
+        val composedName = when {
             !firstname.isNullOrBlank() && !lastname.isNullOrBlank() ->
                 "${firstname.trim()} ${lastname.trim()}'s Workspace"
             !firstname.isNullOrBlank() ->
@@ -131,6 +134,7 @@ class CreateDefaultWorkspaceOnUserCreation(
             else ->
                 "My Workspace"
         }
+        return if (composedName.length > maxLength) composedName.take(maxLength) else composedName
     }
 
     companion object {
