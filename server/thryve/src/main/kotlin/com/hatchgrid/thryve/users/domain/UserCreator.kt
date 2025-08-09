@@ -14,8 +14,8 @@ import com.hatchgrid.common.domain.vo.name.LastName
  * @see com.hatchgrid.thryve.users.domain.User
  * @see com.hatchgrid.common.domain.vo.email.Email
  * @see com.hatchgrid.common.domain.vo.credential.Credential
- * @see com.hatchgrid.thryve.newsletter.subscriber.domain.FirstName
- * @see com.hatchgrid.thryve.newsletter.subscriber.domain.LastName
+ * @see com.hatchgrid.common.domain.vo.name.FirstName
+ * @see com.hatchgrid.common.domain.vo.name.LastName
  * @created 8/7/23
  */
 fun interface UserCreator {

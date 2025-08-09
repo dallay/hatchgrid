@@ -2125,9 +2125,6 @@ description: Overview of the project structure and organization.
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.search.active.SearchAllActiveSubscribersQueryHandlerTest.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.search.all.SearchAllSubscribersQueryHandlerTest.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.search.email.AllSubscribersByEmailQueryHandlerTest.html
-│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.domain.FirstNameTest.html
-│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.domain.LastNameTest.html
-│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.domain.NameTest.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriberTest.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriptionListTest.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.GetAllSubscriberControllerIntegrationTest.html
@@ -2384,9 +2381,6 @@ description: Overview of the project structure and organization.
 │       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.application.search.active.SearchAllActiveSubscribersQueryHandlerTest.xml
 │       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.application.search.all.SearchAllSubscribersQueryHandlerTest.xml
 │       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.application.search.email.AllSubscribersByEmailQueryHandlerTest.xml
-│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.domain.FirstNameTest.xml
-│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.domain.LastNameTest.xml
-│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.domain.NameTest.xml
 │       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriberTest.xml
 │       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriptionListTest.xml
 │       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.GetAllSubscriberControllerIntegrationTest.xml
@@ -2570,8 +2564,10 @@ description: Overview of the project structure and organization.
 │   │   │   │   │   │   │   └───lookups/
 │   │   │   │   │   │   │       └───...
 │   │   │   │   │   │   └───last-build.bin
-│   │   │   │   │   └───classpath-snapshot/
-│   │   │   │   │       └───shrunk-classpath-snapshot.bin
+│   │   │   │   │   ├───classpath-snapshot/
+│   │   │   │   │   │   └───shrunk-classpath-snapshot.bin
+│   │   │   │   │   └───local-state/
+│   │   │   │   │       └───build-history.bin
 │   │   │   │   └───compileTestKotlin/
 │   │   │   │       ├───cacheable/
 │   │   │   │       │   ├───caches-jvm/

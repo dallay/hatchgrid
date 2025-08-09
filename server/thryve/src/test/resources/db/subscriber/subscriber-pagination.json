@@ -2,7 +2,7 @@
 	{
 		"id": "bbf25966-6f2d-4cc5-a6da-19e79dbaba1e",
 		"email": "boethius@test.com",
-		"name": "Boethius",
+		"name": "Boethius Stokes",
 		"status": "ENABLED",
 		"workspaceId": "a0654720-35dc-49d0-b508-1f7df5d915f1"
 	},
@@ -51,7 +51,7 @@
 	{
 		"id": "7b868e1e-d2d1-4b8a-9949-59bc4b775d0f",
 		"email": "bonaventure@test.com",
-		"name": "Bonaventure",
+		"name": "Bonaventure Predovic",
 		"status": "ENABLED",
 		"workspaceId": "a0654720-35dc-49d0-b508-1f7df5d915f1"
 	},
@@ -72,7 +72,7 @@
 	{
 		"id": "96bd3f93-7be8-4ac6-9e68-1d2a50650cc6",
 		"email": "maimonides@test.com",
-		"name": "Maimonides",
+		"name": "Maimonides Stoltenberg",
 		"status": "ENABLED",
 		"workspaceId": "a0654720-35dc-49d0-b508-1f7df5d915f1"
 	},

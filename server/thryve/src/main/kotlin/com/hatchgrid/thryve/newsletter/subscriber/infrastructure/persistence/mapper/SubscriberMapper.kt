@@ -1,9 +1,9 @@
 package com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.mapper
 
 import com.hatchgrid.common.domain.vo.email.Email
-import com.hatchgrid.thryve.newsletter.subscriber.domain.FirstName
-import com.hatchgrid.thryve.newsletter.subscriber.domain.LastName
-import com.hatchgrid.thryve.newsletter.subscriber.domain.Name
+import com.hatchgrid.common.domain.vo.name.FirstName
+import com.hatchgrid.common.domain.vo.name.LastName
+import com.hatchgrid.common.domain.vo.name.Name
 import com.hatchgrid.thryve.newsletter.subscriber.domain.Subscriber
 import com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriberId
 import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.entity.SubscriberEntity
@@ -22,8 +22,8 @@ object SubscriberMapper {
         return SubscriberEntity(
             id = id.value,
             email = email.value,
-            firstname = name.firstName.toString(),
-            lastname = name.lastName.toString(),
+            firstname = name?.firstName?.toString() ?: "",
+            lastname = name?.lastName?.toString() ?: "",
             status = status,
             attributes = attributes,
             workspaceId = workspaceId.value,
@@ -39,13 +39,14 @@ object SubscriberMapper {
      *
      * @return The Subscriber domain object.
      */
+
     fun SubscriberEntity.toDomain(): Subscriber {
         return Subscriber(
             id = SubscriberId(id),
             email = Email(email),
             name = Name(
-                firstName = if (firstname.isNullOrBlank()) null else FirstName(firstname),
-                lastName = if (lastname.isNullOrBlank()) null else lastname?.let { LastName(it) },
+                firstName = firstname?.let { FirstName(it) } ?: FirstName(""),
+                lastName = lastname?.let { LastName(it) } ?: LastName(""),
             ),
             status = status,
             attributes = attributes,

@@ -2,7 +2,7 @@
 INSERT INTO subscribers (id, email, firstname, lastname, status, workspace_id, created_at,
                          updated_at,
                          attributes)
-VALUES ('bbf25966-6f2d-4cc5-a6da-19e79dbaba1e', 'boethius@test.com', 'Boethius', '', 'ENABLED',
+VALUES ('bbf25966-6f2d-4cc5-a6da-19e79dbaba1e', 'boethius@test.com', 'Boethius', 'Stokes', 'ENABLED',
         'a0654720-35dc-49d0-b508-1f7df5d915f1', '2023-02-18 15:44:03.616085+01',
         '2023-12-22 15:28:55.736027+01',
         '{
@@ -26,7 +26,7 @@ VALUES ('bbf25966-6f2d-4cc5-a6da-19e79dbaba1e', 'boethius@test.com', 'Boethius',
         '{
           "tags": ["tag1", "tag2"]
         }'),
-       ('7b868e1e-d2d1-4b8a-9949-59bc4b775d0f', 'bonaventure@test.com', 'Bonaventure', '',
+       ('7b868e1e-d2d1-4b8a-9949-59bc4b775d0f', 'bonaventure@test.com', 'Bonaventure', 'Predovic',
         'ENABLED', 'a0654720-35dc-49d0-b508-1f7df5d915f1', '2023-03-04 15:44:03.616085+01',
         '2024-01-13 15:28:55.736027+01',
         '{
@@ -70,7 +70,7 @@ VALUES ('a4053f51-ddee-4abc-bf5d-767d7588b711', 'michel.henry@test.com', 'Michel
         '{
           "tags": ["tag1", "tag2"]
         }'),
-       ('96bd3f93-7be8-4ac6-9e68-1d2a50650cc6', 'maimonides@test.com', 'Maimonides', '', 'ENABLED',
+       ('96bd3f93-7be8-4ac6-9e68-1d2a50650cc6', 'maimonides@test.com', 'Maimonides', 'Stoltenberg', 'ENABLED',
         'a0654720-35dc-49d0-b508-1f7df5d915f1', '2023-03-14 15:44:03.616085+01',
         '2024-01-04 15:28:55.736027+01',
         '{

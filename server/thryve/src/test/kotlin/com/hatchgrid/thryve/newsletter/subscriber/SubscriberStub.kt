@@ -5,12 +5,12 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.hatchgrid.common.domain.presentation.pagination.CursorPageResponse
 import com.hatchgrid.common.domain.presentation.pagination.TimestampCursor
 import com.hatchgrid.common.domain.vo.email.Email
+import com.hatchgrid.common.domain.vo.name.FirstName
+import com.hatchgrid.common.domain.vo.name.LastName
+import com.hatchgrid.common.domain.vo.name.Name
 import com.hatchgrid.thryve.GeneralStub.getTimestampCursorPage
 import com.hatchgrid.thryve.newsletter.subscriber.application.SubscriberResponse
 import com.hatchgrid.thryve.newsletter.subscriber.domain.Attributes
-import com.hatchgrid.thryve.newsletter.subscriber.domain.FirstName
-import com.hatchgrid.thryve.newsletter.subscriber.domain.LastName
-import com.hatchgrid.thryve.newsletter.subscriber.domain.Name
 import com.hatchgrid.thryve.newsletter.subscriber.domain.Subscriber
 import com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriberId
 import com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriberStatus

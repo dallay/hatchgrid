@@ -2,6 +2,7 @@ package com.hatchgrid.thryve.newsletter.subscriber.domain
 
 import com.hatchgrid.common.domain.BaseEntity
 import com.hatchgrid.common.domain.vo.email.Email
+import com.hatchgrid.common.domain.vo.name.Name
 import com.hatchgrid.thryve.newsletter.subscriber.domain.event.SubscriberCreatedEvent
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import java.time.LocalDateTime
@@ -78,8 +79,8 @@ data class Subscriber(
         ): Subscriber {
             val subscriberId = SubscriberId(id)
             val subscriberEmail = Email(email)
-            val subscriberName = Name(firstname, lastname)
-            val subscriberworkspaceId = WorkspaceId(workspaceId)
+            val subscriberName = Name(firstname ?: "", lastname ?: "")
+            val subscriberWorkspaceId = WorkspaceId(workspaceId)
 
             val subscriber = Subscriber(
                 id = subscriberId,
@@ -87,7 +88,7 @@ data class Subscriber(
                 name = subscriberName,
                 status = status,
                 attributes = attributes,
-                workspaceId = subscriberworkspaceId,
+                workspaceId = subscriberWorkspaceId,
                 createdAt = createdAt,
                 updatedAt = updatedAt,
             )
