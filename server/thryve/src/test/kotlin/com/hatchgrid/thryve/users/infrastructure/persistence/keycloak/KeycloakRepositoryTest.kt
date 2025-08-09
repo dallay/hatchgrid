@@ -13,6 +13,7 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -21,6 +22,7 @@ import jakarta.ws.rs.ClientErrorException
 import jakarta.ws.rs.WebApplicationException
 import jakarta.ws.rs.core.Response
 import java.net.URI
+import java.util.UUID
 import kotlinx.coroutines.runBlocking
 import net.datafaker.Faker
 import org.junit.jupiter.api.BeforeEach
@@ -99,7 +101,36 @@ class KeycloakRepositoryTest {
         result.name?.firstName?.value shouldBe firstName.value
         result.name?.lastName?.value shouldBe lastName.value
 
-        verify { keycloakUserResource.create(any()) }
+        // Verify that userStoreR2dbcRepository.create was called with correct parameters
+        coVerify(exactly = 1) {
+            userStoreR2dbcRepository.create(
+                any(),
+                email.value,
+                "${firstName.value} ${lastName.value}",
+            )
+        }
+
+        // Additional verification to ensure userId is not blank
+        coVerify {
+            userStoreR2dbcRepository.create(
+                match<UUID> { it.toString().isNotBlank() },
+                any(),
+                any(),
+            )
+        }
+
+        // Verify that keycloakUserResource.create was called with correct UserRepresentation
+        verify(exactly = 1) {
+            keycloakUserResource.create(
+                match { userRep ->
+                    userRep.email == email.value &&
+                        userRep.username == email.value &&
+                        userRep.isEnabled == true &&
+                        userRep.credentials?.isNotEmpty() == true
+                },
+            )
+        }
+
         // Verify that no pre-existence checks are performed
         verify(exactly = 0) { keycloakUserResource.searchByEmail(any(), any()) }
         verify(exactly = 0) { keycloakUserResource.searchByUsername(any(), any()) }
