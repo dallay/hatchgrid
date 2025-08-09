@@ -10,7 +10,8 @@ on:
   push:
     branches:
       - main
-      - copilot/fix-63
+      - feature/*
+      - release/*
 
 jobs:
   qodana:
