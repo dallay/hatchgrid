@@ -10,12 +10,16 @@ import com.hatchgrid.thryve.users.infrastructure.http.request.RegisterUserReques
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import java.util.UUID
+import java.util.*
+import java.util.stream.Stream
 import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
@@ -34,6 +38,76 @@ class UserRegisterControllerTest {
     private val mediator: Mediator = mockk()
     private val userRegisterController = UserRegisterController(mediator)
     private val webTestClient = WebTestClient.bindToController(userRegisterController).build()
+
+    companion object {
+        @JvmStatic
+        fun validationErrorScenarios(): Stream<Arguments> = Stream.of(
+            Arguments.of(
+                RegisterUserRequest("invalid-email", "ValidPassword1", "John", "Doe"),
+                "Invalid email format",
+                0, // Mediator not called
+            ),
+            Arguments.of(
+                RegisterUserRequest("valid@email.com", "short", "John", "Doe"),
+                "Password too short",
+                0, // Mediator not called
+            ),
+            Arguments.of(
+                RegisterUserRequest("valid@email.com", "ValidPassword1", "", "Doe"),
+                "Blank firstname",
+                0, // Mediator not called
+            ),
+            Arguments.of(
+                RegisterUserRequest("valid@email.com", "ValidPassword1", "John", ""),
+                "Blank lastname",
+                0, // Mediator not called
+            ),
+        )
+
+        @JvmStatic
+        fun exceptionValidationScenarios(): Stream<Arguments> = Stream.of(
+            Arguments.of(
+                CredentialException("The password must have at least one number"),
+                "Password complexity validation error",
+            ),
+            Arguments.of(
+                object : BusinessRuleValidationException("Invalid business rule") {},
+                "Business rule validation error",
+            ),
+            Arguments.of(
+                DataIntegrityViolationException("Duplicate key"),
+                "Data integrity violation",
+            ),
+        )
+
+        @JvmStatic
+        fun badRequestErrorMessages(): Stream<Arguments> = Stream.of(
+            Arguments.of("User already exists", "Domain validation error"),
+            Arguments.of("Email is invalid or duplicate", "Email validation error"),
+            Arguments.of("Constraint validation failed", "Constraint violation error"),
+        )
+
+        @JvmStatic
+        fun serverErrorScenarios(): Stream<Arguments> = Stream.of(
+            Arguments.of(
+                CommandHandlerExecutionError("Database connection failed"),
+                "Server error from command",
+            ),
+            Arguments.of(RuntimeException("Unexpected error"), "Unexpected runtime error"),
+        )
+
+        @JvmStatic
+        fun wrappedExceptions(): Stream<Arguments> = Stream.of(
+            Arguments.of(
+                CredentialException("The password must have at least one number"),
+                "Password validation error",
+            ),
+            Arguments.of(
+                object : BusinessRuleValidationException("Business rule violated") {},
+                "Business rule validation error",
+            ),
+        )
+    }
 
     @Nested
     @DisplayName("Successful Registration Tests")
@@ -73,35 +147,37 @@ class UserRegisterControllerTest {
     @Nested
     @DisplayName("Validation Error Tests")
     inner class ValidationErrorTests {
-        @Test
-        @DisplayName("Should handle password complexity validation error and return 400")
-        fun `should handle password complexity validation error and return 400`(): Unit =
-            runTest {
-                // Given
-                val request = RegisterUserRequest(email, "weakpassword", firstname, lastname)
-                coEvery {
-                    mediator.send(any<RegisterUserCommand>())
-                } throws CredentialException("The password must have at least one number")
 
-                // When & Then
-                webTestClient.post().uri(ENDPOINT)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(request)
-                    .exchange()
-                    .expectStatus().isBadRequest
-                    .expectBody().isEmpty
+        @ParameterizedTest(name = "Should return 400 for {1}")
+        @MethodSource(
+            "com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerTest#validationErrorScenarios",
+        )
+        fun `should return 400 for input validation errors`(
+            request: RegisterUserRequest,
+            @Suppress("UNUSED_PARAMETER") testCase: String,
+            mediatorCallCount: Int,
+        ): Unit = runTest {
+            // When & Then
+            webTestClient.post().uri(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isBadRequest
 
-                coVerify(exactly = 1) { mediator.send(any<RegisterUserCommand>()) }
-            }
+            coVerify(exactly = mediatorCallCount) { mediator.send(any<RegisterUserCommand>()) }
+        }
 
-        @Test
-        @DisplayName("Should handle business rule validation error and return 400")
-        fun `should handle business rule validation error and return 400`(): Unit = runTest {
+        @ParameterizedTest(name = "Should handle {1} and return 400")
+        @MethodSource(
+            "com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerTest#exceptionValidationScenarios",
+        )
+        fun `should handle exceptions and return 400`(
+            exception: Exception,
+            @Suppress("UNUSED_PARAMETER") testCase: String,
+        ): Unit = runTest {
             // Given
             val request = RegisterUserRequest(email, password, firstname, lastname)
-            val businessException =
-                object : BusinessRuleValidationException("Invalid business rule") {}
-            coEvery { mediator.send(any<RegisterUserCommand>()) } throws businessException
+            coEvery { mediator.send(any<RegisterUserCommand>()) } throws exception
 
             // When & Then
             webTestClient.post().uri(ENDPOINT)
@@ -112,215 +188,23 @@ class UserRegisterControllerTest {
                 .expectBody().isEmpty
 
             coVerify(exactly = 1) { mediator.send(any<RegisterUserCommand>()) }
-        }
-
-        @Test
-        @DisplayName("Should handle data integrity violation and return 400")
-        fun `should handle data integrity violation and return 400`(): Unit = runTest {
-            // Given
-            val request = RegisterUserRequest(email, password, firstname, lastname)
-            coEvery { mediator.send(any<RegisterUserCommand>()) } throws DataIntegrityViolationException(
-                "Duplicate key",
-            )
-
-            // When & Then
-            webTestClient.post().uri(ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchange()
-                .expectStatus().isBadRequest
-                .expectBody().isEmpty
-
-            coVerify(exactly = 1) { mediator.send(any<RegisterUserCommand>()) }
-        }
-
-        @Test
-        @DisplayName("Should return 400 for invalid email format")
-        fun `should return 400 for invalid email format`(): Unit = runTest {
-            // Given
-            val request = RegisterUserRequest(
-                email = "invalid-email",
-                password = password,
-                firstname = firstname,
-                lastname = lastname,
-            )
-
-            // When & Then
-            webTestClient.post().uri(ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchange()
-                .expectStatus().isBadRequest
-
-            // Verify mediator was not called due to validation failure
-            coVerify(exactly = 0) { mediator.send(any<RegisterUserCommand>()) }
-        }
-
-        @Test
-        @DisplayName("Should return 400 for password too short")
-        fun `should return 400 for password too short`(): Unit = runTest {
-            // Given
-            val request = RegisterUserRequest(
-                email = email,
-                password = "short", // Less than 8 characters
-                firstname = firstname,
-                lastname = lastname,
-            )
-
-            // When & Then
-            webTestClient.post().uri(ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchange()
-                .expectStatus().isBadRequest
-
-            coVerify(exactly = 0) { mediator.send(any<RegisterUserCommand>()) }
-        }
-
-        @Test
-        @DisplayName("Should return 400 for blank firstname")
-        fun `should return 400 for blank firstname`(): Unit = runTest {
-            // Given
-            val request = RegisterUserRequest(
-                email = email,
-                password = password,
-                firstname = "", // Blank firstname
-                lastname = lastname,
-            )
-
-            // When & Then
-            webTestClient.post().uri(ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchange()
-                .expectStatus().isBadRequest
-
-            coVerify(exactly = 0) { mediator.send(any<RegisterUserCommand>()) }
-        }
-
-        @Test
-        @DisplayName("Should return 400 for blank lastname")
-        fun `should return 400 for blank lastname`(): Unit = runTest {
-            // Given
-            val request = RegisterUserRequest(
-                email = email,
-                password = password,
-                firstname = firstname,
-                lastname = "", // Blank lastname
-            )
-
-            // When & Then
-            webTestClient.post().uri(ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchange()
-                .expectStatus().isBadRequest
-
-            coVerify(exactly = 0) { mediator.send(any<RegisterUserCommand>()) }
         }
     }
 
     @Nested
     @DisplayName("Command Handler Error Tests")
     inner class CommandHandlerErrorTests {
-        @Test
-        @DisplayName("Should handle domain validation error from command and return 400")
-        fun `should handle domain validation error from command and return 400`(): Unit =
-            runTest {
-                // Given
-                val request = RegisterUserRequest(email, password, firstname, lastname)
-                val errorMessage = "User already exists"
-                coEvery { mediator.send(any<RegisterUserCommand>()) } throws CommandHandlerExecutionError(
-                    errorMessage,
-                )
 
-                // When & Then
-                webTestClient.post().uri(ENDPOINT)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(request)
-                    .exchange()
-                    .expectStatus().isBadRequest
-                    .expectBody().isEmpty
-
-                coVerify(exactly = 1) { mediator.send(any<RegisterUserCommand>()) }
-            }
-
-        @Test
-        @DisplayName("Should handle duplicate email validation error from command and return 400")
-        fun `should handle duplicate email validation error from command and return 400`(): Unit =
-            runTest {
-                // Given
-                val request = RegisterUserRequest(email, password, firstname, lastname)
-                val errorMessage = "Email is invalid or duplicate"
-                coEvery { mediator.send(any<RegisterUserCommand>()) } throws CommandHandlerExecutionError(
-                    errorMessage,
-                )
-
-                // When & Then
-                webTestClient.post().uri(ENDPOINT)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(request)
-                    .exchange()
-                    .expectStatus().isBadRequest
-                    .expectBody().isEmpty
-
-                coVerify(exactly = 1) { mediator.send(any<RegisterUserCommand>()) }
-            }
-
-        @Test
-        @DisplayName("Should handle constraint violation error from command and return 400")
-        fun `should handle constraint violation error from command and return 400`(): Unit =
-            runTest {
-                // Given
-                val request = RegisterUserRequest(email, password, firstname, lastname)
-                val errorMessage = "Constraint validation failed"
-                coEvery { mediator.send(any<RegisterUserCommand>()) } throws CommandHandlerExecutionError(
-                    errorMessage,
-                )
-
-                // When & Then
-                webTestClient.post().uri(ENDPOINT)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(request)
-                    .exchange()
-                    .expectStatus().isBadRequest
-                    .expectBody().isEmpty
-
-                coVerify(exactly = 1) { mediator.send(any<RegisterUserCommand>()) }
-            }
-
-        @Test
-        @DisplayName("Should handle password validation wrapped in CommandHandlerExecutionError")
-        fun `should handle password validation wrapped in CommandHandlerExecutionError`(): Unit =
-            runTest {
-                // Given
-                val request = RegisterUserRequest(email, password, firstname, lastname)
-                val credentialException =
-                    CredentialException("The password must have at least one number")
-                coEvery {
-                    mediator.send(any<RegisterUserCommand>())
-                } throws CommandHandlerExecutionError(
-                    "Command execution failed",
-                    credentialException,
-                )
-
-                // When & Then
-                webTestClient.post().uri(ENDPOINT)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(request)
-                    .exchange()
-                    .expectStatus().isBadRequest
-                    .expectBody().isEmpty
-
-                coVerify(exactly = 1) { mediator.send(any<RegisterUserCommand>()) }
-            }
-
-        @Test
-        @DisplayName("Should handle server error from command and return 500")
-        fun `should handle server error from command and return 500`(): Unit = runTest {
+        @ParameterizedTest(name = "Should handle {1} and return 400")
+        @MethodSource(
+            "com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerTest#badRequestErrorMessages",
+        )
+        fun `should handle command execution errors and return 400`(
+            errorMessage: String,
+            @Suppress("UNUSED_PARAMETER") testCase: String,
+        ): Unit = runTest {
             // Given
             val request = RegisterUserRequest(email, password, firstname, lastname)
-            val errorMessage = "Database connection failed"
             coEvery { mediator.send(any<RegisterUserCommand>()) } throws CommandHandlerExecutionError(
                 errorMessage,
             )
@@ -330,18 +214,47 @@ class UserRegisterControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
                 .exchange()
-                .expectStatus().is5xxServerError
+                .expectStatus().isBadRequest
                 .expectBody().isEmpty
 
             coVerify(exactly = 1) { mediator.send(any<RegisterUserCommand>()) }
         }
 
-        @Test
-        @DisplayName("Should handle unexpected error and return 500")
-        fun `should handle unexpected error and return 500`(): Unit = runTest {
+        @ParameterizedTest(name = "Should handle {1} wrapped in CommandHandlerExecutionError")
+        @MethodSource("com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerTest#wrappedExceptions")
+        fun `should handle exceptions wrapped in CommandHandlerExecutionError`(
+            exception: Exception,
+            @Suppress("UNUSED_PARAMETER") testCase: String,
+        ): Unit = runTest {
             // Given
             val request = RegisterUserRequest(email, password, firstname, lastname)
-            coEvery { mediator.send(any<RegisterUserCommand>()) } throws RuntimeException("Unexpected error")
+            coEvery {
+                mediator.send(any<RegisterUserCommand>())
+            } throws CommandHandlerExecutionError(
+                "Command execution failed",
+                exception,
+            )
+
+            // When & Then
+            webTestClient.post().uri(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isBadRequest
+                .expectBody().isEmpty
+
+            coVerify(exactly = 1) { mediator.send(any<RegisterUserCommand>()) }
+        }
+
+        @ParameterizedTest(name = "Should handle {1} and return 500")
+        @MethodSource("com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerTest#serverErrorScenarios")
+        fun `should handle server errors and return 500`(
+            exception: Exception,
+            @Suppress("UNUSED_PARAMETER") testCase: String,
+        ): Unit = runTest {
+            // Given
+            val request = RegisterUserRequest(email, password, firstname, lastname)
+            coEvery { mediator.send(any<RegisterUserCommand>()) } throws exception
 
             // When & Then
             webTestClient.post().uri(ENDPOINT)

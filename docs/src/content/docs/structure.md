@@ -2057,14 +2057,207 @@ description: Overview of the project structure and organization.
 │       │   │   └───tests/
 │       │   │       └───test/
 │       │   │           ├───classes/
-│       │   │           │   └───com.hatchgrid.thryve.workspace.infrastructure.event.consumer.CreateDefaultWorkspaceOnUserCreationTest.html
+│       │   │           │   ├───com.hatchgrid.ApplicationStartupTracesTest.html
+│       │   │           │   ├───com.hatchgrid.ArchTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.BeanValidationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.HatchgridApplicationTests.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.application.AuthenticateUserQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.application.AuthenticatedUserTest$AuthenticatedUserAttributesTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.application.AuthenticatedUserTest$AuthenticatedUserRolesTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.application.AuthenticatedUserTest$AuthenticatedUserUsernameTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.application.RefreshTokenQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.application.UserAuthenticatorServiceTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.application.logout.UserLogoutCommandHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.application.query.GetUserSessionQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.domain.RoleTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.domain.RolesTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.domain.UsernameTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.ApplicationSecurityPropertiesTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.AudienceValidatorTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.AuthenticationExceptionAdviceIT.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.ClaimsTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.CustomClaimConverterTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.JwtGrantedAuthorityConverterTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.SecurityConfigurationIT.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.csrf.SpaCsrfTokenRequestHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.http.RefreshTokenControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.http.RefreshTokenControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.http.SessionControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.http.SessionControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.http.UserAuthenticatorControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.http.UserAuthenticatorControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.http.UserLogoutControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.http.UserLogoutControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.mapper.AccessTokenResponseMapperTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak.KeycloakAuthenticatorRepositoryIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak.KeycloakAuthenticatorRepositoryTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak.KeycloakLogoutRepositoryIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak.KeycloakRefreshTokenManagerRepositoryIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak.KeycloakRefreshTokenManagerRepositoryTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.config.SpaWebFilterTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.config.StringToFilterConditionConverterTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.config.info.ActiveProfilesInfoContributorTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.controllers.GlobalExceptionHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.application.create.CreateFormCommandHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.application.delete.DeleteFormCommandHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.application.details.DetailFormQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.application.find.FindFormQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.application.search.SearchFormsQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.application.update.UpdateFormCommandHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.domain.FormTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.domain.HexColorTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.http.CreateFormControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.http.CreateFormControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.http.DeleteFormControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.http.DeleteFormControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.http.FetchDetailFormControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.http.FetchDetailFormControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.http.FindFormControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.http.FindFormControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.http.SearchFormControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.http.SearchFormControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.http.UpdateFormControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.http.UpdateFormControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.persistence.FormStoreR2dbcRepositoryTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.count.bystatus.CountByStatusQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.count.bytags.CountByTagsQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.create.CreateSubscribeNewsletterCommandHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.search.active.SearchAllActiveSubscribersQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.search.all.SearchAllSubscribersQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.search.email.AllSubscribersByEmailQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriberTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriptionListTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.GetAllSubscriberControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.GetAllSubscriberControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.GetAllSubscribersByEmailControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.GetAllSubscribersByEmailControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.NewsletterSubscriberControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.NewsletterSubscriberControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.SubscriberCountByStatusControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.SubscriberCountByStatusControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.SubscriberCountByTagsControllerIntegationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.SubscriberCountByTagsControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.SubscriberR2dbcRepositoryTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.converter.SubscriberConverterTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.application.create.CreateTagCommandHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.application.delete.DeleteTagCommandHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.application.list.GetAllTagsQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.application.update.UpdateTagCommandHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.domain.TagTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.http.CreateTagControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.http.CreateTagControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.http.DeleteTagControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.http.DeleteTagControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.http.GetAllTagControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.http.GetAllTagControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.http.UpdateTagControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.http.UpdateTagControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.SubscriberTagR2dbcRepositoryTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.TagR2dbcRepositoryTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.mapper.SubscriberTagMapperTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.mapper.TagMapperTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.application.UserRegistratorTest$EdgeCasesAndBoundaryTests.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.application.UserRegistratorTest$IntegrationTestsWithRealImplementations.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.application.UserRegistratorTest$UnitTestsWithMockedDependencies.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.application.register.RegisterUserCommandHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.domain.UserTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.infrastructure.http.AccountResourceControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.infrastructure.http.AccountResourceCookieAuthIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerTest$CommandHandlerErrorTests.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerTest$EdgeCaseTests.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerTest$SuccessfulRegistrationTests.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerTest$ValidationErrorTests.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.infrastructure.persistence.keycloak.KeycloakRepositoryIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.infrastructure.persistence.keycloak.KeycloakRepositoryTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.infrastructure.service.AccountResourceServiceTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.application.create.CreateWorkspaceCommandHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.application.delete.DeleteWorkspaceCommandHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.application.find.FindWorkspaceQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.application.find.all.AllWorkspaceQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.application.find.member.AllWorkspaceByMemberQueryHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationServiceTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.application.update.UpdateWorkspaceCommandHandlerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.domain.WorkspaceTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.event.consumer.CreateDefaultWorkspaceOnUserCreationIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.event.consumer.CreateDefaultWorkspaceOnUserCreationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.http.CreateWorkspaceControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.http.CreateWorkspaceControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.http.DeleteWorkspaceControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.http.DeleteWorkspaceControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.http.FindWorkspaceControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.http.FindWorkspaceControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.http.GetAllWorkspaceControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.http.GetAllWorkspaceControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.http.UpdateWorkspaceControllerIntegrationTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.http.UpdateWorkspaceControllerTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.persistence.WorkspaceStoreR2DbcRepositoryTest.html
+│       │   │           │   └───com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMemberMapperTest.html
 │       │   │           ├───css/
 │       │   │           │   ├───base-style.css
 │       │   │           │   └───style.css
 │       │   │           ├───js/
 │       │   │           │   └───report.js
 │       │   │           ├───packages/
-│       │   │           │   └───com.hatchgrid.thryve.workspace.infrastructure.event.consumer.html
+│       │   │           │   ├───com.hatchgrid.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.application.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.application.logout.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.application.query.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.domain.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.csrf.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.http.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.mapper.html
+│       │   │           │   ├───com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak.html
+│       │   │           │   ├───com.hatchgrid.thryve.config.html
+│       │   │           │   ├───com.hatchgrid.thryve.config.info.html
+│       │   │           │   ├───com.hatchgrid.thryve.controllers.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.application.create.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.application.delete.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.application.details.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.application.find.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.application.search.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.application.update.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.domain.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.http.html
+│       │   │           │   ├───com.hatchgrid.thryve.form.infrastructure.persistence.html
+│       │   │           │   ├───com.hatchgrid.thryve.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.count.bystatus.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.count.bytags.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.create.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.search.active.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.search.all.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.application.search.email.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.domain.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.converter.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.application.create.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.application.delete.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.application.list.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.application.update.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.domain.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.http.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.mapper.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.application.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.application.register.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.domain.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.infrastructure.http.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.infrastructure.persistence.keycloak.html
+│       │   │           │   ├───com.hatchgrid.thryve.users.infrastructure.service.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.application.create.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.application.delete.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.application.find.all.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.application.find.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.application.find.member.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.application.security.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.application.update.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.domain.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.event.consumer.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.http.html
+│       │   │           │   ├───com.hatchgrid.thryve.workspace.infrastructure.persistence.html
+│       │   │           │   └───com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.html
 │       │   │           └───index.html
 │       │   ├───resources/
 │       │   │   ├───main/
@@ -2117,8 +2310,145 @@ description: Overview of the project structure and organization.
 │       │   ├───test-results/
 │       │   │   └───test/
 │       │   │       ├───binary/
-│       │   │       │   └───output.bin
-│       │   │       └───TEST-com.hatchgrid.thryve.workspace.infrastructure.event.consumer.CreateDefaultWorkspaceOnUserCreationTest.xml
+│       │   │       │   ├───output.bin
+│       │   │       │   ├───output.bin.idx
+│       │   │       │   └───results.bin
+│       │   │       ├───TEST-com.hatchgrid.ApplicationStartupTracesTest.xml
+│       │   │       ├───TEST-com.hatchgrid.ArchTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.BeanValidationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.HatchgridApplicationTests.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.application.AuthenticateUserQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.application.AuthenticatedUserTest$AuthenticatedUserAttributesTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.application.AuthenticatedUserTest$AuthenticatedUserRolesTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.application.AuthenticatedUserTest$AuthenticatedUserUsernameTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.application.RefreshTokenQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.application.UserAuthenticatorServiceTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.application.logout.UserLogoutCommandHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.application.query.GetUserSessionQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.domain.RoleTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.domain.RolesTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.domain.UsernameTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.ApplicationSecurityPropertiesTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.AudienceValidatorTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.AuthenticationExceptionAdviceIT.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.ClaimsTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.CustomClaimConverterTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.JwtGrantedAuthorityConverterTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.SecurityConfigurationIT.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.csrf.SpaCsrfTokenRequestHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.http.RefreshTokenControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.http.RefreshTokenControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.http.SessionControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.http.SessionControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.http.UserAuthenticatorControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.http.UserAuthenticatorControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.http.UserLogoutControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.http.UserLogoutControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.mapper.AccessTokenResponseMapperTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak.KeycloakAuthenticatorRepositoryIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak.KeycloakAuthenticatorRepositoryTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak.KeycloakLogoutRepositoryIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak.KeycloakRefreshTokenManagerRepositoryIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak.KeycloakRefreshTokenManagerRepositoryTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.config.SpaWebFilterTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.config.StringToFilterConditionConverterTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.config.info.ActiveProfilesInfoContributorTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.controllers.GlobalExceptionHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.application.create.CreateFormCommandHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.application.delete.DeleteFormCommandHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.application.details.DetailFormQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.application.find.FindFormQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.application.search.SearchFormsQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.application.update.UpdateFormCommandHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.domain.FormTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.domain.HexColorTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.infrastructure.http.CreateFormControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.infrastructure.http.CreateFormControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.infrastructure.http.DeleteFormControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.infrastructure.http.DeleteFormControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.infrastructure.http.FetchDetailFormControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.infrastructure.http.FetchDetailFormControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.infrastructure.http.FindFormControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.infrastructure.http.FindFormControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.infrastructure.http.SearchFormControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.infrastructure.http.SearchFormControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.infrastructure.http.UpdateFormControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.infrastructure.http.UpdateFormControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.form.infrastructure.persistence.FormStoreR2dbcRepositoryTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.application.count.bystatus.CountByStatusQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.application.count.bytags.CountByTagsQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.application.create.CreateSubscribeNewsletterCommandHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.application.search.active.SearchAllActiveSubscribersQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.application.search.all.SearchAllSubscribersQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.application.search.email.AllSubscribersByEmailQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriberTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriptionListTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.GetAllSubscriberControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.GetAllSubscriberControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.GetAllSubscribersByEmailControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.GetAllSubscribersByEmailControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.NewsletterSubscriberControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.NewsletterSubscriberControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.SubscriberCountByStatusControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.SubscriberCountByStatusControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.SubscriberCountByTagsControllerIntegationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.SubscriberCountByTagsControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.SubscriberR2dbcRepositoryTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.converter.SubscriberConverterTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.application.create.CreateTagCommandHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.application.delete.DeleteTagCommandHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.application.list.GetAllTagsQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.application.update.UpdateTagCommandHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.domain.TagTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.infrastructure.http.CreateTagControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.infrastructure.http.CreateTagControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.infrastructure.http.DeleteTagControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.infrastructure.http.DeleteTagControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.infrastructure.http.GetAllTagControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.infrastructure.http.GetAllTagControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.infrastructure.http.UpdateTagControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.infrastructure.http.UpdateTagControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.SubscriberTagR2dbcRepositoryTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.TagR2dbcRepositoryTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.mapper.SubscriberTagMapperTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.mapper.TagMapperTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.application.UserRegistratorTest$EdgeCasesAndBoundaryTests.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.application.UserRegistratorTest$IntegrationTestsWithRealImplementations.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.application.UserRegistratorTest$UnitTestsWithMockedDependencies.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.application.register.RegisterUserCommandHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.domain.UserTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.infrastructure.http.AccountResourceControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.infrastructure.http.AccountResourceCookieAuthIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerTest$CommandHandlerErrorTests.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerTest$EdgeCaseTests.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerTest$SuccessfulRegistrationTests.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.infrastructure.http.UserRegisterControllerTest$ValidationErrorTests.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.infrastructure.persistence.keycloak.KeycloakRepositoryIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.infrastructure.persistence.keycloak.KeycloakRepositoryTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.users.infrastructure.service.AccountResourceServiceTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.application.create.CreateWorkspaceCommandHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.application.delete.DeleteWorkspaceCommandHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.application.find.FindWorkspaceQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.application.find.all.AllWorkspaceQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.application.find.member.AllWorkspaceByMemberQueryHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationServiceTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.application.update.UpdateWorkspaceCommandHandlerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.domain.WorkspaceTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.event.consumer.CreateDefaultWorkspaceOnUserCreationIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.event.consumer.CreateDefaultWorkspaceOnUserCreationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.http.CreateWorkspaceControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.http.CreateWorkspaceControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.http.DeleteWorkspaceControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.http.DeleteWorkspaceControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.http.FindWorkspaceControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.http.FindWorkspaceControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.http.GetAllWorkspaceControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.http.GetAllWorkspaceControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.http.UpdateWorkspaceControllerIntegrationTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.http.UpdateWorkspaceControllerTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.persistence.WorkspaceStoreR2DbcRepositoryTest.xml
+│       │   │       └───TEST-com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMemberMapperTest.xml
 │       │   └───tmp/
 │       │       ├───jar/
 │       │       │   └───MANIFEST.MF
