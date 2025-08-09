@@ -43,8 +43,8 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = faker.internet().emailAddress(),
-            firstname = firstname,
-            lastname = lastname,
+            firstName = firstname,
+            lastName = lastname,
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
@@ -74,8 +74,8 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = faker.internet().emailAddress(),
-            firstname = firstname,
-            lastname = null,
+            firstName = firstname,
+            lastName = null,
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
@@ -102,8 +102,8 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = faker.internet().emailAddress(),
-            firstname = null,
-            lastname = lastname,
+            firstName = null,
+            lastName = lastname,
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
@@ -129,8 +129,8 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = faker.internet().emailAddress(),
-            firstname = null,
-            lastname = null,
+            firstName = null,
+            lastName = null,
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
@@ -156,8 +156,8 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = faker.internet().emailAddress(),
-            firstname = faker.name().firstName(),
-            lastname = faker.name().lastName(),
+            firstName = faker.name().firstName(),
+            lastName = faker.name().lastName(),
         )
 
         val existingWorkspaces = WorkspaceStub.dummyRandomWorkspaces(2, UUID.fromString(userId))
@@ -178,8 +178,8 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = faker.internet().emailAddress(),
-            firstname = faker.name().firstName(),
-            lastname = faker.name().lastName(),
+            firstName = faker.name().firstName(),
+            lastName = faker.name().lastName(),
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
@@ -203,8 +203,8 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = faker.internet().emailAddress(),
-            firstname = faker.name().firstName(),
-            lastname = faker.name().lastName(),
+            firstName = faker.name().firstName(),
+            lastName = faker.name().lastName(),
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
@@ -228,8 +228,8 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = faker.internet().emailAddress(),
-            firstname = faker.name().firstName(),
-            lastname = faker.name().lastName(),
+            firstName = faker.name().firstName(),
+            lastName = faker.name().lastName(),
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } throws RuntimeException("Repository error")
@@ -254,8 +254,8 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = faker.internet().emailAddress(),
-            firstname = firstname,
-            lastname = lastname,
+            firstName = firstname,
+            lastName = lastname,
         )
 
         coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()

@@ -55,7 +55,7 @@ class CreateDefaultWorkspaceOnUserCreation(
 
             log.debug("Creating default workspace for user: {}", event.id)
             val workspaceId = UUID.randomUUID().toString()
-            val workspaceName = generateDefaultWorkspaceName(event.firstname, event.lastname)
+            val workspaceName = generateDefaultWorkspaceName(event.firstName, event.lastName)
 
             val createWorkspaceCommand = CreateWorkspaceCommand(
                 id = workspaceId,

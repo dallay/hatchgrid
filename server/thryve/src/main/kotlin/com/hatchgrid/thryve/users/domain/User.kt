@@ -121,8 +121,8 @@ data class User(
                 UserCreatedEvent(
                     id = user.id.value.toString(),
                     email = user.email.value,
-                    firstname = user.name?.firstName?.value,
-                    lastname = user.name?.lastName?.value,
+                    firstName = user.name?.firstName?.value,
+                    lastName = user.name?.lastName?.value,
                 ),
             )
 

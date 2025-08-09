@@ -6,7 +6,6 @@ import com.hatchgrid.thryve.config.InfrastructureTestContainers
 import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.users.domain.event.UserCreatedEvent
 import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.delay
@@ -51,8 +50,8 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = email,
-            firstname = firstname,
-            lastname = lastname,
+            firstName = firstname,
+            lastName = lastname,
         )
 
         // When
@@ -88,8 +87,8 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = email,
-            firstname = firstname,
-            lastname = null,
+            firstName = firstname,
+            lastName = null,
         )
 
         // When
@@ -119,8 +118,8 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = email,
-            firstname = null,
-            lastname = lastname,
+            firstName = null,
+            lastName = lastname,
         )
 
         // When
@@ -149,8 +148,8 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = email,
-            firstname = null,
-            lastname = null,
+            firstName = null,
+            lastName = null,
         )
 
         // When
@@ -184,8 +183,8 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         val firstEvent = UserCreatedEvent(
             id = userId,
             email = email,
-            firstname = firstname,
-            lastname = lastname,
+            firstName = firstname,
+            lastName = lastname,
         )
 
         // First event should create the workspace
@@ -199,8 +198,8 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         val secondEvent = UserCreatedEvent(
             id = userId,
             email = email,
-            firstname = firstname,
-            lastname = lastname,
+            firstName = firstname,
+            lastName = lastname,
         )
 
         eventPublisher.publish(secondEvent)
@@ -229,8 +228,8 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = email,
-            firstname = firstname,
-            lastname = lastname,
+            firstName = firstname,
+            lastName = lastname,
         )
 
         // When
@@ -261,8 +260,8 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = email,
-            firstname = firstname,
-            lastname = lastname,
+            firstName = firstname,
+            lastName = lastname,
         )
 
         // When
@@ -292,8 +291,8 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
             UserCreatedEvent(
                 id = userId,
                 email = faker.internet().emailAddress(),
-                firstname = faker.name().firstName(),
-                lastname = faker.name().lastName(),
+                firstName = faker.name().firstName(),
+                lastName = faker.name().lastName(),
             )
         }
 
