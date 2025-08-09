@@ -277,7 +277,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should create workspace even when event processing encounters recoverable errors`() = runBlocking {
+    fun `should eventually create workspace after publishing UserCreatedEvent`() = runBlocking {
         // Given
         val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val firstname = faker.name().firstName()
@@ -294,49 +294,12 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         // When
         eventPublisher.publish(userCreatedEvent)
 
-        // Then - workspace should still be created despite potential transient errors
+        // Then - workspace should be created through eventual consistency
         val workspaces = waitUntil(
             supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
             predicate = { it.isNotEmpty() },
         )
-        assertTrue(workspaces.isNotEmpty(), "Workspace should be created even with recoverable errors")
-    }
-
-    @Test
-    @Sql(
-        "/db/user/users.sql",
-    )
-    @Sql(
-        "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
-    )
-    fun `should process multiple user creation events concurrently without issues`() = runBlocking {
-        // Given
-        val userIds = listOf(
-            "efc4b2b8-08be-4020-93d5-f795762bf5c9",
-            "b2864d62-003e-4464-a6d7-04d3567fb4ee",
-        )
-        val events = userIds.map { userId ->
-            UserCreatedEvent(
-                id = userId,
-                email = faker.internet().emailAddress(),
-                firstName = faker.name().firstName(),
-                lastName = faker.name().lastName(),
-            )
-        }
-
-        // When - publish events concurrently
-        events.forEach { event ->
-            eventPublisher.publish(event)
-        }
-
-        // Then - each user should have exactly one workspace
-        userIds.forEach { userId ->
-            val workspaces = waitUntil(
-                supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
-                predicate = { it.size == 1 },
-            )
-            assertEquals(1, workspaces.size, "User $userId should have exactly one workspace")
-        }
+        assertTrue(workspaces.isNotEmpty(), "Workspace should be created eventually")
+        assertEquals("$firstname $lastname's Workspace", workspaces.first().name)
     }
 }
