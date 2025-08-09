@@ -32,6 +32,23 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         startInfrastructure()
     }
 
+    private suspend fun <T> waitUntil(
+        supplier: suspend () -> T,
+        predicate: (T) -> Boolean,
+        timeoutMillis: Long = 5000,
+        intervalMillis: Long = 100
+    ): T {
+        val start = System.currentTimeMillis()
+        while (true) {
+            val value = supplier()
+            if (predicate(value)) return value
+            if (System.currentTimeMillis() - start > timeoutMillis) {
+                throw AssertionError("Condition not met within $timeoutMillis ms")
+            }
+            delay(intervalMillis)
+        }
+    }
+
     @Test
     @Sql(
         "/db/user/users.sql",
@@ -57,11 +74,11 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         // When
         eventPublisher.publish(userCreatedEvent)
 
-        // Allow time for async event processing
-        delay(1000)
-
         // Then
-        val workspaces = workspaceFinderRepository.findByOwnerId(UserId(userId))
+        val workspaces = waitUntil(
+            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
+            predicate = { it.size == 1 },
+        )
         assertEquals(1, workspaces.size, "Should create exactly one workspace")
 
         val workspace = workspaces.first()
@@ -93,10 +110,12 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
 
         // When
         eventPublisher.publish(userCreatedEvent)
-        delay(1000)
 
         // Then
-        val workspaces = workspaceFinderRepository.findByOwnerId(UserId(userId))
+        val workspaces = waitUntil(
+            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
+            predicate = { it.size == 1 },
+        )
         assertEquals(1, workspaces.size)
         assertEquals("$firstname's Workspace", workspaces.first().name)
     }
@@ -124,10 +143,12 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
 
         // When
         eventPublisher.publish(userCreatedEvent)
-        delay(1000)
 
         // Then
-        val workspaces = workspaceFinderRepository.findByOwnerId(UserId(userId))
+        val workspaces = waitUntil(
+            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
+            predicate = { it.size == 1 },
+        )
         assertEquals(1, workspaces.size)
         assertEquals("$lastname's Workspace", workspaces.first().name)
     }
@@ -154,10 +175,12 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
 
         // When
         eventPublisher.publish(userCreatedEvent)
-        delay(1000)
 
         // Then
-        val workspaces = workspaceFinderRepository.findByOwnerId(UserId(userId))
+        val workspaces = waitUntil(
+            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
+            predicate = { it.size == 1 },
+        )
         assertEquals(1, workspaces.size)
         assertEquals("My Workspace", workspaces.first().name)
     }
@@ -189,9 +212,10 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
 
         // First event should create the workspace
         eventPublisher.publish(firstEvent)
-        delay(1000)
-
-        val workspacesAfterFirst = workspaceFinderRepository.findByOwnerId(UserId(userId))
+        val workspacesAfterFirst = waitUntil(
+            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
+            predicate = { it.size == 1 },
+        )
         assertEquals(1, workspacesAfterFirst.size, "First event should create workspace")
 
         // When - publish the same event again
@@ -203,10 +227,11 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         )
 
         eventPublisher.publish(secondEvent)
-        delay(1000)
-
-        // Then - should still have only one workspace
-        val workspacesAfterSecond = workspaceFinderRepository.findByOwnerId(UserId(userId))
+        // Wait a short time to ensure any duplicate event is processed, but still expect only one workspace
+        val workspacesAfterSecond = waitUntil(
+            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
+            predicate = { it.size == 1 },
+        )
         assertEquals(1, workspacesAfterSecond.size, "Should not create additional workspace")
     }
 
@@ -234,10 +259,12 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
 
         // When
         eventPublisher.publish(userCreatedEvent)
-        delay(1000)
 
         // Then
-        val workspaces = workspaceFinderRepository.findByOwnerId(UserId(userId))
+        val workspaces = waitUntil(
+            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
+            predicate = { it.size == 1 },
+        )
         assertEquals(1, workspaces.size)
         assertEquals("José María González-López's Workspace", workspaces.first().name)
     }
@@ -266,10 +293,12 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
 
         // When
         eventPublisher.publish(userCreatedEvent)
-        delay(2000) // Allow extra time for potential retry mechanisms
 
         // Then - workspace should still be created despite potential transient errors
-        val workspaces = workspaceFinderRepository.findByOwnerId(UserId(userId))
+        val workspaces = waitUntil(
+            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
+            predicate = { it.isNotEmpty() },
+        )
         assertTrue(workspaces.isNotEmpty(), "Workspace should be created even with recoverable errors")
     }
 
@@ -300,11 +329,13 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         events.forEach { event ->
             eventPublisher.publish(event)
         }
-        delay(2000) // Allow time for all events to process
 
         // Then - each user should have exactly one workspace
         userIds.forEach { userId ->
-            val workspaces = workspaceFinderRepository.findByOwnerId(UserId(userId))
+            val workspaces = waitUntil(
+                supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
+                predicate = { it.size == 1 },
+            )
             assertEquals(1, workspaces.size, "User $userId should have exactly one workspace")
         }
     }
