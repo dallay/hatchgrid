@@ -10,11 +10,13 @@ import com.hatchgrid.common.domain.bus.command.Command
  * @property password The password of the new user.
  * @property firstname The first name of the new user.
  * @property lastname The last name of the new user.
- * @property id The unique identifier of the command.
  */
 data class RegisterUserCommand(
     val email: String,
     val password: String,
     val firstname: String,
     val lastname: String
-) : Command
+) : Command {
+    override fun toString(): String =
+        "RegisterUserCommand(email='$email', password='***REDACTED***', firstname='$firstname', lastname='$lastname')"
+}

@@ -31,9 +31,12 @@ class UserRegistrator(
     /**
      * Registers a new user and broadcasts domain events.
      *
-     * @param user The user entity to be registered.
-     * @throws BusinessRuleValidationException If business rules are violated during user creation.
-     * @throws Exception For any other unexpected errors during registration.
+     * @param email The email address of the new user.
+     * @param credential The credential (password) for the new user.
+     * @param firstName The first name of the new user (nullable).
+     * @param lastName The last name of the new user (nullable).
+     *
+     * Fails if user creation violates business rules or an unexpected error occurs.
      */
     suspend fun registerNewUser(email: Email, credential: Credential, firstName: FirstName?, lastName: LastName?) {
         log.debug("Registering new user with email: {}", email.value)

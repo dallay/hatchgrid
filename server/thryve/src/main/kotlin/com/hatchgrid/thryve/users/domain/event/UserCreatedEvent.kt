@@ -5,7 +5,7 @@ import com.hatchgrid.common.domain.bus.event.BaseDomainEvent
 /**
  * Represents an event that is triggered when a user is created.
  *
- * This event contains the details of the newly created user, including their ID, email, username,
+ * This event contains the details of the newly created user, including their ID, email,
  * first name, and last name.
  *
  * @created 8/7/23
