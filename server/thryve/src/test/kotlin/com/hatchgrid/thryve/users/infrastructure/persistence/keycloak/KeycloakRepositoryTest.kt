@@ -11,7 +11,12 @@ import com.hatchgrid.thryve.users.infrastructure.persistence.UserStoreR2dbcRepos
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.verify
 import jakarta.ws.rs.ClientErrorException
 import jakarta.ws.rs.WebApplicationException
 import jakarta.ws.rs.core.Response
@@ -25,7 +30,6 @@ import org.keycloak.admin.client.Keycloak
 import org.keycloak.admin.client.resource.RealmResource
 import org.keycloak.admin.client.resource.UserResource
 import org.keycloak.admin.client.resource.UsersResource
-import org.keycloak.representations.idm.UserRepresentation
 
 private const val REALM = "realm"
 private const val SERVER_URL = "http://localhost/auth"

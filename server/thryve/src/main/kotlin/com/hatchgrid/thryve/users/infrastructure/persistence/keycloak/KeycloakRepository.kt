@@ -118,7 +118,9 @@ class KeycloakRepository(
                 }
                 HTTP_CONFLICT -> {
                     log.warn("User creation conflict for email: {}", email.value)
-                    throw UserStoreException("User with email: ${email.value} already exists")
+                    throw UserStoreException(
+                        "User with email: ${email.value} or username: ${email.value} already exists.",
+                    )
                 }
                 else -> {
                     log.error(

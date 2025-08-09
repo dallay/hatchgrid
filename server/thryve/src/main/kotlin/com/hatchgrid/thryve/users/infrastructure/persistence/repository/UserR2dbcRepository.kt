@@ -3,6 +3,7 @@ package com.hatchgrid.thryve.users.infrastructure.persistence.repository
 import com.hatchgrid.spring.boot.repository.ReactiveSearchRepository
 import com.hatchgrid.thryve.users.infrastructure.persistence.entity.UserEntity
 import java.util.UUID
+import org.springframework.data.r2dbc.repository.Modifying
 import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 import org.springframework.stereotype.Repository
@@ -18,5 +19,6 @@ interface UserR2dbcRepository :
         ON CONFLICT (id) DO NOTHING
     """,
     )
+    @Modifying
     suspend fun insertIgnoreConflict(id: UUID, email: String, fullName: String)
 }
