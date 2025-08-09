@@ -8,8 +8,7 @@ import com.hatchgrid.thryve.config.InfrastructureTestContainers
 import com.hatchgrid.thryve.users.domain.UserCreator
 import com.hatchgrid.thryve.users.domain.UserStoreException
 import com.hatchgrid.thryve.users.infrastructure.persistence.repository.UserR2dbcRepository
-import io.kotest.common.runBlocking
-import java.util.UUID
+import kotlinx.coroutines.runBlocking
 import net.datafaker.Faker
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -45,9 +44,10 @@ class KeycloakRepositoryIntegrationTest : InfrastructureTestContainers() {
         assertEquals(createdUser.name?.lastName?.value ?: "", lastName ?: "")
 
         // Assert local users row exists
-        val found = userR2dbcRepository.findById(UUID.fromString(createdUser.id.value.toString()))
+        val found = userR2dbcRepository.findById(createdUser.id.value)
         assertNotNull(found, "Local users row should be created after Keycloak registration")
-        assertEquals(email, found!!.email)
+        assertEquals(createdUser.id.value, found!!.id, "Found user's ID should match created user's ID")
+        assertEquals(email, found.email)
         assertEquals("$firstName $lastName".trim(), found.fullName)
     }
 
