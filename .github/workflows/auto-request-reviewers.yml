@@ -14,6 +14,8 @@ jobs:
     name: Auto Request Review
     runs-on: ubuntu-latest
     steps:
+      # This step sets the CI_GITHUB_TOKEN environment variable from the default GITHUB_TOKEN secret
+      # if CI_GITHUB_TOKEN is not already set. This ensures CI jobs have a valid token for GitHub API access.
       - name: "🔍 CI_GITHUB_TOKEN"
         if: env.CI_GITHUB_TOKEN == ''
         env:
