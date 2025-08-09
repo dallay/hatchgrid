@@ -30,7 +30,7 @@ jobs:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
         with:
           # In pr-mode: 'true' Qodana checks only changed files
-          pr-mode: false
+          pr-mode: true
           use-caches: true
           post-pr-comment: true
           use-annotations: true
