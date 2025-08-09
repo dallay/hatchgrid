@@ -150,6 +150,35 @@ class CreateDefaultWorkspaceOnUserCreationTest {
     }
 
     @Test
+    fun `should create default workspace with 'My Workspace' when both names contain only whitespace`() = runBlocking {
+        // Given
+        val userId = UUID.randomUUID().toString()
+        val firstname = "   "
+        val lastname = "  \t  \n  "
+        val userCreatedEvent = UserCreatedEvent(
+            id = userId,
+            email = faker.internet().emailAddress(),
+            firstName = firstname,
+            lastName = lastname,
+        )
+
+        coEvery { workspaceFinderRepository.findByOwnerId(UserId(userId)) } returns emptyList()
+        coEvery { mediator.send(any<CreateWorkspaceCommand>()) } just Runs
+
+        // When
+        consumer.consume(userCreatedEvent)
+
+        // Then
+        coVerify(exactly = 1) {
+            mediator.send(
+                match<CreateWorkspaceCommand> { command ->
+                    command.name == "My Workspace"
+                },
+            )
+        }
+    }
+
+    @Test
     fun `should not create workspace when user already has workspaces`() = runBlocking {
         // Given
         val userId = UUID.randomUUID().toString()
