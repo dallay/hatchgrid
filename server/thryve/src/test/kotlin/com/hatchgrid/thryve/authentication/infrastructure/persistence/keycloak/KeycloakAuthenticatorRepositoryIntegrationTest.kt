@@ -1,12 +1,15 @@
 package com.hatchgrid.thryve.authentication.infrastructure.persistence.keycloak
 
 import com.hatchgrid.IntegrationTest
+import com.hatchgrid.common.domain.vo.credential.Credential
+import com.hatchgrid.common.domain.vo.email.Email
+import com.hatchgrid.common.domain.vo.name.FirstName
+import com.hatchgrid.common.domain.vo.name.LastName
 import com.hatchgrid.thryve.CredentialGenerator
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticationException
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticator
 import com.hatchgrid.thryve.authentication.domain.Username
 import com.hatchgrid.thryve.config.InfrastructureTestContainers
-import com.hatchgrid.thryve.users.domain.User
 import com.hatchgrid.thryve.users.domain.UserCreator
 import kotlinx.coroutines.runBlocking
 import net.datafaker.Faker
@@ -97,13 +100,10 @@ class KeycloakAuthenticatorRepositoryIntegrationTest : InfrastructureTestContain
     fun `should throw exception when user is not verified`(): Unit = runBlocking {
         val randomEmail = faker.internet().emailAddress()
         val randomPassword = faker.internet().password(8, 80, true, true, true) + "1Aa@"
-        val user = User.create(
-            email = randomEmail,
-            firstName = faker.name().firstName(),
-            lastName = faker.name().lastName(),
-            password = randomPassword,
+        val createdUser = userCreator.create(
+            Email(randomEmail), Credential.create(randomPassword),
+            FirstName(faker.name().firstName()), LastName(faker.name().lastName()),
         )
-        val createdUser = userCreator.create(user)
         assertNotNull(createdUser)
         val username = Username(randomEmail)
         val credential = CredentialGenerator.generate(randomPassword)

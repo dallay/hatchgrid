@@ -3,14 +3,20 @@ package com.hatchgrid.thryve.users.domain.event
 import com.hatchgrid.common.domain.bus.event.BaseDomainEvent
 
 /**
- * User created event is published when a new user is created.
+ * Represents an event that is triggered when a user is created.
  *
- * @created 2/7/23
+ * This event contains the details of the newly created user, including their ID, email, username,
+ * first name, and last name.
+ *
+ * @created 8/7/23
+ * @property id The unique identifier of the user.
+ * @property email The email address of the user.
+ * @property firstname The first name of the user, nullable if not provided.
+ * @property lastname The last name of the user, nullable if not provided.
  */
 data class UserCreatedEvent(
-    val userId: String,
+    val id: String,
     val email: String,
-    val username: String,
     val firstname: String?,
     val lastname: String?
 ) : BaseDomainEvent()

@@ -1,12 +1,15 @@
 package com.hatchgrid.thryve.users.infrastructure.persistence.keycloak
 
 import com.hatchgrid.common.domain.vo.email.Email
-import com.hatchgrid.thryve.authentication.domain.Username
+import com.hatchgrid.common.domain.vo.name.FirstName
+import com.hatchgrid.common.domain.vo.name.LastName
+import com.hatchgrid.thryve.CredentialGenerator
 import com.hatchgrid.thryve.config.InfrastructureTestContainers
-import com.hatchgrid.thryve.users.domain.User
 import com.hatchgrid.thryve.users.domain.UserCreator
 import com.hatchgrid.thryve.users.domain.UserStoreException
+import com.hatchgrid.thryve.users.infrastructure.persistence.repository.UserR2dbcRepository
 import io.kotest.common.runBlocking
+import java.util.UUID
 import net.datafaker.Faker
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -19,116 +22,62 @@ class KeycloakRepositoryIntegrationTest : InfrastructureTestContainers() {
     @Autowired
     private lateinit var userCreator: UserCreator
 
+    @Autowired
+    private lateinit var userR2dbcRepository: UserR2dbcRepository
+
     private val faker = Faker()
 
     @Test
     fun `should create a new user`() = runBlocking {
-        val user = User.create(
-            email = faker.internet().emailAddress(),
-            firstName = faker.name().firstName(),
-            lastName = faker.name().lastName(),
-        )
+        val email = faker.internet().emailAddress()
+        val firstName = faker.name().firstName()
+        val lastName = faker.name().lastName()
 
-        val createdUser = userCreator.create(user)
+        val createdUser = userCreator.create(
+            Email(email),
+            CredentialGenerator.generate(), FirstName(firstName),
+            LastName(lastName),
+        )
         assertNotNull(createdUser)
-        assertEquals(createdUser.email, user.email)
-        assertEquals(createdUser.username, user.username)
-        assertEquals(createdUser.name?.firstName ?: "", user.name?.firstName ?: "")
-        assertEquals(createdUser.name?.lastName ?: "", user.name?.lastName ?: "")
+        assertEquals(createdUser.email.value, email)
+        assertEquals(createdUser.username.value, email)
+        assertEquals(createdUser.name?.firstName?.value ?: "", firstName ?: "")
+        assertEquals(createdUser.name?.lastName?.value ?: "", lastName ?: "")
+
+        // Assert local users row exists
+        val found = userR2dbcRepository.findById(UUID.fromString(createdUser.id.value.toString()))
+        assertNotNull(found, "Local users row should be created after Keycloak registration")
+        assertEquals(email, found!!.email)
+        assertEquals("$firstName $lastName".trim(), found.fullName)
     }
 
     @Test
     fun `should not create a new user with an existing email`() = runBlocking {
-        val user = User.create(
-            email = faker.internet().emailAddress(),
-            firstName = faker.name().firstName(),
-            lastName = faker.name().lastName(),
+        val email = faker.internet().emailAddress()
+        val firstName = faker.name().firstName()
+        val lastName = faker.name().lastName()
+
+        val createdUser = userCreator.create(
+            Email(email),
+            CredentialGenerator.generate(), FirstName(firstName),
+            LastName(lastName),
         )
-
-        val createdUser = userCreator.create(user)
         assertNotNull(createdUser)
-        assertEquals(createdUser.email, user.email)
-        assertEquals(createdUser.username, user.username)
-        assertEquals(createdUser.name?.firstName ?: "", user.name?.firstName ?: "")
-        assertEquals(createdUser.name?.lastName ?: "", user.name?.lastName ?: "")
-
-        val newUsername = Username(faker.internet().username())
-        val duplicateUser = user.copy(username = newUsername)
+        assertEquals(createdUser.email.value, email)
+        assertEquals(createdUser.username.value, email)
+        assertEquals(createdUser.name?.firstName?.value ?: "", firstName ?: "")
+        assertEquals(createdUser.name?.lastName?.value ?: "", lastName ?: "")
 
         // Act & Assert (try to create duplicate user)
         val exception = assertThrows<UserStoreException> {
-            userCreator.create(duplicateUser)
+            userCreator.create(
+                Email(email),
+                CredentialGenerator.generate(), FirstName(faker.name().firstName()),
+                LastName(faker.name().lastName()),
+            )
         }
         assertEquals(
-            "User with email: ${user.email.value} or username: ${newUsername.value} already exists.",
-            exception.message,
-        )
-    }
-
-    @Test
-    fun `should not create a new user with an existing username`() = runBlocking {
-        val user = User.create(
-            email = faker.internet().emailAddress(),
-            firstName = faker.name().firstName(),
-            lastName = faker.name().lastName(),
-        )
-
-        val createdUser = userCreator.create(user)
-        assertNotNull(createdUser)
-        assertEquals(createdUser.email, user.email)
-        assertEquals(createdUser.username, user.username)
-        assertEquals(createdUser.name?.firstName ?: "", user.name?.firstName ?: "")
-        assertEquals(createdUser.name?.lastName ?: "", user.name?.lastName ?: "")
-
-        val newEmail = Email("newuser@test.com")
-        val duplicateUser = user.copy(email = newEmail)
-
-        // Act & Assert (try to create duplicate user)
-        val exception = assertThrows<UserStoreException> {
-            userCreator.create(duplicateUser)
-        }
-        assertEquals(
-            "User with email: ${newEmail.value} or username: ${user.username.value} already exists.",
-            exception.message,
-        )
-    }
-
-    @Test
-    fun `should not create a new user with an existing email and username`() = runBlocking {
-        val user = User.create(
-            email = faker.internet().emailAddress(),
-            firstName = faker.name().firstName(),
-            lastName = faker.name().lastName(),
-        )
-
-        val createdUser = userCreator.create(user)
-        assertNotNull(createdUser)
-        assertEquals(createdUser.email, user.email)
-        assertEquals(createdUser.username, user.username)
-        assertEquals(createdUser.name?.firstName ?: "", user.name?.firstName ?: "")
-        assertEquals(createdUser.name?.lastName ?: "", user.name?.lastName ?: "")
-
-        val newUsername = Username(faker.internet().username())
-        val newEmail = Email("ultra@gmail.com")
-        var duplicateUser = user.copy(username = newUsername)
-
-        // Act & Assert (try to create duplicate user)
-        var exception = assertThrows<UserStoreException> {
-            userCreator.create(duplicateUser)
-        }
-        assertEquals(
-            "User with email: ${user.email.value} or username: ${newUsername.value} already exists.",
-            exception.message,
-        )
-
-        duplicateUser = user.copy(email = newEmail)
-
-        // Act & Assert (try to create duplicate user)
-        exception = assertThrows<UserStoreException> {
-            userCreator.create(duplicateUser)
-        }
-        assertEquals(
-            "User with email: ${newEmail.value} or username: ${user.username.value} already exists.",
+            "User with email: $email or username: $email already exists.",
             exception.message,
         )
     }

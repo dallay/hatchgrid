@@ -1,0 +1,22 @@
+package com.hatchgrid.thryve.users.infrastructure.persistence.repository
+
+import com.hatchgrid.spring.boot.repository.ReactiveSearchRepository
+import com.hatchgrid.thryve.users.infrastructure.persistence.entity.UserEntity
+import java.util.UUID
+import org.springframework.data.r2dbc.repository.Query
+import org.springframework.data.repository.kotlin.CoroutineCrudRepository
+import org.springframework.stereotype.Repository
+
+@Repository
+interface UserR2dbcRepository :
+    CoroutineCrudRepository<UserEntity, UUID>,
+    ReactiveSearchRepository<UserEntity> {
+    @Query(
+        """
+        INSERT INTO users (id, email, full_name)
+        VALUES (:id, :email, :fullName)
+        ON CONFLICT (id) DO NOTHING
+    """,
+    )
+    suspend fun insertIgnoreConflict(id: UUID, email: String, fullName: String)
+}
