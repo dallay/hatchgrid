@@ -2310,9 +2310,7 @@ description: Overview of the project structure and organization.
 │       │   ├───test-results/
 │       │   │   └───test/
 │       │   │       ├───binary/
-│       │   │       │   ├───output.bin
-│       │   │       │   ├───output.bin.idx
-│       │   │       │   └───results.bin
+│       │   │       │   └───output.bin
 │       │   │       ├───TEST-com.hatchgrid.ApplicationStartupTracesTest.xml
 │       │   │       ├───TEST-com.hatchgrid.ArchTest.xml
 │       │   │       ├───TEST-com.hatchgrid.thryve.BeanValidationTest.xml
@@ -2722,8 +2720,10 @@ description: Overview of the project structure and organization.
 │       │   │   │   │   │   └───lookups/
 │       │   │   │   │   │       └───...
 │       │   │   │   │   └───last-build.bin
-│       │   │   │   └───classpath-snapshot/
-│       │   │   │       └───shrunk-classpath-snapshot.bin
+│       │   │   │   ├───classpath-snapshot/
+│       │   │   │   │   └───shrunk-classpath-snapshot.bin
+│       │   │   │   └───local-state/
+│       │   │   │       └───build-history.bin
 │       │   │   └───compileTestKotlin/
 │       │   │       ├───cacheable/
 │       │   │       │   ├───caches-jvm/
@@ -2734,8 +2734,10 @@ description: Overview of the project structure and organization.
 │       │   │       │   │   └───lookups/
 │       │   │       │   │       └───...
 │       │   │       │   └───last-build.bin
-│       │   │       └───classpath-snapshot/
-│       │   │           └───shrunk-classpath-snapshot.bin
+│       │   │       ├───classpath-snapshot/
+│       │   │       │   └───shrunk-classpath-snapshot.bin
+│       │   │       └───local-state/
+│       │   │           └───build-history.bin
 │       │   ├───kover/
 │       │   │   ├───bin-reports/
 │       │   │   │   ├───coverage-error.log

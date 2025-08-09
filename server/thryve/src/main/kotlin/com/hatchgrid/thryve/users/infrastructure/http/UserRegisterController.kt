@@ -97,7 +97,7 @@ class UserRegisterController(
         val causeMessage = error.cause?.message?.lowercase() ?: ""
 
         val validationKeywords = listOf(
-            "already exists", "invalid", "duplicate", "constraint",
+            "already exists", "invalid", "duplicate", "constraint", "conflict",
             "validation", "password", "email", "weak", "complexity",
         )
 
