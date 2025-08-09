@@ -501,7 +501,7 @@ formatting:
     autoCorrect: true
   NoWildcardImports:
     active: true
-    packagesToUseImportOnDemandProperty: 'org.gradle.kotlin.dsl.*,java.util.*,kotlinx.android.synthetic.**'
+    packagesToUseImportOnDemandProperty: 'org.gradle.kotlin.dsl.*,java.util.*,kotlinx.android.synthetic.**,io.mockk.*'
   PackageName:
     active: true
     autoCorrect: true
@@ -1277,6 +1277,7 @@ style:
     excludeImports:
       - 'java.util.*'
       - 'org.gradle.kotlin.dsl.*'
+      - 'io.mockk.*'
 
 Compose:
   CompositionLocalAllowlist:

@@ -16,7 +16,7 @@ internal class UserTest {
 
     @Test
     fun `should create a valid user`() {
-        val user = User.create(emailOrUsername, firstname, lastname)
+        val user = User.create(UUID.randomUUID().toString(), emailOrUsername, firstname, lastname)
         assertEquals(emailOrUsername, user.email.value)
         assertEquals(emailOrUsername, user.username.value)
         assertEquals(firstname, user.name?.firstName?.value)
@@ -25,7 +25,7 @@ internal class UserTest {
 
     @Test
     fun `should update user name`() {
-        val user = User.create(emailOrUsername, firstname, lastname)
+        val user = User.create(UUID.randomUUID().toString(), emailOrUsername, firstname, lastname)
         val newFirstName = "Hatchgrid"
         val newLastName = "Hatchgrid"
         user.updateName(newFirstName, newLastName)
@@ -53,7 +53,7 @@ internal class UserTest {
 
     @Test
     fun `should return full name`() {
-        val user = User.create(emailOrUsername, firstname, lastname)
+        val user = User.create(UUID.randomUUID().toString(), emailOrUsername, firstname, lastname)
         assertEquals("$firstname $lastname", user.fullName())
     }
 }
