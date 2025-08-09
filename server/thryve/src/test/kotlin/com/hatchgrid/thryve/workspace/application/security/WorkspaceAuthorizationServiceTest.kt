@@ -38,7 +38,7 @@ class WorkspaceAuthorizationServiceTest {
             workspaceAuthorizationService.ensureAccess(workspaceId, userId)
         }
 
-        assertTrue(exception.message!!.contains("User $userId has no access to workspace $workspaceId"))
+        assertTrue(exception.message.contains("User $userId has no access to workspace $workspaceId"))
     }
 
     @Test
