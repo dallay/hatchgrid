@@ -52,14 +52,24 @@ class CustomClaimConverter(
     override fun convert(claims: Map<String, Any>): Map<String, Any> {
         log.debug("Starting claim conversion")
         val convertedClaims = delegate.convert(claims)?.toMutableMap() ?: mutableMapOf()
+
+        // Handle user loading synchronously for the converter interface
         val userMono = getUser(claims)
-        userMono
-            .subscribe(
-                { user ->
-                    Mono.justOrEmpty(appendCustomClaim(convertedClaims, user)).defaultIfEmpty(convertedClaims)
-                },
-                { error -> log.error("Error getting user information: {}", error) },
-            )
+        try {
+            userMono
+                .doOnNext { user ->
+                    appendCustomClaim(convertedClaims, user)
+                }
+                .doOnError { error ->
+                    log.error("Error getting user information: {}", error.message, error)
+                }
+                .block() // Block to wait for the result since Converter interface is synchronous
+        } catch (e: IllegalStateException) {
+            log.error("Failed to load user claims due to reactive stream error: {}", e.message, e)
+        } catch (@Suppress("TooGenericExceptionCaught") e: RuntimeException) {
+            log.error("Failed to load user claims: {}", e.message, e)
+        }
+
         return convertedClaims
     }
 
