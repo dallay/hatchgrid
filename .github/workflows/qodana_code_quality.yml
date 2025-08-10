@@ -16,6 +16,9 @@ on:
 jobs:
   qodana:
     runs-on: ubuntu-latest
+    concurrency:
+      group: qodana-${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     permissions:
       contents: read
       pull-requests: write
@@ -36,6 +39,6 @@ jobs:
           post-pr-comment: true
           use-annotations: true
           # Upload Qodana results (SARIF, other artifacts, logs) as an artifact to the job
-          upload-result: false
+          upload-result: ${{ github.event_name != 'pull_request' }}
           # quick-fixes available in Ultimate and Ultimate Plus plans
           push-fixes: 'none'
