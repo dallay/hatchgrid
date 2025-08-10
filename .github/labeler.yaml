@@ -5,6 +5,10 @@ area:backend:
   - changed-files:
     - any-glob-to-any-file:
       - 'server/**'
+
+area:shared:
+  - changed-files:
+    - any-glob-to-any-file:
       - 'shared/**'
 
 area:frontend:web:
@@ -30,20 +34,26 @@ area:ci:
     - any-glob-to-any-file:
       - '.github/**'
 
-type:docs:
-  - changed-files:
-    - any-glob-to-any-file:
-      - 'docs/**'
-      - '**/*.md'
-      - '**/*.mdx'
-
 type:chore:
   - changed-files:
     - any-glob-to-any-file:
-      - '**/*.yml'
-      - '**/*.yaml'
-      - '**/*.json'
+      - '.github/**'
+      - 'config/**'
+      - 'scripts/**'
       - '.editorconfig'
       - '.prettier*'
       - '.eslintrc*'
 
+type:test:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.spec.*'
+      - '**/*.test.*'
+      - 'tests/**'
+
+area:infra:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'docker/**'
+      - 'infrastructure/**'
+      - 'iac/**'
