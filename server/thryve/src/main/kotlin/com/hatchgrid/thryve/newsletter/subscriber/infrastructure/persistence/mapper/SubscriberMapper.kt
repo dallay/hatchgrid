@@ -2,6 +2,7 @@ package com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.ma
 
 import com.hatchgrid.common.domain.vo.email.Email
 import com.hatchgrid.common.domain.vo.name.FirstName
+import com.hatchgrid.common.domain.vo.name.FirstNameNotValidException
 import com.hatchgrid.common.domain.vo.name.LastName
 import com.hatchgrid.common.domain.vo.name.Name
 import com.hatchgrid.thryve.newsletter.subscriber.domain.Subscriber
@@ -41,12 +42,15 @@ object SubscriberMapper {
      */
 
     fun SubscriberEntity.toDomain(): Subscriber {
+        val firstName = firstname?.takeIf { it.isNotBlank() }?.let { FirstName(it) }
+            ?: throw FirstNameNotValidException(firstname ?: "null")
+        val lastName = lastname?.takeIf { it.isNotBlank() }?.let { LastName(it) }
         return Subscriber(
             id = SubscriberId(id),
             email = Email(email),
             name = Name(
-                firstName = firstname?.let { FirstName(it) } ?: FirstName(""),
-                lastName = lastname?.let { LastName(it) } ?: LastName(""),
+                firstName = firstName,
+                lastName = lastName,
             ),
             status = status,
             attributes = attributes,

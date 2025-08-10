@@ -51,6 +51,7 @@ description: Overview of the project structure and organization.
 │   │   ├───require-linked-issue.yml
 │   │   ├───semantic-pull-request.yml
 │   │   ├───stale.yml
+│   │   ├───sync-labels.yml
 │   │   └───test-pnpm.yml
 │   ├───CODEOWNERS
 │   ├───FUNDING.yml
@@ -59,7 +60,8 @@ description: Overview of the project structure and organization.
 │   ├───copilot-instructions.md
 │   ├───dependabot.yml
 │   ├───issue-labeler-config.yml
-│   └───labeler.yml
+│   ├───labeler.yaml
+│   └───labels.yml
 ├───.kiro/
 │   ├───hooks/
 │   │   ├───code-quality-analyzer.kiro.hook
@@ -2138,6 +2140,7 @@ description: Overview of the project structure and organization.
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.SubscriberCountByTagsControllerTest.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.SubscriberR2dbcRepositoryTest.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.converter.SubscriberConverterTest.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.mapper.SubscriberMapperTest.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.application.create.CreateTagCommandHandlerTest.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.application.delete.DeleteTagCommandHandlerTest.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.application.list.GetAllTagsQueryHandlerTest.html
@@ -2231,6 +2234,7 @@ description: Overview of the project structure and organization.
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.converter.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.html
+│       │   │           │   ├───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.mapper.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.application.create.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.application.delete.html
 │       │   │           │   ├───com.hatchgrid.thryve.newsletter.tag.application.list.html
@@ -2394,6 +2398,7 @@ description: Overview of the project structure and organization.
 │       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.http.SubscriberCountByTagsControllerTest.xml
 │       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.SubscriberR2dbcRepositoryTest.xml
 │       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.converter.SubscriberConverterTest.xml
+│       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.mapper.SubscriberMapperTest.xml
 │       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.application.create.CreateTagCommandHandlerTest.xml
 │       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.application.delete.DeleteTagCommandHandlerTest.xml
 │       │   │       ├───TEST-com.hatchgrid.thryve.newsletter.tag.application.list.GetAllTagsQueryHandlerTest.xml
