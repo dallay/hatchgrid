@@ -15,6 +15,7 @@ import java.util.UUID
  * @property name The name of the workspace.
  * @property description The description of the workspace.
  * @property ownerId The ID of the user who owns the workspace.
+ * @property isDefault Whether this is the default workspace for the owner.
  * @property members The list of user IDs who are members of the workspace.
  * @property createdAt The date and time when the workspace was created.
  * @property updatedAt The date and time when the workspace was last updated.
@@ -24,6 +25,7 @@ data class Workspace(
     var name: String,
     var description: String? = null,
     val ownerId: UserId,
+    val isDefault: Boolean = false,
     val members: MutableSet<UserId> = mutableSetOf(),
     override val createdAt: LocalDateTime = LocalDateTime.now(),
     override val createdBy: String = "system",
@@ -106,13 +108,15 @@ data class Workspace(
          * @param name The name of the workspace.
          * @param description The description of the workspace.
          * @param ownerId The ID of the user who owns the workspace.
+         * @param isDefault Whether this is the default workspace for the owner.
          * @return The newly created Workspace object.
          */
         fun create(
             id: UUID,
             name: String,
             description: String? = null,
-            ownerId: UUID
+            ownerId: UUID,
+            isDefault: Boolean = false
         ): Workspace {
             val workspaceId = WorkspaceId(id.toString())
             val owner = UserId(ownerId.toString())
@@ -121,6 +125,7 @@ data class Workspace(
                 name = name,
                 description = description,
                 ownerId = owner,
+                isDefault = isDefault,
                 members = mutableSetOf(owner),
             )
 

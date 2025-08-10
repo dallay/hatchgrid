@@ -8,10 +8,10 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import java.util.*
 import kotlin.test.assertEquals
-import kotlinx.coroutines.runBlocking
+import kotlin.test.assertFailsWith
+import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 @UnitTest
 class RegisterUserCommandHandlerTest {
@@ -19,7 +19,7 @@ class RegisterUserCommandHandlerTest {
     private val faker = Faker()
 
     @Test
-    fun `should map command to value objects and delegate to UserRegistrator`(): Unit = runBlocking {
+    fun `should map command to value objects and delegate to UserRegistrator`() = runTest {
         // Given
         val userRegistrator: UserRegistrator = mockk(relaxed = true)
         val handler = RegisterUserCommandHandler(userRegistrator)
@@ -38,7 +38,14 @@ class RegisterUserCommandHandlerTest {
         )
 
         // Mock the registrator to return a UUID
-        coEvery { userRegistrator.registerNewUser(any(), any(), any(), any()) } returns expectedUserId
+        coEvery {
+            userRegistrator.registerNewUser(
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        } returns expectedUserId
 
         // When
         val actualUserId = handler.handle(command)
@@ -58,7 +65,7 @@ class RegisterUserCommandHandlerTest {
     }
 
     @Test
-    fun `should not delegate and throw when command has invalid email`(): Unit = runBlocking {
+    fun `should not delegate and throw when command has invalid email`() = runTest {
         // Given
         val userRegistrator: UserRegistrator = mockk(relaxed = true)
         val handler = RegisterUserCommandHandler(userRegistrator)
@@ -76,8 +83,8 @@ class RegisterUserCommandHandlerTest {
         )
 
         // When & Then - Email value object should fail validation before delegating
-        assertThrows<EmailNotValidException> {
-            runBlocking { handler.handle(command) }
+        assertFailsWith<EmailNotValidException> {
+            handler.handle(command)
         }
 
         // Ensure no delegation happened

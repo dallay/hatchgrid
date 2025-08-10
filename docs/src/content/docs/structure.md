@@ -2052,7 +2052,8 @@ description: Overview of the project structure and organization.
 │       │   │   │   └───test.ic
 │       │   │   └───kover-jvm-agent-0.8.3.jar
 │       │   ├───libs/
-│       │   │   └───thryve-0.0.1-SNAPSHOT-plain.jar
+│       │   │   ├───thryve-0.0.1-SNAPSHOT-plain.jar
+│       │   │   └───thryve-0.0.1-SNAPSHOT.jar
 │       │   ├───reports/
 │       │   │   └───tests/
 │       │   │       └───test/
@@ -2449,11 +2450,14 @@ description: Overview of the project structure and organization.
 │       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.http.UpdateWorkspaceControllerTest.xml
 │       │   │       ├───TEST-com.hatchgrid.thryve.workspace.infrastructure.persistence.WorkspaceStoreR2DbcRepositoryTest.xml
 │       │   │       └───TEST-com.hatchgrid.thryve.workspace.infrastructure.persistence.mapper.WorkspaceMemberMapperTest.xml
-│       │   └───tmp/
-│       │       ├───jar/
-│       │       │   └───MANIFEST.MF
-│       │       └───test/
-│       │           └───kover-agent.args
+│       │   ├───tmp/
+│       │   │   ├───bootJar/
+│       │   │   │   └───MANIFEST.MF
+│       │   │   ├───jar/
+│       │   │   │   └───MANIFEST.MF
+│       │   │   └───test/
+│       │   │       └───kover-agent.args
+│       │   └───resolvedMainClassName
 │       ├───src/
 │       │   ├───main/
 │       │   │   ├───kotlin/

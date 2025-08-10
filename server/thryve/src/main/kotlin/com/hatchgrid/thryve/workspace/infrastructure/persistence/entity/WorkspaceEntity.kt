@@ -30,6 +30,9 @@ data class WorkspaceEntity(
     @Column("owner_id")
     val ownerId: UUID,
 
+    @Column("is_default")
+    val isDefault: Boolean = false,
+
     @CreatedBy
     @Column("created_by")
     override val createdBy: String = "system",
@@ -58,5 +61,5 @@ data class WorkspaceEntity(
      *
      * @return A boolean indicating whether the workspace is new.
      */
-    override fun isNew(): Boolean = createdAt == updatedAt
+    override fun isNew(): Boolean = updatedAt == null || createdAt == updatedAt
 }

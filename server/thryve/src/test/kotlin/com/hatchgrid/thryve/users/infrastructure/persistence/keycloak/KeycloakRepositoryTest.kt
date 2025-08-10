@@ -121,6 +121,7 @@ class KeycloakRepositoryTest {
         }
 
         // Verify that keycloakUserResource.create was called with correct UserRepresentation
+        verify(exactly = 1) { keycloak.realm(REALM) }
         verify(exactly = 1) {
             keycloakUserResource.create(
                 match { userRep ->
@@ -162,6 +163,8 @@ class KeycloakRepositoryTest {
         result.name?.lastName?.value shouldBe null
 
         verify { keycloakUserResource.create(any()) }
+        // Verify that response.close() was called to ensure resource cleanup
+        verify(exactly = 1) { response.close() }
         // Verify that no pre-existence checks are performed
         verify(exactly = 0) { keycloakUserResource.searchByEmail(any(), any()) }
         verify(exactly = 0) { keycloakUserResource.searchByUsername(any(), any()) }
