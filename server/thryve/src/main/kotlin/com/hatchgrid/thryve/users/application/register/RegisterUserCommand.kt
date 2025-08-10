@@ -5,7 +5,7 @@ import java.util.*
 
 /**
  * Represents a command to register a new user.
- * 
+ *
  * @property email The email of the new user.
  * @property password The password of the new user.
  * @property firstname The first name of the new user.
