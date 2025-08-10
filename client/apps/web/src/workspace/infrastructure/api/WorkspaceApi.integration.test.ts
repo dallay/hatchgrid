@@ -29,6 +29,7 @@ describe("WorkspaceApi Integration Tests", () => {
 		name: "Test Workspace",
 		description: "A test workspace",
 		ownerId: "456e7890-e89b-12d3-a456-426614174001",
+		isDefault: false,
 		createdAt: "2023-01-01T00:00:00Z",
 		updatedAt: "2023-01-01T00:00:00Z",
 	};
@@ -38,6 +39,7 @@ describe("WorkspaceApi Integration Tests", () => {
 		name: "Another Workspace",
 		description: "Another test workspace",
 		ownerId: "456e7890-e89b-12d3-a456-426614174001",
+		isDefault: false,
 		createdAt: "2023-01-02T00:00:00Z",
 		updatedAt: "2023-01-02T00:00:00Z",
 	};

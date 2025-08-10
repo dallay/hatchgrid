@@ -8,6 +8,7 @@ describe("Workspace", () => {
 			name: "Test Workspace",
 			description: "A test workspace",
 			ownerId: "123e4567-e89b-12d3-a456-426614174001",
+			isDefault: false,
 			createdAt: "2024-01-01T00:00:00Z",
 			updatedAt: "2024-01-01T00:00:00Z",
 		};
@@ -21,6 +22,7 @@ describe("Workspace", () => {
 				id: "123e4567-e89b-12d3-a456-426614174000",
 				name: "Test Workspace",
 				ownerId: "123e4567-e89b-12d3-a456-426614174001",
+				isDefault: true,
 				createdAt: "2024-01-01T00:00:00Z",
 				updatedAt: "2024-01-01T00:00:00Z",
 			};
@@ -50,11 +52,12 @@ describe("Workspace", () => {
 			}
 		});
 
-		it("should return false when required string fields are missing", () => {
+		it("should return false when required fields are missing", () => {
 			const requiredFields = [
 				"id",
 				"name",
 				"ownerId",
+				"isDefault",
 				"createdAt",
 				"updatedAt",
 			] as const;
@@ -67,7 +70,7 @@ describe("Workspace", () => {
 		});
 
 		it("should return false when required string fields are not strings", () => {
-			const requiredFields = [
+			const requiredStringFields = [
 				"id",
 				"name",
 				"ownerId",
@@ -76,7 +79,7 @@ describe("Workspace", () => {
 			];
 			const nonStringValues = [123, true, null, undefined, {}, []];
 
-			for (const field of requiredFields) {
+			for (const field of requiredStringFields) {
 				for (const nonStringValue of nonStringValues) {
 					const invalidWorkspace = {
 						...validWorkspace,
@@ -84,6 +87,30 @@ describe("Workspace", () => {
 					};
 					expect(isWorkspace(invalidWorkspace)).toBe(false);
 				}
+			}
+		});
+
+		it("should return false when isDefault is not a boolean", () => {
+			const nonBooleanValues = ["true", 123, null, undefined, {}, []];
+
+			for (const nonBooleanValue of nonBooleanValues) {
+				const invalidWorkspace = {
+					...validWorkspace,
+					isDefault: nonBooleanValue,
+				};
+				expect(isWorkspace(invalidWorkspace)).toBe(false);
+			}
+		});
+
+		it("should return false when isDefault is not a boolean", () => {
+			const nonBooleanValues = [123, "true", null, undefined, {}, []];
+
+			for (const nonBooleanValue of nonBooleanValues) {
+				const invalidWorkspace = {
+					...validWorkspace,
+					isDefault: nonBooleanValue,
+				};
+				expect(isWorkspace(invalidWorkspace)).toBe(false);
 			}
 		});
 
@@ -126,7 +153,7 @@ describe("Workspace", () => {
 			const partialWorkspace = {
 				id: "123e4567-e89b-12d3-a456-426614174000",
 				name: "Test Workspace",
-				// missing ownerId, createdAt, updatedAt
+				// missing ownerId, isDefault, createdAt, updatedAt
 			};
 
 			expect(isWorkspace(partialWorkspace)).toBe(false);

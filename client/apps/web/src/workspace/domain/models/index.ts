@@ -6,6 +6,7 @@
 export type { Workspace } from "./Workspace";
 export { isWorkspace } from "./Workspace";
 export {
+	canSetAsDefault,
 	createValidatedWorkspace,
 	isValidISODate,
 	isValidUUID,

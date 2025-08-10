@@ -6,6 +6,7 @@
 // Models
 export type { Workspace } from "./models";
 export {
+	canSetAsDefault,
 	createValidatedWorkspace,
 	isValidISODate,
 	isValidUUID,

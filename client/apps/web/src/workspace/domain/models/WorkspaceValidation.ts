@@ -22,6 +22,7 @@ export const WorkspaceSchema = z.object({
 		.max(500, "Workspace description must be 500 characters or less")
 		.optional(),
 	ownerId: z.uuid("Workspace ownerId must be a valid UUID"),
+	isDefault: z.boolean("Workspace isDefault must be a boolean"),
 	createdAt: z.iso.datetime(
 		"Workspace createdAt must be a valid ISO 8601 date",
 	),
@@ -72,6 +73,7 @@ export const VALIDATION_MESSAGES = {
 	DESCRIPTION_LENGTH_INVALID: `Workspace description must be ${VALIDATION_CONSTRAINTS.WORKSPACE_DESCRIPTION_MAX_LENGTH} characters or less`,
 	OWNER_ID_STRING_REQUIRED: "Workspace ownerId must be a string",
 	OWNER_ID_VALID_UUID_REQUIRED: "Workspace ownerId must be a valid UUID",
+	IS_DEFAULT_BOOLEAN_REQUIRED: "Workspace isDefault must be a boolean",
 	CREATED_AT_STRING_REQUIRED: "Workspace createdAt must be a string",
 	CREATED_AT_VALID_DATE_REQUIRED:
 		"Workspace createdAt must be a valid ISO 8601 date",
@@ -140,6 +142,13 @@ export function validateWorkspace(data: unknown): {
 			}
 		}
 
+		// Handle type errors - when field is not a boolean
+		if (issue.code === "invalid_type" && issue.expected === "boolean") {
+			if (field === "isDefault") {
+				return VALIDATION_MESSAGES.IS_DEFAULT_BOOLEAN_REQUIRED;
+			}
+		}
+
 		// Handle object-level errors (non-object data)
 		if (issue.code === "invalid_type" && issue.expected === "object") {
 			return VALIDATION_MESSAGES.OBJECT_REQUIRED;
@@ -177,6 +186,10 @@ export function validateWorkspace(data: unknown): {
 /**
  * Creates a validated Workspace instance using Zod schema.
  * Throws a detailed error if validation fails, otherwise returns the parsed and transformed data.
+ *
+ * @param data - The data to validate and transform
+ * @returns A validated Workspace instance
+ * @throws Error if validation fails with detailed error messages
  */
 export function createValidatedWorkspace(data: unknown): Workspace {
 	const validation = validateWorkspace(data);
@@ -201,7 +214,35 @@ export function parseWorkspace(data: unknown): WorkspaceSchemaType {
 /**
  * Safe parsing of workspace data using Zod schema.
  * Returns a result object indicating success or failure with detailed errors.
+ *
+ * @param data - The data to validate
+ * @returns SafeParseResult with success/error information
  */
 export function safeParseWorkspace(data: unknown) {
 	return WorkspaceSchema.safeParse(data);
+}
+
+/**
+ * Validates if a workspace can be set as default.
+ * Business rule: Only one workspace per user can be default.
+ *
+ * @param workspace - The workspace to validate
+ * @param existingWorkspaces - Array of existing workspaces for the same owner
+ * @returns True if the workspace can be set as default
+ */
+export function canSetAsDefault(
+	workspace: Workspace,
+	existingWorkspaces: Workspace[] = [],
+): boolean {
+	if (!workspace.isDefault) {
+		return true; // Not setting as default, always valid
+	}
+
+	// Check if there's already a default workspace for this owner
+	const hasExistingDefault = existingWorkspaces.some(
+		(w) =>
+			w.ownerId === workspace.ownerId && w.isDefault && w.id !== workspace.id,
+	);
+
+	return !hasExistingDefault;
 }

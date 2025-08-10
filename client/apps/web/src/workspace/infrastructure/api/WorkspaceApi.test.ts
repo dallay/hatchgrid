@@ -23,6 +23,7 @@ const sampleWorkspace: Workspace = {
 	name: "Test Workspace",
 	description: "A test workspace",
 	ownerId: "123e4567-e89b-12d3-a456-426614174001",
+	isDefault: false,
 	createdAt: "2024-01-01T00:00:00Z",
 	updatedAt: "2024-01-01T00:00:00Z",
 };
