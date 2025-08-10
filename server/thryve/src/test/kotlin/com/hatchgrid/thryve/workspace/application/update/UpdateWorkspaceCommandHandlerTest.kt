@@ -10,7 +10,7 @@ import com.hatchgrid.thryve.workspace.domain.event.WorkspaceUpdatedEvent
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -40,7 +40,7 @@ internal class UpdateWorkspaceCommandHandlerTest {
     }
 
     @Test
-    fun `should update an workspace`() = runBlocking {
+    fun `should update an workspace`() = runTest {
         // Given
         val command = UpdateWorkspaceCommand(
             id = workspace.id.value.toString(),

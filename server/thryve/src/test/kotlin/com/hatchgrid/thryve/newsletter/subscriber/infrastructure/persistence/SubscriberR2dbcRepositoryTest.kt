@@ -23,6 +23,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -79,7 +80,7 @@ internal class SubscriberR2dbcRepositoryTest {
         coEvery {
             subscriberReactiveR2DbcRepository
                 .countByStatus(workspaceId.value)
-        } returns listOf<CountByStatusEntity>(
+        } returns listOf(
             CountByStatusEntity("ENABLED", 478_289L),
             CountByStatusEntity("DISABLED", 32L),
             CountByStatusEntity("BLOCKLISTED", 1L),
@@ -88,7 +89,7 @@ internal class SubscriberR2dbcRepositoryTest {
         coEvery {
             subscriberReactiveR2DbcRepository
                 .countByTag(eq(workspaceId.value))
-        } returns listOf<CountByTagsEntity>(
+        } returns listOf(
             CountByTagsEntity("tag1", 478_289L),
             CountByTagsEntity("tag2", 32L),
             CountByTagsEntity("tag3", 1L),
@@ -96,44 +97,33 @@ internal class SubscriberR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should save a new subscriber`() {
+    fun `should save a new subscriber`() = runTest {
         val subscriber = subscribers.first()
-
-        runBlocking {
-            subscriberRepository.create(subscriber)
-        }
-
+        subscriberRepository.create(subscriber)
         coEvery { subscriberReactiveR2DbcRepository.save(any()) }
     }
 
     @Test
-    fun `should not save a new subscriber if it already exists`() {
+    fun `should not save a new subscriber if it already exists`() = runTest {
         val subscriber = subscribers.first()
-
         coEvery { subscriberReactiveR2DbcRepository.save(any()) } throws DuplicateKeyException("Duplicate key")
-
-        runBlocking {
-            assertThrows<SubscriberException> {
-                subscriberRepository.create(subscriber)
-            }
+        assertThrows<SubscriberException> {
+            subscriberRepository.create(subscriber)
         }
     }
 
     @Test
-    fun `should not save a new subscriber if an unknown exception occur`() {
+    fun `should not save a new subscriber if an unknown exception occur`() = runTest {
         val subscriber = subscribers.first()
 
         coEvery { subscriberReactiveR2DbcRepository.save(any()) } throws RuntimeException("Unexpected error")
-
-        runBlocking {
-            assertThrows<RuntimeException> {
-                subscriberRepository.create(subscriber)
-            }
+        assertThrows<RuntimeException> {
+            subscriberRepository.create(subscriber)
         }
     }
 
     @Test
-    fun `should search all subscribers by offset pagination`() = runBlocking {
+    fun `should search all subscribers by offset pagination`() = runTest {
         val response: OffsetPageResponse<Subscriber> =
             subscriberRepository.searchAllByOffset(Criteria.Empty)
         assertEquals(subscribers, response.data.toList())
@@ -148,7 +138,7 @@ internal class SubscriberR2dbcRepositoryTest {
 
     @Test
     fun `should return empty OffsetPageResponse when no subscribers match the criteria`() =
-        runBlocking {
+        runTest {
             val criteria = Criteria.Equals("status", "NON_EXISTING_STATUS")
             val content: List<SubscriberEntity> = emptyList()
             coEvery {
@@ -165,7 +155,7 @@ internal class SubscriberR2dbcRepositoryTest {
         }
 
     @Test
-    fun `should search all subscribers by cursor pagination`() = runBlocking {
+    fun `should search all subscribers by cursor pagination`() = runTest {
         val response: CursorPageResponse<Subscriber> =
             subscriberRepository.searchAllByCursor(Criteria.Empty)
         assertEquals(subscribers, response.data.toList())
@@ -181,13 +171,13 @@ internal class SubscriberR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should search all active subscribers`() = runBlocking {
+    fun `should search all active subscribers`() = runTest {
         val response = subscriberRepository.searchActive().toList()
         assertEquals(subscribers, response)
     }
 
     @Test
-    fun `should count all subscribers by status`() = runBlocking {
+    fun `should count all subscribers by status`() = runTest {
         val response = subscriberRepository.countByStatus(workspaceId).toList()
         assertEquals(3, response.size)
         assertEquals(478_289L, response.first { it.first == "ENABLED" }.second)
@@ -197,7 +187,7 @@ internal class SubscriberR2dbcRepositoryTest {
 
     @Test
     fun `should count all subscribers by tags`() {
-        runBlocking {
+        runTest {
             val response = subscriberRepository.countByTag(workspaceId).toList()
             assertEquals(3, response.size)
             assertEquals(478_289L, response.first { it.first == "tag1" }.second)
@@ -208,7 +198,7 @@ internal class SubscriberR2dbcRepositoryTest {
 
     @Test
     fun `should search all BLOCKLISTED subscribers by criteria using offset pagination`() =
-        runBlocking {
+        runTest {
             val criteria = Criteria.Equals("status", "BLOCKLISTED")
 
             val response = subscriberRepository.searchAllByOffset(criteria)
@@ -224,7 +214,7 @@ internal class SubscriberR2dbcRepositoryTest {
 
     @Test
     fun `should search all BLOCKLISTED subscribers by criteria using cursor pagination`() =
-        runBlocking {
+        runTest {
             val criteria = Criteria.Equals("status", "BLOCKLISTED")
 
             val response = subscriberRepository.searchAllByCursor(criteria)
@@ -242,7 +232,7 @@ internal class SubscriberR2dbcRepositoryTest {
 
     @Test
     fun `should search all DISABLED subscribers by criteria using offset pagination`() =
-        runBlocking {
+        runTest {
             val criteria = Criteria.Equals("status", "DISABLED")
 
             val response = subscriberRepository.searchAllByOffset(criteria)
@@ -258,7 +248,7 @@ internal class SubscriberR2dbcRepositoryTest {
 
     @Test
     fun `should search all DISABLED subscribers by criteria using cursor pagination`() =
-        runBlocking {
+        runTest {
             val criteria = Criteria.Equals("status", "DISABLED")
 
             val response = subscriberRepository.searchAllByCursor(criteria)
@@ -275,7 +265,7 @@ internal class SubscriberR2dbcRepositoryTest {
         }
 
     @Test
-    fun `should search by criteria with multiple filters using offset pagination`() = runBlocking {
+    fun `should search by criteria with multiple filters using offset pagination`() = runTest {
         val criteria = Criteria.And(
             listOf(
                 Criteria.Equals("email", "email"),
@@ -297,7 +287,7 @@ internal class SubscriberR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should search by criteria with multiple filters using cursor pagination`() = runBlocking {
+    fun `should search by criteria with multiple filters using cursor pagination`() = runTest {
         val criteria = Criteria.And(
             listOf(
                 Criteria.Equals("email", "email"),
@@ -322,7 +312,7 @@ internal class SubscriberR2dbcRepositoryTest {
 
     @Test
     fun `should search by criteria with multiple filters and sort using offset pagination`() =
-        runBlocking {
+        runTest {
             val criteria = Criteria.And(
                 listOf(
                     Criteria.Equals("email", "email"),
@@ -351,7 +341,7 @@ internal class SubscriberR2dbcRepositoryTest {
 
     @Test
     fun `should search by criteria with multiple filters and sort using cursor pagination`() =
-        runBlocking {
+        runTest {
             val criteria = Criteria.And(
                 listOf(
                     Criteria.Equals("email", "email"),

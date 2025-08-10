@@ -12,7 +12,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import java.time.LocalDateTime
 import java.util.UUID
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -54,7 +54,7 @@ internal class SearchFormsQueryHandlerTest {
     }
 
     @Test
-    fun `should search all forms`() = runBlocking {
+    fun `should search all forms`() = runTest {
         // Given
         val query = SearchFormsQuery(
             workspaceId = workspaceId.toString(),
@@ -78,7 +78,7 @@ internal class SearchFormsQueryHandlerTest {
     }
 
     @Test
-    fun `should search forms with criteria`() = runBlocking {
+    fun `should search forms with criteria`() = runTest {
         // Given
         val criteria = Criteria.Or(
             listOf(

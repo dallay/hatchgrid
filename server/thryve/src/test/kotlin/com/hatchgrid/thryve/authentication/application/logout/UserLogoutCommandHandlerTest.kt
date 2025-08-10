@@ -6,7 +6,7 @@ import com.hatchgrid.thryve.authentication.domain.error.LogoutFailedException
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -26,7 +26,7 @@ internal class UserLogoutCommandHandlerTest {
     }
 
     @Test
-    fun `handle LogsOut User Successfully`(): Unit = runBlocking {
+    fun `handle LogsOut User Successfully`(): Unit = runTest {
         val refreshToken = "valid_refresh_token"
         val command = UserLogoutCommand(refreshToken)
 
@@ -36,7 +36,7 @@ internal class UserLogoutCommandHandlerTest {
     }
 
     @Test
-    fun `handle Throws Exception When LogoutFails`(): Unit = runBlocking {
+    fun `handle Throws Exception When LogoutFails`(): Unit = runTest {
         val refreshToken = "invalid_refresh_token"
         val command = UserLogoutCommand(refreshToken)
 

@@ -6,7 +6,7 @@ import com.hatchgrid.common.domain.bus.pipeline.PipelineBehavior
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -47,7 +47,7 @@ class PipelineBehaviorTest {
         val provider = ManualDependencyProvider(handlers)
         val bus: Mediator = MediatorBuilder(provider).build()
 
-        runBlocking {
+        runTest {
             bus.send(MyCommand())
         }
 
@@ -72,7 +72,7 @@ class PipelineBehaviorTest {
         val provider = ManualDependencyProvider(handlers)
         val bus: Mediator = MediatorBuilder(provider).build()
 
-        runBlocking {
+        runTest {
             bus.send(MyCommand())
         }
 
@@ -97,7 +97,7 @@ class PipelineBehaviorTest {
         val bus: Mediator = MediatorBuilder(provider).build()
         val act = suspend { bus.send(MyBrokenCommand()) }
 
-        assertThrows<Exception> { runBlocking { act() } }
+        assertThrows<Exception> { runTest { act() } }
         assertTrue { commandTestCounter == 0 }
         assertTrue { exceptionPipelineBehaviorHandleCatchCounter == 1 }
         assertTrue { exceptionPipelineBehaviorHandleCounter == 1 }
@@ -106,7 +106,7 @@ class PipelineBehaviorTest {
     }
 
     @Test
-    fun `should process command with inherited pipeline`() = runBlocking {
+    fun `should process command with inherited pipeline`() = runTest {
         val handler = MyCommandHandler()
         val pipeline = InheritedPipelineBehaviour()
         val handlers: HashMap<Class<*>, Any> =

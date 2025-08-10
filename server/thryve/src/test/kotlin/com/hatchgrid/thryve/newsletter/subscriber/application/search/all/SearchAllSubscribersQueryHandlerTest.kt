@@ -14,7 +14,7 @@ import io.mockk.mockk
 import io.mockk.mockkClass
 import java.time.LocalDateTime
 import java.util.UUID
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -53,7 +53,7 @@ internal class SearchAllSubscribersQueryHandlerTest {
     }
 
     @Test
-    fun `should search all subscribers`() = runBlocking {
+    fun `should search all subscribers`() = runTest {
         // Given
         val query = SearchAllSubscribersQuery(workspaceId.toString(), userId.toString(), criteria = Criteria.Empty)
 

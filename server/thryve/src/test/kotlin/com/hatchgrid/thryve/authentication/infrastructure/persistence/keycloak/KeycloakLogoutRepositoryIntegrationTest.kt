@@ -5,7 +5,7 @@ import com.hatchgrid.thryve.authentication.domain.RefreshToken
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticatorLogout
 import com.hatchgrid.thryve.authentication.domain.error.LogoutFailedException
 import com.hatchgrid.thryve.config.InfrastructureTestContainers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,13 +22,13 @@ internal class KeycloakLogoutRepositoryIntegrationTest : InfrastructureTestConta
     }
 
     @Test
-    fun logout(): Unit = runBlocking {
+    fun logout(): Unit = runTest {
         val accessToken = getAccessToken()
         val refreshToken = RefreshToken(accessToken?.refreshToken ?: "fake refresh token")
         userAuthenticatorLogout.logout(refreshToken.value)
     }
     @Test
-    fun `logout should handle Invalid Token`() = runBlocking {
+    fun `logout should handle Invalid Token`() = runTest {
         val invalidToken = "invalid_token"
         try {
             userAuthenticatorLogout.logout(invalidToken)

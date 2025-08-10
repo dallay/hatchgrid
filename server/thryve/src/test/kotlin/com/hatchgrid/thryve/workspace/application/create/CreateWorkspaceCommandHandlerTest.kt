@@ -8,7 +8,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import java.util.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -32,7 +32,7 @@ internal class CreateWorkspaceCommandHandlerTest {
     }
 
     @Test
-    fun `should create workspace and publish event when handle is called`() = runBlocking {
+    fun `should create workspace and publish event when handle is called`() = runTest {
         // Given
         val workspaceId = UUID.randomUUID().toString()
         val ownerId = UUID.randomUUID().toString()

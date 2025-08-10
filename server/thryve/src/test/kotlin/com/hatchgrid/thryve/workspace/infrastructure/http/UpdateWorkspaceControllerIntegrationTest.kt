@@ -2,7 +2,7 @@ package com.hatchgrid.thryve.workspace.infrastructure.http
 
 import com.hatchgrid.ControllerIntegrationTest
 import com.hatchgrid.thryve.workspace.WorkspaceStub
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf
@@ -20,7 +20,7 @@ internal class UpdateWorkspaceControllerIntegrationTest : ControllerIntegrationT
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should update an workspace`(): Unit = runBlocking {
+    fun `should update an workspace`(): Unit = runTest {
         val id = "a0654720-35dc-49d0-b508-1f7df5d915f1"
         val request = WorkspaceStub.generateUpdateRequest()
         webTestClient.mutateWith(csrf()).put()
@@ -43,7 +43,7 @@ internal class UpdateWorkspaceControllerIntegrationTest : ControllerIntegrationT
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should return 404 when workspace is not found`(): Unit = runBlocking {
+    fun `should return 404 when workspace is not found`(): Unit = runTest {
         val id = "a0654720-35dc-49d0-b508-1f7df5d915f2"
         val request = WorkspaceStub.generateUpdateRequest()
         webTestClient.mutateWith(csrf()).put()

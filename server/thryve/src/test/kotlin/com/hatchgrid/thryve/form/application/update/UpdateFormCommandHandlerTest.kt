@@ -17,7 +17,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import java.util.UUID
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -62,7 +62,7 @@ internal class UpdateFormCommandHandlerTest {
     }
 
     @Test
-    fun `should update a form`() = runBlocking {
+    fun `should update a form`() = runTest {
         val command = UpdateFormCommand(
             id = form.id.value.toString(),
             name = "Updated Form Name",
@@ -84,7 +84,7 @@ internal class UpdateFormCommandHandlerTest {
         coVerify(exactly = 1) { eventPublisher.publish(any(FormUpdatedEvent::class)) }
     }
     @Test
-    fun `should do nothing when the form has no changes`() = runBlocking {
+    fun `should do nothing when the form has no changes`() = runTest {
         val command = UpdateFormCommand(
             id = form.id.value.toString(),
             name = form.name,
@@ -129,7 +129,7 @@ internal class UpdateFormCommandHandlerTest {
             )
         } returns null
 
-        runBlocking {
+        runTest {
             val exception = assertThrows<FormNotFoundException> {
                 updateFormCommandHandler.handle(command)
             }

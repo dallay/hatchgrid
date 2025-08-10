@@ -15,7 +15,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import java.util.UUID
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -53,7 +53,7 @@ internal class DeleteTagCommandHandlerTest {
     }
 
     @Test
-    fun `should delete a tag`() = runBlocking {
+    fun `should delete a tag`() = runTest {
         // Given
         val command = DeleteTagCommand(
             workspaceId = workspaceId.value.toString(),

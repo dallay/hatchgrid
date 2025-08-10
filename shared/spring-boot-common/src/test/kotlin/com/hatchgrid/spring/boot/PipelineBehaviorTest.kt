@@ -7,7 +7,7 @@ import com.hatchgrid.common.domain.bus.command.CommandHandler
 import com.hatchgrid.common.domain.bus.pipeline.PipelineBehavior
 import kotlin.test.assertTrue
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,7 +38,7 @@ class PipelineBehaviorTest {
 
     @Test
     fun `should process command with async pipeline`() {
-        runBlocking {
+        runTest {
             mediator.send(MyCommand())
         }
 
@@ -52,7 +52,7 @@ class PipelineBehaviorTest {
     fun `should process exception in async handler`() {
         val act = suspend { mediator.send(MyBrokenCommand()) }
 
-        assertThrows<Exception> { runBlocking { act() } }
+        assertThrows<Exception> { runTest { act() } }
 
         assertTrue { exceptionPipelineBehaviorHandleCatchCounter == 1 }
         assertTrue { exceptionPipelineBehaviorHandleCounter == 1 }

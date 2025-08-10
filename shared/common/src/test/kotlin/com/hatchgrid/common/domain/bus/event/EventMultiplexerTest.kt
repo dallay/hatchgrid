@@ -3,13 +3,13 @@ package com.hatchgrid.common.domain.bus.event
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 
 class EventMultiplexerTest {
 
     @Test
-    fun `should consume event when filter passes`() = runBlocking {
+    fun `should consume event when filter passes`() = runTest {
         // Arrange
         val eventMultiplexer = EventMultiplexer<DomainEvent>()
         val mockEventConsumer: EventConsumer<DomainEvent> = mockk(relaxed = true)
@@ -27,7 +27,7 @@ class EventMultiplexerTest {
     }
 
     @Test
-    fun `should not consume event when filter fails`() = runBlocking {
+    fun `should not consume event when filter fails`() = runTest {
         // Arrange
         val eventMultiplexer = EventMultiplexer<DomainEvent>()
         val mockEventConsumer: EventConsumer<DomainEvent> = mockk(relaxed = true)

@@ -9,7 +9,7 @@ import com.hatchgrid.spring.boot.entity.Person
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.reactor.awaitSingle
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.mock.http.server.reactive.MockServerHttpResponse
@@ -32,7 +32,7 @@ internal class PageResponsePresenterTest {
     private val offsetPagePresenter = OffsetPagePresenter(objectMapper)
 
     @Test
-    fun present() = runBlocking {
+    fun present() = runTest {
         val exchange = mockk<ServerWebExchange>()
         val result = mockk<HandlerResult>()
 

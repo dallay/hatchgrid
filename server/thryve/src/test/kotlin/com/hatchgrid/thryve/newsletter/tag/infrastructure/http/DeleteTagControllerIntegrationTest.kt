@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.newsletter.tag.infrastructure.http
 
 import com.hatchgrid.ControllerIntegrationTest
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf
 import org.springframework.test.context.jdbc.Sql
@@ -23,7 +23,7 @@ internal class DeleteTagControllerIntegrationTest : ControllerIntegrationTest() 
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should delete tag when tag is found`(): Unit = runBlocking {
+    fun `should delete tag when tag is found`(): Unit = runTest {
         val tagId = "d667bf8b-69d7-4e32-9488-8ad9865fc644"
         webTestClient.mutateWith(csrf()).delete()
             .uri("/api/workspace/$workspaceId/tag/$tagId")

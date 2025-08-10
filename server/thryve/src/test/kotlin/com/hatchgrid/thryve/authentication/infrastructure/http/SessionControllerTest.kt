@@ -9,7 +9,7 @@ import com.hatchgrid.thryve.authentication.infrastructure.cookie.AuthCookieBuild
 import io.mockk.coEvery
 import io.mockk.mockk
 import java.util.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -31,7 +31,7 @@ internal class SessionControllerTest {
 
     @Test
     @DisplayName("should return session data when access token is valid")
-    fun `should return session data when access token is valid`(): Unit = runBlocking {
+    fun `should return session data when access token is valid`(): Unit = runTest {
         coEvery { mediator.send(GetUserSessionQuery(VALID_ACCESS_TOKEN)) } returns EXPECTED_USER_SESSION
 
         webTestClient.get().uri("/api/session")
@@ -44,7 +44,7 @@ internal class SessionControllerTest {
 
     @Test
     @DisplayName("should return 401 when access token is missing")
-    fun `should return 401 when access token is missing`(): Unit = runBlocking {
+    fun `should return 401 when access token is missing`(): Unit = runTest {
         webTestClient.get().uri("/api/session")
             .exchange()
             .expectStatus().isUnauthorized
@@ -52,7 +52,7 @@ internal class SessionControllerTest {
 
     @Test
     @DisplayName("should return 401 when access token is invalid")
-    fun `should return 401 when access token is invalid`(): Unit = runBlocking {
+    fun `should return 401 when access token is invalid`(): Unit = runTest {
         coEvery {
             mediator.send(GetUserSessionQuery(INVALID_ACCESS_TOKEN))
         } throws InvalidTokenException("Invalid access token")

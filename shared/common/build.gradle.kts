@@ -8,6 +8,7 @@ dependencies {
     testImplementation(libs.faker)
     testImplementation(libs.mockk)
     testImplementation(libs.assertj)
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
 }
 
 testing {

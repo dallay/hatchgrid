@@ -11,7 +11,7 @@ import kotlin.random.Random
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactor.asFlux
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -50,7 +50,7 @@ internal class ReactiveSearchRepositoryImplTest {
     }
 
     @Test
-    fun `should fetch all entities that match the given criteria`() = runBlocking {
+    fun `should fetch all entities that match the given criteria`() = runTest {
         coEvery { r2dbcTemplate.select(MyEntity::class.java).matching(any()).all() } returns flowOf(
             dummyEntity,
         ).asFlux()
@@ -59,7 +59,7 @@ internal class ReactiveSearchRepositoryImplTest {
     }
 
     @Test
-    fun `should fetch all entities that match the given criteria with pagination`() = runBlocking {
+    fun `should fetch all entities that match the given criteria with pagination`() = runTest {
         val result =
             reactiveSearchRepository.findAll(Criteria.empty(), PageRequest.of(0, 1), MyEntity::class)
         assertEquals(listOf(dummyEntity), result.content)
@@ -67,7 +67,7 @@ internal class ReactiveSearchRepositoryImplTest {
 
     @Test
     fun `should fetch all entities that match the given criteria with pagination and a cursor`() =
-        runBlocking {
+        runTest {
             val cursor = TimestampCursor(createdAt = LocalDateTime.parse("2021-01-01T00:00:00"))
             val result = reactiveSearchRepository.findAllByCursor(
                 Criteria.empty(),

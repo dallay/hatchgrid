@@ -13,6 +13,7 @@ import io.mockk.coVerify
 import io.mockk.just
 import io.mockk.mockk
 import java.util.*
+import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.BeforeEach
@@ -31,7 +32,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
     }
 
     @Test
-    fun `should create default workspace for new user`() = runBlocking {
+    fun `should create default workspace for new user`() = runTest {
         // Given
         val userId = UUID.randomUUID().toString()
         val firstname = faker.name().firstName()
@@ -63,7 +64,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
 
     @Test
     fun `should create default workspace with firstname only when lastname is null`() =
-        runBlocking {
+        runTest {
             // Given
             val userId = UUID.randomUUID().toString()
             val firstname = faker.name().firstName()
@@ -91,7 +92,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
 
     @Test
     fun `should create default workspace with lastname only when firstname is null`() =
-        runBlocking {
+        runTest {
             // Given
             val userId = UUID.randomUUID().toString()
             val lastname = faker.name().lastName()
@@ -119,7 +120,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
 
     @Test
     fun `should create default workspace with 'My Workspace' when both names are null`() =
-        runBlocking {
+        runTest {
             // Given
             val userId = UUID.randomUUID().toString()
             val userCreatedEvent = UserCreatedEvent(
@@ -146,7 +147,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
 
     @Test
     fun `should create default workspace with 'My Workspace' when both names contain only whitespace`() =
-        runBlocking {
+        runTest {
             // Given
             val userId = UUID.randomUUID().toString()
             val firstname = "   "
@@ -174,7 +175,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
         }
 
     @Test
-    fun `should handle CommandHandlerExecutionError gracefully without throwing`() = runBlocking {
+    fun `should handle CommandHandlerExecutionError gracefully without throwing`() = runTest {
         // Given
         val userId = UUID.randomUUID().toString()
         val userCreatedEvent = UserCreatedEvent(
@@ -199,7 +200,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
     }
 
     @Test
-    fun `should handle unexpected exceptions gracefully without throwing`() = runBlocking {
+    fun `should handle unexpected exceptions gracefully without throwing`() = runTest {
         // Given
         val userId = UUID.randomUUID().toString()
         val userCreatedEvent = UserCreatedEvent(
@@ -222,7 +223,7 @@ class CreateDefaultWorkspaceOnUserCreationTest {
     }
 
     @Test
-    fun `should trim whitespace from names when generating workspace name`() = runBlocking {
+    fun `should trim whitespace from names when generating workspace name`() = runTest {
         // Given
         val userId = UUID.randomUUID().toString()
         val firstname = "  John  "

@@ -9,7 +9,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -29,7 +29,7 @@ class CommandWithResultHandlerTest {
     lateinit var mediator: Mediator
 
     @Test
-    fun `async commandHandler should be fired`() = runBlocking {
+    fun `async commandHandler should be fired`() = runTest {
         mediator.send(MyCommandR())
 
         assertTrue {
@@ -40,7 +40,7 @@ class CommandWithResultHandlerTest {
     @Test
     fun `should throw exception if given async command does not have handler bean`() {
         val exception = assertFailsWith(HandlerNotFoundException::class) {
-            runBlocking {
+            runTest {
                 mediator.send(NonExistCommandR())
             }
         }

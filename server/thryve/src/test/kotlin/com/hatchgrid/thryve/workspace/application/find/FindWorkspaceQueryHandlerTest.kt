@@ -8,7 +8,7 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceNotFoundException
 import io.mockk.coEvery
 import io.mockk.mockk
 import java.util.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -27,7 +27,7 @@ internal class FindWorkspaceQueryHandlerTest {
     }
 
     @Test
-    fun `should return workspace response when workspace is found`() = runBlocking {
+    fun `should return workspace response when workspace is found`() = runTest {
         // Given
         val id = UUID.randomUUID().toString()
         val workspaceId = WorkspaceId(id)
@@ -52,7 +52,7 @@ internal class FindWorkspaceQueryHandlerTest {
         // Then
         assertThrows(WorkspaceNotFoundException::class.java) {
             // When
-            runBlocking {
+            runTest {
                 findWorkspaceQueryHandler.handle(FindWorkspaceQuery(id))
             }
         }

@@ -8,7 +8,7 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import java.util.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -34,7 +34,7 @@ internal class AllWorkspaceByMemberQueryHandlerTest {
     }
 
     @Test
-    fun `should find all workspaces`() = runBlocking {
+    fun `should find all workspaces`() = runTest {
         // Given
         val query = AllWorkspaceByMemberQuery(userId.value.toString())
 
@@ -46,7 +46,7 @@ internal class AllWorkspaceByMemberQueryHandlerTest {
     }
 
     @Test
-    fun `should return empty list when no workspaces found`() = runBlocking {
+    fun `should return empty list when no workspaces found`() = runTest {
         // Given
         coEvery { repository.findByMemberId(any()) } returns emptyList()
         val query = AllWorkspaceByMemberQuery(userId.value.toString())
@@ -59,14 +59,14 @@ internal class AllWorkspaceByMemberQueryHandlerTest {
     }
 
     @Test
-    fun `should handle repository exception`(): Unit = runBlocking {
+    fun `should handle repository exception`(): Unit = runTest {
         // Given
         coEvery { repository.findByMemberId(any()) } throws RuntimeException("Database error")
         val query = AllWorkspaceByMemberQuery(userId.value.toString())
 
         // When & Then
         assertThrows<RuntimeException> {
-            runBlocking { handler.handle(query) }
+            runTest { handler.handle(query) }
         }
     }
 }

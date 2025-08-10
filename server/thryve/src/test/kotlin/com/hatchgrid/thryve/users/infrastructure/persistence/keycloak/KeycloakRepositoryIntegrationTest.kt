@@ -8,7 +8,7 @@ import com.hatchgrid.thryve.config.InfrastructureTestContainers
 import com.hatchgrid.thryve.users.domain.UserCreator
 import com.hatchgrid.thryve.users.domain.UserStoreException
 import com.hatchgrid.thryve.users.infrastructure.persistence.repository.UserR2dbcRepository
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -27,7 +27,7 @@ class KeycloakRepositoryIntegrationTest : InfrastructureTestContainers() {
     private val faker = Faker()
 
     @Test
-    fun `should create a new user`() = runBlocking {
+    fun `should create a new user`() = runTest {
         val email = faker.internet().emailAddress()
         val firstName = faker.name().firstName()
         val lastName = faker.name().lastName()
@@ -52,7 +52,7 @@ class KeycloakRepositoryIntegrationTest : InfrastructureTestContainers() {
     }
 
     @Test
-    fun `should not create a new user with an existing email`() = runBlocking {
+    fun `should not create a new user with an existing email`() = runTest {
         val email = faker.internet().emailAddress()
         val firstName = faker.name().firstName()
         val lastName = faker.name().lastName()

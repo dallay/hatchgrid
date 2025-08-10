@@ -2582,8 +2582,10 @@ description: Overview of the project structure and organization.
 │   │   │   │       │   │   └───lookups/
 │   │   │   │       │   │       └───...
 │   │   │   │       │   └───last-build.bin
-│   │   │   │       └───classpath-snapshot/
-│   │   │   │           └───shrunk-classpath-snapshot.bin
+│   │   │   │       ├───classpath-snapshot/
+│   │   │   │       │   └───shrunk-classpath-snapshot.bin
+│   │   │   │       └───local-state/
+│   │   │   │           └───build-history.bin
 │   │   │   ├───kover/
 │   │   │   │   ├───bin-reports/
 │   │   │   │   │   └───test.ic

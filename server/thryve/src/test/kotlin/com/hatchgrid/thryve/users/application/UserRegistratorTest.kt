@@ -17,7 +17,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import java.util.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -42,7 +42,7 @@ class UserRegistratorTest {
         private val userRegistrator = UserRegistrator(userCreator, eventPublisher)
 
         @Test
-        fun `should register new user successfully and publish events`(): Unit = runBlocking {
+        fun `should register new user successfully and publish events`(): Unit = runTest {
             val userId = userRegistrator.registerNewUser(
                 Email(email), Credential.create(password), FirstName(firstname),
                 LastName(lastname),
@@ -63,7 +63,7 @@ class UserRegistratorTest {
 
         @Test
         fun `should throw UserStoreException when trying to register user with existing email`(): Unit =
-            runBlocking {
+            runTest {
                 // Register first user
                 val firstUserId = userRegistrator.registerNewUser(
                     Email(email), Credential.create(password), FirstName(firstname),
@@ -88,7 +88,7 @@ class UserRegistratorTest {
 
         @Test
         fun `should throw CredentialException when password does not meet complexity requirements`(): Unit =
-            runBlocking {
+            runTest {
                 // Given
                 val weakPassword = "weak" // This will fail Credential validation
 
@@ -106,7 +106,7 @@ class UserRegistratorTest {
 
         @Test
         fun `should register multiple users with different emails successfully`(): Unit =
-            runBlocking {
+            runTest {
                 val userId1 = userRegistrator.registerNewUser(
                     Email(faker.internet().emailAddress()),
                     Credential.create(Credential.generateRandomCredentialPassword()),
@@ -156,7 +156,7 @@ class UserRegistratorTest {
 
         @Test
         fun `should create user and publish domain events when registration succeeds`(): Unit =
-            runBlocking {
+            runTest {
                 // Given
                 val mockCreatedUser: User = mockk()
                 val userCreatedEvent: UserCreatedEvent = mockk()
@@ -213,7 +213,7 @@ class UserRegistratorTest {
             }
 
         @Test
-        fun `should propagate UserStoreException when user creation fails`(): Unit = runBlocking {
+        fun `should propagate UserStoreException when user creation fails`(): Unit = runTest {
             // Given
             val errorMessage = "User with email: $email already exists"
 
@@ -265,7 +265,7 @@ class UserRegistratorTest {
         private val userRegistrator = UserRegistrator(userCreator, eventPublisher)
 
         @Test
-        fun `should handle user with minimal valid data`(): Unit = runBlocking {
+        fun `should handle user with minimal valid data`(): Unit = runTest {
             // Given
             val minimalUser = User.create(
                 id = UUID.randomUUID().toString(),
@@ -289,7 +289,7 @@ class UserRegistratorTest {
         }
 
         @Test
-        fun `should handle user with maximum length data`(): Unit = runBlocking {
+        fun `should handle user with maximum length data`(): Unit = runTest {
             // Given - Create realistic but long data that won't exceed validation limits
             val longFirstName = "A".repeat(50) // More reasonable length
             val longLastName = "B".repeat(50) // More reasonable length
@@ -321,7 +321,7 @@ class UserRegistratorTest {
         }
 
         @Test
-        fun `should handle special characters in user data`(): Unit = runBlocking {
+        fun `should handle special characters in user data`(): Unit = runTest {
             // Given
             val specialCharsUser = User.create(
                 id = UUID.randomUUID().toString(),
@@ -345,7 +345,7 @@ class UserRegistratorTest {
         }
 
         @Test
-        fun `should handle unicode characters in user data`(): Unit = runBlocking {
+        fun `should handle unicode characters in user data`(): Unit = runTest {
             // Given
             val unicodeUser = User.create(
                 id = UUID.randomUUID().toString(),
@@ -369,7 +369,7 @@ class UserRegistratorTest {
         }
 
         @Test
-        fun `should handle user with empty domain events list`(): Unit = runBlocking {
+        fun `should handle user with empty domain events list`(): Unit = runTest {
             // Given
             val userCreatorMock: UserCreator = mockk()
             val mockUser: User = mockk()

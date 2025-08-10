@@ -5,7 +5,8 @@ import com.hatchgrid.thryve.authentication.domain.RefreshToken
 import com.hatchgrid.thryve.authentication.domain.RefreshTokenManager
 import com.hatchgrid.thryve.authentication.domain.UserRefreshTokenException
 import com.hatchgrid.thryve.config.InfrastructureTestContainers
-import kotlinx.coroutines.runBlocking
+import io.kotest.common.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -26,7 +27,7 @@ internal class KeycloakRefreshTokenManagerRepositoryIntegrationTest : Infrastruc
     }
 
     @Test
-    fun `should refresh access token`(): Unit = runBlocking {
+    fun `should refresh access token`(): Unit = runTest {
         val accessToken = getAccessToken()
         val refreshToken = RefreshToken(accessToken?.refreshToken ?: "fake refresh token")
         val newAccessToken = refreshTokenManager.refresh(refreshToken)
@@ -44,7 +45,7 @@ internal class KeycloakRefreshTokenManagerRepositoryIntegrationTest : Infrastruc
     }
 
     @Test
-    fun `should return exception when refresh access token`(): Unit = runBlocking {
+    fun `should return exception when refresh access token`(): Unit = runTest {
         val refreshToken = RefreshToken("refreshToken")
         val exception = assertThrows(UserRefreshTokenException::class.java) {
             runBlocking { refreshTokenManager.refresh(refreshToken) }

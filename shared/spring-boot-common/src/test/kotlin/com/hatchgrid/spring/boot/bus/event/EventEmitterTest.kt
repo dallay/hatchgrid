@@ -6,7 +6,7 @@ import com.hatchgrid.common.domain.bus.event.EventFilter
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -33,7 +33,7 @@ class EventEmitterTest {
     }
 
     @Test
-    fun `test publish method`() = runBlocking {
+    fun `test publish method`() = runTest {
         // Arrange
         coEvery { mockConsumer.consume(mockEvent) } returns Unit
         coEvery { mockFilter.filter(any()) } returns true

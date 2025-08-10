@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.workspace.infrastructure.http
 
 import com.hatchgrid.ControllerIntegrationTest
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.springframework.test.context.jdbc.Sql
 
@@ -17,7 +17,7 @@ internal class GetAllWorkspaceControllerIntegrationTest : ControllerIntegrationT
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should get all workspaces`(): Unit = runBlocking {
+    fun `should get all workspaces`(): Unit = runTest {
         webTestClient
             .get()
             .uri("/api/workspace")

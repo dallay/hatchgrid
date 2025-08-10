@@ -8,8 +8,10 @@ import com.hatchgrid.thryve.users.domain.event.UserCreatedEvent
 import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -57,7 +59,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should create default workspace when user is created and has no existing workspaces`() = runBlocking {
+    fun `should create default workspace when user is created and has no existing workspaces`() = runTest {
         // Given
         val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val firstname = faker.name().firstName()
@@ -95,7 +97,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should create default workspace with firstname only when lastname is null`() = runBlocking {
+    fun `should create default workspace with firstname only when lastname is null`() = runTest {
         // Given
         val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val firstname = faker.name().firstName()
@@ -128,7 +130,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should create default workspace with lastname only when firstname is null`() = runBlocking {
+    fun `should create default workspace with lastname only when firstname is null`() = runTest {
         // Given
         val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val lastname = faker.name().lastName()
@@ -161,7 +163,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should create default workspace with 'My Workspace' when both names are null`() = runBlocking {
+    fun `should create default workspace with 'My Workspace' when both names are null`() = runTest {
         // Given
         val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val email = faker.internet().emailAddress()
@@ -193,7 +195,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should not create workspace when user already has existing workspaces`() = runBlocking {
+    fun `should not create workspace when user already has existing workspaces`() = runTest {
         // Given
         val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val firstname = faker.name().firstName()
@@ -243,7 +245,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should handle workspace names with special characters and whitespace correctly`() = runBlocking {
+    fun `should handle workspace names with special characters and whitespace correctly`() = runTest {
         // Given
         val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val firstname = "  José María  " // Names with accents and extra whitespace
@@ -277,7 +279,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should eventually create workspace after publishing UserCreatedEvent`() = runBlocking {
+    fun `should eventually create workspace after publishing UserCreatedEvent`() = runTest {
         // Given
         val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val firstname = faker.name().firstName()
@@ -302,4 +304,47 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         assertTrue(workspaces.isNotEmpty(), "Workspace should be created eventually")
         assertEquals("$firstname $lastname's Workspace", workspaces.first().name)
     }
+
+    @Test
+    @Sql(
+        "/db/user/users.sql",
+    )
+    @Sql(
+        "/db/user/clean.sql",
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
+    )
+    fun `should create only one workspace when duplicate user-created events are published concurrently`() =
+        runTest {
+            // Given
+            val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
+            val firstname = faker.name().firstName()
+            val lastname = faker.name().lastName()
+            val email = faker.internet().emailAddress()
+
+            val event1 = UserCreatedEvent(
+                id = userId,
+                email = email,
+                firstName = firstname,
+                lastName = lastname,
+            )
+            val event2 = UserCreatedEvent(
+                id = userId,
+                email = email,
+                firstName = firstname,
+                lastName = lastname,
+            )
+
+            // When - publish both events concurrently
+            awaitAll(
+                async { eventPublisher.publish(event1) },
+                async { eventPublisher.publish(event2) },
+            )
+
+            // Then - only one workspace should exist after both are processed
+            val workspaces = waitUntil(
+                supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
+                predicate = { it.size == 1 },
+            )
+            assertEquals(1, workspaces.size, "Should create exactly one workspace despite concurrent duplicate events")
+        }
 }

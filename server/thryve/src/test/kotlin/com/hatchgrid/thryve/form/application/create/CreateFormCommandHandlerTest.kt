@@ -10,11 +10,12 @@ import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import com.hatchgrid.thryve.workspace.domain.WorkspaceAuthorizationException
 import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
+import io.kotest.common.runBlocking
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import java.util.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -73,7 +74,7 @@ internal class CreateFormCommandHandlerTest {
     )
 
     @Test
-    fun `should create a form`() = runBlocking {
+    fun `should create a form`() = runTest {
         // Given
         val formId = UUID.randomUUID().toString()
         val command = createCommand(formId = formId)
@@ -104,7 +105,7 @@ internal class CreateFormCommandHandlerTest {
     }
 
     @Test
-    fun `should fail when user is not a workspace member`() = runBlocking {
+    fun `should fail when user is not a workspace member`() = runTest {
         // Given
         val formId = UUID.randomUUID().toString()
         val command = createCommand(formId = formId)
@@ -128,7 +129,7 @@ internal class CreateFormCommandHandlerTest {
     }
 
     @Test
-    fun `should fail when form name is empty`(): Unit = runBlocking {
+    fun `should fail when form name is empty`(): Unit = runTest {
         // Given
         val formId = UUID.randomUUID().toString()
         val invalidForm = form.copy(name = "")
@@ -150,7 +151,7 @@ internal class CreateFormCommandHandlerTest {
     }
 
     @Test
-    fun `should fail when buttonColor is not a valid hex color`(): Unit = runBlocking {
+    fun `should fail when buttonColor is not a valid hex color`(): Unit = runTest {
         // Given
         val formId = UUID.randomUUID().toString()
         val command = CreateFormCommand(
@@ -179,13 +180,13 @@ internal class CreateFormCommandHandlerTest {
     }
 
     @Test
-    fun `should throw exception when form repository creation throws an error`() = runBlocking {
+    fun `should throw exception when form repository creation throws an error`() = runTest {
         // Given
         val command = createCommand()
         coEvery { formRepository.create(any<Form>()) } throws RuntimeException("Error creating form")
 
         // When & Then
-        org.junit.jupiter.api.assertThrows<RuntimeException> {
+        assertThrows<RuntimeException> {
             createFormCommandHandler.handle(command)
         }
 
@@ -194,7 +195,7 @@ internal class CreateFormCommandHandlerTest {
     }
 
     @Test
-    fun `should throw exception when event publishing fails`() = runBlocking {
+    fun `should throw exception when event publishing fails`() = runTest {
         // Given
         val command = createCommand()
         coEvery { eventPublisher.publish(any<FormCreatedEvent>()) } throws RuntimeException("Error publishing event")

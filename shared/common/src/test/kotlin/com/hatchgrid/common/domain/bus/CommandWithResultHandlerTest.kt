@@ -8,7 +8,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -23,7 +23,7 @@ class CommandWithResultHandlerTest {
     }
 
     @Test
-    fun `async commandHandler should be fired`() = runBlocking {
+    fun `async commandHandler should be fired`() = runTest {
         val handler = AsyncMyCommandRHandler()
         val handlers: HashMap<Class<*>, Any> =
             hashMapOf(Pair(AsyncMyCommandRHandler::class.java, handler))
@@ -41,7 +41,7 @@ class CommandWithResultHandlerTest {
         val provider = ManualDependencyProvider(hashMapOf())
         val bus: Mediator = MediatorBuilder(provider).build()
         val exception = assertFailsWith(HandlerNotFoundException::class) {
-            runBlocking {
+            runTest {
                 bus.send(NonExistCommandR())
             }
         }
@@ -54,7 +54,7 @@ class CommandWithResultHandlerTest {
     }
 
     @Test
-    fun inheritance_should_work() = runBlocking {
+    fun inheritance_should_work() = runTest {
         var invocationCount = 0
 
         class MyAsyncCommand : CommandWithResult<Result>
@@ -95,7 +95,7 @@ class CommandWithResultHandlerTest {
         }
 
         @Test
-        fun `async commandWithResult should be fired and return result`() = runBlocking {
+        fun `async commandWithResult should be fired and return result`() = runTest {
             // given
             val handler =
                 ParatemerizedAsyncCommandWithResultHandler<ParameterizedCommandWithResult<Long>>()
@@ -113,7 +113,7 @@ class CommandWithResultHandlerTest {
         }
 
         @Test
-        fun inheritance_should_work() = runBlocking {
+        fun inheritance_should_work() = runTest {
             var invocationCount = 0
 
             class ParameterizedCommandWithResult<TParam>(val param: TParam) : CommandWithResult<String>
