@@ -100,7 +100,7 @@ internal class SubscriberR2dbcRepositoryTest {
     fun `should save a new subscriber`() = runTest {
         val subscriber = subscribers.first()
         subscriberRepository.create(subscriber)
-        coEvery { subscriberReactiveR2DbcRepository.save(any()) }
+        coVerify { subscriberReactiveR2DbcRepository.save(any()) }
     }
 
     @Test
