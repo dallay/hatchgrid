@@ -22,8 +22,8 @@ object SubscriberMapper {
         return SubscriberEntity(
             id = id.value,
             email = email.value,
-            firstname = name?.firstName?.toString() ?: "",
-            lastname = name?.lastName?.toString() ?: "",
+            firstname = name.firstName.value,
+            lastname = name.lastName?.value ?: "",
             status = status,
             attributes = attributes,
             workspaceId = workspaceId.value,
