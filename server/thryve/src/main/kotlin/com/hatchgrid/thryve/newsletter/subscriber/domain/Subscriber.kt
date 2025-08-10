@@ -79,7 +79,9 @@ data class Subscriber(
         ): Subscriber {
             val subscriberId = SubscriberId(id)
             val subscriberEmail = Email(email)
-            val subscriberName = Name(firstname ?: "", lastname ?: "")
+            val normalizedFirst = firstname?.trim().orEmpty()
+            val normalizedLast = lastname?.trim()?.takeUnless { it.isEmpty() }
+            val subscriberName = Name(normalizedFirst, normalizedLast)
             val subscriberWorkspaceId = WorkspaceId(workspaceId)
 
             val subscriber = Subscriber(
