@@ -19,6 +19,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import jakarta.ws.rs.ClientErrorException
+import jakarta.ws.rs.InternalServerErrorException
 import jakarta.ws.rs.WebApplicationException
 import jakarta.ws.rs.core.Response
 import java.net.URI
@@ -190,10 +191,12 @@ class KeycloakRepositoryTest {
         // Verify that no pre-existence checks are performed
         verify(exactly = 0) { keycloakUserResource.searchByEmail(any(), any()) }
         verify(exactly = 0) { keycloakUserResource.searchByUsername(any(), any()) }
+        // Verify that no local DB writes occur
+        coVerify(exactly = 0) { userStoreR2dbcRepository.create(any(), any(), any()) }
     }
 
     @Test
-    fun `should throw UserStoreException when Keycloak returns client error`(): Unit = runTest {
+    fun `should throw UserStoreException when Keycloak returns client error`() = runTest {
         // Given
         val email = Email(faker.internet().emailAddress())
         val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
@@ -211,6 +214,40 @@ class KeycloakRepositoryTest {
 
         exception.message shouldContain "Error creating user"
         exception.cause shouldBe clientError
+        // Verify that no local DB writes occur
+        coVerify(exactly = 0) { userStoreR2dbcRepository.create(any(), any(), any()) }
+    }
+
+    @Test
+    fun `should throw UserStoreException when Keycloak returns server error`() = runTest {
+        // Given
+        val email = Email(faker.internet().emailAddress())
+        val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
+        val firstName = FirstName(faker.name().firstName())
+        val lastName = LastName(faker.name().lastName())
+
+        // Mock Keycloak error with complete Response mock
+        val response = mockk<Response>()
+        val statusInfo = mockk<Response.StatusType>()
+        every { response.status } returns 500
+        every { response.statusInfo } returns statusInfo
+        every { statusInfo.family } returns Response.Status.Family.SERVER_ERROR
+        every { statusInfo.statusCode } returns 500
+        every { statusInfo.reasonPhrase } returns "Internal Server Error"
+        every { response.close() } just Runs
+
+        val serverError = InternalServerErrorException("Internal Server Error", response)
+        every { keycloakUserResource.create(any()) } throws serverError
+
+        // When & Then
+        val exception = assertThrows<UserStoreException> {
+            keycloakRepository.create(email, credential, firstName, lastName)
+        }
+
+        exception.message shouldContain "Error creating user"
+        exception.cause shouldBe serverError
+        // Verify that no local DB writes occur
+        coVerify(exactly = 0) { userStoreR2dbcRepository.create(any(), any(), any()) }
     }
 
     @Test

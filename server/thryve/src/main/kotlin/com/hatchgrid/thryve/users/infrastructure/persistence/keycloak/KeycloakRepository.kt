@@ -84,6 +84,13 @@ class KeycloakRepository(
                     exception,
                 )
                 throw UserStoreException(message, exception)
+            } catch (exception: WebApplicationException) {
+                log.error(
+                    "Error creating user with email: {}",
+                    email.value.replace("\n", "").replace("\r", ""),
+                    exception,
+                )
+                throw UserStoreException(message, exception)
             }
         }
     }
