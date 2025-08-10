@@ -80,14 +80,14 @@ class KeycloakRepository(
             } catch (exception: ClientErrorException) {
                 log.error(
                     "Error creating user with email: {}",
-                    email.value.replace("\n", "").replace("\r", ""),
+                    email.value.sanitizeForLog(),
                     exception,
                 )
                 throw UserStoreException(message, exception)
             } catch (exception: WebApplicationException) {
                 log.error(
                     "Error creating user with email: {}",
-                    email.value.replace("\n", "").replace("\r", ""),
+                    email.value.sanitizeForLog(),
                     exception,
                 )
                 throw UserStoreException(message, exception)
@@ -108,8 +108,8 @@ class KeycloakRepository(
 
         log.debug(
             "Trying to create user with email: {} and username: {}",
-            email.value.replace("\n", "").replace("\r", ""),
-            email.value.replace("\n", "").replace("\r", ""),
+            email.value.sanitizeForLog(),
+            email.value.sanitizeForLog(),
         )
 
         val userRepresentation = getUserRepresentation(email, firstName, lastName, credentialRepresentation)
@@ -166,8 +166,8 @@ class KeycloakRepository(
     ): Nothing {
         log.error(
             "Error creating user with email: {} and username: {}",
-            email.value.replace("\n", "").replace("\r", ""),
-            email.value.replace("\n", "").replace("\r", ""),
+            email.value.sanitizeForLog(),
+            email.value.sanitizeForLog(),
             exception,
         )
         val wrappedException = when (exception) {
@@ -205,6 +205,8 @@ class KeycloakRepository(
             log.error("Error sending email verification to user with id: {}", userId)
         }
     }
+
+    private fun String.sanitizeForLog(): String = this.replace("\n", "").replace("\r", "")
 
     companion object {
         private const val USER_GROUP_NAME = "Users"
