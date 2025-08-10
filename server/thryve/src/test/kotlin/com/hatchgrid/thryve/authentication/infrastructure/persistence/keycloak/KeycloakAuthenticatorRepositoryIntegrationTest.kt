@@ -11,7 +11,7 @@ import com.hatchgrid.thryve.authentication.domain.UserAuthenticator
 import com.hatchgrid.thryve.authentication.domain.Username
 import com.hatchgrid.thryve.config.InfrastructureTestContainers
 import com.hatchgrid.thryve.users.domain.UserCreator
-import kotlinx.coroutines.runBlocking
+import io.kotest.common.runBlocking
 import net.datafaker.Faker
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull

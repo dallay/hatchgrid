@@ -18,11 +18,11 @@ import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.ent
 import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.mapper.SubscriberMapper.toEntity
 import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.repository.SubscriberReactiveR2dbcRepository
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
+import io.kotest.common.runBlocking
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach

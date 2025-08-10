@@ -12,6 +12,10 @@ databaseChangeLog:
                   defaultValueBoolean: false
                   constraints:
                     nullable: false
+      rollback:
+        - dropColumn:
+            tableName: workspaces
+            columnName: is_default
 
   - changeSet:
       id: 002c-cleanup-workspaces-default
@@ -38,6 +42,7 @@ databaseChangeLog:
   - changeSet:
       id: 002c-add-workspace-default-constraint
       author: hatchgrid
+      runInTransaction: false
       changes:
         - sql:
             splitStatements: false
@@ -48,7 +53,7 @@ databaseChangeLog:
             splitStatements: false
             sql: |
               -- Ensure only one default workspace per owner (partial unique index)
-              CREATE UNIQUE INDEX IF NOT EXISTS idx_workspaces_owner_default
+              CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS idx_workspaces_owner_default
               ON workspaces(owner_id)
               WHERE is_default IS TRUE;
       rollback:

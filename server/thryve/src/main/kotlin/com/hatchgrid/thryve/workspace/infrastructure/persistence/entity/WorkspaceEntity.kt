@@ -2,7 +2,7 @@ package com.hatchgrid.thryve.workspace.infrastructure.persistence.entity
 
 import com.hatchgrid.common.domain.AuditableEntity
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id

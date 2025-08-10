@@ -31,13 +31,13 @@ internal class FormStoreR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should create form`(): Unit = runTest {
+    fun `should create form`() = runTest {
         formStoreR2dbcRepository.create(form)
         coVerify(exactly = 1) { formR2dbcRepository.save(any()) }
     }
 
     @Test
-    fun `should handle duplicate form creation gracefully`(): Unit = runTest {
+    fun `should handle duplicate form creation gracefully`() = runTest {
         coEvery { formR2dbcRepository.save(any()) } throws DuplicateKeyException("Duplicate key")
         assertThrows<FormException> {
             formStoreR2dbcRepository.create(form)
@@ -45,7 +45,7 @@ internal class FormStoreR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should handle unexpected error during form creation`(): Unit = runTest {
+    fun `should handle unexpected error during form creation`() = runTest {
         coEvery { formR2dbcRepository.save(any()) } throws RuntimeException("Unexpected error")
         assertThrows<RuntimeException> {
             formStoreR2dbcRepository.create(form)
@@ -53,13 +53,13 @@ internal class FormStoreR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should update form`(): Unit = runTest {
+    fun `should update form`() = runTest {
         formStoreR2dbcRepository.update(form)
         coVerify(exactly = 1) { formR2dbcRepository.save(any()) }
     }
 
     @Test
-    fun `should handle unexpected error during form update`(): Unit = runTest {
+    fun `should handle unexpected error during form update`() = runTest {
         coEvery { formR2dbcRepository.save(any()) } throws RuntimeException("Unexpected error")
         assertThrows<RuntimeException> {
             formStoreR2dbcRepository.update(form)
@@ -67,7 +67,7 @@ internal class FormStoreR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should handle error when the form does not exist`(): Unit = runTest {
+    fun `should handle error when the form does not exist`() = runTest {
         coEvery { formR2dbcRepository.save(any()) } throws TransientDataAccessResourceException("Unexpected error")
         assertThrows<FormException> {
             formStoreR2dbcRepository.update(form)
@@ -75,7 +75,7 @@ internal class FormStoreR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should find form by id`(): Unit = runTest {
+    fun `should find form by id`() = runTest {
         coEvery { formR2dbcRepository.findById(any()) } returns form.toEntity()
         val result = formStoreR2dbcRepository.findById(form.id)
         assertNotNull(result)
@@ -83,14 +83,14 @@ internal class FormStoreR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should return null when form not found by id`(): Unit = runTest {
+    fun `should return null when form not found by id`() = runTest {
         coEvery { formR2dbcRepository.findById(any()) } returns null
         val result = formStoreR2dbcRepository.findById(form.id)
         assertEquals(null, result)
     }
 
     @Test
-    fun `should delete form`(): Unit = runTest {
+    fun `should delete form`() = runTest {
         coEvery { formR2dbcRepository.deleteById(any()) } returns Unit
         formStoreR2dbcRepository.delete(form.id)
         coVerify(exactly = 1) { formR2dbcRepository.deleteById(form.id.value) }
