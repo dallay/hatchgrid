@@ -38,7 +38,7 @@ abstract class ApiController(
     /**
      * Dispatches a command with result using the mediator.
      *
-     * @param TResult The type of the result returned by the command.
+     * @param [TResult] The type of the result returned by the command.
      * @param command The command to be dispatched.
      * @return The result from the command handler.
      * @throws CommandHandlerExecutionError if an error occurs while handling the command.

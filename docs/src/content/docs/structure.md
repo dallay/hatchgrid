@@ -39,7 +39,6 @@ description: Overview of the project structure and organization.
 │   │       └───node/
 │   │           └───action.yml
 │   ├───workflows/
-│   │   ├───auto-request-reviewers.yml
 │   │   ├───backend-ci.yml
 │   │   ├───ci.yml
 │   │   ├───cleanup-cache.yml
@@ -60,8 +59,7 @@ description: Overview of the project structure and organization.
 │   ├───copilot-instructions.md
 │   ├───dependabot.yml
 │   ├───issue-labeler-config.yml
-│   ├───labeler.yml
-│   └───reviewers.yml
+│   └───labeler.yml
 ├───.kiro/
 │   ├───hooks/
 │   │   ├───code-quality-analyzer.kiro.hook
