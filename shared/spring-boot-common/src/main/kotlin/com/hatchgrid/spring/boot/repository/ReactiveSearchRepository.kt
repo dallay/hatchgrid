@@ -14,7 +14,6 @@ import org.springframework.data.relational.core.query.Criteria
  * It provides methods for fetching all entities that match a given criteria, with support for pagination.
  *
  * @param T The type of the entity.
- * @param CURSOR The type of the cursor.
  */
 interface ReactiveSearchRepository<T : Any> {
 
@@ -44,7 +43,7 @@ interface ReactiveSearchRepository<T : Any> {
      * @param size The number of entities to fetch. Default is 10.
      * @param domainType The class of the entity.
      * @param cursor The cursor to use for pagination. Default is null.
-     * @return A Mono of a [PageResponse] of entities that match the criteria.
+     * @return A Mono of a [CursorPageResponse] of entities that match the criteria.
      */
     suspend fun findAllByCursor(
         criteria: Criteria,

@@ -10,7 +10,7 @@ private const val EMAIL_LEN = 320
  * @param email value
  * @throws [EmailNotValidException] if email is not valid
  * @see [BaseValidateValueObject] validate value object
- * @see [BaseValueObject] base value object
+ * @see [com.hatchgrid.common.domain.BaseValueObject] base value object
  * @see [EmailNotValidException] email not valid exception
  */
 data class Email(val email: String) : BaseValidateValueObject<String>(email) {

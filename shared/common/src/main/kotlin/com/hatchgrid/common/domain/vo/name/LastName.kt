@@ -7,7 +7,7 @@ import com.hatchgrid.common.domain.BaseValidateValueObject
  * @param lastname last name value
  * @throws LastNameNotValidException if last name is not valid
  * @see BaseValidateValueObject
- * @see BaseValueObject
+ * @see com.hatchgrid.common.domain.BaseValidateValueObject
  * @see LastNameNotValidException
  */
 data class LastName(val lastname: String) : BaseValidateValueObject<String>(lastname) {

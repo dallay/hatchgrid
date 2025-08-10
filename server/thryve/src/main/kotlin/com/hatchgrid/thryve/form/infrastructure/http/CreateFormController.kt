@@ -39,7 +39,7 @@ class CreateFormController(
      * This function handles the PUT request for creating a form.
      * It validates the request body, dispatches a [CreateFormCommand], and returns a [ResponseEntity].
      *
-     * @param id The ID of the form to create.
+     * @param formId The ID of the form to create.
      * @param request The [CreateFormRequest] body containing the form data.
      * @return A [ResponseEntity] indicating the result of the operation.
      */
