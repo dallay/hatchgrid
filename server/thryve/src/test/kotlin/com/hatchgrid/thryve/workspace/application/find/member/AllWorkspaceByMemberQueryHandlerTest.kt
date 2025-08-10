@@ -8,11 +8,11 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import java.util.*
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 @UnitTest
 internal class AllWorkspaceByMemberQueryHandlerTest {
@@ -65,8 +65,8 @@ internal class AllWorkspaceByMemberQueryHandlerTest {
         val query = AllWorkspaceByMemberQuery(userId.value.toString())
 
         // When & Then
-        assertThrows<RuntimeException> {
-            runTest { handler.handle(query) }
+        assertFailsWith<RuntimeException> {
+            handler.handle(query)
         }
     }
 }
