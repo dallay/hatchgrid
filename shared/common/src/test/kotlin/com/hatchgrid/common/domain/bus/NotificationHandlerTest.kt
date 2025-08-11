@@ -5,7 +5,7 @@ import com.hatchgrid.common.domain.bus.notification.NotificationHandler
 import java.util.concurrent.CountDownLatch
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -32,7 +32,7 @@ class NotificationHandlerTest {
     }
 
     @Test
-    fun `async notification handler should be called`() = runBlocking {
+    fun `async notification handler should be called`() = runTest {
         val pingHandler = AnPingHandler()
         val anotherPingHandler = AnotherPingHandler()
         val handlers: HashMap<Class<*>, Any> = hashMapOf(
@@ -49,7 +49,7 @@ class NotificationHandlerTest {
     }
 
     @Test
-    fun multiple_handlers_for_a_notification_should_be_dispatched() = runBlocking {
+    fun multiple_handlers_for_a_notification_should_be_dispatched() = runTest {
         var invocationCount = 0
 
         class MyNotification : Notification
@@ -77,7 +77,7 @@ class NotificationHandlerTest {
     }
 
     @Test
-    fun inherited_notification_handler_should_be_called() = runBlocking {
+    fun inherited_notification_handler_should_be_called() = runTest {
         class PingForInherited : Notification
 
         abstract class NotificationHandlerBase<TNotification : Notification> :
@@ -111,7 +111,7 @@ class NotificationHandlerTest {
         }
 
         @Test
-        fun `async notification should be fired`() = runBlocking {
+        fun `async notification should be fired`() = runTest {
             // given
             val handler = ParameterizedNotificationHandler<ParameterizedNotification<String>>()
             val handlers: HashMap<Class<*>, Any> =
@@ -129,7 +129,7 @@ class NotificationHandlerTest {
         }
 
         @Test
-        fun inherited_notification_handler_should_be_called() = runBlocking {
+        fun inherited_notification_handler_should_be_called() = runTest {
             var invocationCount = 0
             var parameter = ""
 

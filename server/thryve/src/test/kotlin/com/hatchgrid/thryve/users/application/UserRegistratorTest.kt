@@ -2,144 +2,427 @@ package com.hatchgrid.thryve.users.application
 
 import com.hatchgrid.UnitTest
 import com.hatchgrid.common.domain.vo.credential.Credential
-import com.hatchgrid.thryve.users.application.command.RegisterUserCommand
-import com.hatchgrid.thryve.users.application.response.UserResponse
-import com.hatchgrid.thryve.users.domain.ApiDataResponse
-import com.hatchgrid.thryve.users.domain.ApiResponseStatus
+import com.hatchgrid.common.domain.vo.credential.CredentialException
+import com.hatchgrid.common.domain.vo.email.Email
+import com.hatchgrid.common.domain.vo.name.FirstName
+import com.hatchgrid.common.domain.vo.name.LastName
+import com.hatchgrid.thryve.users.application.register.UserRegistrator
+import com.hatchgrid.thryve.users.domain.User
+import com.hatchgrid.thryve.users.domain.UserCreator
+import com.hatchgrid.thryve.users.domain.UserStoreException
 import com.hatchgrid.thryve.users.domain.event.UserCreatedEvent
-import io.kotest.common.runBlocking
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import java.util.*
+import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 @UnitTest
 class UserRegistratorTest {
-    private val userRepository = InMemoryUserRepository()
-    private val eventPublisher = InMemoryEventPublisher<UserCreatedEvent>()
-    private val userRegistrator = UserRegistrator(userRepository, eventPublisher)
     private val faker = Faker()
+    private val email = faker.internet().emailAddress()
+    private val password = Credential.generateRandomCredentialPassword()
+    private val firstname = faker.name().firstName()
+    private val lastname = faker.name().lastName()
 
-    @Test
-    fun `should register new user`() = runBlocking {
-        val registerUserCommand = createRegisterUserCommand()
+    @Nested
+    inner class IntegrationTestsWithRealImplementations {
+        private val userCreator = InMemoryUserRepository()
+        private val eventPublisher = InMemoryEventPublisher<UserCreatedEvent>()
+        private val userRegistrator = UserRegistrator(userCreator, eventPublisher)
 
-        val result: ApiDataResponse<UserResponse> =
-            userRegistrator.registerNewUser(registerUserCommand)
+        @Test
+        fun `should register new user successfully and publish events`(): Unit = runTest {
+            val userId = userRegistrator.registerNewUser(
+                Email(email), Credential.create(password), FirstName(firstname),
+                LastName(lastname),
+            )
 
-        val data = result.data
-        assertNotNull(data)
-        assertEquals(registerUserCommand.email, data?.username)
-        assertEquals(registerUserCommand.email, data?.email)
-        assertEquals(registerUserCommand.firstname, data?.firstname)
-        assertEquals(registerUserCommand.lastname, data?.lastname)
+            // Verify UUID is returned
+            assertTrue(userId.toString().isNotBlank(), "Expected valid UUID to be returned")
+
+            val publishedEvents = eventPublisher.getEvents()
+            assertFalse(publishedEvents.isEmpty(), "Expected at least one event to be published")
+            assertTrue(
+                publishedEvents.any {
+                    it.javaClass == UserCreatedEvent::class.java
+                },
+                "Expected UserCreatedEvent to be published",
+            )
+        }
+
+        @Test
+        fun `should throw UserStoreException when trying to register user with existing email`(): Unit =
+            runTest {
+                // Register first user
+                val firstUserId = userRegistrator.registerNewUser(
+                    Email(email), Credential.create(password), FirstName(firstname),
+                    LastName(lastname),
+                )
+
+                // Verify first registration returned UUID
+                assertTrue(firstUserId.toString().isNotBlank(), "Expected valid UUID for first user")
+
+                // When & Then - Attempting to register second user with same email should throw exception
+                val exception = assertThrows<UserStoreException> {
+                    userRegistrator.registerNewUser(
+                        Email(email), Credential.create(password), FirstName("Another"),
+                        LastName("User"),
+                    )
+                }
+                assertTrue(
+                    exception.message.contains("already exists"),
+                    "Exception message should indicate user already exists",
+                )
+            }
+
+        @Test
+        fun `should throw CredentialException when password does not meet complexity requirements`(): Unit =
+            runTest {
+                // Given
+                val weakPassword = "weak" // This will fail Credential validation
+
+                // When & Then
+                assertThrows<CredentialException> {
+                    User.create(
+                        UUID.randomUUID().toString(),
+                        email,
+                        firstname,
+                        lastname,
+                        weakPassword,
+                    )
+                }
+            }
+
+        @Test
+        fun `should register multiple users with different emails successfully`(): Unit =
+            runTest {
+                val userId1 = userRegistrator.registerNewUser(
+                    Email(faker.internet().emailAddress()),
+                    Credential.create(Credential.generateRandomCredentialPassword()),
+                    FirstName("John"),
+                    LastName("Doe"),
+                )
+                val userId2 = userRegistrator.registerNewUser(
+                    Email(faker.internet().emailAddress()),
+                    Credential.create(Credential.generateRandomCredentialPassword()),
+                    FirstName("Jane"),
+                    LastName("Smith"),
+                )
+                val userId3 = userRegistrator.registerNewUser(
+                    Email(faker.internet().emailAddress()),
+                    Credential.create(Credential.generateRandomCredentialPassword()),
+                    FirstName("Bob"),
+                    LastName("Johnson"),
+                )
+
+                // Verify all registrations returned UUIDs
+                assertTrue(userId1.toString().isNotBlank(), "Expected valid UUID for user 1")
+                assertTrue(userId2.toString().isNotBlank(), "Expected valid UUID for user 2")
+                assertTrue(userId3.toString().isNotBlank(), "Expected valid UUID for user 3")
+
+                // Then - All users should be registered and events published
+                val publishedEvents = eventPublisher.getEvents()
+                assertTrue(
+                    publishedEvents.size >= 3,
+                    "Expected at least 3 events to be published for 3 users",
+                )
+            }
     }
 
-    @Test
-    fun `should not register new user with wrong email`() = runBlocking {
-        val invalidEmail = "test"
-        val registerUserCommand = createRegisterUserCommand(email = invalidEmail)
+    @Nested
+    inner class UnitTestsWithMockedDependencies {
+        private val userCreator: UserCreator = mockk()
+        private val eventPublisher = InMemoryEventPublisher<UserCreatedEvent>()
+        private val userRegistrator = UserRegistrator(userCreator, eventPublisher)
 
-        val result: ApiDataResponse<UserResponse> =
-            userRegistrator.registerNewUser(registerUserCommand)
+        private lateinit var testUser: User
 
-        assertNotNull(result)
-        assertEquals(result.status, ApiResponseStatus.FAILURE)
-        assertNull(result.data)
-        assertNotNull(result.error)
-        assertEquals("The email <$invalidEmail> is not valid", result.error)
+        @BeforeEach
+        fun setUp() {
+            testUser =
+                User.create(UUID.randomUUID().toString(), email, firstname, lastname, password)
+        }
+
+        @Test
+        fun `should create user and publish domain events when registration succeeds`(): Unit =
+            runTest {
+                // Given
+                val mockCreatedUser: User = mockk()
+                val userCreatedEvent: UserCreatedEvent = mockk()
+                val expectedUserId = UUID.randomUUID()
+                val mockUserId: com.hatchgrid.thryve.users.domain.UserId = mockk()
+
+                // Create objects once and reuse them to ensure the same instances are used
+                val emailObj = Email(testUser.email.value)
+                val credentialObj = Credential.create(password)
+                val firstNameObj = FirstName(testUser.name?.firstName?.value ?: "")
+                val lastNameObj = LastName(testUser.name?.lastName?.value ?: "")
+
+                coEvery {
+                    userCreator.create(
+                        email = emailObj,
+                        credential = credentialObj,
+                        firstName = firstNameObj,
+                        lastName = lastNameObj,
+                    )
+                } returns mockCreatedUser
+                every { mockCreatedUser.pullDomainEvents() } returns listOf(userCreatedEvent)
+                every { mockCreatedUser.id } returns mockUserId
+                every { mockUserId.value } returns expectedUserId
+
+                // When
+                val actualUserId = userRegistrator.registerNewUser(
+                    email = emailObj,
+                    credential = credentialObj,
+                    firstName = firstNameObj,
+                    lastName = lastNameObj,
+                )
+
+                // Then - verify returned UUID
+                assertEquals(expectedUserId, actualUserId, "Expected returned UUID to match mock")
+
+                coVerify(exactly = 1) {
+                    userCreator.create(
+                        email = emailObj,
+                        credential = credentialObj,
+                        firstName = firstNameObj,
+                        lastName = lastNameObj,
+                    )
+                }
+                verify(exactly = 1) { mockCreatedUser.pullDomainEvents() }
+                verify(exactly = 1) { mockCreatedUser.id }
+
+                val publishedEvents = eventPublisher.getEvents()
+                assertEquals(1, publishedEvents.size, "Expected exactly 1 event to be published")
+                assertEquals(
+                    userCreatedEvent,
+                    publishedEvents[0],
+                    "Expected UserCreatedEvent to be published",
+                )
+            }
+
+        @Test
+        fun `should propagate UserStoreException when user creation fails`(): Unit = runTest {
+            // Given
+            val errorMessage = "User with email: $email already exists"
+
+            // Create objects once and reuse them to ensure the same instances are used
+            val emailObj = Email(testUser.email.value)
+            val credentialObj = Credential.create(password)
+            val firstNameObj = FirstName(testUser.name?.firstName?.value ?: "")
+            val lastNameObj = LastName(testUser.name?.lastName?.value ?: "")
+
+            coEvery {
+                userCreator.create(
+                    email = emailObj,
+                    credential = credentialObj,
+                    firstName = firstNameObj,
+                    lastName = lastNameObj,
+                )
+            } throws UserStoreException(errorMessage)
+
+            // When & Then
+            val exception = assertThrows<UserStoreException> {
+                userRegistrator.registerNewUser(
+                    email = emailObj,
+                    credential = credentialObj,
+                    firstName = firstNameObj,
+                    lastName = lastNameObj,
+                )
+            }
+
+            assertEquals(errorMessage, exception.message, "Exception message should match")
+            coVerify(exactly = 1) {
+                userCreator.create(
+                    email = emailObj,
+                    credential = credentialObj,
+                    firstName = firstNameObj,
+                    lastName = lastNameObj,
+                )
+            }
+
+            // No events should be published on failure
+            val publishedEvents = eventPublisher.getEvents()
+            assertTrue(publishedEvents.isEmpty(), "No events should be published on failure")
+        }
     }
 
-    @Test
-    fun `should not register new user with wrong password`() = runBlocking {
-        val invalidPassword = "ab@W"
-        val registerUserCommand = createRegisterUserCommand(password = invalidPassword)
+    @Nested
+    inner class EdgeCasesAndBoundaryTests {
+        private val userCreator = InMemoryUserRepository()
+        private val eventPublisher = InMemoryEventPublisher<UserCreatedEvent>()
+        private val userRegistrator = UserRegistrator(userCreator, eventPublisher)
 
-        val result: ApiDataResponse<UserResponse> =
-            userRegistrator.registerNewUser(registerUserCommand)
+        @Test
+        fun `should handle user with minimal valid data`(): Unit = runTest {
+            // Given
+            val minimalUser = User.create(
+                id = UUID.randomUUID().toString(),
+                email = "a@b.co", // Minimal valid email
+                firstName = "A", // Single character
+                lastName = "B", // Single character
+                password = Credential.generateRandomCredentialPassword(), // Valid complex password
+            )
 
-        assertNotNull(result)
-        assertEquals(result.status, ApiResponseStatus.FAILURE)
-        assertNull(result.data)
-        assertNotNull(result.error)
-        assertEquals("Credential value must be at least 8 characters", result.error)
+            // When
+            userRegistrator.registerNewUser(
+                email = Email(minimalUser.email.value),
+                credential = Credential.create(minimalUser.credentials.first().value),
+                firstName = FirstName(minimalUser.name?.firstName?.value ?: ""),
+                lastName = LastName(minimalUser.name?.lastName?.value ?: ""),
+            )
+
+            // Then - Should succeed without throwing exception
+            val publishedEvents = eventPublisher.getEvents()
+            assertFalse(publishedEvents.isEmpty(), "Expected at least one event to be published")
+        }
+
+        @Test
+        fun `should handle user with maximum length data`(): Unit = runTest {
+            // Given - Create realistic but long data that won't exceed validation limits
+            val longFirstName = "A".repeat(50) // More reasonable length
+            val longLastName = "B".repeat(50) // More reasonable length
+            val maximalUser = User.create(
+                id = UUID.randomUUID().toString(),
+                email = "test@long-domain-name.com", // Valid but longer email
+                firstName = longFirstName,
+                lastName = longLastName,
+                password = Credential.generateRandomCredentialPassword(),
+            )
+
+            // When
+            userRegistrator.registerNewUser(
+                email = Email(maximalUser.email.value),
+                credential = Credential.create(maximalUser.credentials.first().value),
+                firstName = FirstName(maximalUser.name?.firstName?.value ?: ""),
+                lastName = LastName(maximalUser.name?.lastName?.value ?: ""),
+            )
+
+            // Then - Should succeed without throwing exception
+            val publishedEvents = eventPublisher.getEvents()
+            assertTrue(publishedEvents.isNotEmpty(), "Expected at least one event to be published")
+            assertTrue(
+                publishedEvents.any {
+                    it.javaClass == UserCreatedEvent::class.java
+                },
+                "Expected UserCreatedEvent to be published",
+            )
+        }
+
+        @Test
+        fun `should handle special characters in user data`(): Unit = runTest {
+            // Given
+            val specialCharsUser = User.create(
+                id = UUID.randomUUID().toString(),
+                email = "test+tag@example-domain.co.uk",
+                firstName = "José-María",
+                lastName = "O'Connor-Smith",
+                password = Credential.generateRandomCredentialPassword(),
+            )
+
+            // When
+            userRegistrator.registerNewUser(
+                email = Email(specialCharsUser.email.value),
+                credential = Credential.create(specialCharsUser.credentials.first().value),
+                firstName = FirstName(specialCharsUser.name?.firstName?.value ?: ""),
+                lastName = LastName(specialCharsUser.name?.lastName?.value ?: ""),
+            )
+
+            // Then - Should succeed without throwing exception
+            val publishedEvents = eventPublisher.getEvents()
+            assertFalse(publishedEvents.isEmpty(), "Expected at least one event to be published")
+        }
+
+        @Test
+        fun `should handle unicode characters in user data`(): Unit = runTest {
+            // Given
+            val unicodeUser = User.create(
+                id = UUID.randomUUID().toString(),
+                email = "test@example.com", // Use regular email to avoid potential unicode email issues
+                firstName = "张",
+                lastName = "三",
+                password = Credential.generateRandomCredentialPassword(),
+            )
+
+            // When
+            userRegistrator.registerNewUser(
+                email = Email(unicodeUser.email.value),
+                credential = Credential.create(unicodeUser.credentials.first().value),
+                firstName = FirstName(unicodeUser.name?.firstName?.value ?: ""),
+                lastName = LastName(unicodeUser.name?.lastName?.value ?: ""),
+            )
+
+            // Then - Should succeed without throwing exception
+            val publishedEvents = eventPublisher.getEvents()
+            assertFalse(publishedEvents.isEmpty(), "Expected at least one event to be published")
+        }
+
+        @Test
+        fun `should handle user with empty domain events list`(): Unit = runTest {
+            // Given
+            val userCreatorMock: UserCreator = mockk()
+            val mockUser: User = mockk()
+            val registrator = UserRegistrator(userCreatorMock, eventPublisher)
+            val expectedUserId = UUID.randomUUID()
+            val mockUserId: com.hatchgrid.thryve.users.domain.UserId = mockk()
+
+            val testUser =
+                User.create(UUID.randomUUID().toString(), email, firstname, lastname, password)
+            // Create the credential once and reuse it to ensure the same object identity
+            val credential = Credential.create(password)
+            val emailObj = Email(testUser.email.value)
+            val firstNameObj = FirstName(testUser.name?.firstName?.value ?: "")
+            val lastNameObj = LastName(testUser.name?.lastName?.value ?: "")
+
+            coEvery {
+                userCreatorMock.create(
+                    email = emailObj,
+                    credential = credential,
+                    firstName = firstNameObj,
+                    lastName = lastNameObj,
+                )
+            } returns mockUser
+            every { mockUser.pullDomainEvents() } returns emptyList()
+            every { mockUser.id } returns mockUserId
+            every { mockUserId.value } returns expectedUserId
+
+            // When
+            val actualUserId = registrator.registerNewUser(
+                email = emailObj,
+                credential = credential,
+                firstName = firstNameObj,
+                lastName = lastNameObj,
+            )
+
+            // Then - verify returned UUID
+            assertEquals(expectedUserId, actualUserId, "Expected returned UUID to match mock")
+
+            val publishedEvents = eventPublisher.getEvents()
+            assertTrue(
+                publishedEvents.isEmpty(),
+                "No events should be published when domain events list is empty",
+            )
+            coVerify(exactly = 1) {
+                userCreatorMock.create(
+                    email = emailObj,
+                    credential = credential,
+                    firstName = firstNameObj,
+                    lastName = lastNameObj,
+                )
+            }
+            verify(exactly = 1) { mockUser.pullDomainEvents() }
+            verify(exactly = 1) { mockUser.id }
+        }
     }
-
-    @Test
-    fun `should not register new user with wrong lastname`() = runBlocking {
-        val charUppercase = 'A'..'Z'
-        val charLowercase = 'a'..'z'
-        val invalidLastname = (charUppercase + charLowercase).shuffled().joinToString("").repeat(4)
-        val registerUserCommand = createRegisterUserCommand(lastname = invalidLastname)
-
-        val result: ApiDataResponse<UserResponse> =
-            userRegistrator.registerNewUser(registerUserCommand)
-
-        assertNotNull(result)
-        assertEquals(result.status, ApiResponseStatus.FAILURE)
-        assertNull(result.data)
-        assertNotNull(result.error)
-        assertEquals("The last name <$invalidLastname> is not valid", result.error)
-    }
-
-    @Test
-    fun `should not register new user with existing email`() = runBlocking {
-        val registerUserCommand = createRegisterUserCommand(email = "test@google.com")
-
-        var result: ApiDataResponse<UserResponse> =
-            userRegistrator.registerNewUser(registerUserCommand)
-
-        val data = result.data
-        assertNotNull(data)
-        assertEquals(registerUserCommand.email, data?.username)
-        assertEquals(registerUserCommand.email, data?.email)
-        assertEquals(registerUserCommand.firstname, data?.firstname)
-        assertEquals(registerUserCommand.lastname, data?.lastname)
-
-        val registerUserCommand2 = createRegisterUserCommand(email = "test@google.com")
-
-        result = userRegistrator.registerNewUser(registerUserCommand2)
-
-        assertNotNull(result)
-        assertEquals(result.status, ApiResponseStatus.FAILURE)
-        assertNull(result.data)
-        assertNotNull(result.error)
-        assertEquals("User with email: test@google.com or username: test@google.com already exists.", result.error)
-    }
-
-    @Test
-    fun `should produce user registered event`() = runBlocking {
-        val registerUserCommand = createRegisterUserCommand()
-
-        val result: ApiDataResponse<UserResponse> =
-            userRegistrator.registerNewUser(registerUserCommand)
-
-        val data = result.data
-        assertNotNull(data)
-        assertEquals(registerUserCommand.email, data?.username)
-        assertEquals(registerUserCommand.email, data?.email)
-        assertEquals(registerUserCommand.firstname, data?.firstname)
-        assertEquals(registerUserCommand.lastname, data?.lastname)
-
-        val event = eventPublisher.getEvents().first()
-        assertNotNull(event)
-        assertEquals(UserCreatedEvent::class.java, event::class.java)
-        assertEquals(registerUserCommand.email, event.username)
-        assertEquals(registerUserCommand.email, event.email)
-        assertEquals(registerUserCommand.firstname, event.firstname)
-        assertEquals(registerUserCommand.lastname, event.lastname)
-    }
-
-    private fun createRegisterUserCommand(
-        email: String = faker.internet().emailAddress(),
-        password: String = Credential.generateRandomCredentialPassword(),
-        firstname: String = faker.name().firstName(),
-        lastname: String = faker.name().lastName()
-    ) = RegisterUserCommand(
-        email = email,
-        password = password,
-        firstname = firstname,
-        lastname = lastname,
-    )
 }

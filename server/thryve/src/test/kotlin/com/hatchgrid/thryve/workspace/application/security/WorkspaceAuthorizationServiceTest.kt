@@ -6,7 +6,7 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import java.util.UUID
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -18,7 +18,7 @@ class WorkspaceAuthorizationServiceTest {
     private val workspaceAuthorizationService = WorkspaceAuthorizationService(workspaceMemberRepository)
 
     @Test
-    fun should_allowAccess_when_userIsMemberOfWorkspace() = runBlocking {
+    fun should_allowAccess_when_userIsMemberOfWorkspace() = runTest {
         val workspaceId = UUID.randomUUID()
         val userId = UUID.randomUUID()
 
@@ -28,7 +28,7 @@ class WorkspaceAuthorizationServiceTest {
     }
 
     @Test
-    fun should_throwException_when_userIsNotMemberOfWorkspace() = runBlocking {
+    fun should_throwException_when_userIsNotMemberOfWorkspace() = runTest {
         val workspaceId = UUID.randomUUID()
         val userId = UUID.randomUUID()
 
@@ -38,11 +38,11 @@ class WorkspaceAuthorizationServiceTest {
             workspaceAuthorizationService.ensureAccess(workspaceId, userId)
         }
 
-        assertTrue(exception.message!!.contains("User $userId has no access to workspace $workspaceId"))
+        assertTrue(exception.message.contains("User $userId has no access to workspace $workspaceId"))
     }
 
     @Test
-    fun should_throwException_when_invalidUUIDStringsProvided(): Unit = runBlocking {
+    fun should_throwException_when_invalidUUIDStringsProvided(): Unit = runTest {
         val invalidWorkspaceId = "invalid-uuid"
         val invalidUserId = "invalid-uuid"
 

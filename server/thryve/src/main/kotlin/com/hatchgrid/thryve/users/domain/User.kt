@@ -6,11 +6,12 @@ import com.hatchgrid.common.domain.vo.credential.CredentialType
 import com.hatchgrid.common.domain.vo.email.Email
 import com.hatchgrid.common.domain.vo.name.Name
 import com.hatchgrid.thryve.authentication.domain.Username
+import com.hatchgrid.thryve.users.domain.event.UserCreatedEvent
 import java.util.*
 
 /**
  * User domain model. This is the root of the user aggregate. It contains all the information about the user.
- * @created 2/7/23
+ *
  * @param id the user id as a string representation of a UUID value (e.g. "123e4567-e89b-12d3-a456-426614174000")
  * @param username the username as a string value (e.g. "username") see [Username] for more information
  * @param email the email as a string value (e.g. "email") see [Email] for more information
@@ -23,6 +24,7 @@ import java.util.*
  * @see Name for more information about the name
  * @see Credential for more information about the credential
  * @see CredentialType for more information about the credential type
+ * @created 2/7/23
  */
 data class User(
     override val id: UserId,
@@ -44,14 +46,21 @@ data class User(
     constructor(
         id: UUID,
         email: String,
-        firstName: String,
-        lastName: String,
+        firstName: String? = null,
+        lastName: String? = null,
         credentials: MutableList<Credential> = mutableListOf()
     ) : this(
         id = UserId(id),
         username = Username(email),
         email = Email(email),
-        name = Name(firstName, lastName),
+        name = if (!firstName.isNullOrBlank() && !lastName.isNullOrBlank()) {
+            Name(
+                firstName,
+                lastName,
+            )
+        } else {
+            null
+        },
         credentials = credentials,
     )
 
@@ -78,6 +87,8 @@ data class User(
         /**
          * Creates a new User with the given information.
          *
+         * @param id the user id as a string representation of a UUID value
+         * (e.g. "123e4567-e89b-12d3-a456-426614174000")
          * @param email the email address of the user
          * @param firstName the first name of the user
          * @param lastName the last name of the user
@@ -85,13 +96,15 @@ data class User(
          * @return the newly created User object
          */
         fun create(
+            id: String,
             email: String,
             firstName: String,
             lastName: String,
             password: String = Credential.generateRandomCredentialPassword()
         ): User {
-            return User(
-                id = UUID.randomUUID(),
+            val userId = UUID.fromString(id)
+            val user = User(
+                id = userId,
                 email = email,
                 firstName = firstName,
                 lastName = lastName,
@@ -102,6 +115,18 @@ data class User(
                     ),
                 ),
             )
+
+            // Record domain event when user is created
+            user.record(
+                UserCreatedEvent(
+                    id = user.id.value.toString(),
+                    email = user.email.value,
+                    firstName = user.name?.firstName?.value,
+                    lastName = user.name?.lastName?.value,
+                ),
+            )
+
+            return user
         }
     }
 }

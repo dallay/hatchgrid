@@ -18,6 +18,7 @@ describe("useWorkspaceInitialization", () => {
 		name: `Workspace ${id}`,
 		description: `Description for workspace ${id}`,
 		ownerId: "owner-id",
+		isDefault: false,
 		createdAt: "2023-01-01T00:00:00Z",
 		updatedAt: "2023-01-01T00:00:00Z",
 	});

@@ -1,7 +1,7 @@
 package com.hatchgrid.thryve.workspace.infrastructure.http
 
 import com.hatchgrid.ControllerIntegrationTest
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.springframework.test.context.jdbc.Sql
 
@@ -17,7 +17,7 @@ internal class FindWorkspaceControllerIntegrationTest : ControllerIntegrationTes
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should return workspace when workspace is found`(): Unit = runBlocking {
+    fun `should return workspace when workspace is found`(): Unit = runTest {
         val id = "a0654720-35dc-49d0-b508-1f7df5d915f1"
         webTestClient
             .get()
@@ -33,7 +33,7 @@ internal class FindWorkspaceControllerIntegrationTest : ControllerIntegrationTes
     }
 
     @Test
-    fun `should return 404 when workspace is not found`(): Unit = runBlocking {
+    fun `should return 404 when workspace is not found`(): Unit = runTest {
         val id = "94be1a32-cf2e-4dfc-892d-bdd8ac7ad354"
         webTestClient.get()
             .uri("/api/workspace/$id")

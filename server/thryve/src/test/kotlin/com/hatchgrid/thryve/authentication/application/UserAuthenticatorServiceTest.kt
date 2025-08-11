@@ -4,7 +4,7 @@ import com.hatchgrid.UnitTest
 import com.hatchgrid.thryve.CredentialGenerator
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticationException
 import com.hatchgrid.thryve.authentication.domain.Username
-import kotlinx.coroutines.runBlocking
+import io.kotest.common.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals

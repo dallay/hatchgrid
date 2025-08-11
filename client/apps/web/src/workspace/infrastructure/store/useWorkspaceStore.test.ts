@@ -40,6 +40,7 @@ const createMockWorkspace = (
 	name: "Test Workspace",
 	description: "Test workspace description",
 	ownerId: TEST_OWNER_IDS.OWNER_1,
+	isDefault: false,
 	createdAt: "2024-01-01T00:00:00Z",
 	updatedAt: "2024-01-01T00:00:00Z",
 	...overrides,

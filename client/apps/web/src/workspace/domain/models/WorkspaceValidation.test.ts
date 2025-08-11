@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+	canSetAsDefault,
 	createValidatedWorkspace,
 	isValidISODate,
 	isValidUUID,
@@ -153,6 +154,7 @@ describe("WorkspaceValidation", () => {
 			name: "Test Workspace",
 			description: "A test workspace",
 			ownerId: "123e4567-e89b-12d3-a456-426614174001",
+			isDefault: false,
 			createdAt: "2024-01-01T00:00:00Z",
 			updatedAt: "2024-01-01T00:00:00Z",
 		};
@@ -297,6 +299,33 @@ describe("WorkspaceValidation", () => {
 			}
 		});
 
+		it("should validate isDefault field", () => {
+			const testCases = [
+				{
+					data: { ...validWorkspace, isDefault: "true" },
+					expectedError: "Workspace isDefault must be a boolean",
+				},
+				{
+					data: { ...validWorkspace, isDefault: 1 },
+					expectedError: "Workspace isDefault must be a boolean",
+				},
+				{
+					data: { ...validWorkspace, isDefault: undefined },
+					expectedError: "Workspace isDefault must be a boolean",
+				},
+				{
+					data: { ...validWorkspace, isDefault: null },
+					expectedError: "Workspace isDefault must be a boolean",
+				},
+			];
+
+			for (const { data, expectedError } of testCases) {
+				const result = validateWorkspace(data);
+				expect(result.isValid).toBe(false);
+				expect(result.errors).toContain(expectedError);
+			}
+		});
+
 		it("should validate updatedAt field", () => {
 			const testCases = [
 				{
@@ -326,13 +355,14 @@ describe("WorkspaceValidation", () => {
 				name: "",
 				description: "a".repeat(501),
 				ownerId: "invalid-owner-uuid",
+				isDefault: "not-a-boolean",
 				createdAt: "invalid-date",
 				updatedAt: "invalid-date",
 			};
 
 			const result = validateWorkspace(invalidWorkspace);
 			expect(result.isValid).toBe(false);
-			expect(result.errors).toHaveLength(6);
+			expect(result.errors).toHaveLength(7);
 			expect(result.errors).toContain("Workspace id must be a valid UUID");
 			expect(result.errors).toContain(
 				"Workspace name must be between 1 and 100 characters",
@@ -341,6 +371,7 @@ describe("WorkspaceValidation", () => {
 				"Workspace description must be 500 characters or less",
 			);
 			expect(result.errors).toContain("Workspace ownerId must be a valid UUID");
+			expect(result.errors).toContain("Workspace isDefault must be a boolean");
 			expect(result.errors).toContain(
 				"Workspace createdAt must be a valid ISO 8601 date",
 			);
@@ -356,6 +387,7 @@ describe("WorkspaceValidation", () => {
 			name: "Test Workspace",
 			description: "A test workspace",
 			ownerId: "123e4567-e89b-12d3-a456-426614174001",
+			isDefault: false,
 			createdAt: "2024-01-01T00:00:00Z",
 			updatedAt: "2024-01-01T00:00:00Z",
 		};
@@ -389,6 +421,60 @@ describe("WorkspaceValidation", () => {
 			expect(() => createValidatedWorkspace(invalidWorkspace)).toThrow(
 				"Invalid workspace data:",
 			);
+		});
+	});
+
+	describe("canSetAsDefault", () => {
+		const baseWorkspace: Workspace = {
+			id: "123e4567-e89b-12d3-a456-426614174000",
+			name: "Test Workspace",
+			ownerId: "owner-123",
+			isDefault: false,
+			createdAt: "2024-01-01T00:00:00Z",
+			updatedAt: "2024-01-01T00:00:00Z",
+		};
+
+		it("should return true when workspace is not set as default", () => {
+			const workspace = { ...baseWorkspace, isDefault: false };
+			const existingWorkspaces = [
+				{ ...baseWorkspace, id: "other-id", isDefault: true },
+			];
+
+			expect(canSetAsDefault(workspace, existingWorkspaces)).toBe(true);
+		});
+
+		it("should return true when no existing default workspace exists", () => {
+			const workspace = { ...baseWorkspace, isDefault: true };
+			const existingWorkspaces = [
+				{ ...baseWorkspace, id: "other-id", isDefault: false },
+			];
+
+			expect(canSetAsDefault(workspace, existingWorkspaces)).toBe(true);
+		});
+
+		it("should return false when another workspace is already default", () => {
+			const workspace = { ...baseWorkspace, isDefault: true };
+			const existingWorkspaces = [
+				{ ...baseWorkspace, id: "other-id", isDefault: true },
+			];
+
+			expect(canSetAsDefault(workspace, existingWorkspaces)).toBe(false);
+		});
+
+		it("should return true when updating the same workspace to default", () => {
+			const workspace = { ...baseWorkspace, isDefault: true };
+			const existingWorkspaces = [
+				{ ...baseWorkspace, isDefault: true }, // Same ID
+			];
+
+			expect(canSetAsDefault(workspace, existingWorkspaces)).toBe(true);
+		});
+
+		it("should return true with empty existing workspaces array", () => {
+			const workspace = { ...baseWorkspace, isDefault: true };
+
+			expect(canSetAsDefault(workspace, [])).toBe(true);
+			expect(canSetAsDefault(workspace)).toBe(true);
 		});
 	});
 });

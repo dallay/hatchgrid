@@ -6,9 +6,6 @@ import com.hatchgrid.thryve.authentication.domain.AuthoritiesConstants
 import com.hatchgrid.thryve.authentication.infrastructure.cookie.AuthCookieBuilder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.http.MediaType
-import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf
-import org.springframework.test.web.reactive.server.returnResult
 
 @Suppress("MultilineRawStringIndentation")
 internal class AccountResourceCookieAuthIntegrationTest : ControllerIntegrationTest() {
@@ -20,22 +17,8 @@ internal class AccountResourceCookieAuthIntegrationTest : ControllerIntegrationT
     override fun setUp() {
         super.setUp()
         startInfrastructure()
-        val returnResult = webTestClient
-            .mutateWith(csrf())
-            .post()
-            .uri("/api/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(
-                """
-                {
-                    "username": "$email",
-                    "password": "$password"
-                }
-                """.trimIndent(),
-            )
-            .exchange()
-            .returnResult<AccessToken>()
-        accessToken = returnResult.responseBody.blockFirst()
+        accessToken = getAccessToken(email, password)
+            ?: error("Failed to obtain access token for test user $email. Check Keycloak/Testcontainers setup.")
     }
 
     @Test

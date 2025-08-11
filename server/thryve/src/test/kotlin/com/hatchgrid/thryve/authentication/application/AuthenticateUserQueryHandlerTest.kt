@@ -3,7 +3,7 @@ package com.hatchgrid.thryve.authentication.application
 import com.hatchgrid.UnitTest
 import com.hatchgrid.thryve.authentication.application.query.AuthenticateUserQuery
 import com.hatchgrid.thryve.authentication.domain.UserAuthenticationException
-import kotlinx.coroutines.runBlocking
+import io.kotest.common.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals

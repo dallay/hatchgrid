@@ -12,7 +12,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.spyk
 import java.util.UUID
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -46,7 +46,7 @@ internal class SearchAllActiveSubscribersQueryHandlerTest {
     }
 
     @Test
-    fun `should search all active subscribers`() = runBlocking {
+    fun `should search all active subscribers`() = runTest {
         // Given
         val query = SearchAllActiveSubscribersQuery(workspaceId.toString(), userId.toString())
 
@@ -60,7 +60,7 @@ internal class SearchAllActiveSubscribersQueryHandlerTest {
     }
 
     @Test
-    fun `should authorize workspace access`() = runBlocking {
+    fun `should authorize workspace access`() = runTest {
         // Given
         val query = SearchAllActiveSubscribersQuery(workspaceId.toString(), userId.toString())
 

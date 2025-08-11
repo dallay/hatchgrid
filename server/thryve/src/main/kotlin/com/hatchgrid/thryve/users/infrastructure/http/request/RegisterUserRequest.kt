@@ -1,6 +1,6 @@
 package com.hatchgrid.thryve.users.infrastructure.http.request
 
-import com.hatchgrid.thryve.users.application.command.RegisterUserCommand
+import com.hatchgrid.thryve.users.application.register.RegisterUserCommand
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size

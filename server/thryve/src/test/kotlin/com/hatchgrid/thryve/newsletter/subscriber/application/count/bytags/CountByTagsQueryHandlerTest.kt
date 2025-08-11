@@ -6,10 +6,10 @@ import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import com.hatchgrid.thryve.workspace.domain.WorkspaceId
 import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
-import io.kotest.common.runBlocking
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -40,7 +40,7 @@ internal class CountByTagsQueryHandlerTest {
     }
 
     @Test
-    fun `should count subscribers by tags`(): Unit = runBlocking {
+    fun `should count subscribers by tags`(): Unit = runTest {
         // Given
         val query = CountByTagsQuery(wId, uId)
 

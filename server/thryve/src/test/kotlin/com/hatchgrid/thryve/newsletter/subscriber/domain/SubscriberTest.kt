@@ -1,6 +1,7 @@
 package com.hatchgrid.thryve.newsletter.subscriber.domain
 
 import com.hatchgrid.UnitTest
+import com.hatchgrid.common.domain.vo.name.Name
 import java.util.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

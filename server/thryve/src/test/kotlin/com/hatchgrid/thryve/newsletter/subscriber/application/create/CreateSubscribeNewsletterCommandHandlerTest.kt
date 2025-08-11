@@ -10,7 +10,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.mockkClass
 import java.util.UUID
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -39,7 +39,7 @@ internal class CreateSubscribeNewsletterCommandHandlerTest {
     }
 
     @Test
-    fun `should register a subscriber`() = runBlocking {
+    fun `should register a subscriber`() = runTest {
         // Given
         val subscriberId = UUID.randomUUID().toString()
         val command = SubscribeNewsletterCommand(

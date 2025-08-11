@@ -9,7 +9,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import java.util.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -28,7 +28,7 @@ internal class DetailFormQueryHandlerTest {
     }
 
     @Test
-    fun `should return form response when form is found`() = runBlocking {
+    fun `should return form response when form is found`() = runTest {
         // Given
         val fID = UUID.randomUUID().toString()
         val wID = UUID.randomUUID().toString()
@@ -59,7 +59,7 @@ internal class DetailFormQueryHandlerTest {
         // Then
         assertThrows(FormNotFoundException::class.java) {
             // When
-            runBlocking {
+            runTest {
                 findFormQueryHandler.handle(DetailFormQuery(formUuid))
             }
         }

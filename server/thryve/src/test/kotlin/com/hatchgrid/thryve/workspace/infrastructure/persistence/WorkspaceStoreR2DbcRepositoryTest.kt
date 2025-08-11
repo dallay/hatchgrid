@@ -10,7 +10,7 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceRole
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceMemberR2dbcRepository
 import com.hatchgrid.thryve.workspace.infrastructure.persistence.repository.WorkspaceR2dbcRepository
 import java.util.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -77,7 +77,7 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
         val stub = WorkspaceStub.create()
         workspace = stub.copy(ownerId = ownerId, members = mutableSetOf(ownerId))
 
-        runBlocking {
+        runTest {
             directWorkspaceMemberR2dbcRepository.deleteAll()
             directWorkspaceR2dbcRepository.deleteAll()
             workspaceStoreR2dbcRepository.create(workspace1)
@@ -86,13 +86,13 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
     }
 
     @AfterEach
-    fun tearDown() = runBlocking {
+    fun tearDown() = runTest {
         directWorkspaceMemberR2dbcRepository.deleteAll()
         directWorkspaceR2dbcRepository.deleteAll()
     }
 
     @Test
-    fun `should create workspace`() = runBlocking {
+    fun `should create workspace`() = runTest {
         val stubWorkspace = WorkspaceStub.create(name = "Test Create")
         val workspaceToCreate = stubWorkspace.copy(
             ownerId = commonExistingUserId,
@@ -114,7 +114,7 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
     }
 
     @Test
-    fun `should update workspace`() = runBlocking {
+    fun `should update workspace`() = runTest {
         val workspaceToUpdate = workspace1.copy(name = "Updated Name")
         workspaceStoreR2dbcRepository.update(workspaceToUpdate)
 
@@ -124,7 +124,7 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
     }
 
     @Test
-    fun `should handle unexpected error during workspace update`(): Unit = runBlocking {
+    fun `should handle unexpected error during workspace update`(): Unit = runTest {
         val nonExistentWorkspace =
             WorkspaceStub.create(id = UUID.randomUUID()).copy(ownerId = commonExistingUserId)
         assertThrows<WorkspaceException> { // Expecting WorkspaceException due to not found for update
@@ -133,7 +133,7 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
     }
 
     @Test
-    fun `should handle error when the form does not exist during update`(): Unit = runBlocking {
+    fun `should handle error when the form does not exist during update`(): Unit = runTest {
         val nonExistentWorkspace =
             WorkspaceStub.create(id = UUID.randomUUID()).copy(ownerId = commonExistingUserId)
         assertThrows<WorkspaceException> {
@@ -142,7 +142,7 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
     }
 
     @Test
-    fun `should delete workspace`() = runBlocking {
+    fun `should delete workspace`() = runTest {
         workspaceStoreR2dbcRepository.delete(workspace1.id)
 
         val fetched = directWorkspaceR2dbcRepository.findById(workspace1.id.value)
@@ -153,7 +153,7 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
     }
 
     @Test
-    fun `should find workspace by id`() = runBlocking {
+    fun `should find workspace by id`() = runTest {
         val result = workspaceStoreR2dbcRepository.findById(workspace1.id)
 
         assertNotNull(result)
@@ -162,7 +162,7 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
     }
 
     @Test
-    fun `should find all workspaces by memberId`() = runBlocking {
+    fun `should find all workspaces by memberId`() = runTest {
         val result = workspaceStoreR2dbcRepository.findByMemberId(ownerId)
 
         assertTrue(result.isNotEmpty())
@@ -172,14 +172,14 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
     }
 
     @Test
-    fun `should find workspace members by workspace id`() = runBlocking {
+    fun `should find workspace members by workspace id`() = runTest {
         val members = workspaceStoreR2dbcRepository.findByWorkspaceId(workspace1.id.value)
         assertEquals(1, members.size)
         assertTrue(members.any { it.id.userId == ownerId.value })
     }
 
     @Test
-    fun `should find workspace members by user id`() = runBlocking {
+    fun `should find workspace members by user id`() = runTest {
         val workspacesForOwner = workspaceStoreR2dbcRepository.findByUserId(ownerId.value)
         val workspacesForMember1 = workspaceStoreR2dbcRepository.findByUserId(memberId1.value)
 
@@ -193,7 +193,7 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
     }
 
     @Test
-    fun `should check if user is member of workspace`() = runBlocking {
+    fun `should check if user is member of workspace`() = runTest {
         val isOwnerMemberOfWorkspace1 = workspaceStoreR2dbcRepository.existsByWorkspaceIdAndUserId(
             workspace1.id.value,
             ownerId.value,
@@ -216,7 +216,7 @@ internal class WorkspaceStoreR2DbcRepositoryTest {
     }
 
     @Test
-    fun `should insert and delete workspace member`() = runBlocking {
+    fun `should insert and delete workspace member`() = runTest {
         val existingMemberId = ownerId
         assertTrue(
             workspaceStoreR2dbcRepository.existsByWorkspaceIdAndUserId(

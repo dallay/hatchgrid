@@ -6,7 +6,7 @@ import com.hatchgrid.common.domain.bus.pipeline.PipelineBehavior
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -38,7 +38,7 @@ class PipelineBehaviorTest {
     }
 
     @Test
-    fun `should process command without async pipeline`() {
+    fun `should process command without async pipeline`() = runTest {
         val handler = MyCommandHandler()
         val handlers: HashMap<Class<*>, Any> = hashMapOf(
             Pair(MyCommandHandler::class.java, handler),
@@ -47,9 +47,7 @@ class PipelineBehaviorTest {
         val provider = ManualDependencyProvider(handlers)
         val bus: Mediator = MediatorBuilder(provider).build()
 
-        runBlocking {
-            bus.send(MyCommand())
-        }
+        bus.send(MyCommand())
 
         assertTrue { commandTestCounter == 1 }
         assertTrue { exceptionPipelineBehaviorHandleCatchCounter == 0 }
@@ -59,7 +57,7 @@ class PipelineBehaviorTest {
     }
 
     @Test
-    fun `should process command with async pipeline`() {
+    fun `should process command with async pipeline`() = runTest {
         val handler = MyCommandHandler()
         val exceptionPipeline = ExceptionPipelineBehavior()
         val loggingPipeline = LoggingPipelineBehavior()
@@ -71,10 +69,7 @@ class PipelineBehaviorTest {
 
         val provider = ManualDependencyProvider(handlers)
         val bus: Mediator = MediatorBuilder(provider).build()
-
-        runBlocking {
-            bus.send(MyCommand())
-        }
+        bus.send(MyCommand())
 
         assertTrue { commandTestCounter == 1 }
         assertTrue { exceptionPipelineBehaviorHandleCatchCounter == 0 }
@@ -84,7 +79,7 @@ class PipelineBehaviorTest {
     }
 
     @Test
-    fun `should process exception in async handler`() {
+    fun `should process exception in async handler`() = runTest {
         val handler = MyBrokenHandler()
         val exceptionPipeline = ExceptionPipelineBehavior()
         val loggingPipeline = LoggingPipelineBehavior()
@@ -97,7 +92,7 @@ class PipelineBehaviorTest {
         val bus: Mediator = MediatorBuilder(provider).build()
         val act = suspend { bus.send(MyBrokenCommand()) }
 
-        assertThrows<Exception> { runBlocking { act() } }
+        assertThrows<Exception> { act() }
         assertTrue { commandTestCounter == 0 }
         assertTrue { exceptionPipelineBehaviorHandleCatchCounter == 1 }
         assertTrue { exceptionPipelineBehaviorHandleCounter == 1 }
@@ -106,7 +101,7 @@ class PipelineBehaviorTest {
     }
 
     @Test
-    fun `should process command with inherited pipeline`() = runBlocking {
+    fun `should process command with inherited pipeline`() = runTest {
         val handler = MyCommandHandler()
         val pipeline = InheritedPipelineBehaviour()
         val handlers: HashMap<Class<*>, Any> =

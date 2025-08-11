@@ -10,7 +10,7 @@ import com.hatchgrid.thryve.authentication.infrastructure.cookie.AuthCookieBuild
 import com.hatchgrid.thryve.controllers.GlobalExceptionHandler
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.reactive.server.WebTestClient
@@ -29,7 +29,7 @@ internal class RefreshTokenControllerTest {
         .build()
 
     @Test
-    fun `refreshTokens should return 200 OK with valid refresh token`(): Unit = runBlocking {
+    fun `refreshTokens should return 200 OK with valid refresh token`(): Unit = runTest {
         coEvery { refreshTokenManager.refresh(any(RefreshToken::class)) } returns accessToken
 
         webTestClient.post()
@@ -50,7 +50,7 @@ internal class RefreshTokenControllerTest {
 
     @Test
     fun `refreshTokens should return 400 Bad Request when refresh token is missing`(): Unit =
-        runBlocking {
+        runTest {
             webTestClient.post()
                 .uri(ENDPOINT)
                 .exchange()
@@ -59,7 +59,7 @@ internal class RefreshTokenControllerTest {
 
     @Test
     fun `refreshTokens should return 401 Unauthorized when handler throws UserRefreshTokenException`(): Unit =
-        runBlocking {
+        runTest {
             coEvery { refreshTokenManager.refresh(any(RefreshToken::class)) } throws UserRefreshTokenException(
                 "Could not refresh access token",
             )
@@ -73,7 +73,7 @@ internal class RefreshTokenControllerTest {
 
     @Test
     fun `refreshTokens should return 500 Internal Server Error on unexpected errors`(): Unit =
-        runBlocking {
+        runTest {
             coEvery { refreshTokenManager.refresh(any(RefreshToken::class)) } throws RuntimeException(
                 "Unexpected error",
             )

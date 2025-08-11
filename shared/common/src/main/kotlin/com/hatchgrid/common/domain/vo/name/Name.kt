@@ -1,5 +1,12 @@
 package com.hatchgrid.common.domain.vo.name
 
+/**
+ * Represents a person's name, consisting of a first name and an optional last name.
+ * Provides functionality to retrieve the full name and compare names lexicographically.
+ *
+ * @property firstName The user's first name, encapsulated in a [FirstName] value object.
+ * @property lastName The user's optional last name, encapsulated in a [LastName] value object.
+ */
 data class Name(val firstName: FirstName, val lastName: LastName?) : Comparable<Name> {
 
     constructor(firstName: String, lastName: String?) : this(
@@ -19,4 +26,6 @@ data class Name(val firstName: FirstName, val lastName: LastName?) : Comparable<
      * if it's greater than [other].
      */
     override operator fun compareTo(other: Name): Int = fullName().compareTo(other.fullName())
+
+    override fun toString(): String = fullName()
 }

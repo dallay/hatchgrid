@@ -17,10 +17,11 @@ import com.hatchgrid.thryve.newsletter.tag.domain.exceptions.TagNotFoundExceptio
 import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.workspace.application.security.WorkspaceAuthorizationService
 import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
+import io.kotest.common.runBlocking
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -75,7 +76,7 @@ internal class UpdateTagCommandHandlerTest {
     }
 
     @Test
-    fun `should update tag name and color`() = runBlocking {
+    fun `should update tag name and color`() = runTest {
         // Given
         val command = UpdateTagCommand(
             id = tagId.value.toString(),
@@ -95,7 +96,7 @@ internal class UpdateTagCommandHandlerTest {
     }
 
     @Test
-    fun `should update tag with subscribers added`() = runBlocking {
+    fun `should update tag with subscribers added`() = runTest {
         // Given
         val subscribers = setOf("test.email1@example.com", "test.email2@example.com")
         coEvery {
@@ -127,7 +128,7 @@ internal class UpdateTagCommandHandlerTest {
     }
 
     @Test
-    fun `should update tag and remove subscribers`() = runBlocking {
+    fun `should update tag and remove subscribers`() = runTest {
         // Given
         val subscribers = tag.subscribers ?: emptySet()
         val subscribersToRemove = subscribers.take(3).toSet() // Removemos los primeros 3
@@ -160,7 +161,7 @@ internal class UpdateTagCommandHandlerTest {
     }
 
     @Test
-    fun `should handle update with no name, color, or subscribers`() = runBlocking {
+    fun `should handle update with no name, color, or subscribers`() = runTest {
         // Given
         val command = UpdateTagCommand(
             id = tagId.value.toString(),
@@ -180,7 +181,7 @@ internal class UpdateTagCommandHandlerTest {
     }
 
     @Test
-    fun `should not update if tag is not found`() = runBlocking {
+    fun `should not update if tag is not found`() = runTest {
         // Given
         coEvery { tagSearchRepository.findById(workspaceId, tagId) } returns null
         val command = UpdateTagCommand(

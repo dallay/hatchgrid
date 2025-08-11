@@ -5,7 +5,7 @@ import com.hatchgrid.common.domain.bus.notification.Notification
 import com.hatchgrid.common.domain.bus.notification.NotificationHandler
 import kotlin.test.assertTrue
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -30,7 +30,7 @@ class NotificationHandlerTest {
     lateinit var mediator: Mediator
 
     @Test
-    fun `async notificationHandler should be fired`() = runBlocking {
+    fun `async notificationHandler should be fired`() = runTest {
         mediator.publish(MyNotification())
 
         assertTrue {

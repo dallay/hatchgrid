@@ -41,8 +41,7 @@ interface SubscriberTagReactiveR2dbcRepository :
     /**
      * Deletes a subscriber tag by its composite key.
      *
-     * @param subscriberId The ID of the subscriber.
-     * @param tagId The ID of the tag.
+     * @param id The ID of the subscriber tag to delete.
      */
     @Transactional
     @Modifying

@@ -12,7 +12,7 @@ import com.hatchgrid.thryve.controllers.GlobalExceptionHandler
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -36,7 +36,7 @@ class UserAuthenticatorControllerTest {
 
     @Test
     @DisplayName("should return access token when user logs in")
-    fun `should return access token when user logs in`(): Unit = runBlocking {
+    fun `should return access token when user logs in`(): Unit = runTest {
         // Arrange
         val loginRequest = createLoginRequest()
 
@@ -63,7 +63,7 @@ class UserAuthenticatorControllerTest {
 
     @Test
     @DisplayName("should handle UserAuthenticationException")
-    fun `should handle UserAuthenticationException`(): Unit = runBlocking {
+    fun `should handle UserAuthenticationException`(): Unit = runTest {
         // Arrange
         val loginRequest = createLoginRequest()
 

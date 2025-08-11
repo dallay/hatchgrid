@@ -2,7 +2,7 @@ package com.hatchgrid.thryve.form.infrastructure.http
 
 import com.hatchgrid.ControllerIntegrationTest
 import com.hatchgrid.IntegrationTest
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.springframework.test.context.jdbc.Sql
 
@@ -21,7 +21,7 @@ internal class FindFormControllerIntegrationTest : ControllerIntegrationTest() {
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should return form when form is found`(): Unit = runBlocking {
+    fun `should return form when form is found`(): Unit = runTest {
         val formId = "1659d4ae-402a-4172-bf8b-0a5c54255587"
         webTestClient.get()
             .uri("/api/workspace/$workspaceId/form/$formId")
@@ -52,7 +52,7 @@ internal class FindFormControllerIntegrationTest : ControllerIntegrationTest() {
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should return 404 when form is not found`(): Unit = runBlocking {
+    fun `should return 404 when form is not found`(): Unit = runTest {
         val formId = "94be1a32-cf2e-4dfc-892d-bdd8ac7ad354"
         webTestClient.get()
             .uri("/api/workspace/$workspaceId/form/$formId")

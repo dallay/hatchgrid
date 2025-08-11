@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Pattern
  * @property name Name of the workspace.
  * @property description Optional description of the workspace.
  * @property ownerId Unique identifier of the owner of the workspace.
+ * @property isDefault Whether this is the default workspace for the owner.
  */
 data class CreateWorkspaceCommand(
     @field:NotBlank(message = "Workspace ID cannot be blank")
@@ -29,4 +30,5 @@ data class CreateWorkspaceCommand(
         message = "Owner ID must be a valid UUID",
     )
     val ownerId: String,
+    val isDefault: Boolean = false,
 ) : Command

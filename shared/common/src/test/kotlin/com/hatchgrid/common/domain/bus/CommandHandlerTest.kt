@@ -5,14 +5,14 @@ import com.hatchgrid.common.domain.bus.command.CommandHandler
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class CommandHandlerTest {
 
     @Test
-    fun async_commandHandler_should_be_fired() = runBlocking {
+    fun async_commandHandler_should_be_fired() = runTest {
         class MyAsyncCommand : Command
 
         class MyCommandHandler : CommandHandler<MyAsyncCommand> {
@@ -40,7 +40,7 @@ class CommandHandlerTest {
         val bus: Mediator = MediatorBuilder(provider).build()
 
         val exception = assertFailsWith(HandlerNotFoundException::class) {
-            runBlocking {
+            runTest {
                 bus.send(NonExistCommand())
             }
         }
@@ -50,7 +50,7 @@ class CommandHandlerTest {
     }
 
     @Test
-    fun inheritance_should_work() = runBlocking {
+    fun inheritance_should_work() = runTest {
         class MyCommandForInheritance : Command
         abstract class MyCommandHandlerFor<TCommand : Command> : CommandHandler<TCommand>
 
@@ -71,7 +71,7 @@ class CommandHandlerTest {
     }
 
     @Test
-    fun inheritance_but_not_parameterized_should_work() = runBlocking {
+    fun inheritance_but_not_parameterized_should_work() = runTest {
         class MyCommandForInheritance : Command
 
         abstract class MyCommandHandlerBaseForSpecificCommand : CommandHandler<MyCommandForInheritance>
@@ -97,7 +97,7 @@ class CommandHandlerTest {
     inner class ParameterizedTests {
 
         @Test
-        fun async_command_should_be_fired() = runBlocking {
+        fun async_command_should_be_fired() = runTest {
             class ParameterizedCommand<T>(val param: T) : Command
 
             class ParameterizedCommandHandler<A> : CommandHandler<ParameterizedCommand<A>> {
@@ -122,7 +122,7 @@ class CommandHandlerTest {
         }
 
         @Test
-        fun async_commandHandler_with_inheritance_should_be_fired() = runBlocking {
+        fun async_commandHandler_with_inheritance_should_be_fired() = runTest {
             class ParameterizedCommand<T>(val param: T) : Command
 
             abstract class ParameterizedCommandHandlerBase<A> : CommandHandler<ParameterizedCommand<A>>

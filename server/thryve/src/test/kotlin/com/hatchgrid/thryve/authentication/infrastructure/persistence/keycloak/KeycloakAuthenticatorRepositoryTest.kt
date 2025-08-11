@@ -14,7 +14,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.slot
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -110,7 +110,7 @@ class KeycloakAuthenticatorRepositoryTest {
     }
 
     @Test
-    fun `should authenticate user and return access token on success`(): Unit = runBlocking {
+    fun `should authenticate user and return access token on success`(): Unit = runTest {
         // Arrange
         val username = Username(faker.internet().emailAddress())
         val password1 = faker.internet().password(8, 80, true, true, true) + "*71Aa"
@@ -129,10 +129,10 @@ class KeycloakAuthenticatorRepositoryTest {
     }
 
     @Test
-    fun `should throw UserAuthenticationException when authentication fails`(): Unit = runBlocking {
+    fun `should throw UserAuthenticationException when authentication fails`(): Unit = runTest {
         // Arrange
         val username = Username(faker.internet().emailAddress())
-        val password = CredentialGenerator.generate(faker.internet().password(8, 80, true, true, true))
+        val password = CredentialGenerator.generate()
 
         val usernameSlot = slot<String>()
         val passwordSlot = slot<String>()

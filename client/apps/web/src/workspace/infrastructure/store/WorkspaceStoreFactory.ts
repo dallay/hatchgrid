@@ -3,14 +3,15 @@
  * This ensures type safety and proper initialization order
  */
 
-import type { WorkspaceRepository } from "../../domain/repositories";
-import { GetWorkspaceById, ListWorkspaces } from "../../domain/usecases";
-import { type WorkspaceStorage, workspaceStorage } from "../index";
+import type { WorkspaceRepository } from "@/workspace";
 import {
 	createWorkspaceStore,
+	GetWorkspaceById,
+	ListWorkspaces,
 	type WorkspaceStoreDependencies,
 	type WorkspaceUseCases,
-} from "./useWorkspaceStore";
+} from "@/workspace";
+import { type WorkspaceStorage, workspaceStorage } from "../index";
 
 /**
  * Creates a workspace store with all required dependencies

@@ -2,7 +2,7 @@ package com.hatchgrid.thryve.authentication.application
 
 import com.hatchgrid.thryve.authentication.application.query.RefreshTokenQuery
 import com.hatchgrid.thryve.authentication.domain.RefreshTokenManager
-import io.kotest.common.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -15,7 +15,7 @@ class RefreshTokenQueryHandlerTest {
     private val refreshTokenQuery = RefreshTokenQuery(refreshToken = "refreshToken")
 
     @Test
-    fun `handle refresh token`() = runBlocking {
+    fun `handle refresh token`() = runTest {
         val accessToken = refreshTokenQueryHandler.handle(refreshTokenQuery)
         assertNotNull(accessToken)
         assertEquals("token", accessToken.token)

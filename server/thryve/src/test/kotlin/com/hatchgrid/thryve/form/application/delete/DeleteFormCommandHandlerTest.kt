@@ -20,7 +20,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.mockkClass
 import java.util.UUID
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -67,7 +67,7 @@ internal class DeleteFormCommandHandlerTest {
     }
 
     @Test
-    fun `should delete a form`() = runBlocking {
+    fun `should delete a form`() = runTest {
         // Given
         val command = DeleteFormCommand(
             workspaceId = workspaceId.value.toString(),
@@ -90,7 +90,7 @@ internal class DeleteFormCommandHandlerTest {
     }
 
     @Test
-    fun `should throw exception when user not authorized`(): Unit = runBlocking {
+    fun `should throw exception when user not authorized`(): Unit = runTest {
         // Given
         coEvery {
             workspaceMemberRepository.existsByWorkspaceIdAndUserId(any(), any())
@@ -109,7 +109,7 @@ internal class DeleteFormCommandHandlerTest {
     }
 
     @Test
-    fun `should throw exception when form not found`(): Unit = runBlocking {
+    fun `should throw exception when form not found`(): Unit = runTest {
         // Given
         coEvery {
             formFinderRepository.findByFormIdAndWorkspaceId(any(), any())

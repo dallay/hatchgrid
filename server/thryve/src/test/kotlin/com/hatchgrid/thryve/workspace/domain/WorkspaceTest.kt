@@ -4,6 +4,7 @@ import java.util.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -96,5 +97,27 @@ class WorkspaceTest {
         assertEquals("New Name", workspace.name)
         assertEquals("New Description", workspace.description)
         assertNotNull(workspace.updatedAt)
+    }
+
+    @Test
+    fun `should create workspace when name length is exactly max`() {
+        val maxName = "a".repeat(Workspace.NAME_MAX_LENGTH)
+        val ws = Workspace.create(UUID.randomUUID(), maxName, null, ownerId)
+        assertEquals(maxName, ws.name)
+    }
+
+    @Test
+    fun `should trim name and reject if blank after trimming`() {
+        assertThrows(IllegalArgumentException::class.java) {
+            Workspace.create(UUID.randomUUID(), "   \t  ", null, ownerId)
+        }
+    }
+
+    @Test
+    fun `should throw when name length exceeds max`() {
+        val tooLong = "a".repeat(Workspace.NAME_MAX_LENGTH + 1)
+        assertThrows(IllegalArgumentException::class.java) {
+            Workspace.create(UUID.randomUUID(), tooLong, null, ownerId)
+        }
     }
 }

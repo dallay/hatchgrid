@@ -2,7 +2,7 @@ package com.hatchgrid.thryve.form.infrastructure.http
 
 import com.hatchgrid.ControllerIntegrationTest
 import com.hatchgrid.thryve.form.FormStub
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf
@@ -23,7 +23,7 @@ internal class UpdateFormControllerIntegrationTest : ControllerIntegrationTest()
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should update an existing form`(): Unit = runBlocking {
+    fun `should update an existing form`(): Unit = runTest {
         val formId = "1659d4ae-402a-4172-bf8b-0a5c54255587"
         val request = FormStub.generateRequest()
         webTestClient.mutateWith(csrf()).put()
@@ -47,7 +47,7 @@ internal class UpdateFormControllerIntegrationTest : ControllerIntegrationTest()
         "/db/user/clean.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
     )
-    fun `should return 404 when form is not found`(): Unit = runBlocking {
+    fun `should return 404 when form is not found`(): Unit = runTest {
         val id = "a5533c80-61f4-4db2-9fb7-191caa94e2bc"
         val request = FormStub.generateRequest()
         webTestClient.mutateWith(csrf()).put()

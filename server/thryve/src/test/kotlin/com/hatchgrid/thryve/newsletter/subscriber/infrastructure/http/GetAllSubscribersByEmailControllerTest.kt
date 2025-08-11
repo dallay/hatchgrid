@@ -24,12 +24,12 @@ internal class GetAllSubscribersByEmailControllerTest : ControllerTest() {
     override fun setUp() {
         super.setUp()
         subscribers = SubscriberStub.dummyRandomSubscribersList(23)
-        val response: SubscribersResponse =
+        val response =
             SubscribersResponse(subscribers.map { SubscriberResponse.from(it) })
         coEvery { mediator.send(any(AllSubscribersByEmailQuery::class)) } returns response
         controller = GetAllSubscribersByEmailController(mediator)
         webTestClient = WebTestClient.bindToController(controller)
-            .controllerAdvice(GlobalExceptionHandler()) // Attach the global exception handler
+            .controllerAdvice(GlobalExceptionHandler())
             .build()
     }
 

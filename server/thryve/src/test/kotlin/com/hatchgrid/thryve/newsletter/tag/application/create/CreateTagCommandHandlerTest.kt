@@ -19,7 +19,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import java.util.UUID
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -80,7 +80,7 @@ internal class CreateTagCommandHandlerTest {
     }
 
     @Test
-    fun `should create a tag`(): Unit = runBlocking {
+    fun `should create a tag`(): Unit = runTest {
         // Given
         val command = CreateTagCommand(
             id = tagId,

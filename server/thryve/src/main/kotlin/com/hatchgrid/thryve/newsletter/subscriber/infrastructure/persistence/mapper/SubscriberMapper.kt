@@ -1,9 +1,10 @@
 package com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.mapper
 
 import com.hatchgrid.common.domain.vo.email.Email
-import com.hatchgrid.thryve.newsletter.subscriber.domain.FirstName
-import com.hatchgrid.thryve.newsletter.subscriber.domain.LastName
-import com.hatchgrid.thryve.newsletter.subscriber.domain.Name
+import com.hatchgrid.common.domain.vo.name.FirstName
+import com.hatchgrid.common.domain.vo.name.FirstNameNotValidException
+import com.hatchgrid.common.domain.vo.name.LastName
+import com.hatchgrid.common.domain.vo.name.Name
 import com.hatchgrid.thryve.newsletter.subscriber.domain.Subscriber
 import com.hatchgrid.thryve.newsletter.subscriber.domain.SubscriberId
 import com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.entity.SubscriberEntity
@@ -22,8 +23,8 @@ object SubscriberMapper {
         return SubscriberEntity(
             id = id.value,
             email = email.value,
-            firstname = name.firstName.toString(),
-            lastname = name.lastName.toString(),
+            firstname = name.firstName.value.trim(),
+            lastname = name.lastName?.value?.trim(),
             status = status,
             attributes = attributes,
             workspaceId = workspaceId.value,
@@ -39,13 +40,19 @@ object SubscriberMapper {
      *
      * @return The Subscriber domain object.
      */
+
     fun SubscriberEntity.toDomain(): Subscriber {
+        val firstNameRaw = firstname?.trim()
+        val firstName = firstNameRaw?.takeIf(String::isNotBlank)?.let(::FirstName)
+            ?: throw FirstNameNotValidException(firstname ?: "null")
+        val lastNameRaw = lastname?.trim()
+        val lastName = lastNameRaw?.takeIf(String::isNotBlank)?.let(::LastName)
         return Subscriber(
             id = SubscriberId(id),
             email = Email(email),
             name = Name(
-                firstName = if (firstname.isNullOrBlank()) null else FirstName(firstname),
-                lastName = if (lastname.isNullOrBlank()) null else lastname?.let { LastName(it) },
+                firstName = firstName,
+                lastName = lastName,
             ),
             status = status,
             attributes = attributes,

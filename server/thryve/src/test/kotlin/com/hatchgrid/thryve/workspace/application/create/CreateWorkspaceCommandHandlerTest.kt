@@ -4,11 +4,12 @@ import com.hatchgrid.UnitTest
 import com.hatchgrid.common.domain.bus.event.EventPublisher
 import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
 import com.hatchgrid.thryve.workspace.domain.event.WorkspaceCreatedEvent
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import java.util.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,20 +20,22 @@ internal class CreateWorkspaceCommandHandlerTest {
     private lateinit var workspaceRepository: WorkspaceRepository
     private lateinit var workspaceCreator: WorkspaceCreator
     private lateinit var createWorkspaceCommandHandler: CreateWorkspaceCommandHandler
+    private lateinit var meterRegistry: SimpleMeterRegistry
 
     @BeforeEach
     fun setUp() {
         eventPublisher = mockk()
         workspaceRepository = mockk()
+        meterRegistry = SimpleMeterRegistry()
         workspaceCreator = WorkspaceCreator(workspaceRepository, eventPublisher)
-        createWorkspaceCommandHandler = CreateWorkspaceCommandHandler(workspaceCreator)
+        createWorkspaceCommandHandler = CreateWorkspaceCommandHandler(workspaceCreator, meterRegistry)
 
         coEvery { workspaceRepository.create(any()) } returns Unit
         coEvery { eventPublisher.publish(any<WorkspaceCreatedEvent>()) } returns Unit
     }
 
     @Test
-    fun `should create workspace and publish event when handle is called`() = runBlocking {
+    fun `should create workspace and publish event when handle is called`() = runTest {
         // Given
         val workspaceId = UUID.randomUUID().toString()
         val ownerId = UUID.randomUUID().toString()

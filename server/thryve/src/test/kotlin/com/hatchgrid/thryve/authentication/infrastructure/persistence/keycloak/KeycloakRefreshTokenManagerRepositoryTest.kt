@@ -7,7 +7,7 @@ import com.hatchgrid.thryve.authentication.infrastructure.ApplicationSecurityPro
 import io.mockk.every
 import io.mockk.mockk
 import java.net.URI
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -86,14 +86,14 @@ internal class KeycloakRefreshTokenManagerRepositoryTest {
     }
 
     @Test
-    fun `should refresh access token`() = runBlocking {
+    fun `should refresh access token`() = runTest {
         val refreshToken = RefreshToken(faker.lorem().word())
         val accessToken = keycloakRefreshTokenManagerRepository.refresh(refreshToken)
         assertEquals(expectedAccessToken, accessToken)
     }
 
     @Test
-    fun `should return exception when refresh access token`() = runBlocking {
+    fun `should return exception when refresh access token`() = runTest {
         val refreshToken = RefreshToken(faker.lorem().word())
 
         // Simulate an error response when refreshing the access token

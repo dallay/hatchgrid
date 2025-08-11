@@ -8,6 +8,7 @@ const mockWorkspace: Workspace = {
 	name: "Test Workspace",
 	description: "Test description",
 	ownerId: "owner1",
+	isDefault: false,
 	createdAt: "2023-01-01T00:00:00Z",
 	updatedAt: "2023-01-01T00:00:00Z",
 };

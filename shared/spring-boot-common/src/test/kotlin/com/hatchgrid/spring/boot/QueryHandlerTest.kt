@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -20,7 +20,7 @@ class QueryHandlerTest {
     lateinit var mediator: Mediator
 
     @Test
-    fun `async queryHandler should retrieve result`() = runBlocking {
+    fun `async queryHandler should retrieve result`() = runTest {
         val result = mediator.send(TestQuery(1))
 
         assertTrue {
@@ -31,7 +31,7 @@ class QueryHandlerTest {
     @Test
     fun `should throw exception if given async query does not have handler bean`() {
         val exception = assertFailsWith(HandlerNotFoundException::class) {
-            runBlocking {
+            runTest {
                 mediator.send(NonExistQuery())
             }
         }

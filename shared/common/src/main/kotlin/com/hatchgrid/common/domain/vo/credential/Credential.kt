@@ -62,10 +62,6 @@ data class Credential(
          * @see charset the list of all characters
          * @see Random the random generator
          * @see Random.nextInt to generate a random number
-         * @see List.random to get a random element from a list
-         * @see List.shuffled to shuffle the list
-         * @see List.joinToString to join the list into a string
-         * @see List.toMutableList to convert the list into a mutable list
          */
         fun generateRandomCredentialPassword(): String {
             val passwordChars = mutableListOf<Char>()

@@ -41,6 +41,7 @@ const DEFAULT_WORKSPACE_DATA = {
 	name: "Test Workspace",
 	description: "Test Description",
 	ownerId: "test-owner-id",
+	isDefault: false,
 	createdAt: "2023-01-01T00:00:00Z",
 	updatedAt: "2023-01-01T00:00:00Z",
 } as const;

@@ -6,6 +6,7 @@ import {
 	transformUserResponseToAccount,
 	type UserResponse,
 } from "@/authentication/domain/models";
+import { useWorkspaceStoreProvider } from "@/workspace/infrastructure/providers/workspaceStoreProvider";
 
 export interface AuthStateStorable {
 	logon: Promise<unknown> | null;
@@ -56,11 +57,35 @@ export const useAuthStore = defineStore("auth", {
 			this.userIdentity = accountWithImage;
 			this.authenticated = true;
 			this.logon = null;
+
+			// Reset workspace state on user change and load fresh data for the new user
+			try {
+				const workspaceStore = useWorkspaceStoreProvider()();
+				// Clear any previous user’s selection and caches
+				workspaceStore.clearWorkspaceSelection();
+				workspaceStore.invalidateCache({ all: true });
+				// Fire-and-forget fresh load for the current user
+				void workspaceStore.loadAll(true);
+			} catch (e) {
+				if (import.meta.env.DEV) {
+					console.warn("[Auth] Failed to reset workspace store on login:", e);
+				}
+			}
 		},
 		logout() {
 			this.userIdentity = null;
 			this.authenticated = false;
 			this.logon = null;
+			// Clear any workspace-related state when logging out
+			try {
+				const workspaceStore = useWorkspaceStoreProvider()();
+				workspaceStore.resetState();
+				workspaceStore.clearWorkspaceSelection();
+			} catch (e) {
+				if (import.meta.env.DEV) {
+					console.warn("[Auth] Failed to reset workspace store on logout:", e);
+				}
+			}
 		},
 		setProfilesLoaded() {
 			this.profilesLoaded = true;
@@ -75,6 +100,19 @@ export const useAuthStore = defineStore("auth", {
 			this.userIdentity = null;
 			this.authenticated = false;
 			this.logon = null;
+			// Also clear workspace state when auth is cleared (e.g., session expired)
+			try {
+				const workspaceStore = useWorkspaceStoreProvider()();
+				workspaceStore.resetState();
+				workspaceStore.clearWorkspaceSelection();
+			} catch (e) {
+				if (import.meta.env.DEV) {
+					console.warn(
+						"[Auth] Failed to reset workspace store on clearAuth:",
+						e,
+					);
+				}
+			}
 		},
 
 		async register(registrationData: RegistrationData): Promise<void> {

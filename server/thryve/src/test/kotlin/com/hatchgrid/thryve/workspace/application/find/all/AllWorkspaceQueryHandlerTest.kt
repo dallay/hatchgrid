@@ -6,7 +6,7 @@ import com.hatchgrid.thryve.workspace.domain.Workspace
 import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -29,7 +29,7 @@ internal class AllWorkspaceQueryHandlerTest {
     }
 
     @Test
-    fun `should find all workspaces`() = runBlocking {
+    fun `should find all workspaces`() = runTest {
         // Given
         val query = AllWorkspaceQuery()
 

@@ -7,10 +7,10 @@ import com.hatchgrid.thryve.newsletter.tag.domain.exceptions.TagException
 import com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.mapper.TagMapper.toEntity
 import com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.mapper.TagMapper.toEntityWithSubscribers
 import com.hatchgrid.thryve.newsletter.tag.infrastructure.persistence.repository.TagReactiveR2dbcRepository
-import io.kotest.common.runBlocking
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -32,14 +32,14 @@ internal class TagR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should create a new tag`() = runBlocking {
+    fun `should create a new tag`() = runTest {
         val tag = tags.first()
         tagR2dbcRepository.create(tag)
         coVerify(exactly = 1) { tagReactiveR2dbcRepository.save(tag.toEntity()) }
     }
 
     @Test
-    fun `should throw TagException when tag already exists`() = runBlocking {
+    fun `should throw TagException when tag already exists`() = runTest {
         val tag = tags.first()
         coEvery { tagReactiveR2dbcRepository.save(any()) } throws DuplicateKeyException("Duplicate key")
 
@@ -52,7 +52,7 @@ internal class TagR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should find all tags by workspaceId`() = runBlocking {
+    fun `should find all tags by workspaceId`() = runTest {
         val workspaceId = tags.first().workspaceId
         val tagEntities = tags.map { it.toEntityWithSubscribers() }
         coEvery { tagReactiveR2dbcRepository.findAllTagsByWorkspaceId(workspaceId.value) } returns tagEntities
@@ -64,7 +64,7 @@ internal class TagR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should return empty list when no tags found for workspaceId`() = runBlocking {
+    fun `should return empty list when no tags found for workspaceId`() = runTest {
         val workspaceId = tags.first().workspaceId
         coEvery { tagReactiveR2dbcRepository.findAllTagsByWorkspaceId(workspaceId.value) } returns emptyList()
 
@@ -74,7 +74,7 @@ internal class TagR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should update an existing tag`() = runBlocking {
+    fun `should update an existing tag`() = runTest {
         val tag = tags.first()
         coEvery { tagReactiveR2dbcRepository.save(any()) } returns tag.toEntity()
 
@@ -84,7 +84,7 @@ internal class TagR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should throw TagException when updating a tag fails`() = runBlocking {
+    fun `should throw TagException when updating a tag fails`() = runTest {
         val tag = tags.first()
         coEvery { tagReactiveR2dbcRepository.save(any()) } throws TransientDataAccessResourceException(
             "Transient error",
@@ -99,7 +99,7 @@ internal class TagR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should find tag by id`() = runBlocking {
+    fun `should find tag by id`() = runTest {
         val tag = tags.first()
         coEvery {
             tagReactiveR2dbcRepository.findByIdWithSubscribers(
@@ -115,7 +115,7 @@ internal class TagR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should return null when tag not found by id`() = runBlocking {
+    fun `should return null when tag not found by id`() = runTest {
         val tag = tags.first()
         coEvery { tagReactiveR2dbcRepository.findByIdWithSubscribers(any(), any()) } returns null
 
@@ -125,7 +125,7 @@ internal class TagR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should delete a tag successfully`() = runBlocking {
+    fun `should delete a tag successfully`() = runTest {
         val workspaceId = tags.first().workspaceId
         val tagId = tags.first().id
         coEvery {
@@ -146,7 +146,7 @@ internal class TagR2dbcRepositoryTest {
     }
 
     @Test
-    fun `should throw TagException when deleting a tag fails`() = runBlocking {
+    fun `should throw TagException when deleting a tag fails`() = runTest {
         val workspaceId = tags.first().workspaceId
         val tagId = tags.first().id
         coEvery {

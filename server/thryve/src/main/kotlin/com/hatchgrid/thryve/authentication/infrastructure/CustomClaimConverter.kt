@@ -4,11 +4,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.hatchgrid.common.domain.Memoizers
 import com.hatchgrid.thryve.authentication.infrastructure.ClaimExtractor.CLAIM_APPENDERS
 import com.hatchgrid.thryve.authentication.infrastructure.ClaimExtractor.SUB
+import java.time.Duration
 import org.springframework.core.convert.converter.Converter
 import org.springframework.security.oauth2.client.registration.ClientRegistration
 import org.springframework.security.oauth2.jwt.MappedJwtClaimSetConverter
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
+
+private val USER_INFO_TIMEOUT: java.time.Duration = java.time.Duration.ofSeconds(3)
 
 /**
  * CustomClaimConverter is a class that implements the [Converter] interface to convert a map of claims
@@ -52,15 +56,31 @@ class CustomClaimConverter(
     override fun convert(claims: Map<String, Any>): Map<String, Any> {
         log.debug("Starting claim conversion")
         val convertedClaims = delegate.convert(claims)?.toMutableMap() ?: mutableMapOf()
+
+        // Handle user loading while avoiding event-loop blocking: offload to boundedElastic with a timeout
         val userMono = getUser(claims)
-        userMono
-            .subscribe(
-                { user ->
-                    Mono.justOrEmpty(appendCustomClaim(convertedClaims, user)).defaultIfEmpty(convertedClaims)
-                },
-                { error -> log.error("Error getting user information: {}", error) },
-            )
-        return convertedClaims
+        return try {
+            userMono
+                .subscribeOn(Schedulers.boundedElastic())
+                .timeout(USER_INFO_TIMEOUT)
+                .map { user ->
+                    appendCustomClaim(convertedClaims, user)
+                }
+                .onErrorResume { error ->
+                    log.error("Error getting user information: {}", error.message, error)
+                    Mono.just(convertedClaims)
+                }
+                .defaultIfEmpty(convertedClaims)
+                // We still need a synchronous Map because Converter
+                // interface is blocking; at this point we're off the event loop
+                .block() ?: convertedClaims
+        } catch (e: IllegalStateException) {
+            log.error("Failed to load user claims due to reactive stream error: {}", e.message, e)
+            convertedClaims
+        } catch (@Suppress("TooGenericExceptionCaught") e: RuntimeException) {
+            log.error("Failed to load user claims: {}", e.message, e)
+            convertedClaims
+        }
     }
 
     /**

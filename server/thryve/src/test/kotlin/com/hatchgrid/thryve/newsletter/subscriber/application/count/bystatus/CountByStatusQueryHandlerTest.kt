@@ -9,7 +9,7 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceMemberRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -40,7 +40,7 @@ internal class CountByStatusQueryHandlerTest {
     }
 
     @Test
-    fun `should count subscribers by status`(): Unit = runBlocking {
+    fun `should count subscribers by status`(): Unit = runTest {
         // Given
         val query = CountByStatusQuery(wId, uId)
 

@@ -6,14 +6,14 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class QueryHandlerTest {
 
     @Test
-    fun async_queryHandler_should_retrieve_result() = runBlocking {
+    fun async_queryHandler_should_retrieve_result() = runTest {
         class TestQuery(val id: Int) : Query<String>
 
         class TestQueryHandler : QueryHandler<TestQuery, String> {
@@ -40,7 +40,7 @@ class QueryHandlerTest {
         val bus: Mediator = MediatorBuilder(provider).build()
 
         val exception = assertFailsWith(HandlerNotFoundException::class) {
-            runBlocking {
+            runTest {
                 bus.send(NonExistQuery())
             }
         }
@@ -63,7 +63,7 @@ class QueryHandlerTest {
         }
 
         @Test
-        fun async_query_should_be_fired_and_return_result() = runBlocking {
+        fun async_query_should_be_fired_and_return_result() = runTest {
             // given
             val handler = ParameterizedQueryHandler<ParameterizedQuery<Long, String>>()
             val handlers: HashMap<Class<*>, Any> =
