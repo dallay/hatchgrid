@@ -2058,14 +2058,14 @@ description: Overview of the project structure and organization.
 │       │   │   └───tests/
 │       │   │       └───test/
 │       │   │           ├───classes/
-│       │   │           │   └───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.SubscriberR2dbcRepositoryTest.html
+│       │   │           │   └───com.hatchgrid.thryve.workspace.application.find.member.AllWorkspaceByMemberQueryHandlerTest.html
 │       │   │           ├───css/
 │       │   │           │   ├───base-style.css
 │       │   │           │   └───style.css
 │       │   │           ├───js/
 │       │   │           │   └───report.js
 │       │   │           ├───packages/
-│       │   │           │   └───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.html
+│       │   │           │   └───com.hatchgrid.thryve.workspace.application.find.member.html
 │       │   │           └───index.html
 │       │   ├───resources/
 │       │   │   ├───main/
@@ -2118,8 +2118,10 @@ description: Overview of the project structure and organization.
 │       │   ├───test-results/
 │       │   │   └───test/
 │       │   │       ├───binary/
-│       │   │       │   └───output.bin
-│       │   │       └───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.SubscriberR2dbcRepositoryTest.xml
+│       │   │       │   ├───output.bin
+│       │   │       │   ├───output.bin.idx
+│       │   │       │   └───results.bin
+│       │   │       └───TEST-com.hatchgrid.thryve.workspace.application.find.member.AllWorkspaceByMemberQueryHandlerTest.xml
 │       │   ├───tmp/
 │       │   │   ├───bootJar/
 │       │   │   │   └───MANIFEST.MF
