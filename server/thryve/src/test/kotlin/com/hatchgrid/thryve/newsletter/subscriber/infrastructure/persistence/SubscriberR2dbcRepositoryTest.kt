@@ -174,6 +174,7 @@ internal class SubscriberR2dbcRepositoryTest {
     fun `should search all active subscribers`() = runTest {
         val response = subscriberRepository.searchActive().toList()
         assertEquals(subscribers, response)
+        coVerify(exactly = 1) { subscriberReactiveR2DbcRepository.findAllByStatus(any()) }
     }
 
     @Test

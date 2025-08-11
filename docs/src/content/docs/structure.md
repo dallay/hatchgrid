@@ -2058,14 +2058,14 @@ description: Overview of the project structure and organization.
 │       │   │   └───tests/
 │       │   │       └───test/
 │       │   │           ├───classes/
-│       │   │           │   └───com.hatchgrid.thryve.workspace.domain.WorkspaceTest.html
+│       │   │           │   └───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.SubscriberR2dbcRepositoryTest.html
 │       │   │           ├───css/
 │       │   │           │   ├───base-style.css
 │       │   │           │   └───style.css
 │       │   │           ├───js/
 │       │   │           │   └───report.js
 │       │   │           ├───packages/
-│       │   │           │   └───com.hatchgrid.thryve.workspace.domain.html
+│       │   │           │   └───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.html
 │       │   │           └───index.html
 │       │   ├───resources/
 │       │   │   ├───main/
@@ -2119,7 +2119,7 @@ description: Overview of the project structure and organization.
 │       │   │   └───test/
 │       │   │       ├───binary/
 │       │   │       │   └───output.bin
-│       │   │       └───TEST-com.hatchgrid.thryve.workspace.domain.WorkspaceTest.xml
+│       │   │       └───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.SubscriberR2dbcRepositoryTest.xml
 │       │   ├───tmp/
 │       │   │   ├───bootJar/
 │       │   │   │   └───MANIFEST.MF
