@@ -48,7 +48,7 @@ databaseChangeLog:
             splitStatements: false
             sql: |
               -- Drop any existing (possibly wrong) unique index to avoid conflicts
-              DROP INDEX IF EXISTS idx_workspaces_owner_default;
+              DROP INDEX CONCURRENTLY IF EXISTS idx_workspaces_owner_default;
         - sql:
             splitStatements: false
             sql: |
