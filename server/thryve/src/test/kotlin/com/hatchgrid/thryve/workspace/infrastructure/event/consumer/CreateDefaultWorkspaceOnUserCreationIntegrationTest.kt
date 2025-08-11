@@ -6,7 +6,7 @@ import com.hatchgrid.thryve.config.InfrastructureTestContainers
 import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.users.domain.event.UserCreatedEvent
 import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
-import io.kotest.assertions.nondeterministic.eventually // Importación correcta
+import io.kotest.assertions.nondeterministic.eventually
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.seconds

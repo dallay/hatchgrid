@@ -65,8 +65,9 @@ internal class AllWorkspaceByMemberQueryHandlerTest {
         val query = AllWorkspaceByMemberQuery(userId.value.toString())
 
         // When & Then
-        assertFailsWith<RuntimeException> {
+        val ex = assertFailsWith<RuntimeException> {
             handler.handle(query)
         }
+        assertEquals("Database error", ex.message)
     }
 }
