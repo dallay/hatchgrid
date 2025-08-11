@@ -2313,9 +2313,7 @@ description: Overview of the project structure and organization.
 │       │   ├───test-results/
 │       │   │   └───test/
 │       │   │       ├───binary/
-│       │   │       │   ├───output.bin
-│       │   │       │   ├───output.bin.idx
-│       │   │       │   └───results.bin
+│       │   │       │   └───output.bin
 │       │   │       ├───TEST-com.hatchgrid.ApplicationStartupTracesTest.xml
 │       │   │       ├───TEST-com.hatchgrid.ArchTest.xml
 │       │   │       ├───TEST-com.hatchgrid.thryve.BeanValidationTest.xml

@@ -6,11 +6,13 @@ import com.hatchgrid.thryve.config.InfrastructureTestContainers
 import com.hatchgrid.thryve.users.domain.UserId
 import com.hatchgrid.thryve.users.domain.event.UserCreatedEvent
 import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import io.kotest.assertions.nondeterministic.eventually // Importación correcta
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
+import java.util.UUID
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.BeforeEach
@@ -34,317 +36,171 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         startInfrastructure()
     }
 
-    private suspend fun <T> waitUntil(
-        supplier: suspend () -> T,
-        predicate: (T) -> Boolean,
-        timeoutMillis: Long = 5000,
-        intervalMillis: Long = 100
-    ): T {
-        val start = System.currentTimeMillis()
-        while (true) {
-            val value = supplier()
-            if (predicate(value)) return value
-            if (System.currentTimeMillis() - start > timeoutMillis) {
-                throw AssertionError("Condition not met within $timeoutMillis ms")
-            }
-            delay(intervalMillis)
-        }
-    }
-
     @Test
-    @Sql(
-        "/db/user/users.sql",
-    )
-    @Sql(
-        "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
-    )
+    @Sql("/db/user/users.sql")
+    @Sql("/db/user/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     fun `should create default workspace when user is created and has no existing workspaces`() = runTest {
         // Given
-        val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
+        val userId = UUID.randomUUID().toString()
         val firstname = faker.name().firstName()
         val lastname = faker.name().lastName()
         val email = faker.internet().emailAddress()
 
-        val userCreatedEvent = UserCreatedEvent(
-            id = userId,
-            email = email,
-            firstName = firstname,
-            lastName = lastname,
-        )
+        val userCreatedEvent = UserCreatedEvent(id = userId, email = email, firstName = firstname, lastName = lastname)
 
         // When
         eventPublisher.publish(userCreatedEvent)
 
         // Then
-        val workspaces = waitUntil(
-            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
-            predicate = { it.size == 1 },
-        )
-        assertEquals(1, workspaces.size, "Should create exactly one workspace")
+        // Esta sintaxis es la correcta y no está obsoleta.
+        eventually(5.seconds) {
+            val workspaces = workspaceFinderRepository.findByOwnerId(UserId(userId))
+            workspaces shouldHaveSize 1
 
-        val workspace = workspaces.first()
-        assertEquals("$firstname $lastname's Workspace", workspace.name)
-        assertEquals("Default workspace created automatically upon user registration", workspace.description)
-        assertEquals(userId, workspace.ownerId.value.toString())
+            val workspace = workspaces.first()
+            workspace.name shouldBe "$firstname $lastname's Workspace"
+            workspace.description shouldBe "Default workspace created automatically upon user registration"
+            workspace.ownerId.value.toString() shouldBe userId
+        }
     }
 
     @Test
-    @Sql(
-        "/db/user/users.sql",
-    )
-    @Sql(
-        "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
-    )
+    @Sql("/db/user/users.sql")
+    @Sql("/db/user/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     fun `should create default workspace with firstname only when lastname is null`() = runTest {
         // Given
-        val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
+        val userId = UUID.randomUUID().toString()
         val firstname = faker.name().firstName()
         val email = faker.internet().emailAddress()
 
-        val userCreatedEvent = UserCreatedEvent(
-            id = userId,
-            email = email,
-            firstName = firstname,
-            lastName = null,
-        )
+        val userCreatedEvent = UserCreatedEvent(id = userId, email = email, firstName = firstname, lastName = null)
 
         // When
         eventPublisher.publish(userCreatedEvent)
 
         // Then
-        val workspaces = waitUntil(
-            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
-            predicate = { it.size == 1 },
-        )
-        assertEquals(1, workspaces.size)
-        assertEquals("$firstname's Workspace", workspaces.first().name)
+        eventually(5.seconds) {
+            val workspaces = workspaceFinderRepository.findByOwnerId(UserId(userId))
+            workspaces shouldHaveSize 1
+            workspaces.first().name shouldBe "$firstname's Workspace"
+        }
     }
 
     @Test
-    @Sql(
-        "/db/user/users.sql",
-    )
-    @Sql(
-        "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
-    )
+    @Sql("/db/user/users.sql")
+    @Sql("/db/user/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     fun `should create default workspace with lastname only when firstname is null`() = runTest {
         // Given
-        val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
+        val userId = UUID.randomUUID().toString()
         val lastname = faker.name().lastName()
         val email = faker.internet().emailAddress()
 
-        val userCreatedEvent = UserCreatedEvent(
-            id = userId,
-            email = email,
-            firstName = null,
-            lastName = lastname,
-        )
+        val userCreatedEvent = UserCreatedEvent(id = userId, email = email, firstName = null, lastName = lastname)
 
         // When
         eventPublisher.publish(userCreatedEvent)
 
         // Then
-        val workspaces = waitUntil(
-            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
-            predicate = { it.size == 1 },
-        )
-        assertEquals(1, workspaces.size)
-        assertEquals("$lastname's Workspace", workspaces.first().name)
+        eventually(5.seconds) {
+            val workspaces = workspaceFinderRepository.findByOwnerId(UserId(userId))
+            workspaces shouldHaveSize 1
+            workspaces.first().name shouldBe "$lastname's Workspace"
+        }
     }
 
     @Test
-    @Sql(
-        "/db/user/users.sql",
-    )
-    @Sql(
-        "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
-    )
+    @Sql("/db/user/users.sql")
+    @Sql("/db/user/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     fun `should create default workspace with 'My Workspace' when both names are null`() = runTest {
         // Given
-        val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
+        val userId = UUID.randomUUID().toString()
         val email = faker.internet().emailAddress()
 
-        val userCreatedEvent = UserCreatedEvent(
-            id = userId,
-            email = email,
-            firstName = null,
-            lastName = null,
-        )
+        val userCreatedEvent = UserCreatedEvent(id = userId, email = email, firstName = null, lastName = null)
 
         // When
         eventPublisher.publish(userCreatedEvent)
 
         // Then
-        val workspaces = waitUntil(
-            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
-            predicate = { it.size == 1 },
-        )
-        assertEquals(1, workspaces.size)
-        assertEquals("My Workspace", workspaces.first().name)
+        eventually(5.seconds) {
+            workspaceFinderRepository.findByOwnerId(UserId(userId)).first().name shouldBe "My Workspace"
+        }
     }
 
     @Test
-    @Sql(
-        "/db/user/users.sql",
-    )
-    @Sql(
-        "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
-    )
+    @Sql("/db/user/users.sql")
+    @Sql("/db/user/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     fun `should not create workspace when user already has existing workspaces`() = runTest {
         // Given
-        val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
-        val firstname = faker.name().firstName()
-        val lastname = faker.name().lastName()
-        val email = faker.internet().emailAddress()
-
-        // Pre-create a workspace for this user
-        // This would typically involve creating a workspace through the application service
-        // For now, we'll simulate this by creating the event twice with some delay
-        val firstEvent = UserCreatedEvent(
+        val userId = UUID.randomUUID().toString()
+        val userCreatedEvent = UserCreatedEvent(
             id = userId,
-            email = email,
-            firstName = firstname,
-            lastName = lastname,
+            email = faker.internet().emailAddress(),
+            firstName = faker.name().firstName(),
+            lastName = faker.name().lastName(),
         )
 
-        // First event should create the workspace
-        eventPublisher.publish(firstEvent)
-        val workspacesAfterFirst = waitUntil(
-            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
-            predicate = { it.size == 1 },
-        )
-        assertEquals(1, workspacesAfterFirst.size, "First event should create workspace")
+        // Publish the event and wait for the first workspace to be created
+        eventPublisher.publish(userCreatedEvent)
+        eventually(5.seconds) {
+            workspaceFinderRepository.findByOwnerId(UserId(userId)) shouldHaveSize 1
+        }
 
-        // When - publish the same event again
-        val secondEvent = UserCreatedEvent(
-            id = userId,
-            email = email,
-            firstName = firstname,
-            lastName = lastname,
-        )
+        // When - we publish the same event again
+        eventPublisher.publish(userCreatedEvent)
 
-        eventPublisher.publish(secondEvent)
-        // Wait a short time to ensure any duplicate event is processed, but still expect only one workspace
-        val workspacesAfterSecond = waitUntil(
-            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
-            predicate = { it.size == 1 },
-        )
-        assertEquals(1, workspacesAfterSecond.size, "Should not create additional workspace")
+        // Then - we assert that the count remains 1, even after waiting a bit
+        eventually(2.seconds) {
+            workspaceFinderRepository.findByOwnerId(UserId(userId)) shouldHaveSize 1
+        }
     }
 
     @Test
-    @Sql(
-        "/db/user/users.sql",
-    )
-    @Sql(
-        "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
-    )
+    @Sql("/db/user/users.sql")
+    @Sql("/db/user/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     fun `should handle workspace names with special characters and whitespace correctly`() = runTest {
         // Given
-        val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
-        val firstname = "  José María  " // Names with accents and extra whitespace
-        val lastname = "  González-López  "
-        val email = faker.internet().emailAddress()
-
+        val userId = UUID.randomUUID().toString()
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
-            email = email,
-            firstName = firstname,
-            lastName = lastname,
+            email = faker.internet().emailAddress(),
+            firstName = "  José María  ",
+            lastName = "  González-López  ",
         )
 
         // When
         eventPublisher.publish(userCreatedEvent)
 
         // Then
-        val workspaces = waitUntil(
-            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
-            predicate = { it.size == 1 },
-        )
-        assertEquals(1, workspaces.size)
-        assertEquals("José María González-López's Workspace", workspaces.first().name)
-    }
-
-    @Test
-    @Sql(
-        "/db/user/users.sql",
-    )
-    @Sql(
-        "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
-    )
-    fun `should eventually create workspace after publishing UserCreatedEvent`() = runTest {
-        // Given
-        val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
-        val firstname = faker.name().firstName()
-        val lastname = faker.name().lastName()
-        val email = faker.internet().emailAddress()
-
-        val userCreatedEvent = UserCreatedEvent(
-            id = userId,
-            email = email,
-            firstName = firstname,
-            lastName = lastname,
-        )
-
-        // When
-        eventPublisher.publish(userCreatedEvent)
-
-        // Then - workspace should be created through eventual consistency
-        val workspaces = waitUntil(
-            supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
-            predicate = { it.isNotEmpty() },
-        )
-        assertTrue(workspaces.isNotEmpty(), "Workspace should be created eventually")
-        assertEquals("$firstname $lastname's Workspace", workspaces.first().name)
-    }
-
-    @Test
-    @Sql(
-        "/db/user/users.sql",
-    )
-    @Sql(
-        "/db/user/clean.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
-    )
-    fun `should create only one workspace when duplicate user-created events are published concurrently`() =
-        runTest {
-            // Given
-            val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
-            val firstname = faker.name().firstName()
-            val lastname = faker.name().lastName()
-            val email = faker.internet().emailAddress()
-
-            val event1 = UserCreatedEvent(
-                id = userId,
-                email = email,
-                firstName = firstname,
-                lastName = lastname,
-            )
-            val event2 = UserCreatedEvent(
-                id = userId,
-                email = email,
-                firstName = firstname,
-                lastName = lastname,
-            )
-
-            // When - publish both events concurrently
-            awaitAll(
-                async { eventPublisher.publish(event1) },
-                async { eventPublisher.publish(event2) },
-            )
-
-            // Then - only one workspace should exist after both are processed
-            val workspaces = waitUntil(
-                supplier = { workspaceFinderRepository.findByOwnerId(UserId(userId)) },
-                predicate = { it.size == 1 },
-            )
-            assertEquals(1, workspaces.size, "Should create exactly one workspace despite concurrent duplicate events")
+        eventually(5.seconds) {
+            val workspaces = workspaceFinderRepository.findByOwnerId(UserId(userId))
+            workspaces shouldHaveSize 1
+            workspaces.first().name shouldBe "José María González-López's Workspace"
         }
+    }
+
+    @Test
+    @Sql("/db/user/users.sql")
+    @Sql("/db/user/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    fun `should create only one workspace when duplicate user-created events are published concurrently`() = runTest {
+        // Given
+        val userId = UUID.randomUUID().toString()
+        val event = UserCreatedEvent(
+            id = userId,
+            email = faker.internet().emailAddress(),
+            firstName = faker.name().firstName(),
+            lastName = faker.name().lastName(),
+        )
+
+        // When - publish both events concurrently
+        awaitAll(
+            async { eventPublisher.publish(event) },
+            async { eventPublisher.publish(event) },
+        )
+
+        // Then - only one workspace should exist after both are processed
+        eventually(5.seconds) {
+            workspaceFinderRepository.findByOwnerId(UserId(userId)) shouldHaveSize 1
+        }
+    }
 }
