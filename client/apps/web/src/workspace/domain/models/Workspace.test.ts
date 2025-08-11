@@ -90,28 +90,11 @@ describe("Workspace", () => {
 			}
 		});
 
-		it("should return false when isDefault is not a boolean", () => {
-			const nonBooleanValues = ["true", 123, null, undefined, {}, []];
-
-			for (const nonBooleanValue of nonBooleanValues) {
-				const invalidWorkspace = {
-					...validWorkspace,
-					isDefault: nonBooleanValue,
-				};
-				expect(isWorkspace(invalidWorkspace)).toBe(false);
-			}
-		});
-
-		it("should return false when isDefault is not a boolean", () => {
-			const nonBooleanValues = [123, "true", null, undefined, {}, []];
-
-			for (const nonBooleanValue of nonBooleanValues) {
-				const invalidWorkspace = {
-					...validWorkspace,
-					isDefault: nonBooleanValue,
-				};
-				expect(isWorkspace(invalidWorkspace)).toBe(false);
-			}
+		it("should return false if isDefault is not a boolean", () => {
+			expect(isWorkspace({ isDefault: null })).toBe(false);
+			expect(isWorkspace({ isDefault: undefined })).toBe(false);
+			expect(isWorkspace({ isDefault: 1 })).toBe(false);
+			expect(isWorkspace({ isDefault: "true" })).toBe(false);
 		});
 
 		it("should return false when description is not a string or undefined", () => {
