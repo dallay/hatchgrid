@@ -9,7 +9,6 @@ import com.hatchgrid.thryve.workspace.domain.WorkspaceFinderRepository
 import io.kotest.assertions.nondeterministic.eventually // Importación correcta
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -41,7 +40,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
     @Sql("/db/user/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     fun `should create default workspace when user is created and has no existing workspaces`() = runTest {
         // Given
-        val userId = UUID.randomUUID().toString()
+        val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val firstname = faker.name().firstName()
         val lastname = faker.name().lastName()
         val email = faker.internet().emailAddress()
@@ -69,7 +68,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
     @Sql("/db/user/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     fun `should create default workspace with firstname only when lastname is null`() = runTest {
         // Given
-        val userId = UUID.randomUUID().toString()
+        val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val firstname = faker.name().firstName()
         val email = faker.internet().emailAddress()
 
@@ -91,7 +90,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
     @Sql("/db/user/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     fun `should create default workspace with lastname only when firstname is null`() = runTest {
         // Given
-        val userId = UUID.randomUUID().toString()
+        val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val lastname = faker.name().lastName()
         val email = faker.internet().emailAddress()
 
@@ -113,7 +112,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
     @Sql("/db/user/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     fun `should create default workspace with 'My Workspace' when both names are null`() = runTest {
         // Given
-        val userId = UUID.randomUUID().toString()
+        val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val email = faker.internet().emailAddress()
 
         val userCreatedEvent = UserCreatedEvent(id = userId, email = email, firstName = null, lastName = null)
@@ -132,7 +131,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
     @Sql("/db/user/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     fun `should not create workspace when user already has existing workspaces`() = runTest {
         // Given
-        val userId = UUID.randomUUID().toString()
+        val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = faker.internet().emailAddress(),
@@ -160,7 +159,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
     @Sql("/db/user/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     fun `should handle workspace names with special characters and whitespace correctly`() = runTest {
         // Given
-        val userId = UUID.randomUUID().toString()
+        val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val userCreatedEvent = UserCreatedEvent(
             id = userId,
             email = faker.internet().emailAddress(),
@@ -184,7 +183,7 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
     @Sql("/db/user/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     fun `should create only one workspace when duplicate user-created events are published concurrently`() = runTest {
         // Given
-        val userId = UUID.randomUUID().toString()
+        val userId = "efc4b2b8-08be-4020-93d5-f795762bf5c9"
         val event = UserCreatedEvent(
             id = userId,
             email = faker.internet().emailAddress(),

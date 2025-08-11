@@ -5,6 +5,9 @@ on:
       - main
     paths:
       - .github/labels.yml
+permissions:
+  contents: read
+  issues: write
 jobs:
   sync-labels:
     runs-on: ubuntu-latest
