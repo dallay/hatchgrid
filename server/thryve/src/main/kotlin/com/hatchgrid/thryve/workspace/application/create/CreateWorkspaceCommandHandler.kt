@@ -4,6 +4,7 @@ import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.command.CommandHandler
 import com.hatchgrid.thryve.workspace.domain.Workspace
 import com.hatchgrid.thryve.workspace.domain.WorkspaceException
+import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import java.util.*
 import org.slf4j.LoggerFactory
@@ -20,7 +21,10 @@ class CreateWorkspaceCommandHandler(
     private val meterRegistry: MeterRegistry
 ) : CommandHandler<CreateWorkspaceCommand> {
     private val dupDefaultWsIgnoredCounter by lazy {
-        meterRegistry.counter("workspace.default.duplicate.ignored")
+        Counter
+            .builder(METRIC_WS_DEFAULT_DUP_IGN)
+            .description("Count of ignored duplicate default workspace creations")
+            .register(meterRegistry)
     }
 
     /**
@@ -102,5 +106,6 @@ class CreateWorkspaceCommandHandler(
 
     companion object {
         private val log = LoggerFactory.getLogger(CreateWorkspaceCommandHandler::class.java)
+        const val METRIC_WS_DEFAULT_DUP_IGN = "workspace.default.duplicate.ignored"
     }
 }
