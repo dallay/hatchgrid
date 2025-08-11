@@ -71,4 +71,11 @@ class SubscriberMapperTest {
         val domain = entity.toDomain()
         assertEquals(LastName("Smith"), domain.name.lastName)
     }
+
+    @Test
+    fun `should trim whitespace when mapping firstname`() {
+        val entityWithWhitespace = baseEntity.copy(firstname = "  John  ")
+        val domain = entityWithWhitespace.toDomain()
+        assertEquals("John", domain.name.firstName.value)
+    }
 }

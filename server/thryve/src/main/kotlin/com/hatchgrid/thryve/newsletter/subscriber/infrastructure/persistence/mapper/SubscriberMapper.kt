@@ -23,8 +23,8 @@ object SubscriberMapper {
         return SubscriberEntity(
             id = id.value,
             email = email.value,
-            firstname = name.firstName.value,
-            lastname = name.lastName?.value ?: "",
+            firstname = name.firstName.value.trim(),
+            lastname = name.lastName?.value?.trim(),
             status = status,
             attributes = attributes,
             workspaceId = workspaceId.value,
@@ -42,9 +42,11 @@ object SubscriberMapper {
      */
 
     fun SubscriberEntity.toDomain(): Subscriber {
-        val firstName = firstname?.takeIf { it.isNotBlank() }?.let { FirstName(it) }
+        val firstNameRaw = firstname?.trim()
+        val firstName = firstNameRaw?.takeIf { it.isNotEmpty() }?.let(::FirstName)
             ?: throw FirstNameNotValidException(firstname ?: "null")
-        val lastName = lastname?.takeIf { it.isNotBlank() }?.let { LastName(it) }
+        val lastNameRaw = lastname?.trim()
+        val lastName = lastNameRaw?.takeIf { it.isNotEmpty() }?.let(::LastName)
         return Subscriber(
             id = SubscriberId(id),
             email = Email(email),
