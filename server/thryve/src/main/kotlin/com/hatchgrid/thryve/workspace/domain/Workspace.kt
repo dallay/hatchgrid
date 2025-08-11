@@ -102,6 +102,12 @@ data class Workspace(
 
     companion object {
         /**
+         * Maximum allowed length for a workspace name. Keep in sync with DB schema (varchar(100)).
+         * Prefer referencing this constant instead of duplicating literal values.
+         */
+        const val NAME_MAX_LENGTH: Int = 100
+
+        /**
          * Creates a new workspace with the given information.
          *
          * @param id The unique identifier for the workspace.

@@ -1,6 +1,8 @@
 package com.hatchgrid.thryve.workspace.infrastructure.persistence.entity
 
 import com.hatchgrid.common.domain.AuditableEntity
+import com.hatchgrid.thryve.workspace.domain.Workspace.Companion.NAME_MAX_LENGTH
+import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
 import java.util.*
 import org.springframework.data.annotation.CreatedBy
@@ -22,9 +24,11 @@ data class WorkspaceEntity(
     val id: UUID,
 
     @Column("name")
+    @get:Size(max = NAME_MAX_LENGTH)
     val name: String,
 
     @Column("description")
+    @get:Size(max = 500)
     val description: String?,
 
     @Column("owner_id")
@@ -35,6 +39,7 @@ data class WorkspaceEntity(
 
     @CreatedBy
     @Column("created_by")
+    @get:Size(max = 50)
     override val createdBy: String = "system",
 
     @CreatedDate
@@ -43,6 +48,7 @@ data class WorkspaceEntity(
 
     @LastModifiedBy
     @Column("updated_by")
+    @get:Size(max = 50)
     override var updatedBy: String? = null,
 
     @LastModifiedDate

@@ -6,14 +6,13 @@ import com.hatchgrid.common.domain.bus.event.EventConsumer
 import com.hatchgrid.common.domain.bus.event.Subscribe
 import com.hatchgrid.thryve.users.domain.event.UserCreatedEvent
 import com.hatchgrid.thryve.workspace.application.create.CreateWorkspaceCommand
+import com.hatchgrid.thryve.workspace.domain.Workspace
 import io.r2dbc.spi.R2dbcException
 import java.util.*
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ResponseStatusException
-
-private const val MAX_LENGTH_WORKSPACE_NAME = 100
 
 /**
  * Event consumer that automatically creates a default workspace when a new user is created.
@@ -112,7 +111,7 @@ class CreateDefaultWorkspaceOnUserCreation(
      * @return Generated workspace name
      */
     private fun generateDefaultWorkspaceName(firstname: String?, lastname: String?): String {
-        val maxLength = MAX_LENGTH_WORKSPACE_NAME
+        val maxLength = Workspace.NAME_MAX_LENGTH
         val composedName = when {
             !firstname.isNullOrBlank() && !lastname.isNullOrBlank() ->
                 "${firstname.trim()} ${lastname.trim()}'s Workspace"
