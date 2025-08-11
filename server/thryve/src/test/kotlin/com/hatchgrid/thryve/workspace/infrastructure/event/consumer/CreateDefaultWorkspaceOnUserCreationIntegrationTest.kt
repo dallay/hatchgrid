@@ -51,7 +51,6 @@ class CreateDefaultWorkspaceOnUserCreationIntegrationTest : InfrastructureTestCo
         eventPublisher.publish(userCreatedEvent)
 
         // Then
-        // Esta sintaxis es la correcta y no está obsoleta.
         eventually(5.seconds) {
             val workspaces = workspaceFinderRepository.findByOwnerId(UserId(userId))
             workspaces shouldHaveSize 1
