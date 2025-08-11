@@ -63,7 +63,7 @@ class KeycloakRepositoryTest {
         keycloakUserResource = mockk()
         userResource = mockk()
 
-        every { keycloak.realm(any()) } returns keycloakRealm
+        every { keycloak.realm(REALM) } returns keycloakRealm
         every { keycloakRealm.users() } returns keycloakUserResource
 
         userStoreR2dbcRepository = mockk()
@@ -122,6 +122,7 @@ class KeycloakRepositoryTest {
 
         // Verify that keycloakUserResource.create was called with correct UserRepresentation
         verify(exactly = 1) { keycloak.realm(REALM) }
+        verify(exactly = 1) { keycloakRealm.users() }
         verify(exactly = 1) {
             keycloakUserResource.create(
                 match { userRep ->
