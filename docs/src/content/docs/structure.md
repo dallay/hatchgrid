@@ -1243,10 +1243,6 @@ description: Overview of the project structure and organization.
 │   │       │   │   ├───providers/
 │   │       │   │   │   └───__tests__/
 │   │       │   │   │       └───workspaceStoreProvider.test.ts
-│   │       │   │   ├───store/
-│   │       │   │   │   ├───WorkspaceStoreFactory.ts
-│   │       │   │   │   ├───useWorkspaceStore.test.ts
-│   │       │   │   │   └───useWorkspaceStore.ts
 │   │       │   │   ├───di.ts
 │   │       │   │   └───index.ts
 │   │       │   ├───App.vue
@@ -1612,7 +1608,6 @@ description: Overview of the project structure and organization.
 │   │   │   │   ├───en_7d6cdd3.pf_fragment
 │   │   │   │   ├───en_7e63627.pf_fragment
 │   │   │   │   ├───en_82142d3.pf_fragment
-│   │   │   │   ├───en_8318748.pf_fragment
 │   │   │   │   ├───en_83b65b8.pf_fragment
 │   │   │   │   ├───en_873d782.pf_fragment
 │   │   │   │   ├───en_8c2c94f.pf_fragment
@@ -1622,6 +1617,7 @@ description: Overview of the project structure and organization.
 │   │   │   │   ├───en_9e43836.pf_fragment
 │   │   │   │   ├───en_a1a95ab.pf_fragment
 │   │   │   │   ├───en_a7599ed.pf_fragment
+│   │   │   │   ├───en_a992992.pf_fragment
 │   │   │   │   ├───en_ad47cd6.pf_fragment
 │   │   │   │   ├───en_b3c2234.pf_fragment
 │   │   │   │   ├───en_b46a4b3.pf_fragment
@@ -1650,18 +1646,18 @@ description: Overview of the project structure and organization.
 │   │   │   │   ├───en_faa6dce.pf_fragment
 │   │   │   │   └───en_fbfde01.pf_fragment
 │   │   │   ├───index/
-│   │   │   │   ├───en_2834ede.pf_index
-│   │   │   │   ├───en_3856cd2.pf_index
+│   │   │   │   ├───en_375df8f.pf_index
+│   │   │   │   ├───en_56e7556.pf_index
+│   │   │   │   ├───en_6e609cd.pf_index
 │   │   │   │   ├───en_92429f7.pf_index
-│   │   │   │   ├───en_e396a76.pf_index
-│   │   │   │   └───en_e58fa47.pf_index
+│   │   │   │   └───en_a9e83b4.pf_index
 │   │   │   ├───pagefind-entry.json
 │   │   │   ├───pagefind-highlight.js
 │   │   │   ├───pagefind-modular-ui.css
 │   │   │   ├───pagefind-modular-ui.js
 │   │   │   ├───pagefind-ui.css
 │   │   │   ├───pagefind-ui.js
-│   │   │   ├───pagefind.en_c07da7dab6.pf_meta
+│   │   │   ├───pagefind.en_93d2f77f88.pf_meta
 │   │   │   ├───pagefind.js
 │   │   │   ├───wasm.en.pagefind
 │   │   │   └───wasm.unknown.pagefind
@@ -2050,11 +2046,15 @@ description: Overview of the project structure and organization.
 │       │   │   ├───bin-reports/
 │       │   │   │   ├───coverage-error.log
 │       │   │   │   └───test.ic
+│       │   │   ├───.artifact
+│       │   │   ├───jvm.artifact
 │       │   │   └───kover-jvm-agent-0.8.3.jar
 │       │   ├───libs/
 │       │   │   ├───thryve-0.0.1-SNAPSHOT-plain.jar
 │       │   │   └───thryve-0.0.1-SNAPSHOT.jar
 │       │   ├───reports/
+│       │   │   ├───kover/
+│       │   │   │   └───verify.err
 │       │   │   └───tests/
 │       │   │       └───test/
 │       │   │           ├───classes/
@@ -2458,6 +2458,9 @@ description: Overview of the project structure and organization.
 │       │   │   │   └───MANIFEST.MF
 │       │   │   ├───jar/
 │       │   │   │   └───MANIFEST.MF
+│       │   │   ├───koverCachedVerify/
+│       │   │   │   ├───agg-ic.ic
+│       │   │   │   └───agg-smap.smap
 │       │   │   └───test/
 │       │   │       └───kover-agent.args
 │       │   └───resolvedMainClassName
