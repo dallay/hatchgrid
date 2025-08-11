@@ -4,6 +4,7 @@ import com.hatchgrid.UnitTest
 import com.hatchgrid.common.domain.bus.event.EventPublisher
 import com.hatchgrid.thryve.workspace.domain.WorkspaceRepository
 import com.hatchgrid.thryve.workspace.domain.event.WorkspaceCreatedEvent
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -19,13 +20,15 @@ internal class CreateWorkspaceCommandHandlerTest {
     private lateinit var workspaceRepository: WorkspaceRepository
     private lateinit var workspaceCreator: WorkspaceCreator
     private lateinit var createWorkspaceCommandHandler: CreateWorkspaceCommandHandler
+    private lateinit var meterRegistry: SimpleMeterRegistry
 
     @BeforeEach
     fun setUp() {
         eventPublisher = mockk()
         workspaceRepository = mockk()
+        meterRegistry = SimpleMeterRegistry()
         workspaceCreator = WorkspaceCreator(workspaceRepository, eventPublisher)
-        createWorkspaceCommandHandler = CreateWorkspaceCommandHandler(workspaceCreator)
+        createWorkspaceCommandHandler = CreateWorkspaceCommandHandler(workspaceCreator, meterRegistry)
 
         coEvery { workspaceRepository.create(any()) } returns Unit
         coEvery { eventPublisher.publish(any<WorkspaceCreatedEvent>()) } returns Unit

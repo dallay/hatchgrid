@@ -4,6 +4,7 @@ import com.hatchgrid.common.domain.Service
 import com.hatchgrid.common.domain.bus.command.CommandHandler
 import com.hatchgrid.thryve.workspace.domain.Workspace
 import com.hatchgrid.thryve.workspace.domain.WorkspaceException
+import io.micrometer.core.instrument.MeterRegistry
 import java.util.*
 import org.slf4j.LoggerFactory
 
@@ -15,8 +16,12 @@ import org.slf4j.LoggerFactory
  */
 @Service
 class CreateWorkspaceCommandHandler(
-    private val workspaceCreator: WorkspaceCreator
+    private val workspaceCreator: WorkspaceCreator,
+    private val meterRegistry: MeterRegistry
 ) : CommandHandler<CreateWorkspaceCommand> {
+    private val dupDefaultWsIgnoredCounter by lazy {
+        meterRegistry.counter("workspace.default.duplicate.ignored")
+    }
 
     /**
      * Handles the creation of a workspace.
@@ -49,6 +54,7 @@ class CreateWorkspaceCommandHandler(
         } catch (exception: Exception) {
             // For default workspaces, check if this is a duplicate insertion due to race condition
             if (command.isDefault && isDuplicateDefaultWorkspaceError(exception)) {
+                dupDefaultWsIgnoredCounter.increment()
                 log.info("Default workspace already exists for user ${command.ownerId}, ignoring duplicate creation")
                 return
             }
@@ -62,10 +68,36 @@ class CreateWorkspaceCommandHandler(
      * This helps handle race conditions gracefully.
      */
     private fun isDuplicateDefaultWorkspaceError(exception: Exception): Boolean {
-        val message = exception.message?.lowercase() ?: ""
-        return message.contains("duplicate") ||
-            message.contains("unique constraint") ||
-            message.contains("idx_workspaces_owner_default")
+        // 1) Prefer SQLSTATE inspection for robust detection
+        val sqlState = extractSqlState(exception)
+        if (sqlState == "23505") return true // unique_violation
+
+        // 2) Spring's translated exceptions
+        if (exception is org.springframework.dao.DuplicateKeyException) return true
+
+        // 3) Fallback to message/index name checks through the cause chain
+        val allMessages =
+            generateSequence(exception as? Throwable) { it.cause }
+                .mapNotNull { it.message?.lowercase() }
+                .joinToString(" | ")
+
+        return allMessages.contains("idx_workspaces_owner_default") ||
+            allMessages.contains("duplicate key") ||
+            allMessages.contains("unique constraint") ||
+            allMessages.contains("duplicate")
+    }
+
+    private fun extractSqlState(throwable: Throwable): String? {
+        var current: Throwable? = throwable
+        while (current != null) {
+            when (current) {
+                is io.r2dbc.spi.R2dbcException -> return current.sqlState
+                // Defensive: support JDBC style if ever encountered
+                is java.sql.SQLException -> return current.sqlState
+            }
+            current = current.cause
+        }
+        return null
     }
 
     companion object {

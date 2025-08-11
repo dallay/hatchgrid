@@ -132,7 +132,7 @@ class KeycloakAuthenticatorRepositoryTest {
     fun `should throw UserAuthenticationException when authentication fails`(): Unit = runTest {
         // Arrange
         val username = Username(faker.internet().emailAddress())
-        val password = CredentialGenerator.generate(faker.internet().password(8, 80, true, true, true))
+        val password = CredentialGenerator.generate()
 
         val usernameSlot = slot<String>()
         val passwordSlot = slot<String>()

@@ -1,10 +1,10 @@
 package com.hatchgrid.thryve.users.infrastructure.persistence.keycloak
 
 import com.hatchgrid.UnitTest
-import com.hatchgrid.common.domain.vo.credential.Credential
 import com.hatchgrid.common.domain.vo.email.Email
 import com.hatchgrid.common.domain.vo.name.FirstName
 import com.hatchgrid.common.domain.vo.name.LastName
+import com.hatchgrid.thryve.CredentialGenerator
 import com.hatchgrid.thryve.authentication.infrastructure.ApplicationSecurityProperties
 import com.hatchgrid.thryve.users.domain.UserStoreException
 import com.hatchgrid.thryve.users.infrastructure.persistence.UserStoreR2dbcRepository
@@ -23,7 +23,7 @@ import jakarta.ws.rs.InternalServerErrorException
 import jakarta.ws.rs.WebApplicationException
 import jakarta.ws.rs.core.Response
 import java.net.URI
-import java.util.UUID
+import java.util.*
 import kotlinx.coroutines.test.runTest
 import net.datafaker.Faker
 import org.junit.jupiter.api.BeforeEach
@@ -80,7 +80,7 @@ class KeycloakRepositoryTest {
     fun `should create user successfully when user does not exist`() = runTest {
         // Given
         val email = Email(faker.internet().emailAddress())
-        val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
+        val credential = CredentialGenerator.generate()
         val firstName = FirstName(faker.name().firstName())
         val lastName = LastName(faker.name().lastName())
         val userId = faker.internet().uuid()
@@ -142,7 +142,7 @@ class KeycloakRepositoryTest {
     fun `should create user successfully with null first and last name`() = runTest {
         // Given
         val email = Email(faker.internet().emailAddress())
-        val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
+        val credential = CredentialGenerator.generate()
         val userId = faker.internet().uuid()
 
         // Mock successful creation
@@ -174,7 +174,7 @@ class KeycloakRepositoryTest {
     fun `should throw UserStoreException when user already exists (409 conflict)`() = runTest {
         // Given
         val email = Email(faker.internet().emailAddress())
-        val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
+        val credential = CredentialGenerator.generate()
         val firstName = FirstName(faker.name().firstName())
         val lastName = LastName(faker.name().lastName())
 
@@ -202,7 +202,7 @@ class KeycloakRepositoryTest {
     fun `should throw UserStoreException when Keycloak returns client error`() = runTest {
         // Given
         val email = Email(faker.internet().emailAddress())
-        val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
+        val credential = CredentialGenerator.generate()
         val firstName = FirstName(faker.name().firstName())
         val lastName = LastName(faker.name().lastName())
 
@@ -225,7 +225,7 @@ class KeycloakRepositoryTest {
     fun `should throw UserStoreException when Keycloak returns server error`() = runTest {
         // Given
         val email = Email(faker.internet().emailAddress())
-        val credential = Credential.create(faker.internet().password(8, 80, true, true, true))
+        val credential = CredentialGenerator.generate()
         val firstName = FirstName(faker.name().firstName())
         val lastName = LastName(faker.name().lastName())
 
@@ -269,17 +269,21 @@ class KeycloakRepositoryTest {
     }
 
     @Test
-    fun `should handle WebApplicationException gracefully when sending verification email`() = runTest {
-        // Given
-        val userId = faker.internet().uuid()
-        every { keycloakUserResource.get(userId) } returns userResource
-        every { userResource.sendVerifyEmail() } throws WebApplicationException("Email service unavailable", 503)
+    fun `should handle WebApplicationException gracefully when sending verification email`() =
+        runTest {
+            // Given
+            val userId = faker.internet().uuid()
+            every { keycloakUserResource.get(userId) } returns userResource
+            every { userResource.sendVerifyEmail() } throws WebApplicationException(
+                "Email service unavailable",
+                503,
+            )
 
-        // When & Then (should not throw exception)
-        keycloakRepository.verify(userId)
+            // When & Then (should not throw exception)
+            keycloakRepository.verify(userId)
 
-        // Verify the method was called despite the exception
-        verify { keycloakUserResource.get(userId) }
-        verify { userResource.sendVerifyEmail() }
-    }
+            // Verify the method was called despite the exception
+            verify { keycloakUserResource.get(userId) }
+            verify { userResource.sendVerifyEmail() }
+        }
 }
