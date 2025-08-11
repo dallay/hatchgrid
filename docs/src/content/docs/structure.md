@@ -2058,14 +2058,14 @@ description: Overview of the project structure and organization.
 │       │   │   └───tests/
 │       │   │       └───test/
 │       │   │           ├───classes/
-│       │   │           │   └───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.mapper.SubscriberMapperTest.html
+│       │   │           │   └───com.hatchgrid.thryve.workspace.domain.WorkspaceTest.html
 │       │   │           ├───css/
 │       │   │           │   ├───base-style.css
 │       │   │           │   └───style.css
 │       │   │           ├───js/
 │       │   │           │   └───report.js
 │       │   │           ├───packages/
-│       │   │           │   └───com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.mapper.html
+│       │   │           │   └───com.hatchgrid.thryve.workspace.domain.html
 │       │   │           └───index.html
 │       │   ├───resources/
 │       │   │   ├───main/
@@ -2118,10 +2118,8 @@ description: Overview of the project structure and organization.
 │       │   ├───test-results/
 │       │   │   └───test/
 │       │   │       ├───binary/
-│       │   │       │   ├───output.bin
-│       │   │       │   ├───output.bin.idx
-│       │   │       │   └───results.bin
-│       │   │       └───TEST-com.hatchgrid.thryve.newsletter.subscriber.infrastructure.persistence.mapper.SubscriberMapperTest.xml
+│       │   │       │   └───output.bin
+│       │   │       └───TEST-com.hatchgrid.thryve.workspace.domain.WorkspaceTest.xml
 │       │   ├───tmp/
 │       │   │   ├───bootJar/
 │       │   │   │   └───MANIFEST.MF
