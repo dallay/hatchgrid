@@ -43,10 +43,10 @@ object SubscriberMapper {
 
     fun SubscriberEntity.toDomain(): Subscriber {
         val firstNameRaw = firstname?.trim()
-        val firstName = firstNameRaw?.takeIf { it.isNotEmpty() }?.let(::FirstName)
+        val firstName = firstNameRaw?.takeIf(String::isNotBlank)?.let(::FirstName)
             ?: throw FirstNameNotValidException(firstname ?: "null")
         val lastNameRaw = lastname?.trim()
-        val lastName = lastNameRaw?.takeIf { it.isNotEmpty() }?.let(::LastName)
+        val lastName = lastNameRaw?.takeIf(String::isNotBlank)?.let(::LastName)
         return Subscriber(
             id = SubscriberId(id),
             email = Email(email),

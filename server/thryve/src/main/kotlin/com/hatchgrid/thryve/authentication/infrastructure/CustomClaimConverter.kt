@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
 
-private const val TIMEOUT = 3L
+private val USER_INFO_TIMEOUT: java.time.Duration = java.time.Duration.ofSeconds(3)
 
 /**
  * CustomClaimConverter is a class that implements the [Converter] interface to convert a map of claims
@@ -62,7 +62,7 @@ class CustomClaimConverter(
         return try {
             userMono
                 .subscribeOn(Schedulers.boundedElastic())
-                .timeout(Duration.ofSeconds(TIMEOUT))
+                .timeout(USER_INFO_TIMEOUT)
                 .map { user ->
                     appendCustomClaim(convertedClaims, user)
                 }
