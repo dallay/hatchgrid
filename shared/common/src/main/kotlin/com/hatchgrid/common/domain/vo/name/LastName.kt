@@ -3,7 +3,7 @@ package com.hatchgrid.common.domain.vo.name
 import com.hatchgrid.common.domain.BaseValidateValueObject
 
 /**
- * Email value object
+ * LastName value object
  * @param lastname last name value
  * @throws LastNameNotValidException if last name is not valid
  * @see BaseValidateValueObject

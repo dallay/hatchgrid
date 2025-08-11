@@ -37,21 +37,20 @@ class CommandWithResultHandlerTest {
     }
 
     @Test
-    fun `should throw exception if given async command has not been registered before`() {
-        val provider = ManualDependencyProvider(hashMapOf())
-        val bus: Mediator = MediatorBuilder(provider).build()
-        val exception = assertFailsWith(HandlerNotFoundException::class) {
-            runTest {
+    fun `should throw exception if given async command has not been registered before`(): Unit =
+        runTest {
+            val provider = ManualDependencyProvider(hashMapOf())
+            val bus: Mediator = MediatorBuilder(provider).build()
+            val exception = assertFailsWith(HandlerNotFoundException::class) {
                 bus.send(NonExistCommandR())
             }
-        }
 
-        assertNotNull(exception)
-        assertEquals(
-            "handler could not be found for com.hatchgrid.common.domain.bus.NonExistCommandR",
-            exception.message,
-        )
-    }
+            assertNotNull(exception)
+            assertEquals(
+                "handler could not be found for com.hatchgrid.common.domain.bus.NonExistCommandR",
+                exception.message,
+            )
+        }
 
     @Test
     fun inheritance_should_work() = runTest {
