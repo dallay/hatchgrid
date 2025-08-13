@@ -3,9 +3,8 @@
  * Orchestrates domain use cases and provides application-level operations
  */
 
-import type { Workspace } from "../../domain/models";
-import type { WorkspaceRepository } from "../../domain/repositories";
-import { GetWorkspaceById, ListWorkspaces } from "../../domain/usecases";
+import type { Workspace, WorkspaceRepository } from "@/workspace";
+import { GetWorkspaceById, ListWorkspaces } from "@/workspace";
 
 export class WorkspaceApplicationService {
 	constructor(private readonly workspaceRepository: WorkspaceRepository) {}

@@ -10,13 +10,13 @@ import type {
 	CountByTagsResponse,
 	Subscriber,
 	SubscriberStatus,
-} from "../../domain/models";
+} from "@/subscribers";
 import type {
 	CountByStatus,
 	CountByTags,
 	FetchSubscribers,
 	FetchSubscribersFilters,
-} from "../../domain/usecases";
+} from "@/subscribers/domain";
 
 /**
  * Error state interface for consistent error handling

@@ -2,12 +2,8 @@ import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, nextTick } from "vue";
-import type { Workspace } from "../../domain/models";
-import type {
-	WorkspaceError,
-	WorkspaceStore,
-} from "../../infrastructure/store/useWorkspaceStore";
-import { useWorkspaceInitialization } from "./useWorkspaceInitialization";
+import type { Workspace, WorkspaceError, WorkspaceStore } from "@/workspace";
+import { useWorkspaceInitialization } from "@/workspace";
 
 describe("useWorkspaceInitialization", () => {
 	let mockStore: WorkspaceStore;

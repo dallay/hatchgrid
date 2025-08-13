@@ -6,9 +6,8 @@
 import { defineStore } from "pinia";
 import { computed, type Ref, readonly, ref } from "vue";
 import type { CollectionResponse, SingleItemResponse } from "@/shared";
-import type { Workspace } from "../../domain/models";
-import { isValidUUID } from "../../domain/models/WorkspaceValidation";
-import type { GetWorkspaceById, ListWorkspaces } from "../../domain/usecases";
+import type { GetWorkspaceById, ListWorkspaces, Workspace } from "@/workspace";
+import { isValidUUID } from "@/workspace/domain";
 import type { WorkspaceStorage } from "../storage";
 
 /**
