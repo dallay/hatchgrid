@@ -1179,6 +1179,15 @@ description: Overview of the project structure and organization.
 │   │       │   │   │   └───index.ts
 │   │       │   │   ├───di.ts
 │   │       │   │   └───index.ts
+│   │       │   ├───tag/
+│   │       │   │   ├───domain/
+│   │       │   │   │   ├───Tag.test.ts
+│   │       │   │   │   ├───Tag.ts
+│   │       │   │   │   ├───TagResponse.ts
+│   │       │   │   │   ├───index.ts
+│   │       │   │   │   ├───schema.test.ts
+│   │       │   │   │   └───schema.ts
+│   │       │   │   └───index.ts
 │   │       │   ├───test-utils/
 │   │       │   │   └───route-mocks.ts
 │   │       │   ├───workspace/
