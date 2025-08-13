@@ -1,70 +1,87 @@
 <script setup lang="ts">
-import { Plus, RefreshCw, UserCheck, UserMinus, Users, UserX } from "lucide-vue-next";
+import {
+	Plus,
+	RefreshCw,
+	UserCheck,
+	UserMinus,
+	Users,
+	UserX,
+} from "lucide-vue-next";
 import { computed, onMounted, ref, watch } from "vue";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Attributes, CountByStatusResponse, Subscriber } from "@/subscribers";
+import type {
+	Attributes,
+	CountByStatusResponse,
+	Subscriber,
+} from "@/subscribers";
 import { useSubscribers } from "@/subscribers";
 import { useWorkspaceStoreProvider } from "@/workspace/infrastructure/providers/workspaceStoreProvider";
 import { SubscriberList } from "../components";
 
 // Use the real selected workspace from the workspace store
 const workspaceStore = useWorkspaceStoreProvider()();
-const selectedWorkspaceId = computed(() => workspaceStore.currentWorkspace?.id ?? null);
+const selectedWorkspaceId = computed(
+	() => workspaceStore.currentWorkspace?.id ?? null,
+);
 
 // Provide a fallback during test runs so tests don't need to select a workspace explicitly
 const TEST_WORKSPACE_ID = "d2054881-b8c1-4bfa-93ce-a0e94d003ead" as const;
 const effectiveWorkspaceId = computed(
-  () =>
-    selectedWorkspaceId.value ??
-    (import.meta.env?.MODE === "test" ? TEST_WORKSPACE_ID : null)
+	() =>
+		selectedWorkspaceId.value ??
+		(import.meta.env?.MODE === "test" ? TEST_WORKSPACE_ID : null),
 );
 
 // Use the composable which handles auto-initialization
 const {
-  subscribers,
-  statusCounts,
-  isLoading,
-  hasError,
-  error,
-  subscriberCount,
-  fetchAllData,
-  refreshData,
+	subscribers,
+	statusCounts,
+	isLoading,
+	hasError,
+	error,
+	subscriberCount,
+	fetchAllData,
+	refreshData,
 } = useSubscribers();
 
 // Helper to ensure all string[] in attributes are mutable and type-safe
 type AnyAttributes = {
-  [key: string]: string | number | boolean | string[] | readonly string[];
+	[key: string]: string | number | boolean | string[] | readonly string[];
 };
 function toMutableAttributes(
-  attributes: AnyAttributes | undefined
+	attributes: AnyAttributes | undefined,
 ): Attributes | undefined {
-  if (!attributes) return undefined;
-  const mutable: Record<string, string | number | boolean | string[]> = {};
-  for (const [k, v] of Object.entries(attributes)) {
-    if (Array.isArray(v)) {
-      mutable[k] = Array.from(v);
-    } else if (typeof v === "string" || typeof v === "number" || typeof v === "boolean") {
-      mutable[k] = v;
-    }
-    // else: skip invalid types
-  }
-  return mutable as Attributes;
+	if (!attributes) return undefined;
+	const mutable: Record<string, string | number | boolean | string[]> = {};
+	for (const [k, v] of Object.entries(attributes)) {
+		if (Array.isArray(v)) {
+			mutable[k] = Array.from(v);
+		} else if (
+			typeof v === "string" ||
+			typeof v === "number" ||
+			typeof v === "boolean"
+		) {
+			mutable[k] = v;
+		}
+		// else: skip invalid types
+	}
+	return mutable as Attributes;
 }
 
 const subscribersForList = computed(() =>
-  (subscribers.value ?? []).map((s) => ({
-    ...s,
-    attributes: toMutableAttributes(s.attributes),
-  }))
+	(subscribers.value ?? []).map((s) => ({
+		...s,
+		attributes: toMutableAttributes(s.attributes),
+	})),
 );
 
 // Loading and error states
@@ -72,10 +89,10 @@ const isRefreshing = ref(false);
 
 // Status count helpers
 const getStatusCount = (status: string) => {
-  const statusCount = statusCounts.value.find(
-    (s: CountByStatusResponse) => s.status === status
-  );
-  return statusCount?.count || 0;
+	const statusCount = statusCounts.value.find(
+		(s: CountByStatusResponse) => s.status === status,
+	);
+	return statusCount?.count || 0;
 };
 
 const enabledCount = computed(() => getStatusCount("ENABLED"));
@@ -84,55 +101,55 @@ const blocklistedCount = computed(() => getStatusCount("BLOCKLISTED"));
 
 // Load data on component mount
 onMounted(() => {
-  // Initial load will be triggered by the watcher below when a workspace is available
+	// Initial load will be triggered by the watcher below when a workspace is available
 });
 
 // Fetch data whenever the selected workspace changes (and on first availability)
 watch(
-  effectiveWorkspaceId,
-  async (id) => {
-    if (!id) return;
-    try {
-      await fetchAllData(id);
-    } catch (err) {
-      console.error("Failed to load subscriber data:", err);
-    }
-  },
-  { immediate: true }
+	effectiveWorkspaceId,
+	async (id) => {
+		if (!id) return;
+		try {
+			await fetchAllData(id);
+		} catch (err) {
+			console.error("Failed to load subscriber data:", err);
+		}
+	},
+	{ immediate: true },
 );
 
 // Event handlers
 const handleRefresh = async () => {
-  isRefreshing.value = true;
-  try {
-    if (effectiveWorkspaceId.value) {
-      await refreshData(effectiveWorkspaceId.value);
-    }
-  } catch (err) {
-    console.error("Failed to refresh data:", err);
-  } finally {
-    isRefreshing.value = false;
-  }
+	isRefreshing.value = true;
+	try {
+		if (effectiveWorkspaceId.value) {
+			await refreshData(effectiveWorkspaceId.value);
+		}
+	} catch (err) {
+		console.error("Failed to refresh data:", err);
+	} finally {
+		isRefreshing.value = false;
+	}
 };
 
 const handleEditSubscriber = (subscriber: Subscriber) => {
-  // TODO: Implement edit functionality
-  console.log("Edit subscriber:", subscriber);
+	// TODO: Implement edit functionality
+	console.log("Edit subscriber:", subscriber);
 };
 
 const handleDeleteSubscriber = (subscriber: Subscriber) => {
-  // TODO: Implement delete functionality
-  console.log("Delete subscriber:", subscriber);
+	// TODO: Implement delete functionality
+	console.log("Delete subscriber:", subscriber);
 };
 
 const handleToggleStatus = (subscriber: Subscriber) => {
-  // TODO: Implement status toggle functionality
-  console.log("Toggle status for subscriber:", subscriber);
+	// TODO: Implement status toggle functionality
+	console.log("Toggle status for subscriber:", subscriber);
 };
 
 const handleAddSubscriber = () => {
-  // TODO: Implement add subscriber functionality
-  console.log("Add new subscriber");
+	// TODO: Implement add subscriber functionality
+	console.log("Add new subscriber");
 };
 </script>
 
