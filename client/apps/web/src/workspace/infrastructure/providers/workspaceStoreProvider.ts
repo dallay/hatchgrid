@@ -68,9 +68,7 @@ let workspaceStoreInstance: ReturnType<
  * @returns The workspace store instance
  */
 export const useWorkspaceStoreProvider = () => {
-	if (!workspaceStoreInstance) {
-		workspaceStoreInstance = defaultWorkspaceStoreFactory();
-	}
+	workspaceStoreInstance ??= defaultWorkspaceStoreFactory();
 	return workspaceStoreInstance;
 };
 

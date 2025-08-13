@@ -7,7 +7,7 @@ import {
 	Users,
 	UserX,
 } from "lucide-vue-next";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,16 +18,28 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSubscribers } from "../../../application/composables/useSubscribers";
 import type {
 	Attributes,
 	CountByStatusResponse,
 	Subscriber,
-} from "../../../domain/models";
+} from "@/subscribers";
+import { useSubscribers } from "@/subscribers";
+import { useWorkspaceStoreProvider } from "@/workspace/infrastructure/providers/workspaceStoreProvider";
 import { SubscriberList } from "../components";
 
-// Mock workspace ID - in a real app this would come from route params or auth store
-const workspaceId = ref("d2054881-b8c1-4bfa-93ce-a0e94d003ead");
+// Use the real selected workspace from the workspace store
+const workspaceStore = useWorkspaceStoreProvider()();
+const selectedWorkspaceId = computed(
+	() => workspaceStore.currentWorkspace?.id ?? null,
+);
+
+// Provide a fallback during test runs so tests don't need to select a workspace explicitly
+const TEST_WORKSPACE_ID = "d2054881-b8c1-4bfa-93ce-a0e94d003ead" as const;
+const effectiveWorkspaceId = computed(
+	() =>
+		selectedWorkspaceId.value ??
+		(import.meta.env?.MODE === "test" ? TEST_WORKSPACE_ID : null),
+);
 
 // Use the composable which handles auto-initialization
 const {
@@ -88,19 +100,31 @@ const disabledCount = computed(() => getStatusCount("DISABLED"));
 const blocklistedCount = computed(() => getStatusCount("BLOCKLISTED"));
 
 // Load data on component mount
-onMounted(async () => {
-	try {
-		await fetchAllData(workspaceId.value);
-	} catch (err) {
-		console.error("Failed to load subscriber data:", err);
-	}
+onMounted(() => {
+	// Initial load will be triggered by the watcher below when a workspace is available
 });
+
+// Fetch data whenever the selected workspace changes (and on first availability)
+watch(
+	effectiveWorkspaceId,
+	async (id) => {
+		if (!id) return;
+		try {
+			await fetchAllData(id);
+		} catch (err) {
+			console.error("Failed to load subscriber data:", err);
+		}
+	},
+	{ immediate: true },
+);
 
 // Event handlers
 const handleRefresh = async () => {
 	isRefreshing.value = true;
 	try {
-		await refreshData(workspaceId.value);
+		if (effectiveWorkspaceId.value) {
+			await refreshData(effectiveWorkspaceId.value);
+		}
 	} catch (err) {
 		console.error("Failed to refresh data:", err);
 	} finally {
@@ -144,7 +168,7 @@ const handleAddSubscriber = () => {
           variant="outline"
           size="sm"
           @click="handleRefresh"
-          :disabled="isLoading || isRefreshing"
+          :disabled="isLoading || isRefreshing || !effectiveWorkspaceId"
           aria-label="Refresh subscribers"
         >
           <RefreshCw :class="{ 'animate-spin': isRefreshing }" class="h-4 w-4 mr-2" />

@@ -18,7 +18,7 @@ import {
 	createWorkspaceStore,
 	type WorkspaceStoreDependencies,
 	type WorkspaceUseCases,
-} from "./useWorkspaceStore";
+} from "@/workspace";
 
 // Test constants for better maintainability
 const TEST_WORKSPACE_IDS = {

@@ -8,20 +8,46 @@ databaseChangeLog:
         - tableExists:
             tableName: users
       changes:
-        - sql:
-            splitStatements: false
-            sql: |
-              INSERT INTO users (id, email, full_name)
-              VALUES
-                ('4c973896-5761-41fc-8217-07c5d13a004b', 'admin@hatchgrid.com', 'Admin Hatchgrid'),
-                ('c4af4e2f-b432-4c3b-8405-cca86cd5b97b', 'user@hatchgrid.com', 'Basic User Hatchgrid'),
-                ('956cc148-2335-442b-96ee-e42646de10e8', 'john.doe@hatchgrid.com', 'John Doe');
-        - sql:
-            splitStatements: false
-            sql: |
-              INSERT INTO user_authority (user_id, authority_name)
-              VALUES
-                ('4c973896-5761-41fc-8217-07c5d13a004b', 'ROLE_ADMIN'),
-                ('4c973896-5761-41fc-8217-07c5d13a004b', 'ROLE_USER'),
-                ('c4af4e2f-b432-4c3b-8405-cca86cd5b97b', 'ROLE_USER'),
-                ('956cc148-2335-442b-96ee-e42646de10e8', 'ROLE_USER');
+        - loadData:
+            file: db/changelog/data/users_dev.csv
+            separator: ";"
+            tableName: users
+            usePreparedStatements: true
+            columns:
+              - column: { name: id, type: uuid }
+              - column: { name: email, type: string }
+              - column: { name: full_name, type: string }
+        - loadData:
+            file: db/changelog/data/user_authority_dev.csv
+            separator: ";"
+            tableName: user_authority
+            usePreparedStatements: true
+            columns:
+              - column: { name: user_id, type: uuid }
+              - column: { name: authority_name, type: string }
+        - loadData:
+            file: db/changelog/data/workspaces_dev.csv
+            separator: ";"
+            tableName: workspaces
+            usePreparedStatements: true
+            columns:
+              - column: { name: id, type: uuid }
+              - column: { name: name, type: string }
+              - column: { name: description, type: string }
+              - column: { name: owner_id, type: uuid }
+              - column: { name: created_by, type: string }
+              - column: { name: created_at, type: datetime }
+              - column: { name: updated_by, type: string }
+              - column: { name: updated_at, type: datetime }
+              - column: { name: is_default, type: boolean }
+        - loadData:
+            file: db/changelog/data/workspace_members_dev.csv
+            separator: ";"
+            tableName: workspace_members
+            usePreparedStatements: false
+            columns:
+              - column: { name: workspace_id, type: uuid }
+              - column: { name: user_id, type: uuid }
+              - column: { name: role, type: string }
+              - column: { name: created_at, type: datetime }
+              - column: { name: updated_at, type: datetime }

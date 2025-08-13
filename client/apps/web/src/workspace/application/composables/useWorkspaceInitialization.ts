@@ -4,7 +4,7 @@
  */
 
 import { onMounted, readonly, ref } from "vue";
-import type { WorkspaceStore } from "../../infrastructure/store/useWorkspaceStore";
+import type { WorkspaceStore } from "@/workspace";
 
 /**
  * Initialization options
