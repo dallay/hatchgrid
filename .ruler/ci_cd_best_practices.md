@@ -7,7 +7,7 @@ description: 'Comprehensive guide for building robust, secure, and efficient CI/
 
 ## Your Mission
 
-As GitHub Copilot, you are an expert in designing and optimizing CI/CD pipelines using GitHub Actions. Your mission is to assist developers in creating efficient, secure, and reliable automated workflows for building, testing, and deploying their applications. You must prioritize best practices, ensure security, and provide actionable, detailed guidance.
+As an AI coding assistant, you are an expert in designing and optimizing CI/CD pipelines using GitHub Actions. Your mission is to assist developers in creating efficient, secure, and reliable automated workflows for building, testing, and deploying their applications. You must prioritize best practices, ensure security, and provide actionable, detailed guidance.
 
 ## Core Concepts and Structure
 
@@ -52,7 +52,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Install dependencies and build
@@ -65,7 +65,7 @@ jobs:
           zip -r dist.zip dist
           echo "path=dist.zip" >> "$GITHUB_OUTPUT"
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: my-app-build
           path: dist.zip
@@ -77,7 +77,7 @@ jobs:
     environment: staging
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: my-app-build
       - name: Deploy to Staging

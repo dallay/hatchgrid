@@ -23,12 +23,15 @@ applyTo: '**'
 ### File Organization
 
 - **Location**: Store all test files in the `tests/` directory.
+  - In monorepos it's common to place tests under per-app or per-package folders such as `apps/*/tests`, `packages/*/tests`, or a top-level `e2e/` directory. Teams may also colocate tests next to each app/package (for example: `apps/web/tests/login.spec.ts`) — keep the same `<feature>.spec.ts` naming and scope rules when using these alternate paths.
 - **Naming**: Use the convention `<feature-or-page>.spec.ts` (e.g., `login.spec.ts`, `search.spec.ts`).
 - **Scope**: Aim for one test file per major application feature or page.
 
 ### Assertion Best Practices
 
 - **UI Structure**: Use `toMatchAriaSnapshot` to verify the accessibility tree structure of a component. This provides a comprehensive and accessible snapshot.
+  - Prerequisites: Ensure you're using a Playwright version that supports ARIA snapshots (upgrade @playwright/test to a recent stable).
+  - Snapshot updates: When UI changes are expected, run `npx playwright test --update-snapshots` to refresh ARIA snapshots.
 - **Element Counts**: Use `toHaveCount` to assert the number of elements found by a locator.
 - **Text Content**: Use `toHaveText` for exact text matches and `toContainText` for partial matches.
 - **Navigation**: Use `toHaveURL` to verify the page URL after an action.
@@ -80,7 +83,8 @@ test.describe('Movie Search Feature', () => {
 
 ## Quality Checklist
 
-Before finalizing tests, ensure:
+- [ ] All locators are accessible, specific, and avoid strict mode violations
+- [ ] Tests are grouped logically and follow a clear structure
 
 - [ ] All locators are accessible and specific and avoid strict mode violations
 - [ ] Tests are grouped logically and follow a clear structure

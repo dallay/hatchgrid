@@ -52,4 +52,11 @@ Looking ahead, Hatchgrid plans to introduce several exciting features to further
 - **Integration Marketplace:** A curated ecosystem of plugins and integrations to extend Hatchgrid’s functionality.
 - **Mobile App Support:** Native applications for iOS and Android to enable content management on the go.
 
+### Aspirational / Long-term
+
+The following items are exploratory or long-term initiatives. They are high-impact but require additional research, resourcing, and prioritization.
+
+- **Integration Marketplace** (Exploratory / Long-term): A curated ecosystem of plugins and integrations to extend Hatchgrid’s functionality.
+- **Mobile App Support** (Exploratory / Long-term): Native applications for iOS and Android to enable content management on the go.
+
 Hatchgrid remains committed to evolving in ways that enrich the user experience, streamline content workflows, and deliver measurable value to our community.

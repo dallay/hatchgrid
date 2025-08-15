@@ -41,6 +41,7 @@ Create table and enable RLS:
 CREATE TABLE project (
   id uuid PRIMARY KEY,
   tenant_id uuid NOT NULL,
+  owner_id uuid,
   name text NOT NULL,
   data jsonb,
   created_at timestamptz DEFAULT now()
@@ -52,10 +53,9 @@ ALTER TABLE project ENABLE ROW LEVEL SECURITY;
 -- Helper: set the tenant in the session (from the application after auth)
 -- SELECT set_config('app.current_tenant', 'uuid-of-tenant', true);
 
--- Policy to allow select/modify only for current tenant
 CREATE POLICY tenant_isolation ON project
-  USING (tenant_id::text = current_setting('app.current_tenant', true))
-  WITH CHECK (tenant_id::text = current_setting('app.current_tenant', true));
+  USING (tenant_id = current_setting('app.current_tenant', true)::uuid)
+  WITH CHECK (tenant_id = current_setting('app.current_tenant', true)::uuid);
 ```
 
 Notes:
@@ -80,7 +80,7 @@ CREATE POLICY owner_only ON project
   - `SET LOCAL app.current_tenant = '<tenant-uuid>'`
   - `SET LOCAL app.current_user_id = '<user-uuid>'`
 
-- Prefer `SET LOCAL` inside a transaction or connection lifecycle hook to avoid leaking values between requests when using pooled connections.
+- Prefer configuring connection-pool reset hooks to ensure session state is cleared between checkouts (for example, pgBouncer's `server_reset_query` or your pool's `on-checkout`/`on-checkin` reset hooks). This prevents leftover session variables from leaking between client checkouts. As a defense-in-depth best practice, also use `SET LOCAL` inside each transaction so the variable only lives for the transaction's duration.
 
 ## Testing and validation
 
@@ -102,4 +102,3 @@ CREATE POLICY owner_only ON project
 ## References
 
 - Postgres docs: [Row Level Security](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)
--
