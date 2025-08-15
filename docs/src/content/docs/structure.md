@@ -13,6 +13,9 @@ description: Overview of the project structure and organization.
 ## Root Directory Overview
 
 ```plaintext
+├───.cursor/
+│   └───rules/
+├───.gemini/
 ├───.github/
 │   ├───ISSUE_TEMPLATE/
 │   │   ├───bug_report.yml
