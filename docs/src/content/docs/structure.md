@@ -1485,19 +1485,15 @@ description: Overview of the project structure and organization.
 │   │   │   └───swagger/
 │   │   │       └───index.html
 │   │   ├───core-concepts/
-│   │   │   ├───content-item/
+│   │   │   ├───forms/
 │   │   │   │   └───index.html
-│   │   │   ├───multilingual-support/
-│   │   │   │   └───index.html
-│   │   │   ├───publication-flow/
+│   │   │   ├───tags/
 │   │   │   │   └───index.html
 │   │   │   ├───workspace/
 │   │   │   │   └───index.html
 │   │   │   └───index.html
 │   │   ├───developer-guide/
 │   │   │   ├───backend/
-│   │   │   │   ├───internationalization/
-│   │   │   │   │   └───index.html
 │   │   │   │   ├───liquibase-migration-completed/
 │   │   │   │   │   └───index.html
 │   │   │   │   └───liquibase-yaml-vs-xml/
@@ -1509,8 +1505,6 @@ description: Overview of the project structure and organization.
 │   │   │   │   │   └───frontend-architecture/
 │   │   │   │   │       └───index.html
 │   │   │   │   ├───auth-store/
-│   │   │   │   │   └───index.html
-│   │   │   │   ├───internationalization/
 │   │   │   │   │   └───index.html
 │   │   │   │   ├───landing-page/
 │   │   │   │   │   └───index.html
@@ -1536,33 +1530,34 @@ description: Overview of the project structure and organization.
 │   │   ├───pagefind/
 │   │   │   ├───fragment/
 │   │   │   │   ├───en_13f4839.pf_fragment
+│   │   │   │   ├───en_1a23e8a.pf_fragment
 │   │   │   │   ├───en_1c15fa5.pf_fragment
 │   │   │   │   ├───en_1d5f54d.pf_fragment
 │   │   │   │   ├───en_20147ea.pf_fragment
 │   │   │   │   ├───en_21855d4.pf_fragment
 │   │   │   │   ├───en_2206737.pf_fragment
+│   │   │   │   ├───en_2277ab5.pf_fragment
+│   │   │   │   ├───en_285c7f3.pf_fragment
 │   │   │   │   ├───en_2b7fa1a.pf_fragment
-│   │   │   │   ├───en_366cc8c.pf_fragment
+│   │   │   │   ├───en_3461e7f.pf_fragment
 │   │   │   │   ├───en_377d81b.pf_fragment
 │   │   │   │   ├───en_38df9f2.pf_fragment
-│   │   │   │   ├───en_402c3df.pf_fragment
 │   │   │   │   ├───en_428e99b.pf_fragment
+│   │   │   │   ├───en_468edd5.pf_fragment
 │   │   │   │   ├───en_4944513.pf_fragment
-│   │   │   │   ├───en_4d33f1c.pf_fragment
-│   │   │   │   ├───en_5793de9.pf_fragment
+│   │   │   │   ├───en_5a18e18.pf_fragment
 │   │   │   │   ├───en_5f2bdaa.pf_fragment
-│   │   │   │   ├───en_6397d89.pf_fragment
 │   │   │   │   ├───en_68d4125.pf_fragment
+│   │   │   │   ├───en_6adb373.pf_fragment
 │   │   │   │   ├───en_6ba2a4b.pf_fragment
+│   │   │   │   ├───en_6fe1a2d.pf_fragment
 │   │   │   │   ├───en_7341c93.pf_fragment
 │   │   │   │   ├───en_7561123.pf_fragment
-│   │   │   │   ├───en_76eb1a6.pf_fragment
 │   │   │   │   ├───en_77a31df.pf_fragment
+│   │   │   │   ├───en_7b999aa.pf_fragment
 │   │   │   │   ├───en_7d57b4c.pf_fragment
 │   │   │   │   ├───en_7d6cdd3.pf_fragment
-│   │   │   │   ├───en_7e63627.pf_fragment
 │   │   │   │   ├───en_82142d3.pf_fragment
-│   │   │   │   ├───en_83b65b8.pf_fragment
 │   │   │   │   ├───en_873d782.pf_fragment
 │   │   │   │   ├───en_8c2c94f.pf_fragment
 │   │   │   │   ├───en_8f30321.pf_fragment
@@ -1572,12 +1567,11 @@ description: Overview of the project structure and organization.
 │   │   │   │   ├───en_a1a95ab.pf_fragment
 │   │   │   │   ├───en_a7599ed.pf_fragment
 │   │   │   │   ├───en_ad47cd6.pf_fragment
+│   │   │   │   ├───en_aedba1a.pf_fragment
 │   │   │   │   ├───en_b3c2234.pf_fragment
 │   │   │   │   ├───en_b46a4b3.pf_fragment
-│   │   │   │   ├───en_b483114.pf_fragment
 │   │   │   │   ├───en_b8fc71b.pf_fragment
 │   │   │   │   ├───en_be6fef1.pf_fragment
-│   │   │   │   ├───en_c1ba253.pf_fragment
 │   │   │   │   ├───en_c6553c2.pf_fragment
 │   │   │   │   ├───en_c6caae9.pf_fragment
 │   │   │   │   ├───en_cc8c27a.pf_fragment
@@ -1587,25 +1581,22 @@ description: Overview of the project structure and organization.
 │   │   │   │   ├───en_e0e3df7.pf_fragment
 │   │   │   │   ├───en_e3f984b.pf_fragment
 │   │   │   │   ├───en_ee372d5.pf_fragment
-│   │   │   │   ├───en_eed7efb.pf_fragment
 │   │   │   │   ├───en_ef2047a.pf_fragment
-│   │   │   │   ├───en_f3ef6e8.pf_fragment
-│   │   │   │   ├───en_f3f7c36.pf_fragment
 │   │   │   │   ├───en_f5b2bb2.pf_fragment
-│   │   │   │   ├───en_faa6dce.pf_fragment
-│   │   │   │   └───en_fbfde01.pf_fragment
+│   │   │   │   ├───en_fbfde01.pf_fragment
+│   │   │   │   └───en_fd20229.pf_fragment
 │   │   │   ├───index/
-│   │   │   │   ├───en_34a7692.pf_index
-│   │   │   │   ├───en_77ef61a.pf_index
-│   │   │   │   ├───en_9a50896.pf_index
-│   │   │   │   └───en_b4c5856.pf_index
+│   │   │   │   ├───en_6bd7374.pf_index
+│   │   │   │   ├───en_816111d.pf_index
+│   │   │   │   ├───en_9e3511b.pf_index
+│   │   │   │   └───en_abce5db.pf_index
 │   │   │   ├───pagefind-entry.json
 │   │   │   ├───pagefind-highlight.js
 │   │   │   ├───pagefind-modular-ui.css
 │   │   │   ├───pagefind-modular-ui.js
 │   │   │   ├───pagefind-ui.css
 │   │   │   ├───pagefind-ui.js
-│   │   │   ├───pagefind.en_70b8f791f4.pf_meta
+│   │   │   ├───pagefind.en_3868214c34.pf_meta
 │   │   │   ├───pagefind.js
 │   │   │   ├───wasm.en.pagefind
 │   │   │   └───wasm.unknown.pagefind
@@ -1828,24 +1819,21 @@ description: Overview of the project structure and organization.
 │   │   │       │   ├───security.md
 │   │   │       │   └───swagger.md
 │   │   │       ├───core-concepts/
-│   │   │       │   ├───content-item.md
+│   │   │       │   ├───forms.md
 │   │   │       │   ├───index.md
-│   │   │       │   ├───multilingual-support.md
-│   │   │       │   ├───publication-flow.md
+│   │   │       │   ├───tags.md
 │   │   │       │   └───workspace.md
 │   │   │       ├───developer-guide/
 │   │   │       │   ├───backend/
 │   │   │       │   │   ├───architecture/
 │   │   │       │   │   │   ├───form-feature-folder-structure.png
 │   │   │       │   │   │   └───hexagonal-architecture.png
-│   │   │       │   │   ├───internationalization.md
 │   │   │       │   │   ├───liquibase-migration-completed.md
 │   │   │       │   │   └───liquibase-yaml-vs-xml.md
 │   │   │       │   ├───frontend/
 │   │   │       │   │   ├───architecture/
 │   │   │       │   │   │   └───frontend-architecture.md
 │   │   │       │   │   ├───auth-store.md
-│   │   │       │   │   ├───internationalization.md
 │   │   │       │   │   ├───landing-page.md
 │   │   │       │   │   ├───layout-system.md
 │   │   │       │   │   ├───sidebar-navigation-system.md
