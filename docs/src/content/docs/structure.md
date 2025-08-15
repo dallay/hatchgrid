@@ -13,9 +13,6 @@ description: Overview of the project structure and organization.
 ## Root Directory Overview
 
 ```plaintext
-├───.cursor/
-│   └───rules/
-├───.gemini/
 ├───.github/
 │   ├───ISSUE_TEMPLATE/
 │   │   ├───bug_report.yml
@@ -26,8 +23,7 @@ description: Overview of the project structure and organization.
 │   │   ├───docker/
 │   │   │   ├───backend/
 │   │   │   │   ├───README.md
-│   │   │   │   ├───action.yml
-│   │   │   │   └───example-workflow.yml
+│   │   │   │   └───action.yml
 │   │   │   ├───frontend-landing/
 │   │   │   │   └───action.yml
 │   │   │   ├───frontend-web/
@@ -1912,6 +1908,9 @@ description: Overview of the project structure and organization.
 │   └───test-email.sh
 ├───server/
 │   └───thryve/
+│       ├───build/
+│       │   └───tmp/
+│       │       └───test/
 │       ├───src/
 │       │   ├───main/
 │       │   │   ├───kotlin/
@@ -1997,6 +1996,9 @@ description: Overview of the project structure and organization.
 │   │   │                       └───...
 │   │   └───build.gradle.kts
 │   └───spring-boot-common/
+│       ├───build/
+│       │   └───tmp/
+│       │       └───test/
 │       ├───src/
 │       │   ├───main/
 │       │   │   ├───kotlin/
