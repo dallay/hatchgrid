@@ -18,10 +18,10 @@ A form typically includes:
 
 ## 🛠 Creating a Form
 
-To create a new form, the client issues a `POST` request to the `/api/v1/forms` endpoint:
+To create a new form, the client issues a `PUT` request to the `/api/v1/workspace/{workspaceId}/form/{formId}` endpoint. The `workspaceId` and `formId` are client-generated UUIDs.
 
 ```http
-POST /api/v1/forms
+PUT /api/v1/workspace/c15b9d43-8f47-4f4f-b8e9-9e9b8b8d4a5b/form/f2c29da7-9c6c-4a6b-9a0e-8d7f6e5e4d3c
 Content-Type: application/json
 
 {

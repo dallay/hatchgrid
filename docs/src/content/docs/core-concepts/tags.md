@@ -32,4 +32,20 @@ Content-Type: application/json
 
 ## 🔗 Assigning Tags to Subscribers
 
-Subscribers can be associated with one or more tags, allowing you to send newsletters to specific segments of your audience.
+To assign a tag to one or more subscribers, you can update the tag and include the `subscribers` property with a list of subscriber emails.
+
+```http
+PUT /api/v1/workspace/{workspaceId}/tag/{tagId}/update
+Content-Type: application/json
+
+{
+  "name": "Updated Tag Name",
+  "color": "#0000FF",
+  "subscribers": [
+    "subscriber1@example.com",
+    "subscriber2@example.com"
+  ]
+}
+```
+
+This will associate the tag with the provided subscribers. If the subscribers do not exist, they will be created.

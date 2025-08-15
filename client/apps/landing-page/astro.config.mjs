@@ -12,6 +12,9 @@ import { remarkReadingTime } from "./src/utils/remark-reading-time.mjs";
 
 // https://astro.build/config
 export default defineConfig({
+	server: {
+		port: 7766,
+	},
 	// Set your site's URL
 	site: getSiteUrl(),
 

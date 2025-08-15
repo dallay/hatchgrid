@@ -83,7 +83,7 @@ Visit the frontend at:
 
 ```text
 docs    -> http://localhost:4321
-landing -> http://localhost:4322
+landing -> http://localhost:7766
 web     -> http://localhost:9876
 ```
 
