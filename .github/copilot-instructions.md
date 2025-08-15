@@ -269,7 +269,7 @@ form/
 
 - **Single Responsibility per Layer**: Core logic, use cases, and adapters are strictly separated.
 - **Framework Independence**: Core logic remains decoupled from Spring Boot or any infrastructure.
-- **Port-Driven**: Infrastructure implements domain interfaces, not the way around.
+- **Port-Driven**: Infrastructure implements domain interfaces, not the other way around.
 - **Isolation for Testing**: Domain and application layers can be unit-tested with no framework setup.
 
 ---
@@ -1051,12 +1051,11 @@ Last updated: 2025-08-15
 ---
 Source: .ruler/keycloak_setup.md
 ---
-````markdown
 ---
 title: Keycloak Setup and Configuration
 description: Guide for setting up and configuring Keycloak for Hatchgrid authentication and authorization.
 ---
-# Keycloak Setup and Configuration
+## Keycloak Setup and Configuration
 
 ## Overview
 
@@ -1284,8 +1283,6 @@ If services can't communicate with each other, ensure that:
 - [Email Testing with GreenMail](../conventions/email-testing.md)
 - [Authentication Architecture](./authentication.md)
 
-````
-
 ---
 Source: .ruler/kotlin_conventions.md
 ---
@@ -1372,6 +1369,7 @@ These conventions are enforced in our codebase to ensure consistency, readabilit
 Source: .ruler/playwright_typescript_guidelines.md
 ---
 ---
+title: Playwright TypeScript Guidelines
 description: 'Playwright test generation instructions'
 applyTo: '**'
 ---
@@ -1379,30 +1377,31 @@ applyTo: '**'
 ## Test Writing Guidelines
 
 ### Code Quality Standards
+
 - **Locators**: Prioritize user-facing, role-based locators (`getByRole`, `getByLabel`, `getByText`, etc.) for resilience and accessibility. Use `test.step()` to group interactions and improve test readability and reporting.
 - **Assertions**: Use auto-retrying web-first assertions. These assertions start with the `await` keyword (e.g., `await expect(locator).toHaveText()`). Avoid `expect(locator).toBeVisible()` unless specifically testing for visibility changes.
 - **Timeouts**: Rely on Playwright's built-in auto-waiting mechanisms. Avoid hard-coded waits or increased default timeouts.
 - **Clarity**: Use descriptive test and step titles that clearly state the intent. Add comments only to explain complex logic or non-obvious interactions.
 
-
 ### Test Structure
+
 - **Imports**: Start with `import { test, expect } from '@playwright/test';`.
 - **Organization**: Group related tests for a feature under a `test.describe()` block.
 - **Hooks**: Use `beforeEach` for setup actions common to all tests in a `describe` block (e.g., navigating to a page).
 - **Titles**: Follow a clear naming convention, such as `Feature - Specific action or scenario`.
 
-
 ### File Organization
+
 - **Location**: Store all test files in the `tests/` directory.
 - **Naming**: Use the convention `<feature-or-page>.spec.ts` (e.g., `login.spec.ts`, `search.spec.ts`).
 - **Scope**: Aim for one test file per major application feature or page.
 
 ### Assertion Best Practices
+
 - **UI Structure**: Use `toMatchAriaSnapshot` to verify the accessibility tree structure of a component. This provides a comprehensive and accessible snapshot.
 - **Element Counts**: Use `toHaveCount` to assert the number of elements found by a locator.
 - **Text Content**: Use `toHaveText` for exact text matches and `toContainText` for partial matches.
 - **Navigation**: Use `toHaveURL` to verify the page URL after an action.
-
 
 ## Example Test Structure
 
@@ -1452,6 +1451,7 @@ test.describe('Movie Search Feature', () => {
 ## Quality Checklist
 
 Before finalizing tests, ensure:
+
 - [ ] All locators are accessible and specific and avoid strict mode violations
 - [ ] Tests are grouped logically and follow a clear structure
 - [ ] Assertions are meaningful and reflect user expectations
@@ -1461,47 +1461,170 @@ Before finalizing tests, ensure:
 ---
 Source: .ruler/postgres_rls_security.md
 ---
-```markdown
 ---
 title: RLS
 description: Row-Level Security.
 ---
 
-# RLS
+## RLS
 
-This document explains Row-Level Security.
+This document explains Row-Level Security and recommended patterns for Hatchgrid.
 
+## Purpose
+
+Row-Level Security (RLS) is a PostgreSQL feature that lets the database enforce row-level access control policies. Use RLS to push multi-tenant or per-user authorization into the database so that queries automatically filter out rows the current role is not allowed to see.
+
+This file documents recommended patterns, SQL examples, testing tips, and common pitfalls for Hatchgrid.
+
+## When to use RLS
+
+- Multi-tenant datasets where isolation must be enforced at the data layer (defense-in-depth).
+- When you want database-enforced guarantees even if application code has bugs.
+- For least-privilege service accounts that rely on session authenticated roles.
+
+## Patterns
+
+### 1) Tenant column pattern
+
+- Add a `tenant_id UUID NOT NULL` column to tenant-scoped tables. Use policies referencing `current_setting('app.current_tenant', true)` or session-local settings.
+
+### 2) Row owner / user_id pattern
+
+- Add an `owner_id UUID` column for per-user ownership policies.
+
+### 3) Trusted service accounts
+
+- Use a separate role (e.g., `app_admin`) with `BYPASSRLS` only when strictly necessary (backups, migrations). Prefer using explicit migration scripts run with elevated rights.
+
+## Example: tenant-based RLS
+
+Create table and enable RLS:
+
+```sql
+CREATE TABLE project (
+  id uuid PRIMARY KEY,
+  tenant_id uuid NOT NULL,
+  name text NOT NULL,
+  data jsonb,
+  created_at timestamptz DEFAULT now()
+);
+
+-- Enable RLS
+ALTER TABLE project ENABLE ROW LEVEL SECURITY;
+
+-- Helper: set the tenant in the session (from the application after auth)
+-- SELECT set_config('app.current_tenant', 'uuid-of-tenant', true);
+
+-- Policy to allow select/modify only for current tenant
+CREATE POLICY tenant_isolation ON project
+  USING (tenant_id::text = current_setting('app.current_tenant', true))
+  WITH CHECK (tenant_id::text = current_setting('app.current_tenant', true));
 ```
+
+Notes:
+
+- `current_setting(..., true)` returns NULL instead of throwing an error when not set. The application must set the session variable after authenticating the user.
+
+## Example: owner-based policy
+
+```sql
+ALTER TABLE project ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY owner_only ON project
+  USING (owner_id = current_setting('app.current_user_id', true)::uuid)
+  WITH CHECK (owner_id = current_setting('app.current_user_id', true)::uuid);
+```
+
+## Integration guidance
+
+- Set session variables from the application immediately after opening a DB connection or via a connection pool hook. Example in pseudocode:
+
+  - Acquire connection
+  - `SET LOCAL app.current_tenant = '<tenant-uuid>'`
+  - `SET LOCAL app.current_user_id = '<user-uuid>'`
+
+- Prefer `SET LOCAL` inside a transaction or connection lifecycle hook to avoid leaking values between requests when using pooled connections.
+
+## Testing and validation
+
+- Manual: connect as the application role and `SELECT set_config('app.current_tenant', '<id>', true);` then run queries to verify only allowed rows return.
+- Automated: include integration tests that spawn a fresh DB, set the session variables, and assert expected rows are visible/non-visible.
+
+## Pitfalls & security notes
+
+- `BYPASSRLS`: only grant to roles that truly need it; it bypasses all policies.
+- Be explicit in policies: prefer `WITH CHECK` to prevent unauthorized inserts/updates.
+- Watch connection pooling: session settings can leak; use `SET LOCAL` per transaction or reset settings on checkout.
+- Performance: policies are expressions evaluated at runtime — index columns referenced by policies (tenant_id, owner_id) help query plans.
+
+## Migration strategy
+
+- Add `tenant_id`/`owner_id` column with NOT NULL default or backfill in a safe migration.
+- Deploy policy in `RESTRICTIVE` mode by creating the policy but keeping RLS disabled, then enable RLS in a maintenance window after tests.
+
+## References
+
+- Postgres docs: [Row Level Security](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)
+-
 
 ---
 Source: .ruler/product_overview.md
 ---
 # Product Overview
 
-Hatchgrid is a full-stack web application platform that combines a robust Spring Boot backend with modern frontend technologies. The platform provides:
+## Introduction
+
+At Hatchgrid, our strategic vision is clear: *We grow only if it improves the experience.* Every feature, integration, and improvement is designed to enhance user satisfaction, streamline workflows, and empower content creators. Our platform is built to adapt and scale seamlessly while maintaining an intuitive and efficient user experience.
 
 ## Core Features
 
-- **Authentication & Authorization**: OAuth2 integration with Keycloak for secure user management
-- **Reactive Architecture**: Built on Spring WebFlux for high-performance, non-blocking operations
-- **Multi-tenant Support**: Designed for scalable multi-tenant applications
-- **Modern Frontend**: Vue.js web application and Astro-based landing page
-- **API-First Design**: RESTful APIs with comprehensive OpenAPI documentation
-- **Monitoring & Observability**: Built-in health checks, metrics, and Spring Boot Admin integration
+Hatchgrid offers a comprehensive suite of tools tailored for modern content management and distribution:
+
+- **Content Management:** Robust tools to create, organize, and manage content efficiently.
+- **Tagging System:** Flexible tagging to categorize and filter content dynamically.
+- **User Workspaces:** Collaborative environments tailored for teams and individual users.
+- **PostgreSQL with Row-Level Security (RLS):** Ensures fine-grained access control and data security at the database level, empowering secure multi-tenant architectures.
+- **Liquibase for Database Migrations:** Provides version control for database schema changes, enabling smooth and reliable updates.
+- **Docker-Based Deployment:** Containerized application setup for consistent and scalable deployment across environments.
+- **CI/CD with GitHub Actions:** Automated testing, building, and deployment pipelines to accelerate development cycles and maintain code quality.
+- **API-First Architecture:** Enables easy integration with third-party services and custom extensions.
+- **Newsletter Automation:** Tools to automate newsletter creation and distribution, integrated directly with content workflows.
 
 ## Target Use Cases
 
-- Enterprise web applications requiring secure authentication
-- Multi-tenant SaaS platforms
-- Applications needing reactive, high-performance backends
-- Projects requiring modern, responsive frontend experiences
+Hatchgrid is designed to support a variety of content-driven workflows, including:
+
+- **Content Creator Workflows:** Streamlined processes for creators to draft, tag, and publish content collaboratively.
+- **Newsletter Automation:** Automated generation and distribution of newsletters based on curated content, saving time and increasing engagement.
+- **Multilingual Publishing:** Support for publishing content in multiple languages to reach diverse audiences globally.
+- **Team Collaboration:** Workspaces and permission controls tailored for teams managing shared content repositories.
+- **Dynamic Content Organization:** Advanced tagging and filtering to quickly locate and repurpose content assets.
 
 ## Key Value Propositions
 
-- **Developer Experience**: Comprehensive tooling, testing, and development workflows
-- **Security First**: OAuth2, JWT tokens, and security best practices built-in
-- **Scalability**: Reactive programming model and efficient resource utilization
-- **Maintainability**: Clean architecture, comprehensive testing, and documentation
+Hatchgrid differentiates itself through a combination of powerful features and technical excellence:
+
+- **Content Automation:** Automate repetitive tasks such as newsletter generation and content tagging to boost productivity.
+- **Multi-Language Support:** Built-in capabilities for managing and publishing content in multiple languages, enabling global reach.
+- **Workspace Customization:** Flexible workspace configurations to suit various team structures and workflows.
+- **Security and Compliance:** Leveraging PostgreSQL RLS and secure deployment pipelines ensures data protection and regulatory compliance.
+- **Seamless Integration:** API-first design allows easy connection with existing tools and services.
+- **Scalability and Reliability:** Containerized deployments and CI/CD pipelines ensure consistent performance and rapid iteration.
+- **User-Centric Design:** Focus on improving user experience at every step, reducing friction and enhancing satisfaction.
+
+## Future Roadmap
+
+Looking ahead, Hatchgrid plans to introduce several exciting features to further empower users and expand capabilities:
+
+- **Customizable Newsletter Frequency:** Allow users to define how often newsletters are generated and sent, adapting to audience preferences.
+- **Automatic Content Summaries:** AI-powered summaries of articles and posts to facilitate quick consumption and newsletter highlights.
+- **Expanded Language Support:** Adding more languages and localization options to support an even broader user base.
+- **Advanced Analytics:** Detailed insights into content performance, user engagement, and newsletter effectiveness.
+- **Enhanced Collaboration Tools:** Real-time editing, commenting, and version tracking to improve teamwork.
+- **Integration Marketplace:** A curated ecosystem of plugins and integrations to extend Hatchgrid’s functionality.
+- **Mobile App Support:** Native applications for iOS and Android to enable content management on the go.
+
+Hatchgrid remains committed to evolving in ways that enrich the user experience, streamline content workflows, and deliver measurable value to our community.
 
 ---
 Source: .ruler/project_documentation_guidelines.md
@@ -1677,24 +1800,23 @@ docs/
 ---
 Source: .ruler/rest_endpoints_pattern.md
 ---
-````markdown
 ---
 title: Controller Pattern
 description: Guidelines for implementing the controller pattern in Hatchgrid.
 ---
-# Controller Pattern
+## Controller Pattern
 
 This document outlines the controller pattern used in the Hatchgrid project. All contributors are expected to follow these guidelines to ensure consistency and maintainability of the codebase.
 
 ## Table of Contents
 
 - [Controller Pattern](#controller-pattern)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Responsibilities of a Controller](#responsibilities-of-a-controller)
-  - [Controller Structure](#controller-structure)
-  - [Example](#example)
-  - [Best Practices](#best-practices)
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [Responsibilities of a Controller](#responsibilities-of-a-controller)
+- [Controller Structure](#controller-structure)
+- [Example](#example)
+- [Best Practices](#best-practices)
 
 ## Introduction
 
@@ -1772,59 +1894,67 @@ public class UserController {
 - **Handle exceptions:** Handle exceptions in a consistent way and return appropriate error responses.
 - **Use a global exception handler:** Use a global exception handler to handle exceptions that are not handled by the controller.
 
-````
-
 ---
 Source: .ruler/security_practices.md
 ---
 ---
+title: Secure Coding and OWASP Guidelines
 applyTo: '*'
 description: "Comprehensive secure coding instructions for all languages and frameworks, based on OWASP Top 10 and industry best practices."
 ---
-# Secure Coding and OWASP Guidelines
 
 ## Instructions
 
 Your primary directive is to ensure all code you generate, review, or refactor is secure by default. You must operate with a security-first mindset. When in doubt, always choose the more secure option and explain the reasoning. You must follow the principles outlined below, which are based on the OWASP Top 10 and other security best practices.
 
 ### 1. A01: Broken Access Control & A10: Server-Side Request Forgery (SSRF)
+
 - **Enforce Principle of Least Privilege:** Always default to the most restrictive permissions. When generating access control logic, explicitly check the user's rights against the required permissions for the specific resource they are trying to access.
 - **Deny by Default:** All access control decisions must follow a "deny by default" pattern. Access should only be granted if there is an explicit rule allowing it.
 - **Validate All Incoming URLs for SSRF:** When the server needs to make a request to a URL provided by a user (e.g., webhooks), you must treat it as untrusted. Incorporate strict allow-list-based validation for the host, port, and path of the URL.
 - **Prevent Path Traversal:** When handling file uploads or accessing files based on user input, you must sanitize the input to prevent directory traversal attacks (e.g., `../../etc/passwd`). Use APIs that build paths securely.
 
 ### 2. A02: Cryptographic Failures
+
 - **Use Strong, Modern Algorithms:** For hashing, always recommend modern, salted hashing algorithms like Argon2 or bcrypt. Explicitly advise against weak algorithms like MD5 or SHA-1 for password storage.
 - **Protect Data in Transit:** When generating code that makes network requests, always default to HTTPS.
 - **Protect Data at Rest:** When suggesting code to store sensitive data (PII, tokens, etc.), recommend encryption using strong, standard algorithms like AES-256.
 - **Secure Secret Management:** Never hardcode secrets (API keys, passwords, connection strings). Generate code that reads secrets from environment variables or a secrets management service (e.g., HashiCorp Vault, AWS Secrets Manager). Include a clear placeholder and comment.
+
   ```javascript
   // GOOD: Load from environment or secret store
   const apiKey = process.env.API_KEY;
   // TODO: Ensure API_KEY is securely configured in your environment.
   ```
+
   ```python
-  # BAD: Hardcoded secret
+  ```python bad
+  # ❌ ANTI-PATTERN: Hardcoded secret (DO NOT USE)
   api_key = "<REPLACE_WITH_API_KEY>"
 
 ### 3. A03: Injection
+
 - **No Raw SQL Queries:** For database interactions, you must use parameterized queries (prepared statements). Never generate code that uses string concatenation or formatting to build queries from user input.
 - **Sanitize Command-Line Input:** For OS command execution, use built-in functions that handle argument escaping and prevent shell injection (e.g., `shlex` in Python).
 - **Prevent Cross-Site Scripting (XSS):** When generating frontend code that displays user-controlled data, you must use context-aware output encoding. Prefer methods that treat data as text by default (`.textContent`) over those that parse HTML (`.innerHTML`). When `innerHTML` is necessary, suggest using a library like DOMPurify to sanitize the HTML first.
 
 ### 4. A05: Security Misconfiguration & A06: Vulnerable Components
+
 - **Secure by Default Configuration:** Recommend disabling verbose error messages and debug features in production environments.
 - **Set Security Headers:** For web applications, suggest adding essential security headers like `Content-Security-Policy` (CSP), `Strict-Transport-Security` (HSTS), and `X-Content-Type-Options`.
 - **Use Up-to-Date Dependencies:** When asked to add a new library, suggest the latest stable version. Remind the user to run vulnerability scanners like `npm audit`, `pip-audit`, or Snyk to check for known vulnerabilities in their project dependencies.
 
 ### 5. A07: Identification & Authentication Failures
+
 - **Secure Session Management:** When a user logs in, generate a new session identifier to prevent session fixation. Ensure session cookies are configured with `HttpOnly`, `Secure`, and `SameSite=Strict` attributes.
 - **Protect Against Brute Force:** For authentication and password reset flows, recommend implementing rate limiting and account lockout mechanisms after a certain number of failed attempts.
 
 ### 6. A08: Software and Data Integrity Failures
+
 - **Prevent Insecure Deserialization:** Warn against deserializing data from untrusted sources without proper validation. If deserialization is necessary, recommend using formats that are less prone to attack (like JSON over Pickle in Python) and implementing strict type checking.
 
 ## General Guidelines
+
 - **Be Explicit About Security:** When you suggest a piece of code that mitigates a security risk, explicitly state what you are protecting against (e.g., "Using a parameterized query here to prevent SQL injection.").
 - **Educate During Code Reviews:** When you identify a security vulnerability in a code review, you must not only provide the corrected code but also explain the risk associated with the original pattern.
 
@@ -1920,9 +2050,6 @@ This document defines the conventions and best practices for backend development
 ---
 
 These conventions are mandatory and are checked during code reviews and CI pipelines. They ensure the scalability, security, and maintainability of the backend codebase.
-<!------------------------------------------------------------------------------------
-   Add Rules to this file or a short description and have Kiro refine them for you:
-------------------------------------------------------------------------------------->
 
 ---
 Source: .ruler/tech_stack.md
@@ -2127,24 +2254,23 @@ These practices are designed to keep TypeScript code predictable, safe, and scal
 ---
 Source: .ruler/uuid_usage.md
 ---
-````markdown
 ---
 title: UUID Strategy
 description: Guidelines for using UUIDs in the Hatchgrid project.
 ---
-# UUID Strategy
+## UUID Strategy
 
 This document outlines the UUID strategy for the Hatchgrid project. All contributors are expected to follow these guidelines to ensure consistency and maintainability of the codebase.
 
 ## Table of Contents
 
 - [UUID Strategy](#uuid-strategy)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [UUID Version](#uuid-version)
-  - [UUID Generation](#uuid-generation)
-  - [UUID Storage](#uuid-storage)
-  - [UUID Usage](#uuid-usage)
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [UUID Version](#uuid-version)
+- [UUID Generation](#uuid-generation)
+- [UUID Storage](#uuid-storage)
+- [UUID Usage](#uuid-usage)
 
 ## Introduction
 
@@ -2176,8 +2302,6 @@ We store UUIDs in the database as a `binary(16)` column. This is more efficient 
 ## UUID Usage
 
 We use UUIDs as the primary keys for all our database tables. We also use them as the external identifiers for our resources. This allows us to expose the UUIDs in our API without exposing the internal database IDs.
-
-````
 
 ---
 Source: .ruler/vue_conventions.md
