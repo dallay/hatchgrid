@@ -65,12 +65,13 @@ Notes:
 ## Example: owner-based policy
 
 ```sql
-ALTER TABLE project ENABLE ROW LEVEL SECURITY;
-
+-- RLS is already enabled above; creating policies does not require re-enabling the table.
 CREATE POLICY owner_only ON project
-  USING (owner_id = current_setting('app.current_user_id', true)::uuid)
-  WITH CHECK (owner_id = current_setting('app.current_user_id', true)::uuid);
+  USING (owner_id IS NOT NULL AND owner_id = current_setting('app.current_user_id', true)::uuid)
+  WITH CHECK (owner_id IS NOT NULL AND owner_id = current_setting('app.current_user_id', true)::uuid);
 ```
+
+> Note: RLS was enabled in the tenant-based example above. You do not need to run `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` again before creating additional policies for the same table.
 
 ## Integration guidance
 
@@ -93,6 +94,16 @@ CREATE POLICY owner_only ON project
 - Be explicit in policies: prefer `WITH CHECK` to prevent unauthorized inserts/updates.
 - Watch connection pooling: session settings can leak; use `SET LOCAL` per transaction or reset settings on checkout.
 - Performance: policies are expressions evaluated at runtime — index columns referenced by policies (tenant_id, owner_id) help query plans.
+
+- Performance: policies are expressions evaluated at runtime. To avoid planner regressions, create indexes on any columns referenced by RLS predicates (for example, `tenant_id` and `owner_id` on the `project` table). Add corresponding `CREATE INDEX IF NOT EXISTS` statements to your DB migration or schema management scripts so they are applied reliably in all environments.
+
+  Example (add to your Liquibase/SQL migration):
+
+  ```sql
+  -- Indexes to support RLS predicates and improve planner choices
+  CREATE INDEX IF NOT EXISTS idx_project_tenant_id ON project (tenant_id);
+  CREATE INDEX IF NOT EXISTS idx_project_owner_id ON project (owner_id);
+  ```
 
 ## Migration strategy
 

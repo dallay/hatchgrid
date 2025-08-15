@@ -18,7 +18,7 @@ applyTo: '**'
 - **Imports**: Start with `import { test, expect } from '@playwright/test';`.
 - **Organization**: Group related tests for a feature under a `test.describe()` block.
 - **Hooks**: Use `beforeEach` for setup actions common to all tests in a `describe` block (e.g., navigating to a page).
-- **Titles**: Follow a clear naming convention, such as `Feature - Specific action or scenario`.
+- **Titles**: Prefer behavior-driven titles like `should <do something> when <condition>`. If grouping by feature, use `Feature - should <do something> when <condition>`.
 
 ### File Organization
 
@@ -30,8 +30,12 @@ applyTo: '**'
 ### Assertion Best Practices
 
 - **UI Structure**: Use `toMatchAriaSnapshot` to verify the accessibility tree structure of a component. This provides a comprehensive and accessible snapshot.
-  - Prerequisites: Ensure you're using a Playwright version that supports ARIA snapshots (upgrade @playwright/test to a recent stable).
-  - Snapshot updates: When UI changes are expected, run `npx playwright test --update-snapshots` to refresh ARIA snapshots.
+  - Prerequisites: Ensure you're using a Playwright version that supports ARIA snapshots (upgrade `@playwright/test` to a recent stable), for example:
+    - pnpm: `pnpm add -D @playwright/test@latest`
+    - npm: `npm i -D @playwright/test@latest`
+    - yarn: `yarn add -D @playwright/test@latest`
+  - Snapshot updates: When UI changes are expected, update snapshots:
+    - npm/yarn: `npx playwright test --update-snapshots`
 - **Element Counts**: Use `toHaveCount` to assert the number of elements found by a locator.
 - **Text Content**: Use `toHaveText` for exact text matches and `toContainText` for partial matches.
 - **Navigation**: Use `toHaveURL` to verify the page URL after an action.

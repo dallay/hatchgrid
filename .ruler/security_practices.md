@@ -12,7 +12,7 @@ Your primary directive is to ensure all code you generate, review, or refactor i
 
 - **Enforce Principle of Least Privilege:** Always default to the most restrictive permissions. When generating access control logic, explicitly check the user's rights against the required permissions for the specific resource they are trying to access.
 - **Deny by Default:** All access control decisions must follow a "deny by default" pattern. Access should only be granted if there is an explicit rule allowing it.
-- **Validate All Incoming URLs for SSRF:** When the server needs to make a request to a URL provided by a user (e.g., webhooks), you must treat it as untrusted. Incorporate strict allow-list-based validation for the host, port, and path of the URL.
+- **Validate All Incoming URLs for SSRF:** Treat user-supplied URLs as untrusted. Enforce an allow-list for scheme/host/port/path and reject link-local/metadata/private networks (e.g., 169.254.0.0/16, 127.0.0.0/8, 10.0.0.0/8, 192.168.0.0/16, ::1/128). Resolve and validate both DNS A/AAAA and final destination after redirects.
 - **Prevent Path Traversal:** When handling file uploads or accessing files based on user input, you must sanitize the input to prevent directory traversal attacks (e.g., `../../etc/passwd`). Use APIs that build paths securely.
 
 ### 2. A02: Cryptographic Failures
@@ -28,10 +28,10 @@ Your primary directive is to ensure all code you generate, review, or refactor i
   // TODO: Ensure API_KEY is securely configured in your environment.
   ```
 
-  ```python
-  ```python bad
+```python bad
   # ❌ ANTI-PATTERN: Hardcoded secret (DO NOT USE)
   api_key = "<REPLACE_WITH_API_KEY>"
+```
 
 ### 3. A03: Injection
 
@@ -42,10 +42,9 @@ Your primary directive is to ensure all code you generate, review, or refactor i
 ### 4. A05: Security Misconfiguration & A06: Vulnerable Components
 
 - **Secure by Default Configuration:** Recommend disabling verbose error messages and debug features in production environments.
+- **Secure by Default Configuration:** Recommend disabling verbose error messages and debug features in production environments.
 - **Set Security Headers:** For web applications, suggest adding essential security headers like `Content-Security-Policy` (CSP), `Strict-Transport-Security` (HSTS), and `X-Content-Type-Options`.
-- **Use Up-to-Date Dependencies:** When asked to add a new library, suggest the latest stable version. Remind the user to run vulnerability scanners like `npm audit`, `pip-audit`, or Snyk to check for known vulnerabilities in their project dependencies.
-
-### 5. A07: Identification & Authentication Failures
+- **Use Up-to-Date Dependencies:** When adding libraries, prefer the latest stable. Run vulnerability scans regularly (e.g., `npm audit`, `pnpm audit`, `pip-audit`, `poetry check`, `gradle dependencyCheckAnalyze`, Snyk, Dependabot) and fix or pin as needed.
 
 - **Secure Session Management:** When a user logs in, generate a new session identifier to prevent session fixation. Ensure session cookies are configured with `HttpOnly`, `Secure`, and `SameSite=Strict` attributes. For state-changing endpoints, implement CSRF defenses (e.g., same-site cookies plus double-submit or synchronizer tokens).
 - **Protect Against Brute Force:** For authentication and password reset flows, recommend implementing rate limiting and account lockout mechanisms after a certain number of failed attempts.

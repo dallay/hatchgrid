@@ -2,6 +2,7 @@
 title: REST API Conventions
 description: Guidelines for designing and building REST APIs in the Hatchgrid project.
 ---
+
 ## REST API CONVENTIONS
 
 This document outlines the REST API conventions for the Hatchgrid project. All contributors are expected to follow these guidelines to ensure consistency and maintainability of the API.
