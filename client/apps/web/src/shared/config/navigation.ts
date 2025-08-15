@@ -12,6 +12,7 @@
 import { Home, Settings, User, Users } from "lucide-vue-next";
 import { Authority } from "@/authentication/domain/models";
 import { useAuthStore } from "@/authentication/infrastructure/store";
+import { i18n } from "@/i18n";
 import type { AppSidebarItem } from "@/layouts/components/sidebar/types";
 
 /**
@@ -20,55 +21,60 @@ import type { AppSidebarItem } from "@/layouts/components/sidebar/types";
  */
 export function getNavigationItems(): AppSidebarItem[] {
 	const authStore = useAuthStore();
+	const t = (k: string) => i18n.global.t(k) as string;
 
 	return [
 		{
-			title: "Dashboard",
+			title: t("global.navigation.dashboard"),
 			url: "/",
 			icon: Home,
 			isActive: true, // Dashboard is typically the default active page
 		},
 		{
-			title: "Audience",
+			title: t("global.navigation.audience"),
 			icon: Users,
 			visible: () => authStore.isAuthenticated,
 			items: [
 				{
-					title: "Subscribers",
+					title: t("global.navigation.subscribers"),
 					url: "/audience/subscribers",
+				},
+				{
+					title: t("global.navigation.tags"),
+					url: "/audience/tags",
 				},
 			],
 		},
 		{
-			title: "Account",
+			title: t("global.navigation.account"),
 			icon: User,
 			visible: () => authStore.isAuthenticated,
 			items: [
 				{
-					title: "Settings",
+					title: t("global.navigation.settings"),
 					url: "/account/settings",
 				},
 				{
-					title: "Change Password",
+					title: t("global.navigation.changePassword"),
 					url: "/account/password",
 				},
 			],
 		},
 		{
-			title: "Admin",
+			title: t("global.navigation.admin"),
 			icon: Settings,
 			visible: () => authStore.hasAuthority(Authority.ADMIN),
 			canAccess: () => authStore.hasAuthority(Authority.ADMIN),
 			items: [
 				{
-					title: "User Management",
+					title: t("global.navigation.userManagement"),
 					url: "/admin/users",
-					tooltip: "Manage system users",
+					tooltip: t("global.navigation.userManagementTooltip"),
 				},
 				{
-					title: "System Settings",
+					title: t("global.navigation.systemSettings"),
 					url: "/admin/settings",
-					tooltip: "Configure system settings",
+					tooltip: t("global.navigation.systemSettingsTooltip"),
 				},
 			],
 		},
@@ -81,15 +87,16 @@ export function getNavigationItems(): AppSidebarItem[] {
  */
 export function getMinimalNavigationItems(): AppSidebarItem[] {
 	const authStore = useAuthStore();
+	const t = (k: string) => i18n.global.t(k) as string;
 
 	return [
 		{
-			title: "Home",
+			title: t("global.navigation.home"),
 			url: "/",
 			icon: Home,
 		},
 		{
-			title: "Profile",
+			title: t("global.navigation.profile"),
 			url: "/account/settings",
 			icon: User,
 			visible: () => authStore.isAuthenticated,

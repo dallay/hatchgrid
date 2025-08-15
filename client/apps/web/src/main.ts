@@ -20,8 +20,15 @@ import { AccountApi } from "@/authentication/infrastructure/api";
 import { AuthenticationService } from "@/authentication/infrastructure/services";
 import { useAuthStore } from "@/authentication/infrastructure/store";
 import { useRouteGuards } from "@/composables/useRouteGuards";
-import { configureStoreFactory } from "@/subscribers/infrastructure/di";
+import { configureStoreFactory as configureSubscribersStoreFactory } from "@/subscribers/infrastructure/di";
 import { useSubscriberStore } from "@/subscribers/infrastructure/store";
+import {
+	configureTagServiceProvider,
+	initializeTagsModule,
+	useTagStore,
+} from "@/tag";
+import { configureStoreFactory as configureTagsStoreFactory } from "@/tag/infrastructure/di";
+import { DefaultTagServiceProvider } from "@/tag/infrastructure/services";
 import { initializeWorkspaceStore } from "@/workspace/infrastructure/providers/workspaceStoreProvider";
 
 const app = createApp(App);
@@ -29,7 +36,13 @@ const app = createApp(App);
 app.use(createPinia());
 
 // Configure subscribers store factory for dependency injection
-configureStoreFactory(() => useSubscriberStore());
+configureSubscribersStoreFactory(() => useSubscriberStore());
+
+// Configure and initialize tags module
+configureTagServiceProvider(new DefaultTagServiceProvider());
+// Configure store factory for the tags module, then initialize
+configureTagsStoreFactory(() => useTagStore());
+initializeTagsModule();
 
 app.use(router);
 app.use(i18n);
