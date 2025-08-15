@@ -134,5 +134,5 @@ form/
 
 - **Single Responsibility per Layer**: Core logic, use cases, and adapters are strictly separated.
 - **Framework Independence**: Core logic remains decoupled from Spring Boot or any infrastructure.
-- **Port-Driven**: Infrastructure implements domain interfaces, not the way around.
+- **Port-Driven**: Infrastructure implements domain interfaces, not the other way around.
 - **Isolation for Testing**: Domain and application layers can be unit-tested with no framework setup.
