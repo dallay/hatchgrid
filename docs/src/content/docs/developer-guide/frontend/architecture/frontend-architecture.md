@@ -38,19 +38,22 @@ src/
 
 ```text
 subscribers/
-├── domain/
-│   ├── Subscriber.ts
-│   └── errors.ts
+├── __tests__/
 ├── application/
-│   ├── register.ts
-│   └── list.ts
-└── infrastructure/
-    ├── api/
-    │   └── subscribers.api.ts
-    ├── store/
-    │   └── useSubscriberStore.ts
-    └── routing/
-        └── subscriber.routes.ts
+│   ├── composables/
+│   └── index.ts
+├── domain/
+│   ├── models/
+│   ├── repositories/
+│   └── usecases/
+├── infrastructure/
+│   ├── api/
+│   ├── di/
+│   ├── routing/
+│   ├── store/
+│   └── views/
+├── di.ts
+└── index.ts
 ```
 
 ### 🧩 How It Works

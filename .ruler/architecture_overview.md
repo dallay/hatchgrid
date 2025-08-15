@@ -2,7 +2,8 @@
 title: Hexagonal Architecture
 description: Learn about Hexagonal Architecture (Ports and Adapters) and how it is implemented in Hatchgrid to ensure separation of concerns, testability, and maintainability.
 ---
-# Hexagonal Architecture
+
+## Hexagonal Architecture
 
 ![Hexagonal Architecture Schema](hexagonal-architecture.png)
 

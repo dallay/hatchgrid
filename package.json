@@ -36,7 +36,9 @@
 		"update-deps": "pnpm update -i -r --latest",
 		"preinstall": "npx only-allow pnpm",
 		"prepare": "pnpm exec lefthook install",
-		"dev": "pnpm --recursive --parallel run dev",
+		"ruler:check": "ruler check",
+		"ruler:apply": "ruler apply",
+		"dev": "pnpm run ruler:check && pnpm --recursive --parallel run dev",
 		"dev:landing": "pnpm --filter @hatchgrid/landing-page dev",
 		"dev:web": "pnpm --filter @hatchgrid/web dev",
 		"dev:docs": "pnpm --filter @hatchgrid/docs dev",
@@ -57,8 +59,8 @@
 		"backend:test": "./gradlew test",
 		"backend:clean": "./gradlew clean",
 		"start": "run-p backend:run dev",
-		"check-updates": "pnpm --recursive exec -- pnpm outdated",
-		"test:all": "pnpm backend:test"
+		"test:all": "pnpm --recursive run test && pnpm run backend:test",
+		"precommit": "pnpm run ruler:apply"
 	},
 	"dependencies": {
 		"zod": "^4.0.14"

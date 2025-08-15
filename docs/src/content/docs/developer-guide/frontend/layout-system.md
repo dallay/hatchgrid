@@ -38,20 +38,15 @@ This middleware dynamically imports layout components before each route navigati
 
 ### 2. Available Layouts
 
-#### `AuthLayoutGuest.vue`
+#### `SimpleLayout.vue`
 - **Use Case**: Authentication pages (login, register)
 - **Features**: Centered card layout with branding and footer
 - **Styling**: Gradient background, clean minimal design
 
-#### `AppLayoutUser.vue`
+#### `DashboardLayout.vue`
 - **Use Case**: Main application pages for authenticated users
 - **Features**: Header with navigation, main content area, footer
 - **Styling**: Full-width layout with sticky header
-
-#### `AppLayoutAdmin.vue`
-- **Use Case**: Administrative interface
-- **Features**: Sidebar navigation, admin header, dedicated admin styling
-- **Styling**: Dark sidebar, admin-specific navigation
 
 ### 3. Router Configuration
 
