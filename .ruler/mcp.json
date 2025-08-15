@@ -23,6 +23,34 @@
 				"mcp-memory",
 				"mcp/memory"
 			]
+		},
+		"filesystem": {
+			"command": "docker",
+			"args": [
+				"run",
+				"--rm",
+				"-i",
+				"--name",
+				"mcp-filesystem",
+				"mcp/filesystem"
+			]
+		},
+		"github": {
+			"command": "docker",
+			"args": [
+				"run",
+				"--rm",
+				"-i",
+				"--name",
+				"mcp-github",
+				"-e",
+				"GITHUB_PAT=${GITHUB_PAT}",
+				"mcp/github"
+			]
+		},
+		"git": {
+			"command": "npx",
+			"args": ["-y", "@modelcontextprotocol/server-git", "--repository", "."]
 		}
 	}
 }
