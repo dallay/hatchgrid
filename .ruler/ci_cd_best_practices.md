@@ -69,6 +69,7 @@ jobs:
         with:
           name: my-app-build
           path: dist.zip
+          retention-days: 7
 
   deploy-staging:
     runs-on: ubuntu-latest
@@ -215,12 +216,13 @@ jobs:
 
 - **Principle:** Ensure that container images and deployed artifacts are tamper-proof and verified.
 - **Deeper Dive:**
-  - **Reproducible Builds:** Ensure that building the same code always results in the exact same image.
+  - **Reproducible Builds:** Ensure that building the same code always results in an identical image.
   - **Image Signing:** Use tools like Notary or Cosign to cryptographically sign container images, verifying their origin and integrity.
   - **Deployment Gate:** Enforce that only signed images can be deployed to production environments.
 - **Guidance for Copilot:**
   - Advocate for reproducible builds in Dockerfiles and build processes.
   - Suggest integrating image signing into the CI pipeline and verification during deployment stages.
+  - Suggest using artifacts to pass compiled binaries or packaged applications from a build job to a deployment job, ensuring the identical artifact is deployed that was built and tested.
 
 ## Optimization and Performance
 
@@ -244,9 +246,11 @@ jobs:
   with:
     path: |
       ~/.npm
-      ./node_modules # For monorepos, cache specific project node_modules
-    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ github.run_id }}
+      # ./node_modules # Optional: caching node_modules can be brittle; prefer caching ~/.npm with `npm ci`
+    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
     restore-keys: |
+      ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-
+      ${{ runner.os }}-node-
       ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-
       ${{ runner.os }}-node-
 ```
@@ -273,7 +277,7 @@ jobs:
       fail-fast: false # Run all tests even if one fails
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [18.x, 20.x, 22.x]
         browser: [chromium, firefox]
     steps:
       - uses: actions/checkout@v4

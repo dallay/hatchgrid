@@ -8,6 +8,11 @@
 				"-i",
 				"--name",
 				"mcp-sequentialthinking",
+				"--read-only",
+				"--cap-drop=ALL",
+				"--security-opt=no-new-privileges",
+				"-v",
+				"mcp-seq-data:/app/data",
 				"mcp/sequentialthinking"
 			]
 		},
@@ -21,6 +26,9 @@
 				"--rm",
 				"--name",
 				"mcp-memory",
+				"--read-only",
+				"--cap-drop=ALL",
+				"--security-opt=no-new-privileges",
 				"mcp/memory"
 			]
 		},
@@ -32,6 +40,11 @@
 				"-i",
 				"--name",
 				"mcp-filesystem",
+				"--read-only",
+				"--cap-drop=ALL",
+				"--security-opt=no-new-privileges",
+				"-v",
+				"mcp-files:/data",
 				"mcp/filesystem"
 			]
 		},
@@ -43,8 +56,13 @@
 				"-i",
 				"--name",
 				"mcp-github",
+				"--read-only",
+				"--cap-drop=ALL",
+				"--security-opt=no-new-privileges",
 				"-e",
 				"GITHUB_TOKEN",
+				"-v",
+				"mcp-github-cache:/tmp/cache",
 				"mcp/github"
 			]
 		},
