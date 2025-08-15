@@ -2,7 +2,8 @@
 title: Keycloak Setup and Configuration
 description: Guide for setting up and configuring Keycloak for Hatchgrid authentication and authorization.
 ---
-# Keycloak Setup and Configuration
+
+## Keycloak Setup and Configuration
 
 ## Overview
 

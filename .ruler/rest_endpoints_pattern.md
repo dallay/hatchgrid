@@ -2,19 +2,19 @@
 title: Controller Pattern
 description: Guidelines for implementing the controller pattern in Hatchgrid.
 ---
-# Controller Pattern
+## Controller Pattern
 
 This document outlines the controller pattern used in the Hatchgrid project. All contributors are expected to follow these guidelines to ensure consistency and maintainability of the codebase.
 
 ## Table of Contents
 
 - [Controller Pattern](#controller-pattern)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Responsibilities of a Controller](#responsibilities-of-a-controller)
-  - [Controller Structure](#controller-structure)
-  - [Example](#example)
-  - [Best Practices](#best-practices)
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [Responsibilities of a Controller](#responsibilities-of-a-controller)
+- [Controller Structure](#controller-structure)
+- [Example](#example)
+- [Best Practices](#best-practices)
 
 ## Introduction
 
