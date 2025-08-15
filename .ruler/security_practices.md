@@ -29,7 +29,8 @@ Your primary directive is to ensure all code you generate, review, or refactor i
   ```
 
   ```python
-  # BAD: Hardcoded secret
+  ```python bad
+  # ❌ ANTI-PATTERN: Hardcoded secret (DO NOT USE)
   api_key = "<REPLACE_WITH_API_KEY>"
 
 ### 3. A03: Injection
