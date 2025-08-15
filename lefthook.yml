@@ -10,6 +10,7 @@ pre-commit:
     git-update:
       run: git update-index --again
     ruler-apply:
+      glob: ".ruler/**/*"
       run: pnpm run ruler:apply
 
 commit-msg:

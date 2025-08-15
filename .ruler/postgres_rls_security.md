@@ -47,7 +47,9 @@ CREATE TABLE project (
 
 -- Enable RLS
 ALTER TABLE project ENABLE ROW LEVEL SECURITY;
--- Optional: enforce RLS for table owner/superuser (except BYPASSRLS)
+-- Optional: enforce RLS for table owner. Note: FORCE RLS prevents the table owner
+-- from bypassing RLS, but it does NOT override superuser privileges or roles
+-- granted BYPASSRLS; superusers and BYPASSRLS roles continue to bypass RLS.
 ALTER TABLE project FORCE ROW LEVEL SECURITY;
 
 CREATE POLICY tenant_isolation ON project
@@ -109,7 +111,9 @@ CREATE POLICY owner_only ON project AS RESTRICTIVE
     - Mitigations:
       - Prefer `SECURITY INVOKER` for functions that access tenant-scoped data when possible.
       - Create dedicated function owners that do not have `BYPASSRLS` and do not own the target tables.
-      - On Postgres 15+, consider enabling `FORCE ROW LEVEL SECURITY` on sensitive tables so even table owners are subject to RLS.
+      - On Postgres 15+, consider enabling `FORCE ROW LEVEL SECURITY` on sensitive tables so table owners are subject to RLS. Note that
+        FORCE RLS prevents the table owner from bypassing RLS but does not override superuser privileges or roles granted `BYPASSRLS`;
+        superusers and BYPASSRLS roles still bypass RLS regardless of `FORCE ROW LEVEL SECURITY`.
       - Document any exceptions clearly (who the function owner is, why elevated rights are needed, and additional compensating controls such as audit triggers).
 
 - Prefer configuring connection-pool reset hooks to ensure session state is cleared between checkouts (for example, pgBouncer's `server_reset_query` or your pool's `on-checkout`/`on-checkin` reset hooks). This prevents leftover session variables from leaking between client checkouts. As a defense-in-depth best practice, also use `SET LOCAL` inside each transaction so the variable only lives for the transaction's duration.
