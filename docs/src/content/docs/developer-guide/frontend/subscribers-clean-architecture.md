@@ -76,42 +76,22 @@ The folder structure reflects business capabilities rather than technical concer
 ## Folder Structure (Screaming Architecture)
 
 ```text
-src/subscribers/                    # Business domain boundary
-├── domain/                         # Business logic layer
-│   ├── models/                     # Domain entities and value objects
-│   │   ├── Subscriber.ts           # Core subscriber entity
-│   │   ├── schemas.ts              # Zod validation schemas
-│   │   └── index.ts                # Public exports
-│   ├── repositories/               # Abstract repository interfaces
-│   │   ├── SubscriberRepository.ts # Repository contract
-│   │   └── index.ts                # Public exports
-│   └── usecases/                   # Business logic use cases
-│       ├── FetchSubscribers.ts     # Fetch subscribers use case
-│       ├── CountByStatus.ts        # Count by status use case
-│       ├── CountByTags.ts          # Count by tags use case
-│       └── index.ts                # Public exports
-├── infrastructure/                 # External services layer
-│   └── api/                        # HTTP API implementations
-│       ├── SubscriberApi.ts        # Concrete repository implementation
-│       └── index.ts                # Public exports
-├── presentation/                   # UI layer
-│   ├── components/                 # Reusable UI components
-│   │   ├── SubscriberList.vue      # Subscriber list component
-│   │   └── index.ts                # Public exports
-│   └── views/                      # Page-level components
-│       ├── SubscriberPage.vue      # Subscriber page view
-│       └── index.ts                # Public exports
-├── store/                          # State management layer
-│   ├── subscriber.store.ts         # Pinia store with DI
-│   └── index.ts                    # Public exports
-├── di/                             # Dependency injection
-│   ├── container.ts                # DI container
-│   ├── initialization.ts           # Store initialization
-│   └── index.ts                    # Public exports
-├── composables/                    # Vue composables
-│   ├── useSubscribers.ts           # Main composable
-│   └── index.ts                    # Public exports
-└── index.ts                        # Module public API
+src/subscribers/
+├── __tests__/
+├── application/
+│   ├── composables/
+│   └── index.ts
+├── domain/
+│   ├── models/
+│   ├── repositories/
+│   └── usecases/
+├── infrastructure/
+│   ├── api/
+│   ├── di/
+│   ├── store/
+│   └── views/
+├── di.ts
+└── index.ts
 ```
 
 ### Why Screaming Architecture?

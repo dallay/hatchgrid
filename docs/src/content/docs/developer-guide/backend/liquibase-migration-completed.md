@@ -41,14 +41,44 @@ spring:
 
 ## Current Migration Structure
 
+The `master.yaml` file includes all migration files in the correct order.
+
+```yaml
+# src/main/resources/db/changelog/master.yaml
+databaseChangeLog:
+  - include:
+      file: migrations/001-initial-schema.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: migrations/002-workspaces.yaml
+      relativeToChangelogFile: true
+  # ... and so on for all migration files
 ```
-src/main/resources/db/changelog/
-├── master.yaml
-└── migrations/
-    ├── 001-initial-schema.yaml
-    ├── 002-additional-tables.yaml
-    └── 003-versioning-and-rollback.yaml
+
+Each migration file must contain a `changeSet` with a `rollback` block.
+
+```yaml
+# Example from 002-workspaces.yaml
+databaseChangeLog:
+  - changeSet:
+      id: 002-workspaces
+      author: Hatchgrid Team
+      changes:
+        - createTable:
+            tableName: workspaces
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: workspaces
 ```
+
+> **Important**: Every migration file must contain an explicit `rollback` block to ensure that changes can be safely reverted.
 
 ## Benefits of YAML Migration
 

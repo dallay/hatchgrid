@@ -46,8 +46,6 @@ Copy and edit the example environment files:
 
 ```bash
 cp .env.example .env
-cp client/.env.example client/.env
-cp server/.env.example server/.env
 ```
 
 Adjust values such as database credentials, Keycloak settings, and ports.
@@ -59,14 +57,22 @@ Adjust values such as database credentials, Keycloak settings, and ports.
 Run the platform using Docker Compose:
 
 ```bash
-docker compose up --build
-```
+docker compose up -d --build
 
 This will start:
 - PostgreSQL
 - Keycloak
-- Hatchgrid backend
-- Hatchgrid frontend
+
+To run the backend and frontend, you will need to run them in separate terminals:
+
+```bash
+# Run the backend
+./gradlew bootRun
+
+# Run the frontend
+cd client/apps/web
+pnpm dev
+```
 
 ---
 
@@ -76,7 +82,7 @@ Visit the frontend at:
 
 ```text
 docs    -> http://localhost:4321
-landing -> http://localhost:4322
+landing -> http://localhost:7766
 web     -> http://localhost:9876
 ```
 

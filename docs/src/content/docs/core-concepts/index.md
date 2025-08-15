@@ -11,11 +11,9 @@ This section introduces the fundamental building blocks of the Hatchgrid platfor
 
 ## 📦 Included Concepts
 
-- [Workspaces](./core-concepts/workspace): Isolated content environments where users collaborate and manage distribution.
-- [Content Items](./core-concepts/content-item): The primary units of content creation and publishing.
-- [Publication Flow](./core-concepts/publication-flow): The lifecycle of content, from draft to published.
-- [Reader Preferences](./core-concepts/reader-preferences): How readers control the frequency and type of content they receive.
-- [Multilingual Support](./core-concepts/multilingual-support): Structure and delivery of content in multiple languages.
+- [Workspaces](./workspace): Isolated content environments where users collaborate and manage distribution.
+- [Forms](./forms): Create and manage forms to collect data.
+- [Tags](./tags): Categorize and organize content, particularly for newsletter subscribers.
 
 ---
 
