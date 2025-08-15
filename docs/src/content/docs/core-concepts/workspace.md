@@ -23,8 +23,7 @@ Think of a workspace as a **content environment**: each workspace has its own us
 ## 👥 Roles and Permissions
 
 - **Owner**: Full control over the workspace, users, and settings.
-- **Editor**: Can create, edit, and publish content.
-- **Viewer**: Read-only access to content.
+- **Member**: Can view and manage content within the workspace.
 
 Roles can be extended in the future with granular permissions (e.g. per-channel publishing rights).
 

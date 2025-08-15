@@ -46,8 +46,21 @@ src/main/resources/db/changelog/
 ├── master.yaml
 └── migrations/
     ├── 001-initial-schema.yaml
-    ├── 002-additional-tables.yaml
-    └── 003-versioning-and-rollback.yaml
+    ├── 002-workspaces.yaml
+    ├── 002a-workspaces-triggers.yaml
+    ├── 002b-workspaces-rls.yaml
+    ├── 002c-workspaces-default-constraint.yaml
+    ├── 003-subscribers.yaml
+    ├── 003a-subscribers-triggers.yaml
+    ├── 003b-subscribers-rls.yaml
+    ├── 004-tags.yaml
+    ├── 004a-subscriber-tags.yaml
+    ├── 004b-tags-triggers.yaml
+    ├── 004c-tags-rls.yaml
+    ├── 005-forms.yaml
+    ├── 005a-forms-triggers.yaml
+    ├── 005b-forms-rls.yaml
+    └── 99900001-data-dev-test-users.yaml
 ```
 
 ## Benefits of YAML Migration

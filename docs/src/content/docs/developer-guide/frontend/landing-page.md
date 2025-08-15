@@ -30,7 +30,7 @@ client/apps/landing-page/
 │   ├── components/        # Reusable UI components
 │   │   ├── ui/            # UI component library
 │   │   └── sections/      # Page section components
-│   ├── content/           # Content collections (blog, FAQ, etc.)
+│   ├── data/              # Content collections (blog, FAQ, etc.)
 │   ├── i18n/              # Internationalization resources
 │   ├── layouts/           # Page layout templates
 │   ├── pages/             # Page routes (file-based routing)
@@ -46,45 +46,8 @@ The landing page uses Biome for code formatting and linting. The configuration e
 
 ```json
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
-  "extends": ["../../biome.json"],
-  "files": {
-    "ignoreUnknown": false,
-    "includes": ["**/*.{ts,tsx,js,jsx,astro,vue}"]
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true
-    }
-  },
-  "formatter": {
-    "enabled": true,
-    "indentStyle": "tab",
-    "lineWidth": 100
-  },
-  "javascript": {
-    "formatter": {
-      "quoteStyle": "double"
-    }
-  },
-  "overrides": [
-    {
-      "includes": ["**/*.astro"],
-      "linter": {
-        "rules": {
-          "style": {
-            "useConst": "off",
-            "useImportType": "off"
-          },
-          "correctness": {
-            "noUnusedVariables": "off",
-            "noUnusedImports": "off"
-          }
-        }
-      }
-    }
-  ]
+	"root": false,
+	"extends": "//"
 }
 ```
 
