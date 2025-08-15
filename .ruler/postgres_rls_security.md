@@ -3,8 +3,6 @@ title: RLS
 description: Row-Level Security.
 ---
 
-## RLS
-
 This document explains Row-Level Security and recommended patterns for Hatchgrid.
 
 ## Purpose
@@ -49,9 +47,8 @@ CREATE TABLE project (
 
 -- Enable RLS
 ALTER TABLE project ENABLE ROW LEVEL SECURITY;
-
--- Helper: set the tenant in the session (from the application after auth)
--- SELECT set_config('app.current_tenant', 'uuid-of-tenant', true);
+-- Optional: enforce RLS for table owner/superuser (except BYPASSRLS)
+ALTER TABLE project FORCE ROW LEVEL SECURITY;
 
 CREATE POLICY tenant_isolation ON project
   USING (tenant_id = current_setting('app.current_tenant', true)::uuid)
@@ -61,12 +58,35 @@ CREATE POLICY tenant_isolation ON project
 Notes:
 
 - `current_setting(..., true)` returns NULL instead of throwing an error when not set. The application must set the session variable after authenticating the user.
+- Scope natural keys by tenant to prevent cross-tenant uniqueness collisions (for example, `UNIQUE (tenant_id, name)` instead of `UNIQUE (name)`).
 
 ## Example: owner-based policy
 
 ```sql
 -- RLS is already enabled above; creating policies does not require re-enabling the table.
-CREATE POLICY owner_only ON project
+-- Prefer combining tenant and owner predicates so both tenant_id AND owner_id must match.
+CREATE POLICY tenant_owner_isolation ON project
+  USING (
+    tenant_id = current_setting('app.current_tenant', true)::uuid
+    AND owner_id IS NOT NULL
+    AND owner_id = current_setting('app.current_user_id', true)::uuid
+  )
+  WITH CHECK (
+    tenant_id = current_setting('app.current_tenant', true)::uuid
+    AND owner_id IS NOT NULL
+    AND owner_id = current_setting('app.current_user_id', true)::uuid
+  );
+```
+
+Alternate (Postgres 15+): keep separate policies but mark them `AS RESTRICTIVE` so PostgreSQL combines them with AND semantics instead of OR. If you run older Postgres versions, multiple policies are combined permissively (OR), which can allow cross-tenant access if predicates are split.
+
+```sql
+-- Postgres 15+ example using AS RESTRICTIVE
+CREATE POLICY tenant_isolation ON project AS RESTRICTIVE
+  USING (tenant_id = current_setting('app.current_tenant', true)::uuid)
+  WITH CHECK (tenant_id = current_setting('app.current_tenant', true)::uuid);
+
+CREATE POLICY owner_only ON project AS RESTRICTIVE
   USING (owner_id IS NOT NULL AND owner_id = current_setting('app.current_user_id', true)::uuid)
   WITH CHECK (owner_id IS NOT NULL AND owner_id = current_setting('app.current_user_id', true)::uuid);
 ```
@@ -75,11 +95,22 @@ CREATE POLICY owner_only ON project
 
 ## Integration guidance
 
-- Set session variables from the application immediately after opening a DB connection or via a connection pool hook. Example in pseudocode:
-
+- Set session variables from the application immediately after opening a DB connection or via a connection pool hook. SET LOCAL only takes effect inside a transaction. Example in pseudocode:
   - Acquire connection
+  - `BEGIN`
   - `SET LOCAL app.current_tenant = '<tenant-uuid>'`
   - `SET LOCAL app.current_user_id = '<user-uuid>'`
+  - -- ... execute application queries ...
+  - `COMMIT`
+
+  - WARNING: SECURITY DEFINER functions and RLS
+
+    - `SECURITY DEFINER` functions execute with the function owner's privileges. If the function owner has `BYPASSRLS` or is the table owner, the function can bypass RLS policies. This can lead to accidental privilege escalation or data leakage.
+    - Mitigations:
+      - Prefer `SECURITY INVOKER` for functions that access tenant-scoped data when possible.
+      - Create dedicated function owners that do not have `BYPASSRLS` and do not own the target tables.
+      - On Postgres 15+, consider enabling `FORCE ROW LEVEL SECURITY` on sensitive tables so even table owners are subject to RLS.
+      - Document any exceptions clearly (who the function owner is, why elevated rights are needed, and additional compensating controls such as audit triggers).
 
 - Prefer configuring connection-pool reset hooks to ensure session state is cleared between checkouts (for example, pgBouncer's `server_reset_query` or your pool's `on-checkout`/`on-checkin` reset hooks). This prevents leftover session variables from leaking between client checkouts. As a defense-in-depth best practice, also use `SET LOCAL` inside each transaction so the variable only lives for the transaction's duration.
 

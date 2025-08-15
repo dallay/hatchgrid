@@ -1,7 +1,10 @@
 ---
 title: Playwright TypeScript Guidelines
 description: 'Playwright test generation instructions'
-applyTo: '**'
+applyTo:
+  - 'tests/**/*.{spec,test}.{ts,tsx}'
+  - '{apps,packages}/*/tests/**/*.{spec,test}.{ts,tsx}'
+  - 'e2e/**/*.{spec,test}.{ts,tsx}'
 ---
 
 ## Test Writing Guidelines
@@ -38,7 +41,22 @@ applyTo: '**'
     - npm/yarn: `npx playwright test --update-snapshots`
 - **Element Counts**: Use `toHaveCount` to assert the number of elements found by a locator.
 - **Text Content**: Use `toHaveText` for exact text matches and `toContainText` for partial matches.
-- **Navigation**: Use `toHaveURL` to verify the page URL after an action.
+- **Navigation**: Use `toHaveURL` to verify the page URL after an action, but avoid brittle exact matches when URLs include volatile query parameters (analytics UTM params, session IDs, trace IDs, etc.). Prefer one of these approaches:
+
+- Canonicalize the URL before asserting by removing known volatile params (for example: `utm_source`, `utm_medium`, `sessionId`, `trace_id`) and compare the normalized URL.
+- Use a stable regular expression with `toHaveURL(/.../)` that matches the invariant parts of the URL.
+
+Examples:
+
+```typescript
+// 1) Canonicalize and compare
+const u = new URL(page.url());
+['utm_source', 'utm_medium', 'sessionId', 'trace_id'].forEach(p => u.searchParams.delete(p));
+await expect(u.toString()).toBe('https://example.com/path?stable=1');
+
+// 2) Use a regex with toHaveURL to match stable parts only
+await expect(page).toHaveURL(/\/products\/\d+(?:\?.*)?$/);
+```
 
 ## Example Test Structure
 
@@ -88,9 +106,6 @@ test.describe('Movie Search Feature', () => {
 ## Quality Checklist
 
 - [ ] All locators are accessible, specific, and avoid strict mode violations
-- [ ] Tests are grouped logically and follow a clear structure
-
-- [ ] All locators are accessible and specific and avoid strict mode violations
 - [ ] Tests are grouped logically and follow a clear structure
 - [ ] Assertions are meaningful and reflect user expectations
 - [ ] Tests follow consistent naming conventions
