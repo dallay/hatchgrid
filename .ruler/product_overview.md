@@ -11,7 +11,7 @@ Hatchgrid offers a comprehensive suite of tools tailored for modern content mana
 - **Content Management:** Robust tools to create, organize, and manage content efficiently.
 - **Tagging System:** Flexible tagging to categorize and filter content dynamically.
 - **User Workspaces:** Collaborative environments tailored for teams and individual users.
-- **PostgreSQL with Row-Level Security (RLS):** Ensures fine-grained access control and data security at the database level, empowering secure multi-tenant architectures.
+- **PostgreSQL with Row-Level Security (RLS):** Ensures fine-grained access control and data security at the database level, empowering secure multi-tenant architectures. See the [RLS guide](./postgres_rls_security.md).
 - **Liquibase for Database Migrations:** Provides version control for database schema changes, enabling smooth and reliable updates.
 - **Docker-Based Deployment:** Containerized application setup for consistent and scalable deployment across environments.
 - **CI/CD with GitHub Actions:** Automated testing, building, and deployment pipelines to accelerate development cycles and maintain code quality.
