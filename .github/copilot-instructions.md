@@ -5,13 +5,13 @@ Source: .ruler/api_design_guidelines.md
 title: REST API Conventions
 description: Guidelines for designing and building REST APIs in the Hatchgrid project.
 ---
-## REST API Conventions
+## REST API CONVENTIONS
 
 This document outlines the REST API conventions for the Hatchgrid project. All contributors are expected to follow these guidelines to ensure consistency and maintainability of the API.
 
 ## Table of Contents
 
-- [REST API Conventions](#rest-api-conventions)
+- [REST API CONVENTIONS](#rest-api-conventions)
 - [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [URL Structure](#url-structure)
@@ -137,6 +137,7 @@ Source: .ruler/architecture_overview.md
 title: Hexagonal Architecture
 description: Learn about Hexagonal Architecture (Ports and Adapters) and how it is implemented in Hatchgrid to ensure separation of concerns, testability, and maintainability.
 ---
+
 ## Hexagonal Architecture
 
 ![Hexagonal Architecture Schema](hexagonal-architecture.png)
@@ -346,7 +347,7 @@ description: 'Comprehensive guide for building robust, secure, and efficient CI/
 
 ## Your Mission
 
-As GitHub Copilot, you are an expert in designing and optimizing CI/CD pipelines using GitHub Actions. Your mission is to assist developers in creating efficient, secure, and reliable automated workflows for building, testing, and deploying their applications. You must prioritize best practices, ensure security, and provide actionable, detailed guidance.
+As an AI coding assistant, you are an expert in designing and optimizing CI/CD pipelines using GitHub Actions. Your mission is to assist developers in creating efficient, secure, and reliable automated workflows for building, testing, and deploying their applications. You must prioritize best practices, ensure security, and provide actionable, detailed guidance.
 
 ## Core Concepts and Structure
 
@@ -391,7 +392,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Install dependencies and build
@@ -404,7 +405,7 @@ jobs:
           zip -r dist.zip dist
           echo "path=dist.zip" >> "$GITHUB_OUTPUT"
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: my-app-build
           path: dist.zip
@@ -416,7 +417,7 @@ jobs:
     environment: staging
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: my-app-build
       - name: Deploy to Staging
@@ -983,13 +984,13 @@ Source: .ruler/instructions.md
 
 These are the central AI agent instructions and the single source of truth for automated coding assistants working on the Hatchgrid repository.
 
-Scope
+## Scope
 
-- All project rules, conventions, architecture notes, security requirements and agent-specific adapters live under `.ruler/` as individual Markdown files.
+- All project rules, conventions, architecture notes, security requirements, and agent-specific adapters live under `.ruler/` as individual Markdown files.
 
 - Ruler will concatenate every `*.md` file found in this directory (and subdirectories) and apply the resulting instructions to configured agents.
 
-What to include in `.ruler/`
+## What to include in `.ruler/`
 
 - Coding conventions (Kotlin, TypeScript, Vue, Spring Boot, etc.)
 - API design and REST endpoint patterns
@@ -998,7 +999,7 @@ What to include in `.ruler/`
 - DevOps/CI guidelines (Ruler usage, GitHub Actions, OIDC, caching)
 - Small, focused examples and migration notes where needed
 
-Agent outputs (configured in `ruler.toml`)
+## Agent outputs (configured in `.ruler/ruler.toml`)
 
 - GitHub Copilot -> `.github/copilot-instructions.md`
 - Gemini CLI -> `GEMINI.md`
@@ -1006,24 +1007,11 @@ Agent outputs (configured in `ruler.toml`)
 - Claude -> `CLAUDE.md`
 - Aider -> `ruler_aider_instructions.md` and `.aider.conf.yml`
 
-Authoritative workflow (for humans and agents)
+## Authoritative workflow (for humans and agents)
 
-1. Edit or add a file under `.ruler/` (use a descriptive filename, one topic per file).
+1. Edit or add a file under `.ruler/` (use a descriptive filename; one topic per file).
 
-1. Run locally to verify generation:
-
-```bash
-# install (one-time)
-npm install -g @intellectronica/ruler
-
-# generate agent outputs (or use CI)
-ruler apply --agents copilot,gemini-cli,cursor,claude,aider --verbose
-
-# quick consistency check used by CI
-ruler check
-```
-
-1. Commit both the changed source files in `.ruler/` and any generated agent outputs (if you want them tracked). Our CI workflow `.github/workflows/ruler-check.yml` runs `ruler check` on PRs to ensure synchronization.
+2. Run locally to verify generation:
 
 Guidelines for AI assistants
 
@@ -1039,13 +1027,13 @@ Maintenance notes
 
 - Keep each topic focused and small. Avoid large monolithic files.
 
-- Use frontmatter (`---`) only when necessary for tooling; prefer simple Markdown headings otherwise.
+- Always prefer rules found in `.ruler/` over repository-level heuristics or older docs.
 
-- After non-trivial updates, run `ruler apply` and open a PR that includes the `.ruler` edits. CI will validate with `ruler check`.
+- Do not edit `docs/src/content/docs` or `.kiro/` (these were migrated); update `.ruler/` instead.
 
-If you are unsure what to change or you need to migrate additional docs, open an issue describing the intent and reference this file.
+- When making code changes, follow the project's conventions (linting, tests, Gradle/PNPM commands). If tests or builds are required, run the small validation steps before committing.
 
----
+- For security-sensitive decisions, follow the Security & OWASP guide under `.ruler/` and prefer least privilege, parameterized queries, no hard-coded secrets, and OIDC where possible.
 Last updated: 2025-08-15
 
 ---
@@ -1055,6 +1043,7 @@ Source: .ruler/keycloak_setup.md
 title: Keycloak Setup and Configuration
 description: Guide for setting up and configuring Keycloak for Hatchgrid authentication and authorization.
 ---
+
 ## Keycloak Setup and Configuration
 
 ## Overview
@@ -1393,12 +1382,15 @@ applyTo: '**'
 ### File Organization
 
 - **Location**: Store all test files in the `tests/` directory.
+  - In monorepos it's common to place tests under per-app or per-package folders such as `apps/*/tests`, `packages/*/tests`, or a top-level `e2e/` directory. Teams may also colocate tests next to each app/package (for example: `apps/web/tests/login.spec.ts`) — keep the same `<feature>.spec.ts` naming and scope rules when using these alternate paths.
 - **Naming**: Use the convention `<feature-or-page>.spec.ts` (e.g., `login.spec.ts`, `search.spec.ts`).
 - **Scope**: Aim for one test file per major application feature or page.
 
 ### Assertion Best Practices
 
 - **UI Structure**: Use `toMatchAriaSnapshot` to verify the accessibility tree structure of a component. This provides a comprehensive and accessible snapshot.
+  - Prerequisites: Ensure you're using a Playwright version that supports ARIA snapshots (upgrade @playwright/test to a recent stable).
+  - Snapshot updates: When UI changes are expected, run `npx playwright test --update-snapshots` to refresh ARIA snapshots.
 - **Element Counts**: Use `toHaveCount` to assert the number of elements found by a locator.
 - **Text Content**: Use `toHaveText` for exact text matches and `toContainText` for partial matches.
 - **Navigation**: Use `toHaveURL` to verify the page URL after an action.
@@ -1450,7 +1442,8 @@ test.describe('Movie Search Feature', () => {
 
 ## Quality Checklist
 
-Before finalizing tests, ensure:
+- [ ] All locators are accessible, specific, and avoid strict mode violations
+- [ ] Tests are grouped logically and follow a clear structure
 
 - [ ] All locators are accessible and specific and avoid strict mode violations
 - [ ] Tests are grouped logically and follow a clear structure
@@ -1504,6 +1497,7 @@ Create table and enable RLS:
 CREATE TABLE project (
   id uuid PRIMARY KEY,
   tenant_id uuid NOT NULL,
+  owner_id uuid,
   name text NOT NULL,
   data jsonb,
   created_at timestamptz DEFAULT now()
@@ -1515,10 +1509,9 @@ ALTER TABLE project ENABLE ROW LEVEL SECURITY;
 -- Helper: set the tenant in the session (from the application after auth)
 -- SELECT set_config('app.current_tenant', 'uuid-of-tenant', true);
 
--- Policy to allow select/modify only for current tenant
 CREATE POLICY tenant_isolation ON project
-  USING (tenant_id::text = current_setting('app.current_tenant', true))
-  WITH CHECK (tenant_id::text = current_setting('app.current_tenant', true));
+  USING (tenant_id = current_setting('app.current_tenant', true)::uuid)
+  WITH CHECK (tenant_id = current_setting('app.current_tenant', true)::uuid);
 ```
 
 Notes:
@@ -1543,7 +1536,7 @@ CREATE POLICY owner_only ON project
   - `SET LOCAL app.current_tenant = '<tenant-uuid>'`
   - `SET LOCAL app.current_user_id = '<user-uuid>'`
 
-- Prefer `SET LOCAL` inside a transaction or connection lifecycle hook to avoid leaking values between requests when using pooled connections.
+- Prefer configuring connection-pool reset hooks to ensure session state is cleared between checkouts (for example, pgBouncer's `server_reset_query` or your pool's `on-checkout`/`on-checkin` reset hooks). This prevents leftover session variables from leaking between client checkouts. As a defense-in-depth best practice, also use `SET LOCAL` inside each transaction so the variable only lives for the transaction's duration.
 
 ## Testing and validation
 
@@ -1565,7 +1558,6 @@ CREATE POLICY owner_only ON project
 ## References
 
 - Postgres docs: [Row Level Security](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)
--
 
 ---
 Source: .ruler/product_overview.md
@@ -1623,6 +1615,13 @@ Looking ahead, Hatchgrid plans to introduce several exciting features to further
 - **Enhanced Collaboration Tools:** Real-time editing, commenting, and version tracking to improve teamwork.
 - **Integration Marketplace:** A curated ecosystem of plugins and integrations to extend Hatchgrid’s functionality.
 - **Mobile App Support:** Native applications for iOS and Android to enable content management on the go.
+
+### Aspirational / Long-term
+
+The following items are exploratory or long-term initiatives. They are high-impact but require additional research, resourcing, and prioritization.
+
+- **Integration Marketplace** (Exploratory / Long-term): A curated ecosystem of plugins and integrations to extend Hatchgrid’s functionality.
+- **Mobile App Support** (Exploratory / Long-term): Native applications for iOS and Android to enable content management on the go.
 
 Hatchgrid remains committed to evolving in ways that enrich the user experience, streamline content workflows, and deliver measurable value to our community.
 
@@ -1946,7 +1945,7 @@ Your primary directive is to ensure all code you generate, review, or refactor i
 
 ### 5. A07: Identification & Authentication Failures
 
-- **Secure Session Management:** When a user logs in, generate a new session identifier to prevent session fixation. Ensure session cookies are configured with `HttpOnly`, `Secure`, and `SameSite=Strict` attributes.
+- **Secure Session Management:** When a user logs in, generate a new session identifier to prevent session fixation. Ensure session cookies are configured with `HttpOnly`, `Secure`, and `SameSite=Strict` attributes. For state-changing endpoints, implement CSRF defenses (e.g., same-site cookies plus double-submit or synchronizer tokens).
 - **Protect Against Brute Force:** For authentication and password reset flows, recommend implementing rate limiting and account lockout mechanisms after a certain number of failed attempts.
 
 ### 6. A08: Software and Data Integrity Failures
@@ -2258,6 +2257,7 @@ Source: .ruler/uuid_usage.md
 title: UUID Strategy
 description: Guidelines for using UUIDs in the Hatchgrid project.
 ---
+
 ## UUID Strategy
 
 This document outlines the UUID strategy for the Hatchgrid project. All contributors are expected to follow these guidelines to ensure consistency and maintainability of the codebase.
