@@ -57,8 +57,7 @@ Adjust values such as database credentials, Keycloak settings, and ports.
 Run the platform using Docker Compose:
 
 ```bash
-docker compose up -d
-```
+docker compose up -d --build
 
 This will start:
 - PostgreSQL
