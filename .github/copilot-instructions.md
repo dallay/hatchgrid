@@ -5,6 +5,7 @@ Source: .ruler/api_design_guidelines.md
 title: REST API Conventions
 description: Guidelines for designing and building REST APIs in the Hatchgrid project.
 ---
+
 ## REST API CONVENTIONS
 
 This document outlines the REST API conventions for the Hatchgrid project. All contributors are expected to follow these guidelines to ensure consistency and maintainability of the API.
@@ -409,6 +410,7 @@ jobs:
         with:
           name: my-app-build
           path: dist.zip
+          retention-days: 7
 
   deploy-staging:
     runs-on: ubuntu-latest
@@ -555,12 +557,13 @@ jobs:
 
 - **Principle:** Ensure that container images and deployed artifacts are tamper-proof and verified.
 - **Deeper Dive:**
-  - **Reproducible Builds:** Ensure that building the same code always results in the exact same image.
+  - **Reproducible Builds:** Ensure that building the same code always results in an identical image.
   - **Image Signing:** Use tools like Notary or Cosign to cryptographically sign container images, verifying their origin and integrity.
   - **Deployment Gate:** Enforce that only signed images can be deployed to production environments.
 - **Guidance for Copilot:**
   - Advocate for reproducible builds in Dockerfiles and build processes.
   - Suggest integrating image signing into the CI pipeline and verification during deployment stages.
+  - Suggest using artifacts to pass compiled binaries or packaged applications from a build job to a deployment job, ensuring the identical artifact is deployed that was built and tested.
 
 ## Optimization and Performance
 
@@ -580,13 +583,15 @@ jobs:
 
 ```yaml
 - name: Cache Node.js modules
-  uses: actions/cache@v3
+  uses: actions/cache@v4
   with:
     path: |
       ~/.npm
-      ./node_modules # For monorepos, cache specific project node_modules
-    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ github.run_id }}
+      # ./node_modules # Optional: caching node_modules can be brittle; prefer caching ~/.npm with `npm ci`
+    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
     restore-keys: |
+      ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-
+      ${{ runner.os }}-node-
       ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-
       ${{ runner.os }}-node-
 ```
@@ -613,7 +618,7 @@ jobs:
       fail-fast: false # Run all tests even if one fails
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [18.x, 20.x, 22.x]
         browser: [chromium, firefox]
     steps:
       - uses: actions/checkout@v4
@@ -1360,7 +1365,10 @@ Source: .ruler/playwright_typescript_guidelines.md
 ---
 title: Playwright TypeScript Guidelines
 description: 'Playwright test generation instructions'
-applyTo: '**'
+applyTo:
+  - 'tests/**/*.{spec,test}.{ts,tsx}'
+  - '{apps,packages}/*/tests/**/*.{spec,test}.{ts,tsx}'
+  - 'e2e/**/*.{spec,test}.{ts,tsx}'
 ---
 
 ## Test Writing Guidelines
@@ -1377,7 +1385,7 @@ applyTo: '**'
 - **Imports**: Start with `import { test, expect } from '@playwright/test';`.
 - **Organization**: Group related tests for a feature under a `test.describe()` block.
 - **Hooks**: Use `beforeEach` for setup actions common to all tests in a `describe` block (e.g., navigating to a page).
-- **Titles**: Follow a clear naming convention, such as `Feature - Specific action or scenario`.
+- **Titles**: Prefer behavior-driven titles like `should <do something> when <condition>`. If grouping by feature, use `Feature - should <do something> when <condition>`.
 
 ### File Organization
 
@@ -1389,11 +1397,30 @@ applyTo: '**'
 ### Assertion Best Practices
 
 - **UI Structure**: Use `toMatchAriaSnapshot` to verify the accessibility tree structure of a component. This provides a comprehensive and accessible snapshot.
-  - Prerequisites: Ensure you're using a Playwright version that supports ARIA snapshots (upgrade @playwright/test to a recent stable).
-  - Snapshot updates: When UI changes are expected, run `npx playwright test --update-snapshots` to refresh ARIA snapshots.
+  - Prerequisites: Ensure you're using a Playwright version that supports ARIA snapshots (upgrade `@playwright/test` to a recent stable), for example:
+    - pnpm: `pnpm add -D @playwright/test@latest`
+    - npm: `npm i -D @playwright/test@latest`
+    - yarn: `yarn add -D @playwright/test@latest`
+  - Snapshot updates: When UI changes are expected, update snapshots:
+    - npm/yarn: `npx playwright test --update-snapshots`
 - **Element Counts**: Use `toHaveCount` to assert the number of elements found by a locator.
 - **Text Content**: Use `toHaveText` for exact text matches and `toContainText` for partial matches.
-- **Navigation**: Use `toHaveURL` to verify the page URL after an action.
+- **Navigation**: Use `toHaveURL` to verify the page URL after an action, but avoid brittle exact matches when URLs include volatile query parameters (analytics UTM params, session IDs, trace IDs, etc.). Prefer one of these approaches:
+
+- Canonicalize the URL before asserting by removing known volatile params (for example: `utm_source`, `utm_medium`, `sessionId`, `trace_id`) and compare the normalized URL.
+- Use a stable regular expression with `toHaveURL(/.../)` that matches the invariant parts of the URL.
+
+Examples:
+
+```typescript
+// 1) Canonicalize and compare
+const u = new URL(page.url());
+['utm_source', 'utm_medium', 'sessionId', 'trace_id'].forEach(p => u.searchParams.delete(p));
+await expect(u.toString()).toBe('https://example.com/path?stable=1');
+
+// 2) Use a regex with toHaveURL to match stable parts only
+await expect(page).toHaveURL(/\/products\/\d+(?:\?.*)?$/);
+```
 
 ## Example Test Structure
 
@@ -1444,9 +1471,6 @@ test.describe('Movie Search Feature', () => {
 
 - [ ] All locators are accessible, specific, and avoid strict mode violations
 - [ ] Tests are grouped logically and follow a clear structure
-
-- [ ] All locators are accessible and specific and avoid strict mode violations
-- [ ] Tests are grouped logically and follow a clear structure
 - [ ] Assertions are meaningful and reflect user expectations
 - [ ] Tests follow consistent naming conventions
 - [ ] Code is properly formatted and commented
@@ -1458,8 +1482,6 @@ Source: .ruler/postgres_rls_security.md
 title: RLS
 description: Row-Level Security.
 ---
-
-## RLS
 
 This document explains Row-Level Security and recommended patterns for Hatchgrid.
 
@@ -1505,9 +1527,8 @@ CREATE TABLE project (
 
 -- Enable RLS
 ALTER TABLE project ENABLE ROW LEVEL SECURITY;
-
--- Helper: set the tenant in the session (from the application after auth)
--- SELECT set_config('app.current_tenant', 'uuid-of-tenant', true);
+-- Optional: enforce RLS for table owner/superuser (except BYPASSRLS)
+ALTER TABLE project FORCE ROW LEVEL SECURITY;
 
 CREATE POLICY tenant_isolation ON project
   USING (tenant_id = current_setting('app.current_tenant', true)::uuid)
@@ -1517,24 +1538,59 @@ CREATE POLICY tenant_isolation ON project
 Notes:
 
 - `current_setting(..., true)` returns NULL instead of throwing an error when not set. The application must set the session variable after authenticating the user.
+- Scope natural keys by tenant to prevent cross-tenant uniqueness collisions (for example, `UNIQUE (tenant_id, name)` instead of `UNIQUE (name)`).
 
 ## Example: owner-based policy
 
 ```sql
-ALTER TABLE project ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY owner_only ON project
-  USING (owner_id = current_setting('app.current_user_id', true)::uuid)
-  WITH CHECK (owner_id = current_setting('app.current_user_id', true)::uuid);
+-- RLS is already enabled above; creating policies does not require re-enabling the table.
+-- Prefer combining tenant and owner predicates so both tenant_id AND owner_id must match.
+CREATE POLICY tenant_owner_isolation ON project
+  USING (
+    tenant_id = current_setting('app.current_tenant', true)::uuid
+    AND owner_id IS NOT NULL
+    AND owner_id = current_setting('app.current_user_id', true)::uuid
+  )
+  WITH CHECK (
+    tenant_id = current_setting('app.current_tenant', true)::uuid
+    AND owner_id IS NOT NULL
+    AND owner_id = current_setting('app.current_user_id', true)::uuid
+  );
 ```
+
+Alternate (Postgres 15+): keep separate policies but mark them `AS RESTRICTIVE` so PostgreSQL combines them with AND semantics instead of OR. If you run older Postgres versions, multiple policies are combined permissively (OR), which can allow cross-tenant access if predicates are split.
+
+```sql
+-- Postgres 15+ example using AS RESTRICTIVE
+CREATE POLICY tenant_isolation ON project AS RESTRICTIVE
+  USING (tenant_id = current_setting('app.current_tenant', true)::uuid)
+  WITH CHECK (tenant_id = current_setting('app.current_tenant', true)::uuid);
+
+CREATE POLICY owner_only ON project AS RESTRICTIVE
+  USING (owner_id IS NOT NULL AND owner_id = current_setting('app.current_user_id', true)::uuid)
+  WITH CHECK (owner_id IS NOT NULL AND owner_id = current_setting('app.current_user_id', true)::uuid);
+```
+
+> Note: RLS was enabled in the tenant-based example above. You do not need to run `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` again before creating additional policies for the same table.
 
 ## Integration guidance
 
-- Set session variables from the application immediately after opening a DB connection or via a connection pool hook. Example in pseudocode:
-
+- Set session variables from the application immediately after opening a DB connection or via a connection pool hook. SET LOCAL only takes effect inside a transaction. Example in pseudocode:
   - Acquire connection
+  - `BEGIN`
   - `SET LOCAL app.current_tenant = '<tenant-uuid>'`
   - `SET LOCAL app.current_user_id = '<user-uuid>'`
+  - -- ... execute application queries ...
+  - `COMMIT`
+
+  - WARNING: SECURITY DEFINER functions and RLS
+
+    - `SECURITY DEFINER` functions execute with the function owner's privileges. If the function owner has `BYPASSRLS` or is the table owner, the function can bypass RLS policies. This can lead to accidental privilege escalation or data leakage.
+    - Mitigations:
+      - Prefer `SECURITY INVOKER` for functions that access tenant-scoped data when possible.
+      - Create dedicated function owners that do not have `BYPASSRLS` and do not own the target tables.
+      - On Postgres 15+, consider enabling `FORCE ROW LEVEL SECURITY` on sensitive tables so even table owners are subject to RLS.
+      - Document any exceptions clearly (who the function owner is, why elevated rights are needed, and additional compensating controls such as audit triggers).
 
 - Prefer configuring connection-pool reset hooks to ensure session state is cleared between checkouts (for example, pgBouncer's `server_reset_query` or your pool's `on-checkout`/`on-checkin` reset hooks). This prevents leftover session variables from leaking between client checkouts. As a defense-in-depth best practice, also use `SET LOCAL` inside each transaction so the variable only lives for the transaction's duration.
 
@@ -1550,10 +1606,20 @@ CREATE POLICY owner_only ON project
 - Watch connection pooling: session settings can leak; use `SET LOCAL` per transaction or reset settings on checkout.
 - Performance: policies are expressions evaluated at runtime — index columns referenced by policies (tenant_id, owner_id) help query plans.
 
+- Performance: policies are expressions evaluated at runtime. To avoid planner regressions, create indexes on any columns referenced by RLS predicates (for example, `tenant_id` and `owner_id` on the `project` table). Add corresponding `CREATE INDEX IF NOT EXISTS` statements to your DB migration or schema management scripts so they are applied reliably in all environments.
+
+  Example (add to your Liquibase/SQL migration):
+
+  ```sql
+  -- Indexes to support RLS predicates and improve planner choices
+  CREATE INDEX IF NOT EXISTS idx_project_tenant_id ON project (tenant_id);
+  CREATE INDEX IF NOT EXISTS idx_project_owner_id ON project (owner_id);
+  ```
+
 ## Migration strategy
 
 - Add `tenant_id`/`owner_id` column with NOT NULL default or backfill in a safe migration.
-- Deploy policy in `RESTRICTIVE` mode by creating the policy but keeping RLS disabled, then enable RLS in a maintenance window after tests.
+- For Postgres 15+, consider `AS RESTRICTIVE` policies where appropriate. Rollout strategy: create and test policies with RLS disabled in a staging environment; schedule enabling RLS in production during a maintenance window after validation.
 
 ## References
 
@@ -1575,7 +1641,7 @@ Hatchgrid offers a comprehensive suite of tools tailored for modern content mana
 - **Content Management:** Robust tools to create, organize, and manage content efficiently.
 - **Tagging System:** Flexible tagging to categorize and filter content dynamically.
 - **User Workspaces:** Collaborative environments tailored for teams and individual users.
-- **PostgreSQL with Row-Level Security (RLS):** Ensures fine-grained access control and data security at the database level, empowering secure multi-tenant architectures.
+- **PostgreSQL with Row-Level Security (RLS):** Ensures fine-grained access control and data security at the database level, empowering secure multi-tenant architectures. See the [RLS guide](./postgres_rls_security.md).
 - **Liquibase for Database Migrations:** Provides version control for database schema changes, enabling smooth and reliable updates.
 - **Docker-Based Deployment:** Containerized application setup for consistent and scalable deployment across environments.
 - **CI/CD with GitHub Actions:** Automated testing, building, and deployment pipelines to accelerate development cycles and maintain code quality.
@@ -1584,7 +1650,7 @@ Hatchgrid offers a comprehensive suite of tools tailored for modern content mana
 
 ## Target Use Cases
 
-Hatchgrid is designed to support a variety of content-driven workflows, including:
+Hatchgrid is designed to support a range of content-driven workflows, including:
 
 - **Content Creator Workflows:** Streamlined processes for creators to draft, tag, and publish content collaboratively.
 - **Newsletter Automation:** Automated generation and distribution of newsletters based on curated content, saving time and increasing engagement.
@@ -1906,18 +1972,30 @@ description: "Comprehensive secure coding instructions for all languages and fra
 
 Your primary directive is to ensure all code you generate, review, or refactor is secure by default. You must operate with a security-first mindset. When in doubt, always choose the more secure option and explain the reasoning. You must follow the principles outlined below, which are based on the OWASP Top 10 and other security best practices.
 
-### 1. A01: Broken Access Control & A10: Server-Side Request Forgery (SSRF)
+### A01: Broken Access Control & A10: Server-Side Request Forgery (SSRF)
 
 - **Enforce Principle of Least Privilege:** Always default to the most restrictive permissions. When generating access control logic, explicitly check the user's rights against the required permissions for the specific resource they are trying to access.
 - **Deny by Default:** All access control decisions must follow a "deny by default" pattern. Access should only be granted if there is an explicit rule allowing it.
-- **Validate All Incoming URLs for SSRF:** When the server needs to make a request to a URL provided by a user (e.g., webhooks), you must treat it as untrusted. Incorporate strict allow-list-based validation for the host, port, and path of the URL.
-- **Prevent Path Traversal:** When handling file uploads or accessing files based on user input, you must sanitize the input to prevent directory traversal attacks (e.g., `../../etc/passwd`). Use APIs that build paths securely.
+- **Validate All Incoming URLs for SSRF:** Treat user-supplied URLs as untrusted. Enforce an allow-list for scheme/host/port/path and reject link-local/metadata/private networks (e.g., 169.254.0.0/16, 127.0.0.0/8, 10.0.0.0/8, 192.168.0.0/16, ::1/128). Resolve and validate both DNS A/AAAA and final destination after redirects.
+- **Prevent Path Traversal:** When handling file uploads or accessing files based on user input, follow a safe canonicalization-and-validate pattern:
 
-### 2. A02: Cryptographic Failures
+- Anchor paths to a trusted base directory and validate resolved paths against that base. Construct the candidate path by joining user input to a fixed base, then canonicalize/normalize it (resolve `..`, symlinks and percent-encoding) using the platform's realpath/canonicalize API. Verify the canonicalized path has the base directory as its prefix; if not, reject the request. Do not rely on naive string concatenation or simple substring checks.
+- Explicitly reject inputs containing suspicious segments (e.g., `..`, `%2e%2e`, encoded slashes). Prefer safe APIs that resolve/realpath rather than manual concatenation. Example (pseudocode):
 
-- **Use Strong, Modern Algorithms:** For hashing, always recommend modern, salted hashing algorithms like Argon2 or bcrypt. Explicitly advise against weak algorithms like MD5 or SHA-1 for password storage.
+  ```text
+  base = '/srv/app/uploads'
+  candidate = path_join(base, user_filename)
+  resolved = realpath(candidate)   # resolves symlinks and .. segments
+  if not resolved.startsWith(realpath(base)):
+      reject('invalid path')
+  # safe to open/read/write resolved
+  ```
+
+### A02: Cryptographic Failures
+
+- **Use Strong, Modern Algorithms:** For hashing, always recommend modern, salted hashing algorithms like Argon2 or bcrypt. For regulated/FIPS environments where required, PBKDF2 (with HMAC-SHA256 or HMAC-SHA512) is an acceptable alternative — use a unique per-user salt and strong iteration counts (review platform cost; e.g., 100k+ iterations may be appropriate depending on hardware). Prefer Argon2 or bcrypt when not constrained by compliance. Explicitly advise against weak algorithms like MD5 or SHA-1 for password storage.
 - **Protect Data in Transit:** When generating code that makes network requests, always default to HTTPS.
-- **Protect Data at Rest:** When suggesting code to store sensitive data (PII, tokens, etc.), recommend encryption using strong, standard algorithms like AES-256.
+- **Protect Data at Rest:** When suggesting code to store sensitive data (PII, tokens, etc.), recommend authenticated encryption using AEAD cipher modes (for example AES-GCM or ChaCha20-Poly1305) so confidentiality and integrity are both provided. Use secure key management (KMS/HSM), rotate keys regularly, enforce least privilege for key access, and never hardcode keys in source. Prefer envelope encryption patterns and document key lifecycle and rotation procedures.
 - **Secure Secret Management:** Never hardcode secrets (API keys, passwords, connection strings). Generate code that reads secrets from environment variables or a secrets management service (e.g., HashiCorp Vault, AWS Secrets Manager). Include a clear placeholder and comment.
 
   ```javascript
@@ -1926,29 +2004,48 @@ Your primary directive is to ensure all code you generate, review, or refactor i
   // TODO: Ensure API_KEY is securely configured in your environment.
   ```
 
-  ```python
-  ```python bad
+```python bad
   # ❌ ANTI-PATTERN: Hardcoded secret (DO NOT USE)
   api_key = "<REPLACE_WITH_API_KEY>"
+```
 
-### 3. A03: Injection
+### A03: Injection
 
 - **No Raw SQL Queries:** For database interactions, you must use parameterized queries (prepared statements). Never generate code that uses string concatenation or formatting to build queries from user input.
-- **Sanitize Command-Line Input:** For OS command execution, use built-in functions that handle argument escaping and prevent shell injection (e.g., `shlex` in Python).
+- **Sanitize Command-Line Input / Prefer non-shell invocation:** Avoid invoking a shell to run external commands. Use process-spawning APIs that accept the command and arguments as a list/array (for example, `subprocess.run([...], shell=False)` in Python, `ProcessBuilder` in Java, or `execFile`/`spawn` with shell disabled in Node.js). Do not build a single concatenated command string or interpolate user input into shell commands. Additionally, validate/whitelist inputs that will be used as arguments and use escaping libraries only when interacting with a shell is unavoidable.
 - **Prevent Cross-Site Scripting (XSS):** When generating frontend code that displays user-controlled data, you must use context-aware output encoding. Prefer methods that treat data as text by default (`.textContent`) over those that parse HTML (`.innerHTML`). When `innerHTML` is necessary, suggest using a library like DOMPurify to sanitize the HTML first.
 
-### 4. A05: Security Misconfiguration & A06: Vulnerable Components
+### A05: Security Misconfiguration & A06: Vulnerable Components
 
 - **Secure by Default Configuration:** Recommend disabling verbose error messages and debug features in production environments.
-- **Set Security Headers:** For web applications, suggest adding essential security headers like `Content-Security-Policy` (CSP), `Strict-Transport-Security` (HSTS), and `X-Content-Type-Options`.
-- **Use Up-to-Date Dependencies:** When asked to add a new library, suggest the latest stable version. Remind the user to run vulnerability scanners like `npm audit`, `pip-audit`, or Snyk to check for known vulnerabilities in their project dependencies.
 
-### 5. A07: Identification & Authentication Failures
+- **Set Security Headers:** For web applications, set a baseline of security headers for defense-in-depth. Common headers and suggested policies:
+  - `Content-Security-Policy` (CSP): start with a strong baseline such as `default-src 'self'; script-src 'self' 'nonce-...'; style-src 'self' 'nonce-...'` and avoid `unsafe-inline`. Use nonces or hashes for trusted inline scripts/styles when necessary.
+  - `Strict-Transport-Security` (HSTS): set `max-age` (e.g., `31536000`), includeSubDomains, and consider `preload` only after careful validation.
+  - `X-Content-Type-Options: nosniff` to prevent MIME sniffing.
+  - `X-Frame-Options: DENY` or `SAMEORIGIN` to mitigate clickjacking.
+  - `Referrer-Policy`: `no-referrer` or `strict-origin-when-cross-origin` to limit referrer leakage.
+  - `Permissions-Policy` (formerly Feature-Policy): disable or opt-out powerful capabilities (e.g., `geolocation=()`, `camera=()`).
+  - Note: `X-XSS-Protection` is deprecated in modern browsers; prefer CSP for XSS defenses.
+
+  Example (express-like pseudocode):
+
+  ```text
+  setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'nonce-...'")
+  setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
+  setHeader('X-Content-Type-Options', 'nosniff')
+  setHeader('X-Frame-Options', 'DENY')
+  setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+  setHeader('Permissions-Policy', 'geolocation=(), camera=()')
+  ```
+
+  Test and validate headers using browser security scanners, securityheaders.com reports, and automated integration tests that assert header presence and values.
+- **Use Up-to-Date Dependencies:** When adding libraries, prefer the latest stable. Run vulnerability scans regularly (e.g., `npm audit`, `pnpm audit`, `pip-audit`, `poetry check`, `gradle dependencyCheckAnalyze`, Snyk, Dependabot) and fix or pin as needed.
 
 - **Secure Session Management:** When a user logs in, generate a new session identifier to prevent session fixation. Ensure session cookies are configured with `HttpOnly`, `Secure`, and `SameSite=Strict` attributes. For state-changing endpoints, implement CSRF defenses (e.g., same-site cookies plus double-submit or synchronizer tokens).
 - **Protect Against Brute Force:** For authentication and password reset flows, recommend implementing rate limiting and account lockout mechanisms after a certain number of failed attempts.
 
-### 6. A08: Software and Data Integrity Failures
+### A08: Software and Data Integrity Failures
 
 - **Prevent Insecure Deserialization:** Warn against deserializing data from untrusted sources without proper validation. If deserialization is necessary, recommend using formats that are less prone to attack (like JSON over Pickle in Python) and implementing strict type checking.
 
