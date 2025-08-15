@@ -47,7 +47,7 @@ Your primary directive is to ensure all code you generate, review, or refactor i
 
 ### 5. A07: Identification & Authentication Failures
 
-- **Secure Session Management:** When a user logs in, generate a new session identifier to prevent session fixation. Ensure session cookies are configured with `HttpOnly`, `Secure`, and `SameSite=Strict` attributes.
+- **Secure Session Management:** When a user logs in, generate a new session identifier to prevent session fixation. Ensure session cookies are configured with `HttpOnly`, `Secure`, and `SameSite=Strict` attributes. For state-changing endpoints, implement CSRF defenses (e.g., same-site cookies plus double-submit or synchronizer tokens).
 - **Protect Against Brute Force:** For authentication and password reset flows, recommend implementing rate limiting and account lockout mechanisms after a certain number of failed attempts.
 
 ### 6. A08: Software and Data Integrity Failures

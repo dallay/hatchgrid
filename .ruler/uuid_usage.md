@@ -2,6 +2,7 @@
 title: UUID Strategy
 description: Guidelines for using UUIDs in the Hatchgrid project.
 ---
+
 ## UUID Strategy
 
 This document outlines the UUID strategy for the Hatchgrid project. All contributors are expected to follow these guidelines to ensure consistency and maintainability of the codebase.
