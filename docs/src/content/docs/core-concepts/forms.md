@@ -42,3 +42,39 @@ Content-Type: application/json
   }
 }
 ```
+
+The server validates the `workspaceId` in the path against the authenticated session and ignores any `workspaceId` in the body.
+
+**Success Response**
+
+```json
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  "id": "f2c29da7-9c6c-4a6b-9a0e-8d7f6e5e4d3c",
+  "workspaceId": "c15b9d43-8f47-4f4f-b8e9-9e9b8b8d4a5b",
+  "name": "My First Form",
+  "configuration": {
+    "fields": [
+      {
+        "name": "email",
+        "type": "email",
+        "label": "Email Address"
+      },
+      {
+        "name": "message",
+        "type": "textarea",
+        "label": "Message"
+      }
+    ]
+  }
+}
+```
+
+**Error Responses**
+
+- `400 Bad Request`: Schema validation failed.
+- `401 Unauthorized`: Invalid or missing authentication token.
+- `403 Forbidden`: User does not have permission to create a form in this workspace.
+- `409 Conflict`: A form with the same `formId` already exists.

@@ -49,6 +49,7 @@ subscribers/
 ├── infrastructure/
 │   ├── api/
 │   ├── di/
+│   ├── routing/
 │   ├── store/
 │   └── views/
 ├── di.ts

@@ -14,7 +14,7 @@ Think of a workspace as a **content environment**: each workspace has its own us
 ## ✨ Key Properties
 
 - **Isolation**: Each workspace has its own database row-level security (RLS) context. Content and configuration do not leak between workspaces.
-- **Membership**: Users are invited to workspaces and assigned roles (e.g. Owner, Editor, Viewer).
+- **Membership**: Users are invited to workspaces and assigned roles (e.g. Owner, Member).
 - **Scoped Content**: Posts, digests, translations, schedules, and subscribers are always scoped to a workspace.
 - **Custom Settings**: Each workspace can define its own publishing channels, default languages, and frequency rules.
 
@@ -26,6 +26,8 @@ Think of a workspace as a **content environment**: each workspace has its own us
 - **Member**: Can view and manage content within the workspace.
 
 Roles can be extended in the future with granular permissions (e.g. per-channel publishing rights).
+
+> **Migration Note**: The `Editor` and `Viewer` roles have been consolidated into a single `Member` role. If you are migrating from an older version, please update your integration to use the `Member` role.
 
 ---
 

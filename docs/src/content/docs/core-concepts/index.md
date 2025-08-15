@@ -11,9 +11,9 @@ This section introduces the fundamental building blocks of the Hatchgrid platfor
 
 ## 📦 Included Concepts
 
-- [Workspaces](./core-concepts/workspace): Isolated content environments where users collaborate and manage distribution.
-- [Forms](./core-concepts/forms): Create and manage forms to collect data.
-- [Tags](./core-concepts/tags): Categorize and organize content, particularly for newsletter subscribers.
+- [Workspaces](./workspace): Isolated content environments where users collaborate and manage distribution.
+- [Forms](./forms): Create and manage forms to collect data.
+- [Tags](./tags): Categorize and organize content, particularly for newsletter subscribers.
 
 ---
 

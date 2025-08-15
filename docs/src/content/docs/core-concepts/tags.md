@@ -14,14 +14,16 @@ A tag typically includes:
 - `id`: A UUID.
 - `workspaceId`: The workspace to which it belongs.
 - `name`: Human-readable name (e.g., "VIP", "New Subscribers").
-- `color`: A hexadecimal color code for visual identification.
+- `color`: Hexadecimal color code in #RRGGBB format.
 
 ## 🛠 Creating a Tag
 
-To create a new tag, the client issues a `POST` request to the `/api/v1/tags` endpoint:
+To create a new tag, the client issues a `PUT` request to the `/api/workspace/{workspaceId}/tag/{tagId}` endpoint.
+
+The `workspaceId` must be provided in the URL path, and clients should not include it in the request body. The server validates the `workspaceId` from the path against the user's authenticated session and will reject requests that do not match.
 
 ```http
-POST /api/v1/tags
+PUT /api/workspace/c15b9d43-8f47-4f4f-b8e9-9e9b8b8d4a5b/tag/f2c29da7-9c6c-4a6b-9a0e-8d7f6e5e4d3c
 Content-Type: application/json
 
 {
@@ -30,12 +32,21 @@ Content-Type: application/json
 }
 ```
 
+## 📄 Listing Tags
+
+To retrieve all tags for a workspace, the client issues a `GET` request to the `/api/workspace/{workspaceId}/tag` endpoint.
+
+```http
+GET /api/workspace/c15b9d43-8f47-4f4f-b8e9-9e9b8b8d4a5b/tag
+Accept: application/json
+```
+
 ## 🔗 Assigning Tags to Subscribers
 
 To assign a tag to one or more subscribers, you can update the tag and include the `subscribers` property with a list of subscriber emails.
 
 ```http
-PUT /api/v1/workspace/{workspaceId}/tag/{tagId}/update
+PUT /api/workspace/{workspaceId}/tag/{tagId}/update
 Content-Type: application/json
 
 {
