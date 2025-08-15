@@ -20,7 +20,7 @@ Hatchgrid offers a comprehensive suite of tools tailored for modern content mana
 
 ## Target Use Cases
 
-Hatchgrid is designed to support a variety of content-driven workflows, including:
+Hatchgrid is designed to support a range of content-driven workflows, including:
 
 - **Content Creator Workflows:** Streamlined processes for creators to draft, tag, and publish content collaboratively.
 - **Newsletter Automation:** Automated generation and distribution of newsletters based on curated content, saving time and increasing engagement.
