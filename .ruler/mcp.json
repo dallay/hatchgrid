@@ -1,0 +1,32 @@
+{
+	"servers": {
+		"sequentialthinking": {
+			"command": "docker",
+			"args": [
+				"run",
+				"--rm",
+				"-i",
+				"--name",
+				"mcp-sequentialthinking",
+				"mcp/sequentialthinking"
+			]
+		},
+		"memory": {
+			"command": "docker",
+			"args": [
+				"run",
+				"-i",
+				"-v",
+				"claude-memory:/app/dist",
+				"--rm",
+				"--name",
+				"mcp-memory",
+				"mcp/memory"
+			]
+		},
+		"linear": {
+			"command": "npx",
+			"args": ["-y", "mcp-remote", "https://mcp.linear.app/sse"]
+		}
+	}
+}

@@ -87,6 +87,3 @@ This document defines the conventions and best practices for backend development
 ---
 
 These conventions are mandatory and are checked during code reviews and CI pipelines. They ensure the scalability, security, and maintainability of the backend codebase.
-<!------------------------------------------------------------------------------------
-   Add Rules to this file or a short description and have Kiro refine them for you:
-------------------------------------------------------------------------------------->

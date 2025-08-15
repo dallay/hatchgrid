@@ -2,7 +2,7 @@
 title: Hexagonal Architecture
 description: Learn about Hexagonal Architecture (Ports and Adapters) and how it is implemented in Hatchgrid to ensure separation of concerns, testability, and maintainability.
 ---
-# Hexagonal Architecture
+## Hexagonal Architecture
 
 ![Hexagonal Architecture Schema](hexagonal-architecture.png)
 
@@ -134,5 +134,5 @@ form/
 
 - **Single Responsibility per Layer**: Core logic, use cases, and adapters are strictly separated.
 - **Framework Independence**: Core logic remains decoupled from Spring Boot or any infrastructure.
-- **Port-Driven**: Infrastructure implements domain interfaces, not the other way around.
+- **Port-Driven**: Infrastructure implements domain interfaces, not the way around.
 - **Isolation for Testing**: Domain and application layers can be unit-tested with no framework setup.
