@@ -97,7 +97,7 @@ CREATE POLICY owner_only ON project
 ## Migration strategy
 
 - Add `tenant_id`/`owner_id` column with NOT NULL default or backfill in a safe migration.
-- Deploy policy in `RESTRICTIVE` mode by creating the policy but keeping RLS disabled, then enable RLS in a maintenance window after tests.
+- For Postgres 15+, consider `AS RESTRICTIVE` policies where appropriate. Rollout strategy: create and test policies with RLS disabled in a staging environment; schedule enabling RLS in production during a maintenance window after validation.
 
 ## References
 
