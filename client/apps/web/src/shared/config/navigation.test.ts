@@ -4,6 +4,35 @@
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Authority } from "@/authentication/domain/models";
+
+// Mock i18n so navigation titles resolve to predictable English strings in tests
+vi.mock("@/i18n", () => ({
+	i18n: {
+		global: {
+			t: (key: string) => {
+				const map: Record<string, string> = {
+					"global.navigation.dashboard": "Dashboard",
+					"global.navigation.audience": "Audience",
+					"global.navigation.subscribers": "Subscribers",
+					"global.navigation.tags": "Tags",
+					"global.navigation.account": "Account",
+					"global.navigation.settings": "Settings",
+					"global.navigation.changePassword": "Change Password",
+					"global.navigation.admin": "Admin",
+					"global.navigation.userManagement": "User Management",
+					"global.navigation.systemSettings": "System Settings",
+					"global.navigation.userManagementTooltip": "Manage system users",
+					"global.navigation.systemSettingsTooltip":
+						"Configure system settings",
+					"global.navigation.home": "Home",
+					"global.navigation.profile": "Profile",
+				};
+				return map[key] ?? key;
+			},
+		},
+	},
+}));
+
 import { getMinimalNavigationItems, getNavigationItems } from "./navigation";
 
 // Mock the auth store
@@ -40,9 +69,11 @@ describe("Navigation Configuration", () => {
 			const audienceItem = items.find((item) => item.title === "Audience");
 
 			expect(audienceItem).toBeDefined();
-			expect(audienceItem?.items).toHaveLength(1);
+			expect(audienceItem?.items).toHaveLength(2);
 			expect(audienceItem?.items?.[0].title).toBe("Subscribers");
 			expect(audienceItem?.items?.[0].url).toBe("/audience/subscribers");
+			expect(audienceItem?.items?.[1].title).toBe("Tags");
+			expect(audienceItem?.items?.[1].url).toBe("/audience/tags");
 		});
 
 		it("should include account items for authenticated users", () => {

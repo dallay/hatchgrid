@@ -214,6 +214,22 @@ const expectedEnMessages = {
 	},
 	global: {
 		ribbon: { dev: "Development" },
+		navigation: {
+			dashboard: "Dashboard",
+			tags: "Tags",
+			audience: "Audience",
+			subscribers: "Subscribers",
+			account: "Account",
+			settings: "Settings",
+			changePassword: "Change Password",
+			admin: "Admin",
+			userManagement: "User Management",
+			systemSettings: "System Settings",
+			userManagementTooltip: "Manage system users",
+			systemSettingsTooltip: "Configure system settings",
+			home: "Home",
+			profile: "Profile",
+		},
 		common: {
 			auth: {
 				login: "Login",
@@ -254,6 +270,22 @@ const expectedEsMessages = {
 	},
 	global: {
 		ribbon: { dev: "Desarrollo" },
+		navigation: {
+			dashboard: "Tablero",
+			tags: "Etiquetas",
+			audience: "Audiencia",
+			subscribers: "Suscriptores",
+			account: "Cuenta",
+			settings: "Configuración",
+			changePassword: "Cambiar contraseña",
+			admin: "Administración",
+			userManagement: "Gestión de usuarios",
+			systemSettings: "Configuración del sistema",
+			userManagementTooltip: "Administrar usuarios del sistema",
+			systemSettingsTooltip: "Configurar los ajustes del sistema",
+			home: "Inicio",
+			profile: "Perfil",
+		},
 		common: {
 			auth: {
 				login: "Iniciar sesión",

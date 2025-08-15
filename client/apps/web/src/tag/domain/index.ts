@@ -1,5 +1,13 @@
-export { Tag, TagColors, colorClasses } from "./Tag";
+/**
+ * Domain layer exports
+ * Centralized export for all domain layer components
+ */
 
-export type { TagResponse } from "./TagResponse";
+// Models
+export * from "./models";
 
-export { tagSchema } from "./schema";
+// Repository interfaces
+export * from "./repositories";
+
+// Use cases
+export * from "./usecases";

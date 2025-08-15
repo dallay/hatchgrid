@@ -15,10 +15,8 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { cn } from "@/shared/utils/utils";
 import LanguageSwitcher from "./LanguageSwitcher.vue";
 
 const authStore = useAuthStore();

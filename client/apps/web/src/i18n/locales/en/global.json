@@ -24,6 +24,22 @@
 		},
 		"ribbon": {
 			"dev": "Development"
+		},
+		"navigation": {
+			"dashboard": "Dashboard",
+			"tags": "Tags",
+			"audience": "Audience",
+			"subscribers": "Subscribers",
+			"account": "Account",
+			"settings": "Settings",
+			"changePassword": "Change Password",
+			"admin": "Admin",
+			"userManagement": "User Management",
+			"systemSettings": "System Settings",
+			"userManagementTooltip": "Manage system users",
+			"systemSettingsTooltip": "Configure system settings",
+			"home": "Home",
+			"profile": "Profile"
 		}
 	}
 }

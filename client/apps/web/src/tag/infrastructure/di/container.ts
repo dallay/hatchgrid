@@ -1,17 +1,18 @@
 /**
- * Dependency injection container for the subscribers module
+ * Dependency injection container for the tags module
  * Provides factory functions for creating use case instances with injected dependencies
  * Ensures singleton pattern for repository implementations
  */
 
-import type { SubscriberRepository } from "../../domain/repositories/SubscriberRepository";
+import type { TagRepository } from "../../domain/repositories/TagRepository.ts";
 import {
-	CountByStatus,
-	CountByTags,
-	FetchSubscribers,
+	CreateTag,
+	DeleteTag,
+	FetchTags,
+	type TagUseCases,
+	UpdateTag,
 } from "../../domain/usecases";
-import { SubscriberApi } from "../api/SubscriberApi";
-import type { SubscriberUseCases } from "../store";
+import { TagApi } from "../api/TagApi.ts";
 
 /**
  * Interface for disposable resources
@@ -23,47 +24,49 @@ interface Disposable {
 /**
  * Container interface for dependency injection
  */
-export interface SubscriberContainer {
-	readonly repository: SubscriberRepository;
-	readonly useCases: SubscriberUseCases;
-	readonly _brand: "SubscriberContainer"; // Brand for type safety
+export interface TagContainer {
+	readonly repository: TagRepository;
+	readonly useCases: TagUseCases;
+	readonly _brand: "TagContainer"; // Brand for type safety
 }
 
 /**
  * Singleton instance of the repository
  * Ensures single instance across the application
  */
-let repositoryInstance: SubscriberRepository | null = null;
+let repositoryInstance: TagRepository | null = null;
 
 /**
  * Singleton instance of use cases
  * Ensures single instance across the application
  */
-let useCasesInstance: SubscriberUseCases | null = null;
+let useCasesInstance: TagUseCases | null = null;
 
 /**
  * Factory function to create or get the singleton repository instance
- * @returns SubscriberRepository instance
+ * @returns TagRepository instance
  */
-export function createRepository(): SubscriberRepository {
+export function createRepository(): TagRepository {
 	if (repositoryInstance === null) {
-		repositoryInstance = new SubscriberApi();
+		repositoryInstance = new TagApi();
 	}
-	return repositoryInstance;
+	// TypeScript assertion: we know repositoryInstance is not null after the check above
+	return repositoryInstance as TagRepository;
 }
 
 /**
  * Factory function to create or get the singleton use cases with injected dependencies
- * @returns SubscriberUseCases instance with injected repository
+ * @returns TagUseCases instance with injected repository
  */
-export function createUseCases(): SubscriberUseCases {
+export function createUseCases(): TagUseCases {
 	if (useCasesInstance === null) {
 		const repository = createRepository();
 
 		useCasesInstance = {
-			fetchSubscribers: new FetchSubscribers(repository),
-			countByStatus: new CountByStatus(repository),
-			countByTags: new CountByTags(repository),
+			fetchTags: new FetchTags(repository),
+			createTag: new CreateTag(repository),
+			updateTag: new UpdateTag(repository),
+			deleteTag: new DeleteTag(repository),
 		};
 	}
 	return useCasesInstance;
@@ -71,24 +74,22 @@ export function createUseCases(): SubscriberUseCases {
 
 /**
  * Factory function to create the complete container with all dependencies
- * @returns SubscriberContainer with repository and use cases
+ * @returns TagContainer with repository and use cases
  * @throws Error if container cannot be properly initialized
  */
-export function createContainer(): SubscriberContainer {
+export function createContainer(): TagContainer {
 	const repository = createRepository();
 	const useCases = createUseCases();
 
 	// Validate container state
 	if (!repository || !useCases) {
-		throw new Error(
-			"Failed to initialize SubscriberContainer: missing dependencies",
-		);
+		throw new Error("Failed to initialize TagContainer: missing dependencies");
 	}
 
 	return {
 		repository,
 		useCases,
-		_brand: "SubscriberContainer" as const,
+		_brand: "TagContainer" as const,
 	};
 }
 
@@ -119,7 +120,7 @@ export function isContainerInitialized(): boolean {
  * Configuration options for the container
  */
 export interface ContainerConfig {
-	readonly customRepository?: SubscriberRepository;
+	readonly customRepository?: TagRepository;
 }
 
 /**
@@ -131,11 +132,9 @@ export interface ContainerConfig {
  *    or use this function before any use case is created.
  *
  * @param config - Configuration options
- * @returns SubscriberContainer with configured dependencies
+ * @returns TagContainer with configured dependencies
  */
-export function configureContainer(
-	config: ContainerConfig,
-): SubscriberContainer {
+export function configureContainer(config: ContainerConfig): TagContainer {
 	if (config.customRepository) {
 		repositoryInstance = config.customRepository;
 		// Always reset use cases to force recreation with new repository
@@ -148,7 +147,7 @@ export function configureContainer(
  * Get current repository instance (for testing purposes)
  * @returns Current repository instance or null if not initialized
  */
-export function getCurrentRepository(): SubscriberRepository | null {
+export function getCurrentRepository(): TagRepository | null {
 	return repositoryInstance;
 }
 
@@ -156,7 +155,7 @@ export function getCurrentRepository(): SubscriberRepository | null {
  * Get current use cases instance (for testing purposes)
  * @returns Current use cases instance or null if not initialized
  */
-export function getCurrentUseCases(): SubscriberUseCases | null {
+export function getCurrentUseCases(): TagUseCases | null {
 	return useCasesInstance;
 }
 
