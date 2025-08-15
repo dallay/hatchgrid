@@ -44,7 +44,7 @@
 				"--name",
 				"mcp-github",
 				"-e",
-				"GITHUB_PAT=${GITHUB_PAT}",
+				"GITHUB_TOKEN",
 				"mcp/github"
 			]
 		},
