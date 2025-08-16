@@ -94,6 +94,11 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation("com.tngtech.archunit:archunit:1.3.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // C U C U M B E R   D E P E N D E N C I E S
+    testImplementation(libs.cucumber.java)
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:${libs.versions.cucumber.get()}")
+    testImplementation("io.cucumber:cucumber-spring:${libs.versions.cucumber.get()}")
 }
 
 dependencyManagement {
@@ -109,7 +114,9 @@ kotlin {
     }
 }
 tasks.withType<Test> {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        includeEngines("cucumber")
+    }
 }
 
 tasks.asciidoctor {
