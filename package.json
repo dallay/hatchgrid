@@ -51,6 +51,7 @@
 		"test:ui": "pnpm --recursive run test:ui",
 		"test:coverage": "pnpm --recursive run test:coverage",
 		"lint": "pnpm --recursive --parallel run lint",
+		"lint:md": "markdownlint-cli2 \"**/*.md\" \"**/*.mdx\"",
 		"lint:strict": "pnpm --recursive --parallel run lint:strict",
 		"check": "pnpm run -r check && biome check . --write",
 		"clean": "pnpm --recursive run clean",
@@ -70,10 +71,17 @@
 		"@commitlint/cli": "^19.8.1",
 		"@commitlint/config-conventional": "^19.8.1",
 		"lefthook": "^1.12.2",
+		"markdownlint-cli2": "^0.18.1",
 		"npm-run-all2": "^8.0.4",
 		"rimraf": "^6.0.1",
 		"tree-extended": "^4.6.0",
 		"vite": "^7.0.6",
-		"vitest": "^3.2.4"
+		"vitest": "^3.2.4",
+		"@types/node": "22.17.2"
+	},
+	"pnpm": {
+		"overrides": {
+			"@types/node": "22.17.2"
+		}
 	}
 }
