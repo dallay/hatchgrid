@@ -2,7 +2,11 @@
 # @ref https://evilmartians.github.io/lefthook/
 
 pre-commit:
+  parallel: true
   commands:
+    markdownlint:
+      glob: "**/*.{md,mdx}"
+      run: npx markdownlint-cli2 {staged_files}
     generate_structure_docs:
       run: ./scripts/generate-structure-docs.sh
     biome:
